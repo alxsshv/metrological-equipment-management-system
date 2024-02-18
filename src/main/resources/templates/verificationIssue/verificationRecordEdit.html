@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Редактирование данных о поверке</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/angular.min.js"></script>
+</head>
+
+<script type="text/javascript">
+    var app = angular.module("EDIT_VRF_RECORD", []);
+    var idAttr = new URL (document.URL).searchParams.get("id");
+        app.controller("EDIT_VRF_RECORD_CTRL", function($scope, $http){
+        
+      
+        $scope.employees = [];
+        $scope.getEmployees = function(){
+            console.log(2);
+            $http({
+            url: "/employee",
+            method: "GET"
+            }).then(function(response){
+            $scope.employees = response.data;
+            console.log($scope.employees);
+            });
+        }
+
+        
+
+        $scope.getRecord = function(){
+                $http({
+                url: "/verificationIssue/record/"+idAttr,
+                method: "GET"
+            }).then(function(response){
+                $scope.record = response.data;
+                console.log($scope.record);
+                $scope.record.dateVerification = new Date($scope.record.dateVerification);
+                $scope.record.dateEndVerification = new Date($scope.record.dateEndVerification);
+                $scope.setResultVerificationFromRecord();
+                
+            });
+
+        }
+
+        $scope.verificationResults = [{'title' : 'Пригоден', 'value' : 1},
+                                    {'title' : 'Непригоден', 'value' : 2}];
+        
+        $scope.resultVerification = {'title' : 'Пригоден', 'value' : 1};
+        $scope.setResultVerificationFromRecord = function(){
+            
+            console.log($scope.record);
+            if($scope.record.resultVerification == 2){
+                $scope.resultVerification = {'title' : 'Непригоден', 'value' : 2};
+            }
+            console.log($scope.resultVerification);    
+        } 
+        
+                                    
+
+        
+        $scope.getRecord()
+        $scope.getEmployees()
+    
+        
+
+
+        $scope.updateRecord = function(){
+            $http({
+                url: "/verificationIssue/record/"+idAttr,
+                method: "PATCH",
+                data: {
+                    id:idAttr,
+                    numberVerification:$scope.record.numberVerification,
+                    dateVerification:$scope.record.dateVerification,
+                    dateEndVerification:$scope.record.dateEndVerification,
+                    typeMeasuringInstrument:$scope.record.typeMeasuringInstrument,
+                    employee:$scope.record.employee,
+                    resultVerification:$scope.resultVerification.value
+                }
+            }).then(function successCallback(response){
+                alert(response.data.message);
+                }, function errorCallback(response){
+                   alert(response.data.message)
+                });
+            }
+
+        });    
+    
+</script>
+
+<body ng-app="EDIT_VRF_RECORD" ng-controller="EDIT_VRF_RECORD_CTRL">
+<script src="/js/bootstrap.bundle.min.js"></script>
+<div class="container text-center">
+    <nav class="navbar bg-body-tertiary">
+        <form class="container-fluid justify-content-start">
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/issues'">К списку заявок</button>
+        </form>
+    </nav>
+
+    <form>
+            <input ng-model="record.id" type="text" value="$record.id" name="id" hidden>
+            <td>
+                <span class="input-group-text" id="numberVerification">Номер записи о поверке</span>
+                <input ng-model="record.numberVerification" type="text" class="form-control" name="numberVerification" value="${{record.numberVerification}}">    
+                </td>
+                <td>
+                    <span class="input-group-text" id="dateVerification">Дата поверки</span>
+                    <input ng-model="record.dateVerification" type="date" class="form-control" placeholder="yyyy-MM-dd" aria-label="Дата поверки">
+                </td>
+                <td>
+                    <span class="input-group-text" id="dateEndVerification">Действительно до</span>
+                    <input ng-model="record.dateEndVerification" type="date" class="form-control" placeholder="yyyy-MM-dd" aria-label="Действительно до">
+                </td>
+                <td>
+                    <span class="input-group-text" id="typeMeasuringInstrument">Обозначение СИ</span>
+                    <input ng-model="record.typeMeasuringInstrument" type="text" class="form-control" value="Обозначение СИ" id="typeMeasuringInstrument">
+                </td>
+                <td>
+                    <span class="input-group-text">Поверитель</span>
+                    <select ng-model="record.employee" ng-options="employee as employee.surname for employee in employees track by employee.id" class="form-select mb-3" aria-label="Поверитель">
+                    </select>
+                </td>
+                <td>
+                    <span class="input-group-text">Результат поверки</span>
+                    <select ng-model="resultVerification" ng-options="verificationResult as verificationResult.title for verificationResult in verificationResults track by verificationResult.value" class="form-select mb-3" aria-label="Пригодность">
+                    </select>
+                </td>
+                </tr>
+
+                </table>
+            
+    <div class="row">
+        <button class="btn btn-primary" ng-click="updateRecord()" type="button">Сохранить</button>
+	</div>
+</form>
+</div>
+</body>
+</html>

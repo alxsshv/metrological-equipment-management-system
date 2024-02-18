@@ -1,0 +1,18 @@
+package main.dto;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+@Getter
+@Setter
+@NoArgsConstructor
+public class RecordDto {
+    private int id;
+    private String numberVerification;
+    private String dateVerification;
+    private String dateEndVerification;
+    private String typeMeasuringInstrument;
+    private EmployeeDto employee;
+    private int resultVerification;
+
+}

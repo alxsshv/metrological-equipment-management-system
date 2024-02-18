@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Типы средств измерений</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/jquery-3.7.1.min.js"></script>
+
+</head>
+<script type="text/javascript">
+var app = angular.module("VRF_ISSUE_FORM", []);
+    app.controller("VRF_ISSUE_FORM_CTRL", function($scope, $http){
+
+        //Получение списка поверителей
+        $scope.employees = [];
+        $scope.getEmployees = function(){
+        $http({
+            url: "/employee",
+            method: "GET"
+        }).then(function(response){
+            $scope.employees = response.data;
+            console.log($scope.employees);
+        });
+        }
+
+        //Формируем массив записей о поверке
+        $scope.verificationRecords = [];
+        $scope.addVerificationRaw = function(vrfRaw){
+            console.log('добавляем строку');
+            var item = {};
+            var dateVrfToTimeZone = new Date($scope.vrfRaw.dateVerification);
+            dateVrfToTimeZone.setDate(dateVrfToTimeZone.getDate());
+            var dateEndVrfToTimeZone = new Date($scope.vrfRaw.dateEndVerification);
+            dateEndVrfToTimeZone.setDate(dateEndVrfToTimeZone.getDate());
+            if(Object.keys(vrfRaw).length !== 0){
+            item.numberVerification =vrfRaw.numberVerification;
+            item.dateVerification = dateVrfToTimeZone;
+            item.dateEndVerification = dateEndVrfToTimeZone;
+            item.typeMeasuringInstrument = vrfRaw.model;
+            item.employee = JSON.parse($scope.employee);
+            item.resultVerification = vrfRaw.resultVerification;
+            $scope.verificationRecords.push(item);
+            console.log($scope.verificationRecords);
+            }
+        }
+
+        $scope.getEmployees();
+
+        //удаление записи
+        $scope.deleteRecord = function(number){
+            var index = $scope.verificationRecords.indexOf(number);
+
+            $scope.verificationRecords.splice(index, 1);
+
+        }
+
+
+         // сохранение в БД
+         $scope.addIssue = function(){
+            if ($scope.verificationRecords !== undefined && $scope.verificationRecords.length != 0){
+                $http({
+                url: "/verificationIssue",
+                method: "POST",
+                data: {
+                        verificationRecords: $scope.verificationRecords
+                }
+
+            }).then(function successCallback(response){
+                console.log($scope.verificationRecords);
+                alert(response.data.message);
+                location.reload();
+                }, function errorCallback(response){
+                   alert(response.data.message)
+                });
+            } else {
+                alert('Заполните таблицу результатами поверки СИ');
+            }
+            }
+
+
+        });
+
+</script>
+
+<body ng-app="VRF_ISSUE_FORM" ng-controller="VRF_ISSUE_FORM_CTRL">
+<script src="/js/bootstrap.bundle.min.js"></script>
+<div class="container text-center">
+    <nav class="navbar bg-body-tertiary">
+        <form class="container-fluid justify-content-start">
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+            <button class="btn btn-sm btn-outline-secondary" type="button" onclick="location.href='/issues'">Список заявок</button>
+        </form>
+    </nav>
+    <div class="row">
+        <table class="table table-info table-striped table-hover">
+            <tr><th>Номер записи в АРШИН</th><th>Дата поверки</th><th>Дата действия поверки</th><th>Модификация</th><th>Поверитель</th><th>Результат поверки</th><th></th></tr>
+            <tr ng-repeat="item in verificationRecords track by $index"><td>{{item.numberVerification}}</td><td>{{item.dateVerification  | date:"dd.MM.yyyy"}}</td><td>{{item.dateEndVerification  | date:"dd.MM.yyyy"}}</td><td>{{item.typeMeasuringInstrument}}</td><td>{{item.employee.surname}} {{item.employee.name}}</td><td>{{item.resultVerification}}</td><td><button ng-click="deleteRecord(item)" type="button" class="btn btn-primary">Удалить</button></td></tr>
+        </table>
+    </div>
+
+
+
+    <div class="row">
+        <table class="table table-info table-striped table-hover">
+            <tr>
+                <td>
+                    <span class="input-group-text" id="basic-addon1">Номер записи о поверке</span>
+                    <input ng-model="vrfRaw.numberVerification" type="text" class="form-control" placeholder="Номер записи в ФГИС АРШИН" aria-label="Номер записи в ФГИС АРШИН" aria-describedby="basic-addon1">
+                </td>
+                <td>
+                    <span class="input-group-text" id="basic-addon2">Дата поверки</span>
+                    <input ng-model="vrfRaw.dateVerification" type="date" class="form-control" placeholder="Дата поверки" aria-label="Дата поверки" aria-describedby="basic-addon2">
+                </td>
+                <td>
+                    <span class="input-group-text" id="basic-addon3">Дата действия поверки</span>
+                    <input ng-model="vrfRaw.dateEndVerification" type="date" class="form-control" placeholder="Действительно до" aria-label="Действительно до" aria-describedby="basic-addon3">
+                </td>
+                <td>
+                    <span class="input-group-text" id="basic-addon4">Модификация СИ</span>
+                    <input ng-model="vrfRaw.model" type="text" class="form-control" placeholder="Модификация СИ" aria-label="Модификация СИ" aria-describedby="basic-addon4">
+                </td>
+                <td>
+                    <span class="input-group-text">Поверитель</span>
+                    <select ng-model="employee" class="form-select mb-3" aria-label="Заводской номер">
+                        <option ng-repeat="employee in employees" value="{{employee}}">{{employee.surname}} {{employee.name}} {{employee.patronymic}}</option>
+                    </select>
+                </td>
+                <td>
+                    <span class="input-group-text">Результат поверки</span>
+                    <select ng-model="vrfRaw.resultVerification" class="form-select mb-3" aria-label="Пригодность">
+                        <option value="1">Пригоден</option>
+                        <option value="2">Непригоден</option>
+                    </select>
+                </td>
+                <td>
+                    <button ng-click="addVerificationRaw(vrfRaw)" type="button" class="btn btn-primary">Добавить</button>
+                </td>
+
+                </tr>
+        </table>
+    </div>
+
+
+    <div class="row">
+        <div class="col">
+        </div>
+        <div class="col">
+            <button ng-click="addIssue()" type="button" class="btn btn-primary">Создать заявку</button>
+        </div>
+        <div class="col">
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
