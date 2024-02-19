@@ -30,14 +30,10 @@ var app = angular.module("VRF_ISSUE_FORM", []);
         $scope.addVerificationRaw = function(vrfRaw){
             console.log('добавляем строку');
             var item = {};
-            var dateVrfToTimeZone = new Date($scope.vrfRaw.dateVerification);
-            dateVrfToTimeZone.setDate(dateVrfToTimeZone.getDate());
-            var dateEndVrfToTimeZone = new Date($scope.vrfRaw.dateEndVerification);
-            dateEndVrfToTimeZone.setDate(dateEndVrfToTimeZone.getDate());
             if(Object.keys(vrfRaw).length !== 0){
             item.numberVerification =vrfRaw.numberVerification;
-            item.dateVerification = dateVrfToTimeZone;
-            item.dateEndVerification = dateEndVrfToTimeZone;
+            item.dateVerification = $scope.vrfRaw.dateVerification;
+            item.dateEndVerification = $scope.vrfRaw.dateEndVerification;
             item.typeMeasuringInstrument = vrfRaw.model;
             item.employee = JSON.parse($scope.employee);
             item.resultVerification = vrfRaw.resultVerification;
@@ -111,11 +107,11 @@ var app = angular.module("VRF_ISSUE_FORM", []);
                 </td>
                 <td>
                     <span class="input-group-text" id="basic-addon2">Дата поверки</span>
-                    <input ng-model="vrfRaw.dateVerification" type="date" class="form-control" placeholder="Дата поверки" aria-label="Дата поверки" aria-describedby="basic-addon2">
+                    <input ng-model="vrfRaw.dateVerification" type="date" class="form-control" placeholder="Дата поверки" aria-label="Дата поверки" aria-describedby="basic-addon2" ng-model-options="{timezone: 'UTC'}" >
                 </td>
                 <td>
                     <span class="input-group-text" id="basic-addon3">Дата действия поверки</span>
-                    <input ng-model="vrfRaw.dateEndVerification" type="date" class="form-control" placeholder="Действительно до" aria-label="Действительно до" aria-describedby="basic-addon3">
+                    <input ng-model="vrfRaw.dateEndVerification" ng-model-options="{timezone: 'UTC'}" type="date" class="form-control" placeholder="Действительно до" aria-label="Действительно до" aria-describedby="basic-addon3">
                 </td>
                 <td>
                     <span class="input-group-text" id="basic-addon4">Модификация СИ</span>

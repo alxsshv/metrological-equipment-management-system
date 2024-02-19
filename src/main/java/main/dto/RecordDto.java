@@ -15,4 +15,14 @@ public class RecordDto {
     private EmployeeDto employee;
     private int resultVerification;
 
+    @Override
+    public String toString() {
+        return "RecordDto{" +
+                "id=" + id +
+                ", numberVerification='" + numberVerification + '\'' +
+                ", dateVerification='" + dateVerification + '\'' +
+                ", dateEndVerification='" + dateEndVerification + '\'' +
+                ", typeMeasuringInstrument='" + typeMeasuringInstrument + '\'' +
+                '}';
+    }
 }

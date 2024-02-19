@@ -107,11 +107,11 @@
                 </td>
                 <td>
                     <span class="input-group-text" id="dateVerification">Дата поверки</span>
-                    <input ng-model="record.dateVerification" type="date" class="form-control" placeholder="yyyy-MM-dd" aria-label="Дата поверки">
+                    <input ng-model="record.dateVerification" ng-model-options="{timezone: 'UTC'}" type="date"  class="form-control" placeholder="yyyy-MM-dd" aria-label="Дата поверки">
                 </td>
                 <td>
                     <span class="input-group-text" id="dateEndVerification">Действительно до</span>
-                    <input ng-model="record.dateEndVerification" type="date" class="form-control" placeholder="yyyy-MM-dd" aria-label="Действительно до">
+                    <input ng-model="record.dateEndVerification" ng-model-options="{timezone: 'UTC'}" type="date" class="form-control" placeholder="yyyy-MM-dd" aria-label="Действительно до">
                 </td>
                 <td>
                     <span class="input-group-text" id="typeMeasuringInstrument">Обозначение СИ</span>

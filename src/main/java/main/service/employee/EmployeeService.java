@@ -1,11 +1,11 @@
 package main.service.employee;
 
+import lombok.RequiredArgsConstructor;
 import main.dto.EmployeeDto;
 import main.dto.mappers.EmployeeDtoMapper;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
 import main.service.ServiceMessage;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -13,12 +13,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class EmployeeService implements IEmployeeService {
     private final EmployeeRepository employeeRepository;
-    @Autowired
-    public EmployeeService(EmployeeRepository employeeRepository){
-        this.employeeRepository = employeeRepository;
-    }
 
     @Override
     public ResponseEntity<?> save(EmployeeDto employeeDto) {
