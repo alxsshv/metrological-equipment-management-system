@@ -38,15 +38,16 @@ public class EmployeeService implements IEmployeeService {
     public ResponseEntity<?> update(EmployeeDto employeeDto){
         Optional<Employee> userOpt = employeeRepository.findById(employeeDto.getId());
         if (userOpt.isEmpty()){
-            String errorMessage = "Поверитель " + employeeDto.getSurname()+ " " + employeeDto.getName() +  " не найден";
+            String errorMessage = "Поверитель " + employeeDto.getSurname() +
+                    " " + employeeDto.getName() +  " не найден";
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
         Employee updatingEmployeeData = EmployeeDtoMapper.mapToEntity(employeeDto);
         Employee employee = userOpt.get();
         employee. updateFrom(updatingEmployeeData);
         employeeRepository.save(employee);
-        String okMessage ="Cведения о поверителе " + employee.getEmployeeName().getName() + " "
-                + employee.getEmployeeName().getSurname() + " обновлены";
+        String okMessage ="Cведения о поверителе " + employee.getName() + " "
+                + employee.getSurname() + " обновлены";
         System.out.println(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

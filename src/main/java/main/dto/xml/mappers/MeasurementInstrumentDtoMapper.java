@@ -1,4 +1,4 @@
-package main.dto.mappers;
+package main.dto.xml.mappers;
 
 import main.dto.xml.fsa.MeasurementInstrumentDto;
 import main.model.VerificationRecord;
@@ -10,7 +10,8 @@ public class MeasurementInstrumentDtoMapper {
         instrument.setTypeMeasuringInstrument(record.getTypeMeasuringInstrument());
         instrument.setDateVerification(record.getDateVerification().substring(0,10));
         instrument.setDateEndVerification(record.getDateEndVerification().substring(0,10));
-        instrument.setApprovedEmployee(record.getEmployee());
+        instrument.setApprovedEmployee(
+                ApprovedEmployeeDtoMappers.mapEmployeeToDto(record.getEmployee()));
         instrument.setResultVerification(record.getResultVerification());
         return instrument;
     }

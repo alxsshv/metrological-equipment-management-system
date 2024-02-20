@@ -19,16 +19,17 @@ import lombok.Setter;
 @XmlAccessorType(XmlAccessType.NONE)
 public class Employee {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    @OneToOne(fetch = FetchType.EAGER)
-    @MapsId
-    @XmlElement(name = "Name")
-    private EmployeeName employeeName;
-    @XmlElement(name = "SNILS")
+    private String surname;
+    private String name;
+    private String patronymic;
     private String snils;
 
     public void updateFrom(Employee updatingData){
-        employeeName.updateFrom(updatingData.getEmployeeName());
+        surname = updatingData.getSurname();
+        name = updatingData.getName();
+        patronymic = updatingData.getPatronymic();
         snils = updatingData.getSnils();
     }
 
@@ -36,8 +37,10 @@ public class Employee {
     public String toString() {
         return "Employee{" +
                 "id=" + id +
-                ", employeeName=" + employeeName +
-                ", snils=" + snils +
+                ", surname='" + surname + '\'' +
+                ", name='" + name + '\'' +
+                ", patronymic='" + patronymic + '\'' +
+                ", snils='" + snils + '\'' +
                 '}';
     }
 }

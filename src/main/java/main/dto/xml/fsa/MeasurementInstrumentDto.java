@@ -5,7 +5,7 @@ import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import main.model.Employee;
+
 
 
 @Setter
@@ -22,7 +22,7 @@ public class MeasurementInstrumentDto {
     @XmlElement(name = "TypeMeasuringInstrument")
     private String typeMeasuringInstrument;
     @XmlElement(name = "ApprovedEmployee")
-    private Employee approvedEmployee;
+    private ApprovedEmployeeDto approvedEmployee;
     @XmlElement(name = "ResultVerification")
     private int resultVerification;
 
