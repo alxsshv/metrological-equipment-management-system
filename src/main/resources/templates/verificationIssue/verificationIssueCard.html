@@ -53,11 +53,11 @@
                 <dd ng-model="type" class="col-sm-6">{{verificationIssue.id}}</dd>
 
                 <dt class="col-sm-6">Дата создания</dt>
-                <dd ng-model="type" type="date" class="col-sm-6">{{verificationIssue.creationDateTime  | date:"dd.MM.yyyy HH:mm"}}</dd>              
+                <dd ng-model="type"  ng-model-options="{timezone: 'UTC'}" type="date" class="col-sm-6">{{verificationIssue.creationDateTime  | date:"dd.MM.yyyy HH:mm"}}</dd>
 
                 <table class="table table-info table-striped table-hover">
                     <tr><th>№ записи о поверке</th><th>Дата поверки</th><th>Действительно до</th><th>Обозначение СИ</th><th>Поверитель</th><th></th></tr>
-                    <tr ng-repeat="item in verificationRecords track by $index"><td>{{item.numberVerification}}</td><td>{{item.dateVerification | date:"dd.MM.yyyy"}}</td><td>{{item.dateEndVerification | date:"dd.MM.yyyy"}}</td><td>{{item.typeMeasuringInstrument}}</td><td>{{item.employee.surname}} {{item.employee.name}}</td><td><a href="/issues/record/{{item.id}}?id={{item.id}}">Редактировать</a></td></tr>
+                    <tr ng-repeat="item in verificationRecords track by $index"><td>{{item.numberVerification}}</td><td>{{item.dateVerification | date:"dd.MM.yyyy":'UTC'}}</td><td>{{item.dateEndVerification | date:"dd.MM.yyyy" :'UTC'}}</td><td>{{item.typeMeasuringInstrument}}</td><td>{{item.employee.surname}} {{item.employee.name}}</td><td><a href="/issues/record/{{item.id}}?id={{item.id}}">Редактировать</a></td></tr>
                 </table>
              </dl>
         </div>

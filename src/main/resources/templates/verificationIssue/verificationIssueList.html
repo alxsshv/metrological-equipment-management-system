@@ -40,7 +40,7 @@
     <div class="row">
         <table class="table table-info table-striped table-hover">
             <tr><th>Номер заявки</th><th>Дата создания заявки</th></tr>
-            <tr ng-repeat="issue in issues"><td><a href="issues/{{issue.id}}?id={{issue.id}}">Заявка № {{issue.id}}</a></td><td>{{issue.creationDateTime | date:"dd.MM.yyyy HH:mm"}}</td></tr>
+            <tr ng-repeat="issue in issues"><td><a href="issues/{{issue.id}}?id={{issue.id}}">Заявка № {{issue.id}}</a></td><td>{{issue.creationDateTime | date:"dd.MM.yyyy HH:mm" :'UTC'}}</td></tr>
         </table>
     </div>
     <div class="row">

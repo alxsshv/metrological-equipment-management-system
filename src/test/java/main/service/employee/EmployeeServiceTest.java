@@ -79,4 +79,67 @@ public class EmployeeServiceTest {
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
         verify(employeeRepository, times(1)).save(any(Employee.class));
     }
+
+    @Test
+    @DisplayName("test update If employee found")
+    public void testUpdateIfEmployeeFound(){
+        int employeeId = 3;
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setId(employeeId);
+        employeeDto.setName("Name");
+        employeeDto.setSurname("Surname");
+        employeeDto.setPatronymic("Patronymic");
+        employeeDto.setSnils("12345678910");
+        Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+        ResponseEntity<?> responseEntity = employeeService.update(employeeDto);
+        assertEquals("200 OK", responseEntity.getStatusCode().toString());
+        verify(employeeRepository, times(1)).save(employee);
+    }
+
+    @Test
+    @DisplayName("test update If employee not found")
+    public void testUpdateIfEmployeeNotFound(){
+        int employeeId = 3;
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setId(3);
+        employeeDto.setName("Name");
+        employeeDto.setSurname("Surname");
+        employeeDto.setPatronymic("Patronymic");
+        employeeDto.setSnils("12345678910");
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
+        ResponseEntity<?> responseEntity = employeeService.update(employeeDto);
+        assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
+
+    }
+
+    @Test
+    @DisplayName("test delete if employee found")
+    public void testDeleteIfEmployeeFound(){
+        int employeeId = 2;
+        Employee employee = new Employee();
+        employee.setId(employeeId);
+        employee.setEmployeeName(
+                new EmployeeName(employeeId,"Surname","Name","Patronomic"));
+        employee.setSnils("11111111111");
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+        ResponseEntity<?> responseEntity = employeeService.delete(employeeId);
+        assertEquals("200 OK", responseEntity.getStatusCode().toString());
+        verify(employeeRepository, times(1)).delete(employee);
+    }
+
+    @Test
+    @DisplayName("test delete if employee not found")
+    public void testDeleteIfEmployeeNotFound(){
+        int employeeId = 2;
+        Employee employee = new Employee();
+        employee.setId(employeeId);
+        employee.setEmployeeName(
+                new EmployeeName(employeeId,"Surname","Name","Patronomic"));
+        employee.setSnils("11111111111");
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
+        ResponseEntity<?> responseEntity = employeeService.delete(employeeId);
+        assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
+        verify(employeeRepository, times(1)).findById(employeeId);
+    }
 }
