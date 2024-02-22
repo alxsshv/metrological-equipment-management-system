@@ -3,7 +3,7 @@ package main.service.xml;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import main.dto.xml.mappers.MeasurementInstrumentDtoMapper;
+import main.dto.xml.fsa.mappers.MeasurementInstrumentDtoMapper;
 import main.dto.xml.fsa.MeasurementInstrumentDto;
 import main.model.*;
 import main.dto.xml.fsa.MessageDto;

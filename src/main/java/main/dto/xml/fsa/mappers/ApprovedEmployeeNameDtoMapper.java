@@ -1,4 +1,4 @@
-package main.dto.xml.mappers;
+package main.dto.xml.fsa.mappers;
 
 import main.dto.xml.fsa.ApprovedEmployeeNameDto;
 import main.model.Employee;
