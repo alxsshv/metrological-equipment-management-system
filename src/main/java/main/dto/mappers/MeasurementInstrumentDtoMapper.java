@@ -9,7 +9,9 @@ public class MeasurementInstrumentDtoMapper {
         instrument.setNumberVerification(record.getNumberVerification());
         instrument.setTypeMeasuringInstrument(record.getTypeMeasuringInstrument());
         instrument.setDateVerification(record.getDateVerification().substring(0,10));
-        instrument.setDateEndVerification(record.getDateEndVerification().substring(0,10));
+        if (record.getDateEndVerification() != null) {
+            instrument.setDateEndVerification(record.getDateEndVerification().substring(0, 10));
+        }
         instrument.setApprovedEmployee(record.getEmployee());
         instrument.setResultVerification(record.getResultVerification());
         return instrument;

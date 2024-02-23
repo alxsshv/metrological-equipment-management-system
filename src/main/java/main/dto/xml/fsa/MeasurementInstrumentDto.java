@@ -2,6 +2,7 @@ package main.dto.xml.fsa;
 
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapters;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,7 +18,7 @@ public class MeasurementInstrumentDto {
     private String numberVerification;
     @XmlElement(name = "DateVerification")
     private String dateVerification;
-    @XmlElement(name = "DateEndVerification")
+    @XmlElement(name = "DateEndVerification", nillable = true)
     private String dateEndVerification;
     @XmlElement(name = "TypeMeasuringInstrument")
     private String typeMeasuringInstrument;

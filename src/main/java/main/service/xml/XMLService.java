@@ -15,10 +15,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Scanner;
 
 
 @Service
@@ -35,6 +36,7 @@ public class XMLService implements IXMLService {
     public ResponseEntity<?> getFsaXMLForIssue(String id) throws IOException {
         createFsaXMLForVerificationIssue(id);
         File fsaXML = new File(filePath + "fsaReport"+ id +".xml");
+        deleteEmptyEndVerificationDateTagsFromFile(fsaXML);
         if (!fsaXML.exists()){
             String errorMessage = "Файл " + fsaXML.getName() + " не найден";
             System.out.println(errorMessage);
@@ -59,6 +61,29 @@ public class XMLService implements IXMLService {
         MessageDto message = new MessageDto(data,2);
         JaxbWriter writer = new JaxbWriter();
         writer.write(message, verificationIssue.getId());
+    }
+
+    private void deleteEmptyEndVerificationDateTagsFromFile(File file) {
+        StringBuilder builder = new StringBuilder();
+
+        try {
+            Scanner scanner = new Scanner(file);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                if (!line.contains("<DateEndVerification xsi:nil=\"true\"/>")) {
+                    builder.append(line).append("\n");
+                }
+            }
+            scanner.close();
+
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file, false));
+            writer.write(builder.toString());
+            writer.close();
+
+        } catch (IOException ex) {
+            System.out.println("Файл " + filePath + " не найден или не содержит записей");
+            System.out.println(ex.getMessage());
+        }
     }
 
 
