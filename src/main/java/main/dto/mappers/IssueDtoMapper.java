@@ -1,6 +1,6 @@
 package main.dto.mappers;
 
-import main.dto.RecordDto;
+import main.dto.VerificationRecordDto;
 import main.dto.VerificationIssueDto;
 import main.model.VerificationIssue;
 import main.model.VerificationRecord;
@@ -25,8 +25,8 @@ public class IssueDtoMapper {
         return issue;
     }
 
-    public static RecordDto mapRecordToDto(VerificationRecord record){
-        RecordDto dto = new RecordDto();
+    public static VerificationRecordDto mapRecordToDto(VerificationRecord record){
+        VerificationRecordDto dto = new VerificationRecordDto();
         dto.setId(record.getId());
         dto.setNumberVerification(record.getNumberVerification());
         dto.setTypeMeasuringInstrument(record.getTypeMeasuringInstrument());
@@ -37,7 +37,7 @@ public class IssueDtoMapper {
         return dto;
     }
 
-    public static VerificationRecord mapRecordDtoToEntity(RecordDto dto) {
+    public static VerificationRecord mapRecordDtoToEntity(VerificationRecordDto dto) {
         VerificationRecord record = new VerificationRecord();
         record.setId(dto.getId());
         record.setNumberVerification(dto.getNumberVerification());

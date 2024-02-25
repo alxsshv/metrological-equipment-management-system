@@ -1,7 +1,7 @@
 package main.service.verificationissue;
 
 
-import main.dto.RecordDto;
+import main.dto.VerificationRecordDto;
 import main.dto.VerificationIssueDto;
 import org.springframework.http.ResponseEntity;
 
@@ -11,6 +11,6 @@ public interface IVerificationIssueService {
     ResponseEntity<?> addIssue(VerificationIssueDto issueDto);
     ResponseEntity<?> findById(int id);
     List<VerificationIssueDto> findAll();
-    ResponseEntity<?> updateRecord(RecordDto updatingData);
+    ResponseEntity<?> updateRecord(VerificationRecordDto updatingData);
     ResponseEntity<?> findRecordById(int id);
 }

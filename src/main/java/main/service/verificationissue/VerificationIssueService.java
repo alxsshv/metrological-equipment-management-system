@@ -2,7 +2,7 @@ package main.service.verificationissue;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import main.dto.RecordDto;
+import main.dto.VerificationRecordDto;
 import main.dto.VerificationIssueDto;
 import main.dto.mappers.IssueDtoMapper;
 import main.model.VerificationIssue;
@@ -37,7 +37,7 @@ public class VerificationIssueService implements IVerificationIssueService {
     }
 
     @Override
-    public ResponseEntity<?> updateRecord(RecordDto recordDto){
+    public ResponseEntity<?> updateRecord(VerificationRecordDto recordDto){
         Optional<VerificationRecord> recordOpt = verificationRecordRepository.findById(recordDto.getId());
         if (recordOpt.isEmpty()){
             String errorMessage = "Запись № " + recordDto.getNumberVerification() + " о поверке СИ " +
@@ -70,7 +70,7 @@ public class VerificationIssueService implements IVerificationIssueService {
     public ResponseEntity<?> findRecordById(int id) {
         Optional<VerificationRecord> recordOpt = verificationRecordRepository.findById(id);
         if (recordOpt.isPresent()) {
-            RecordDto recordDto = IssueDtoMapper.mapRecordToDto(recordOpt.get());
+            VerificationRecordDto recordDto = IssueDtoMapper.mapRecordToDto(recordOpt.get());
             return ResponseEntity.ok(recordDto);
         } else {
             return ResponseEntity.notFound().build();

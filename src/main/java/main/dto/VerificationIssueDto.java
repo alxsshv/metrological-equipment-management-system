@@ -14,7 +14,7 @@ import java.util.List;
 public class VerificationIssueDto {
     private int id;
     private String creationDateTime;
-    private List<RecordDto> verificationRecords;
+    private List<VerificationRecordDto> verificationRecords;
 
     @Override
     public String  toString() {

@@ -56,5 +56,25 @@ public class WebController {
         return "verificationIssue/verificationRecordEdit";
     }
 
+    //Работа с отчетами о поверке
+    // Работа с заявками на регистрацию поверки
+    @GetMapping("/reports/form")
+    public String getVerificationReportForm(){
+        return "verification/verificationReportForm";
+    }
+    @GetMapping("/reports")
+    public String getReportListView(){
+        return "verification/verificationReportList";
+    }
+    @GetMapping("/reports/{id}")
+    public String getVerificationReportView(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "verification/verificationReportCard";
+    }
+    @GetMapping("/reports/record/{id}")
+    public String getVerificationRecordEditor(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "verification/recordEdit";
+    }
 
 }

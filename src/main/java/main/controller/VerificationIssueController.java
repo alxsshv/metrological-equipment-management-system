@@ -1,7 +1,7 @@
 package main.controller;
 
 
-import main.dto.RecordDto;
+import main.dto.VerificationRecordDto;
 import main.dto.VerificationIssueDto;
 import main.service.verificationissue.VerificationIssueService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +38,7 @@ public class VerificationIssueController {
     }
 
     @PatchMapping("/record/{id}")
-    public ResponseEntity<?> updateRecord(@RequestBody RecordDto recordDto){
+    public ResponseEntity<?> updateRecord(@RequestBody VerificationRecordDto recordDto){
         return verificationIssueService.updateRecord(recordDto);
     }
 
