@@ -28,7 +28,7 @@ public class ReportService implements IReportService {
     private RecordRepository recordRepository;
 
     @Override
-    public ResponseEntity<?> addIssue(ReportDto reportDto) {
+    public ResponseEntity<?> createReport(ReportDto reportDto) {
         reportRepository.save(ReportDtoMapper.mapReportDtoToEntity(reportDto));
         String okMessage = "Отчет добавлен";
         System.out.println(okMessage);

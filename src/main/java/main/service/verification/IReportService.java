@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import java.util.List;
 
 public interface IReportService {
-    ResponseEntity<?> addIssue(ReportDto reportDto);
+    ResponseEntity<?> createReport(ReportDto reportDto);
     ResponseEntity<?> updateRecord(RecordDto recordDto);
     ResponseEntity<?> findById(int id);
     ResponseEntity<?> findRecordById(int id);

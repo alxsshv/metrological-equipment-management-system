@@ -33,6 +33,7 @@ public class ReportDtoMapper {
         dto.setMiTypeNumber(record.getMiTypeNumber());
         dto.setModification(record.getModification());
         dto.setSerialNumber(record.getSerialNumber());
+        dto.setMiOwner(record.getMiOwner());
         dto.setVerificationType(record.getVerificationType());
         dto.setVerificationDate(record.getVerificationDate());
         dto.setValidDate(record.getValidDate());

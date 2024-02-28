@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Редактирование записи о поверке</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/angular.min.js"></script>
+</head>
+
+<script type="text/javascript">
+    var app = angular.module("EDIT_RECORD", []);
+    var idAttr = new URL (document.URL).searchParams.get("id");
+        app.controller("EDIT_RECORD_CTRL", function($scope, $http){
+        
+      
+        $scope.employees = [];
+        $scope.getEmployees = function(){
+            console.log(2);
+            $http({
+            url: "/employee",
+            method: "GET"
+            }).then(function(response){
+            $scope.employees = response.data;
+            console.log($scope.employees);
+            });
+        }
+
+        
+        $scope.getRecord = function(){
+                $http({
+                url: "/report/record/"+idAttr,
+                method: "GET"
+            }).then(function(response){
+                $scope.record = response.data;
+                console.log($scope.record);
+                $scope.record.verificationDate = new Date($scope.record.verificationDate);
+                $scope.record.validDate = new Date($scope.record.validDate);
+                $scope.setResultVerificationFromRecord(); 
+                $scope.setVerificationTypeFromRecord();
+                $scope.setVerificationOptionFromRecord();
+            });
+        }
+
+        $scope.verificationResults = [{'title' : 'Пригоден', 'value' : true},
+                                    {'title' : 'Непригоден', 'value' : false}];
+
+        $scope.resultVerification = {'title' : 'Пригоден', 'value' : true};
+        $scope.setResultVerificationFromRecord = function(){  
+            if($scope.record.result == false){
+                $scope.resultVerification = {'title' : 'Непригоден', 'value' : false};
+            }
+            console.log($scope.resultVerification);    
+        } 
+            
+        $scope.verificationTypes = [{'title' : 'Первичная', 'value' : 1},
+                                    {'title' : 'Периодическая', 'value' : 2}];
+
+        $scope.verificationType = {'title' : 'Первичная', 'value' : 1};
+        $scope.setVerificationTypeFromRecord = function(){  
+            if($scope.record.verificationType == 2){
+                $scope.verificationType = {'title' : 'Периодическая', 'value' : 2};
+            }
+            console.log($scope.verificationType);    
+        }
+
+        $scope.verificationOptions = [{'title' : 'По результатам калибровки', 'value' : true},
+                                    {'title' : 'Без использования результатов калибровки', 'value' : false}];
+
+        $scope.verificationOption = {'title' : 'По результатам калибровки', 'value' : true};
+        $scope.setVerificationOptionFromRecord = function(){  
+            if($scope.record.calibration == false){
+                $scope.verificationOption = {'title' : 'Без использования результатов калибровки', 'value' : false};
+            }
+            console.log($scope.verificationOption);    
+        }
+
+        $scope.updateRecord = function(){
+            $http({
+                url: "/verificationIssue/record/"+idAttr,
+                method: "PATCH",
+                data: {
+                    id:idAttr,
+                    numberVerification:$scope.record.numberVerification,
+                    dateVerification:$scope.record.dateVerification,
+                    dateEndVerification:$scope.record.dateEndVerification,
+                    typeMeasuringInstrument:$scope.record.typeMeasuringInstrument,
+                    employee:$scope.record.employee,
+                    resultVerification:$scope.resultVerification.value
+                }
+            }).then(function successCallback(response){
+                alert(response.data.message);
+                }, function errorCallback(response){
+                   alert(response.data.message)
+            });
+        }
+        
+    $scope.getRecord()
+    $scope.getEmployees()
+        
+
+    });    
+    
+</script>
+
+<body ng-app="EDIT_RECORD" ng-controller="EDIT_RECORD_CTRL">
+<script src="/js/bootstrap.bundle.min.js"></script>
+<div class="container text-center">
+    <nav class="navbar bg-body-tertiary">
+        <form class="container-fluid justify-content-start">
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/reports'">Перечень отчетов</button>
+        </form>
+    </nav>
+    <div class="row">
+        <table class="table table-info table-striped table-hover">
+            <thead>  Сведения о средстве измерений</thead>
+            <tr>
+
+            <input ng-model="record.id" type="text" value="$record.id" name="id" hidden>
+            <td>
+                <span class="input-group-text" id="miTypeNumber">Тип средства измерений</span>
+                <input ng-model="record.miTypeNumber" type="text" class="form-control" name="miTypeNumber" value="${{record.miTypeNumber}}">    
+            </td>
+            <td>
+                <span class="input-group-text" id="modification">Модификация</span>
+                <input ng-model="record.modification" type="text" class="form-control" name="modification" value="${{record.modification}}">    
+            </td>
+            <td>
+                <span class="input-group-text" id="serialNumber">Заводской номер</span>
+                <input ng-model="record.serialNumber" type="text" class="form-control" name="serialNumber" value="${{record.serialNumber}}">    
+            </td>
+            <td>
+                <span class="input-group-text" id="miOwner">Владелец средства измерений</span>
+                <input ng-model="record.miOwner" type="text" class="form-control" name="miOwner" value="${{record.miOwner}}">    
+            </td>
+        </tr>
+        <table>
+            <table class="table table-info table-striped table-hover">
+                <thead>  Результаты поверки</thead>
+                <tr>
+            <td>
+                <span class="input-group-text" id="verificationDate">Дата поверки</span>
+                <input ng-model="record.verificationDate" ng-model-options="{timezone: 'UTC'}" 
+                     type="date" class="form-control" placeholder="yyyy-MM-dd" aria-label="Дата поверки">
+            </td>
+            <td>
+                <span class="input-group-text" id="validDate">Действительно до</span>
+                <input ng-model="record.validDate" ng-model-options="{timezone: 'UTC'}"
+                     type="date" class="form-control" placeholder="yyyy-MM-dd" aria-label="Действительно до">
+            </td>
+            <td>
+                <span class="input-group-text">Результат поверки</span>
+                <select ng-model="resultVerification" ng-options="verificationResult as verificationResult.title for verificationResult in verificationResults track by verificationResult.value" class="form-select mb-3" aria-label="Пригодность">
+                </select>
+            </td>
+            <td>
+                <span class="input-group-text">Тип поверки</span>
+                <select ng-model="verificationType" ng-options="verificationType as verificationType.title for verificationType in verificationTypes track by verificationType.value" class="form-select mb-3" aria-label="Вид поверки">
+                </select>
+            </td>
+            <td colspan="2">
+                <span class="input-group-text">Поверка по результатам калибровки</span>
+                <select ng-model="verificationOption" ng-options="verificationOption as verificationOption.title for verificationOption in verificationOptions track by verificationOption.value" class="form-select mb-3" aria-label="Вариант поверки">
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <span class="input-group-text" id="stickerNumber">Номер наклейки</span>
+                <input ng-model="record.stickerNumber" type="text" class="form-control" name="stickerNumber" value="${{record.stickerNumber}}">    
+            </td>
+
+             <td>
+                <span class="input-group-text" id="procedureDocNumber">Методика поверки</span>
+                <input ng-model="record.procedureDocNumber" type="text" class="form-control" name="procedureDocNumber" value="${{record.procedureDocNumber}}">    
+            </td>
+             <td>
+                <span class="input-group-text" id="standard">Эталон</span>
+                <input ng-model="record.standard" type="text" class="form-control" name="standard" value="${{record.standard}}">    
+            </td>
+            <td colspan="2">
+                <span class="input-group-text">Поверитель</span>
+                <select ng-model="record.employee" ng-options="employee as employee.surname +' '+ employee.name +' '+ employee.patronymic for employee in employees track by employee.id" class="form-select mb-3" aria-label="Поверитель">
+                </select>
+            </td>
+            <td></td>
+            </tr>
+            </table>
+            <table class="table table-info table-striped table-hover">
+            <thead>  Условия окружающей среды при поверке</thead>
+            <tr>
+            <td>
+                <span class="input-group-text" id="temperature">Температура, &degC</span>
+                <input ng-model="record.temperature" type="number" step="0.1" min="-10" max="40" class="form-control" name="temperature" value="${{record.temperature}}">    
+            </td>   
+            <td>
+                <span class="input-group-text" id="humidity">Влажность, %</span>
+                <input ng-model="record.humidity" type="number" step="0.1" min="10" max="95" class="form-control" name="humidity" value="${{record.humidity}}">    
+            </td>
+            <td>
+                <span class="input-group-text" id="pressure">Давление, кПа</span>
+                <input ng-model="record.pressure" type="number" step="0.1" min="80" max="110" class="form-control" name="pressure" value="${{record.pressure}}">    
+            </td>
+        </tr>
+        </table>
+        </div>
+            <div class="row">
+            <button class="btn btn-primary" ng-click="updateRecord()" type="button">Сохранить</button>
+	        </div>
+
+</div>
+</body>
+</html>

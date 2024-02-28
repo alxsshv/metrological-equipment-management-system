@@ -74,7 +74,7 @@ public class WebController {
     @GetMapping("/reports/record/{id}")
     public String getVerificationRecordEditor(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
-        return "verification/recordEdit";
+        return "verification/recordUpdateForm";
     }
 
 }

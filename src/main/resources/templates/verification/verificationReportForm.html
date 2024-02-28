@@ -58,7 +58,7 @@ var app = angular.module("VRF_REPORT_FORM", []);
         //удаление записи
         $scope.deleteRecord = function(number){
             var index = $scope.records.indexOf(number);
-            $scope.verificationRecords.splice(index, 1);
+            $scope.records.splice(index, 1);
 
         }
 
@@ -74,7 +74,7 @@ var app = angular.module("VRF_REPORT_FORM", []);
                 }
 
             }).then(function successCallback(response){
-                console.log($scope.verificationRecords);
+                console.log($scope.records);
                 alert(response.data.message);
                 location.reload();
                 }, function errorCallback(response){
@@ -101,7 +101,7 @@ var app = angular.module("VRF_REPORT_FORM", []);
     </nav>
     <div class="row">
         <table class="table table-info table-striped table-hover">
-            <tr>                                               <th><span>№ типа СИ</span></th>                  <th>Модификация</th>            <th>Заводской номер</th>    <th>Владелец</th>                  <th>Дата поверки</th>                        <th>Дата действия поверки</th>                  <th>Вид поверки</th>              <th>По калибровке</th>    <th>Результат поверки</th>  <th>Номер наклейки</th>         <th>Методика поверки</th>           <th>Поверитель</th>       <th>Средство поверки</th>  <th>Температура, С</th>     <th>Влажность, %</th>  <th>Давление, кПа</th><th>Номер записи в АРШИН</th><th></th></tr>
+            <tr>                                               <th>№ типа СИ</th>                  <th>Модификация</th>            <th>Заводской номер</th>    <th>Владелец</th>                  <th>Дата поверки</th>                        <th>Дата действия поверки</th>                  <th>Вид поверки</th>              <th>По калибровке</th>    <th>Результат поверки</th>  <th>Номер наклейки</th>         <th>Методика поверки</th>           <th>Поверитель</th>       <th>Средство поверки</th>  <th>Температура, С</th>     <th>Влажность, %</th>  <th>Давление, кПа</th><th>Номер записи в АРШИН</th><th></th></tr>
             <tr ng-repeat="item in records track by $index"><td>{{item.miTypeNumber}}</td><td>{{item.modification}}</td><td>{{item.serialNumber}}</td><td>{{item.miOwner}}</td><td>{{item.verificationDate  | date:"dd.MM.yyyy"}}</td><td>{{item.validDate  | date:"dd.MM.yyyy"}}</td><td>{{item.verificationType}}</td><td>{{item.calibration}}</td><td>{{item.result}}</td><td>{{item.stickerNumber}}</td><td>{{item.procedureDocNumber}}</td><td>{{item.employee.surname}} {{item.employee.name}}</td><td>{{item.standard}}</td><td>{{item.temperature}}</td><td>{{item.humidity}}</td><td>{{item.pressure}}</td><td>{{item.arshinRecordNumber}}</td><td><button ng-click="deleteRecord(item)" type="button" class="btn btn-primary">Удалить</button></td></tr>
         </table>
     </div>
@@ -114,7 +114,7 @@ var app = angular.module("VRF_REPORT_FORM", []);
                 
                 <td>
                     <span class="input-group-text" id="typeNumber">№ типа СИ</span>
-                    <input ng-model="vrfRaw.miTypeNumber" type="text" class="form-control" placeholder="Номер типа СИ в АРШИН" aria-label="Номер типа средства измерений в ФГИС 'Аршин'" aria-describedby="Номер типа средства измерений в ФГИС 'Аршин'">
+                    <input ng-model="vrfRaw.miTypeNumber" type="text" class="form-control" placeholder="ХХХХХ-ХХ" aria-label="Номер типа средства измерений в ФГИС 'Аршин'" aria-describedby="Номер типа средства измерений в ФГИС 'Аршин'">
                 </td>
                 <td>
                     <span class="input-group-text" id="modification">Модификация</span>
@@ -122,7 +122,7 @@ var app = angular.module("VRF_REPORT_FORM", []);
                 </td>
                 <td>
                     <span class="input-group-text" id="serialNumber">Заводской №</span>
-                    <input ng-model="vrfRaw.serialNumber" type="text" class="form-control" placeholder="Заводской номер" aria-label="Заводской номер" aria-describedby="Заводской номер">
+                    <input ng-model="vrfRaw.serialNumber" type="text" class="form-control" placeholder="Заводской №" aria-label="Заводской номер" aria-describedby="Заводской номер">
                 </td>
                 <td>
                     <span class="input-group-text" id="owner">Владелец</span>
@@ -159,8 +159,8 @@ var app = angular.module("VRF_REPORT_FORM", []);
                 <td>
                     <span class="input-group-text">По калибровке</span>
                     <select ng-model="vrfRaw.calibration" class="form-select mb-3" aria-label="Поверка с использованием результатов калибровки">
-                        <option selected value=true>Без результатов калибровки</option>
-                        <option value=false>На основе результатов калибровки</option>
+                        <option selected value=false>Без результатов калибровки</option>
+                        <option value=true>На основе результатов калибровки</option>
                     </select>
                 </td>
                 <td>
