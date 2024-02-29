@@ -5,6 +5,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main.dto.EmployeeDto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -17,16 +20,15 @@ public class RecordDto {
     private String miOwner;
     private String verificationDate;
     private String validDate;
-    private boolean result;
     private int verificationType;
     private boolean calibration;
-    private String stickerNumber;
     private String procedureDocNumber;
+    private boolean result;
     private EmployeeDto employee;
-    private String standard;
     private double temperature; //Celseus
     private double pressure; // kPa
     private double humidity; // percent
     private String note;
+    private List<String> standards;
 
 }

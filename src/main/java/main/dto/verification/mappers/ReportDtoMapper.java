@@ -41,8 +41,6 @@ public class ReportDtoMapper {
         dto.setEmployee(EmployeeDtoMapper.mapToDto(record.getEmployee()));
         dto.setCalibration(record.isCalibration());
         dto.setResult(record.isResult());
-        dto.setStickerNumber(record.getStickerNumber());
-        dto.setStandard(record.getStandard());
         dto.setTemperature(record.getTemperature());
         dto.setPressure(record.getPressure());
         dto.setHumidity(record.getHumidity());
@@ -68,8 +66,6 @@ public class ReportDtoMapper {
         record.setEmployee(EmployeeDtoMapper.mapToEntity(dto.getEmployee()));
         record.setCalibration(dto.isCalibration());
         record.setResult(dto.isResult());
-        record.setStickerNumber(dto.getStickerNumber());
-        record.setStandard(dto.getStandard());
         record.setTemperature(dto.getTemperature());
         record.setPressure(dto.getPressure());
         record.setHumidity(dto.getHumidity());

@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -19,10 +21,12 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public ResponseEntity<?> save(EmployeeDto employeeDto) {
-
+        String errorMessage = checkEmployeeDtoComposition(employeeDto);
         Employee employeeFromDb = employeeRepository.findBySnils(employeeDto.getSnils());
         if (employeeFromDb != null){
-            String errorMessage = "Поверитель с СНИЛС " + employeeDto.getSnils() + " уже существует";
+            errorMessage = "Поверитель с СНИЛС " + employeeDto.getSnils() + " уже существует";
+        }
+        if (!errorMessage.isEmpty()) {
             System.out.println(errorMessage);
             return ResponseEntity.status(422).body(
                     new ServiceMessage(errorMessage));
@@ -32,6 +36,24 @@ public class EmployeeService implements IEmployeeService {
         System.out.println(okMessage);
         return ResponseEntity.ok(
                 new ServiceMessage(okMessage));
+    }
+    private String checkEmployeeDtoComposition(EmployeeDto dto){
+        if (dto.getSurname() == null || dto.getSurname().isEmpty()){
+            return "Пожалуйста заполните фамилию поверителя";
+        }
+        if (dto.getName() == null || dto.getName().isEmpty()){
+            return "Пожалуйста заполните имя поверителя";
+        }
+        if (dto.getPatronymic() == null || dto.getPatronymic().isEmpty()){
+            return "Пожалуйста заполните отчество поверителя";
+        }
+        String snilsTemplate = "/d{11}";
+        Pattern pattern = Pattern.compile(snilsTemplate);
+        Matcher matcher = pattern.matcher(dto.getSnils());
+        if (matcher.find()){
+            return "Неверный формат СНИЛС";
+        }
+        return "";
     }
 
 @Override
