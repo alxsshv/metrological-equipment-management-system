@@ -7,6 +7,10 @@ import main.repository.EmployeeRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 
 import java.util.ArrayList;
@@ -158,9 +162,10 @@ public class EmployeeServiceTest {
         employee.setPatronymic("Ivanovich");
         employee.setSnils("11111111111");
         employees.add(employee);
-        when(employeeRepository.findAll()).thenReturn(employees);
-        List<EmployeeDto> employeeDtos = employeeService.findAll();
-        assertEquals(employees.size(),employeeDtos.size());
+        Pageable pageable = PageRequest.of(1,1, Sort.Direction.ASC);
+        when(employeeRepository.findAll(pageable)).thenReturn((Page<Employee>) employees);
+        Page<EmployeeDto> employeeDtos = employeeService.findAll(Pageable.ofSize(1));
+        assertEquals(employees.size(),employeeDtos.getTotalElements());
         verify(employeeRepository,times(1)).findAll();
     }
 

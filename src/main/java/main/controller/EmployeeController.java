@@ -1,9 +1,15 @@
 package main.controller;
 
 import lombok.AllArgsConstructor;
+import main.config.AppConstants;
 import main.dto.EmployeeDto;
 import main.service.employee.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,8 +22,24 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    @GetMapping("/pages")
+    public Page<EmployeeDto> getEmployeePageableList(
+            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNum,
+            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir){
+        Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.valueOf(pageDir.toUpperCase()), "surname"));
+        return employeeService.findAll(pageable);
+    }
+
+    @GetMapping("/search")
+    public Page<EmployeeDto> searchEmployee(
+            @RequestParam(value = "search", required = true) String surname){
+        Pageable pageable = PageRequest.of(0,10,Sort.by(Sort.Direction.ASC,"surname"));
+        return employeeService.findBySurname(surname,pageable);
+    }
+
     @GetMapping
-    public List<EmployeeDto> geEmployeeList(){
+    public List<EmployeeDto> geEmployeeNonpageableList(){
         return employeeService.findAll();
     }
 

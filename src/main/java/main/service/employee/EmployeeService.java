@@ -6,6 +6,10 @@ import main.dto.mappers.EmployeeDtoMapper;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
 import main.service.ServiceMessage;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -98,8 +102,18 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
+    public Page<EmployeeDto> findBySurname(String surname, Pageable pageable) {
+        return employeeRepository.findBySurname(surname.trim(),pageable).map(EmployeeDtoMapper::mapToDto);
+    }
+
+    @Override
+    public Page<EmployeeDto> findAll(Pageable pageable) {
+        return employeeRepository.findAll(pageable).map(EmployeeDtoMapper ::mapToDto);
+    }
+
+    @Override
     public List<EmployeeDto> findAll() {
-        return employeeRepository.findAll().stream().map(EmployeeDtoMapper::mapToDto).toList();
+        return employeeRepository.findAll().stream().map(EmployeeDtoMapper ::mapToDto).toList();
     }
 
 
