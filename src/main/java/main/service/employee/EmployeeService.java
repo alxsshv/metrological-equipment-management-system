@@ -8,8 +8,6 @@ import main.repository.EmployeeRepository;
 import main.service.ServiceMessage;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -26,11 +24,14 @@ public class EmployeeService implements IEmployeeService {
     @Override
     public ResponseEntity<?> save(EmployeeDto employeeDto) {
         String errorMessage = checkEmployeeDtoComposition(employeeDto);
+        if (!errorMessage.isEmpty()) {
+            System.out.println(errorMessage);
+            return ResponseEntity.status(422).body(
+                    new ServiceMessage(errorMessage));
+        }
         Employee employeeFromDb = employeeRepository.findBySnils(employeeDto.getSnils());
         if (employeeFromDb != null){
             errorMessage = "Поверитель с СНИЛС " + employeeDto.getSnils() + " уже существует";
-        }
-        if (!errorMessage.isEmpty()) {
             System.out.println(errorMessage);
             return ResponseEntity.status(422).body(
                     new ServiceMessage(errorMessage));
@@ -51,10 +52,10 @@ public class EmployeeService implements IEmployeeService {
         if (dto.getPatronymic() == null || dto.getPatronymic().isEmpty()){
             return "Пожалуйста заполните отчество поверителя";
         }
-        String snilsTemplate = "/d{11}";
+        String snilsTemplate = "[0-9]{11}";
         Pattern pattern = Pattern.compile(snilsTemplate);
         Matcher matcher = pattern.matcher(dto.getSnils());
-        if (matcher.find()){
+        if (!matcher.find()){
             return "Неверный формат СНИЛС";
         }
         return "";
@@ -62,21 +63,30 @@ public class EmployeeService implements IEmployeeService {
 
 @Override
     public ResponseEntity<?> update(EmployeeDto employeeDto){
+        String errorMessage = checkEmployeeDtoComposition(employeeDto);
+        if (!errorMessage.isEmpty()) {
+            System.out.println(errorMessage);
+            return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
+        }
+
         Optional<Employee> userOpt = employeeRepository.findById(employeeDto.getId());
         if (userOpt.isEmpty()){
-            String errorMessage = "Поверитель " + employeeDto.getSurname() +
+            errorMessage = "Поверитель " + employeeDto.getSurname() +
                     " " + employeeDto.getName() +  " не найден";
+            System.out.println(errorMessage);
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
+
         Employee updatingEmployeeData = EmployeeDtoMapper.mapToEntity(employeeDto);
         Employee employee = userOpt.get();
         employee. updateFrom(updatingEmployeeData);
         employeeRepository.save(employee);
         String okMessage ="Cведения о поверителе " + employee.getName() + " "
-                + employee.getSurname() + " обновлены";
+            + employee.getSurname() + " обновлены";
         System.out.println(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
+
 @Override
     public ResponseEntity<?>delete(int id){
         Optional<Employee> userOpt = employeeRepository.findById(id);
@@ -102,8 +112,15 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
-    public Page<EmployeeDto> findBySurname(String surname, Pageable pageable) {
-        return employeeRepository.findBySurname(surname.trim(),pageable).map(EmployeeDtoMapper::mapToDto);
+    public ResponseEntity<?> findBySurname(String surname, Pageable pageable) {
+        if (surname == null || surname.isEmpty()){
+            String errorMessage = "Поле для поиска не может быть пустым";
+            System.out.println(errorMessage);
+            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        }
+        Page<EmployeeDto> page =  employeeRepository.findBySurname(surname.trim(),pageable)
+                .map(EmployeeDtoMapper::mapToDto);
+        return ResponseEntity.ok(page);
     }
 
     @Override

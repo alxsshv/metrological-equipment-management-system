@@ -33,7 +33,9 @@ var app = angular.module("VRF_ISSUE_FORM", []);
             if(Object.keys(vrfRaw).length !== 0){
             item.numberVerification =vrfRaw.numberVerification;
             item.dateVerification = $scope.vrfRaw.dateVerification;
+            if ($scope.vrfRaw.dateEndVerification !== undefined){
             item.dateEndVerification = $scope.vrfRaw.dateEndVerification;
+            }
             item.typeMeasuringInstrument = vrfRaw.model;
             item.employee = JSON.parse($scope.employee);
             item.resultVerification = vrfRaw.resultVerification;
