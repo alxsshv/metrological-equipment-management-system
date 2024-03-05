@@ -13,16 +13,15 @@
         app.controller("EMPLOYEE_LIST_CTRL", function($scope, $http){
         $scope.contentUrl =  "/employee";
 
-        
         $scope.getPagesContentlist = function(contentUrl){
-        $scope.getPageAttributes();
-        $http({
-            url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection+"&size=" + $scope.pageSize,
-            method: "GET"
-        }).then(function(response){
-            $scope.contentlist = response.data.content;
-            $scope.createPaginationParams(response.data.totalPages);
-        });
+            $scope.getPageAttributes();
+                $http({
+                url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection+"&size=" + $scope.pageSize,
+                method: "GET"
+            }).then(function(response){
+                $scope.contentlist = response.data.content;
+                $scope.createPaginationParams(response.data.totalPages);
+            });
         }
 
         
@@ -61,19 +60,26 @@
         }    
         
 
-    $scope.getSearchContentlist = function(contentUrl){
-        $scope.getPageAttributes();
-        $http({
-            url: contentUrl + "/search?search=" + $scope.searchString,
-            method: "GET"
-        }).then(function(response){
-            $scope.contentlist = response.data.content;
-            $scope.createPaginationParams(response.data.totalPages);
-        });
+        $scope.getSearchContentlist = function(contentUrl){
+            $scope.getPageAttributes();
+                $http({
+                url: contentUrl + "/search?search=" + $scope.searchString,
+                method: "GET"
+            }).then(function(response){
+                $scope.contentlist = response.data.content;
+                $scope.createPaginationParams(response.data.totalPages);
+            });
         }
 
 
+        $scope.getDeleteableId = function(id){
+            $scope.deleteableId = id;
+        }
+
         $scope.deleteEmployee = function(delId){
+            var myModalEl = document.getElementById('modal')
+            var modal = bootstrap.Modal.getInstance(myModalEl);
+            modal.hide();
                 $http({
                 url: "/employee/"+delId,
                 method: "DELETE"
@@ -89,7 +95,6 @@
 </script>
 <body ng-app="EMPLOYEE_LIST" ng-controller="EMPLOYEE_LIST_CTRL">
 <script src="js/bootstrap.bundle.min.js"></script>
-<script src="/js/pagination.js"></script>
 <div class="container text-center">
     <nav class="navbar bg-body-tertiary">
         <form class="container-fluid justify-content-start">
@@ -121,7 +126,13 @@
     <div class="row">
         <table class="table table-info table-striped table-hover">
             <tr><th>Фамилия</th><th>Имя</th><th>Отчество</th><th>СНИЛС</th><th></th></tr>
-            <tr ng-repeat="employee in contentlist"><td><a href="employees/{{employee.id}}?id={{employee.id}}">{{employee.surname}}</a></td><td>{{employee.name}}</td><td>{{employee.patronymic}}</td><td>{{employee.snils}}</td><td><button class="btn btn-primary" ng-click="deleteEmployee(employee.id)" type="button">Удалить</button></td></tr>
+            <tr ng-repeat="employee in contentlist">
+                <td><a href="employees/{{employee.id}}?id={{employee.id}}">{{employee.surname}}</a></td>
+                <td>{{employee.name}}</td>
+                <td>{{employee.patronymic}}</td>
+                <td>{{employee.snils}}</td>
+                <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" ng-click="getDeleteableId(employee.id)" type="button">Удалить</button></td>
+            </tr>
         </table>
     </div>
     <div class="row">
@@ -132,9 +143,24 @@
               <li class="page-item"><a class="page-link" href="/employees?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}">Следующая</a></li>
             </ul>
           </nav>
-
-    </div>  
+    </div> 
 </div>
+<!-- Модальное окно -->
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаленя" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить запись о поверителе?</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+          <button type="button" class="btn btn-primary" ng-click="deleteEmployee(deleteableId)" >Удалить</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html>
 
