@@ -6,6 +6,8 @@ import main.dto.mappers.EmployeeDtoMapper;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
 import main.service.ServiceMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -19,26 +21,27 @@ import java.util.regex.Pattern;
 @Service
 @RequiredArgsConstructor
 public class EmployeeService implements IEmployeeService {
+    public static final Logger log = LoggerFactory.getLogger(EmployeeService.class);
     private final EmployeeRepository employeeRepository;
 
     @Override
     public ResponseEntity<?> save(EmployeeDto employeeDto) {
         String errorMessage = checkEmployeeDtoComposition(employeeDto);
         if (!errorMessage.isEmpty()) {
-            System.out.println(errorMessage);
+            log.info(errorMessage);
             return ResponseEntity.status(422).body(
                     new ServiceMessage(errorMessage));
         }
         Employee employeeFromDb = employeeRepository.findBySnils(employeeDto.getSnils());
         if (employeeFromDb != null){
             errorMessage = "Поверитель с СНИЛС " + employeeDto.getSnils() + " уже существует";
-            System.out.println(errorMessage);
+            log.info(errorMessage);
             return ResponseEntity.status(422).body(
                     new ServiceMessage(errorMessage));
         }
         employeeRepository.save(EmployeeDtoMapper.mapToEntity(employeeDto));
         String okMessage = "Поверитель " + employeeDto.getName() + " " + employeeDto.getSurname() + " успешно добавлен";
-        System.out.println(okMessage);
+        log.info(okMessage);
         return ResponseEntity.ok(
                 new ServiceMessage(okMessage));
     }
@@ -65,7 +68,7 @@ public class EmployeeService implements IEmployeeService {
     public ResponseEntity<?> update(EmployeeDto employeeDto){
         String errorMessage = checkEmployeeDtoComposition(employeeDto);
         if (!errorMessage.isEmpty()) {
-            System.out.println(errorMessage);
+            log.info(errorMessage);
             return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
 
@@ -73,7 +76,7 @@ public class EmployeeService implements IEmployeeService {
         if (userOpt.isEmpty()){
             errorMessage = "Поверитель " + employeeDto.getSurname() +
                     " " + employeeDto.getName() +  " не найден";
-            System.out.println(errorMessage);
+            log.info(errorMessage);
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
 
@@ -83,7 +86,7 @@ public class EmployeeService implements IEmployeeService {
         employeeRepository.save(employee);
         String okMessage ="Cведения о поверителе " + employee.getName() + " "
             + employee.getSurname() + " обновлены";
-        System.out.println(okMessage);
+        log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
@@ -92,11 +95,12 @@ public class EmployeeService implements IEmployeeService {
         Optional<Employee> userOpt = employeeRepository.findById(id);
         if (userOpt.isEmpty()){
             String errorMessage = "Данные по id = "+ id +" не найдены";
+            log.info(errorMessage);
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
         employeeRepository.delete(userOpt.get());
         String okMessage ="Запись о поверителе успешно удалена";
-        System.out.println(okMessage);
+        log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
@@ -115,7 +119,7 @@ public class EmployeeService implements IEmployeeService {
     public ResponseEntity<?> findBySurname(String surname, Pageable pageable) {
         if (surname == null || surname.isEmpty()){
             String errorMessage = "Поле для поиска не может быть пустым";
-            System.out.println(errorMessage);
+            log.info(errorMessage);
             return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
         }
         Page<EmployeeDto> page =  employeeRepository.findBySurname(surname.trim(),pageable)

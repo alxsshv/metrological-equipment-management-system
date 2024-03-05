@@ -6,12 +6,13 @@
     <title>Список поверителей</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <script src="/js/angular.min.js"></script>
+    
 </head>
 <script type="text/javascript">
         var app = angular.module("EMPLOYEE_LIST", []);
         app.controller("EMPLOYEE_LIST_CTRL", function($scope, $http){
         $scope.contentUrl =  "/employee";
-        
+
         
         $scope.getPagesContentlist = function(contentUrl){
         $scope.getPageAttributes();
@@ -57,8 +58,8 @@
             for (let i =0; i < totalPages; i++){
                 $scope.pageArray.push(i);        
             }        
-        }
-
+        }    
+        
 
     $scope.getSearchContentlist = function(contentUrl){
         $scope.getPageAttributes();
@@ -77,8 +78,8 @@
                 url: "/employee/"+delId,
                 method: "DELETE"
             }).then(function(response){
-                $scope.employee = response.data;
-                $scope.getEmployees();
+                alert(response.data.message);
+                $scope.getPagesContentlist($scope.contentUrl);
             });
             }
 
@@ -88,6 +89,7 @@
 </script>
 <body ng-app="EMPLOYEE_LIST" ng-controller="EMPLOYEE_LIST_CTRL">
 <script src="js/bootstrap.bundle.min.js"></script>
+<script src="/js/pagination.js"></script>
 <div class="container text-center">
     <nav class="navbar bg-body-tertiary">
         <form class="container-fluid justify-content-start">
@@ -131,7 +133,8 @@
             </ul>
           </nav>
 
-    </div>
+    </div>  
 </div>
 </body>
 </html>
+
