@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Добавление типа средства измерений</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/jquery-3.7.1.min.js"></script>
+</head>
+<script type="text/javascript">
+    var app = angular.module("MI_TYPE_FORM", []);
+    app.controller("MI_TYPE_FORM_CTRL", function($scope, $http){
+               
+     // сохранение в БД;
+            $scope.addMiType = function(){
+             if (/^([0-9]{11})$/.exec($scope.miType.number)){
+                $http({
+                url: "/mit",
+                method: "POST",
+                data: {
+                    number:$scope.miType.number,
+                    title:$scope.miType.title,
+                    notation:$scope.miType.notation,
+                    startDate:$scope.miType.startDate,
+                    endDate:$scope.miType.endDate,
+                    verificationPeriod:$scope.miType.verificationPeriod,
+                    instructionNotation:$scope.miType.instructionNotation,
+                    instructionTitle:$scope.miType.instructionTitle,
+                    humidityLowLimit:$scope.miType.humidityLowLimit,
+                    humidityHiLimit:$scope.miType.humidityHiLimit,
+                    temperatureHiLimit:$scope.miType.temperatureHiLimit,
+                    temperatureLowLimit:$scope.miType.temperatureLowLimit,
+                    pressureHiLimit:$scope.miType.pressureHiLimit,
+                    pressureLowLimit:$scope.miType.pressureLowLimit
+                }
+            }).then(function successCallback(response){
+                console.log($scope.miType);
+                alert(response.data.message);
+                $scope.clearFields();
+                }, function errorCallback(response){
+                   alert(response.data.message)
+                });
+            } else {
+                alert('Неверный формат номера типа средства измерений');
+            }
+            }
+
+            $scope.clearFields = function(){
+                $scope.miType.number = "",
+                $scope.miType.title = "",
+                $scope.miType.notation = "",
+                $scope.miType.startDate = "",
+                $scope.miType.endDate = "",
+                $scope.miType.verificationPeriod = "",
+                $scope.miType.instructionNotation = "",
+                $scope.miType.instructionTitle = "",
+                $scope.miType.humidityLowLimit = "",
+                $scope.miType.humidityHiLimit = "",
+                $scope.miType.temperatureHiLimit = "",
+                $scope.miType.temperatureLowLimit = "",
+                $scope.miType.pressureHiLimit = "",
+                $scope.miType.pressureLowLimit = ""
+            }
+
+        });
+</script>
+<body ng-app="MI_TYPE_FORM" ng-controller="MI_TYPE_FORM_CTRL">
+<script src="/js/bootstrap.bundle.min.js"></script>
+<div class="container text-center">
+    <nav class="navbar bg-body-tertiary">
+        <form class="container-fluid justify-content-start">
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/mits'">Перечень типов СИ</button>
+        </form>
+
+    </nav>
+    <div class="col-md-4">
+          <span class="input-group-text">Номер типа СИ</span>
+          <input type="text" ng-model="miType.number" class="form-control" value="" required>
+
+          <span class="input-group-text">Наименование</span>
+          <input type="text" ng-model="miType.title" class="form-control" value="" required>
+
+          <span class="input-group-text">Обозначение</span>
+          <input type="text" ng-model="miType.notation" class="form-control" value="" required>
+
+          <span class="input-group-text">Дата начала срока действия</span>
+          <input type="date" ng-model="miType.startDate" class="form-control" value="" required>
+
+          <span class="input-group-text">Дата окончания срока действия</span>
+          <input type="date" ng-model="miType.endDate" class="form-control" value="" required>
+
+          <span class="input-group-text">Межроверочный интервал</span>
+          <input type="text" ng-model="miType.verificationPeriod" class="form-control" value="" required>
+
+          <span class="input-group-text">Обозначение методики поверки</span>
+          <input type="text" ng-model="miType.instructionNotation" class="form-control" value="" required>
+
+          <span class="input-group-text">Наименование методики поверки</span>
+          <input type="text" ng-model="miType.instructionTitle" class="form-control" value="" required>
+
+          <span class="input-group-text">Минималное значение влажности</span>
+          <input type="text" ng-model="miType.humidityLowLimit" class="form-control" value="" required>
+
+          <span class="input-group-text">Максимальное значение влажности</span>
+          <input type="text" ng-model="miType.humidityHiLimit" class="form-control" value="" required>
+
+          <span class="input-group-text">Минималное значение температуры</span>
+          <input type="text" ng-model="miType.temperatureLowLimit" class="form-control" value="" required>
+
+          <span class="input-group-text">Максимальное значение температуры</span>
+          <input type="text" ng-model="miType.temperatureHiLimit" class="form-control" value="" required>
+
+          <span class="input-group-text">Минималное значение давления</span>
+          <input type="text" ng-model="miType.pressureLowLimit" class="form-control" value="" required>
+
+          <span class="input-group-text">Максимальное значение давления</span>
+          <input type="text" ng-model="miType.pressureHiLimit" class="form-control" value="" required>
+
+    <div class="col-12">
+      <button class="btn btn-primary" ng-click="addMiType()" type="button">Добавить</button>
+    </div>
+    </div>
+</div>
+</body>
+</html>

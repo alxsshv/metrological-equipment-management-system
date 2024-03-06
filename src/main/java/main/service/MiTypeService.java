@@ -1,10 +1,7 @@
 package main.service;
 
-import main.dto.EmployeeDto;
 import main.dto.MiTypeDto;
-import main.dto.mappers.EmployeeDtoMapper;
 import main.dto.mappers.MiTypeDtoMapper;
-import main.model.Employee;
 import main.model.MiType;
 import main.repository.MiTypeRepository;
 import org.slf4j.Logger;
@@ -50,7 +47,7 @@ public class MiTypeService {
                 new ServiceMessage(okMessage));
     }
     private String checkMiTypeDtoComposition(MiTypeDto dto){
-        String miTypeNumberTemplate = "[0-9]{5}\\-{1}[0-9]{2}";
+        String miTypeNumberTemplate = "[0-9]{5}-[0-9]{2}";
         Pattern pattern = Pattern.compile(miTypeNumberTemplate);
         Matcher matcher = pattern.matcher(dto.getNumber());
         if (dto.getNumber() == null || !matcher.find()) {
@@ -117,23 +114,21 @@ public class MiTypeService {
         }
     }
 
-
-    public ResponseEntity<?> findByMiTypeNumber(String number, Pageable pageable) {
-        if (number == null || number.isEmpty()){
+    public ResponseEntity<?> findBySearchString(String searchString, Pageable pageable) {
+        if (searchString == null || searchString.isEmpty()){
             String errorMessage = "Поле для поиска не может быть пустым";
             log.info(errorMessage);
             return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
         }
-        Page<EmployeeDto> page =  miTypeRepository.findByNumber(number.trim(),pageable)
-                .map(EmployeeDtoMapper::mapToDto);
+        Page<MiTypeDto> page =  miTypeRepository
+                .findByNumberOrTitleOrNotationContaining(searchString.trim(),searchString.trim(),searchString.trim(), pageable)
+                .map(MiTypeDtoMapper::mapToDto);
         return ResponseEntity.ok(page);
     }
-
 
     public Page<MiTypeDto> findAll(Pageable pageable) {
         return miTypeRepository.findAll(pageable).map(MiTypeDtoMapper ::mapToDto);
     }
-
 
     public List<MiTypeDto> findAll() {
         return miTypeRepository.findAll().stream().map(MiTypeDtoMapper ::mapToDto).toList();

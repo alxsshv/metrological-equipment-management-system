@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MiTypeRepository extends JpaRepository<MiType, Integer> {
+    Page<MiType> findByNumberOrTitleOrNotationContaining(String number,String title, String notation, Pageable pageable);
     MiType findByNumber(String number);
-    Page<MiType> findBy(String number,String title, Pageable pageable);
     @Override
     @NonNull
     Page<MiType> findAll(@NonNull Pageable pageable);

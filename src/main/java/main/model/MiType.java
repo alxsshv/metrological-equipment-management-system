@@ -35,4 +35,22 @@ public class MiType {
     private double temperatureHiLimit;
     private double pressureLowLimit;
     private double pressureHiLimit;
+
+    public void updateFrom(MiType newData){
+        number = newData.getNumber();
+        title = newData.getTitle();
+        notation = newData.getNotation();
+        startDate = newData.getStartDate();
+        endDate = newData.getEndDate();
+        verificationPeriod = newData.getVerificationPeriod();
+        modifications = newData.getModifications();
+        instructionNotation = newData.getInstructionNotation();
+        instructionTitle = newData.getInstructionTitle();
+        humidityLowLimit = newData.getHumidityLowLimit();
+        humidityHiLimit = newData.getHumidityHiLimit();
+        temperatureHiLimit = newData.getTemperatureHiLimit();
+        temperatureLowLimit = newData.getTemperatureLowLimit();
+        pressureHiLimit = newData.getPressureHiLimit();
+        pressureLowLimit = newData.getPressureLowLimit();
+    }
 }
