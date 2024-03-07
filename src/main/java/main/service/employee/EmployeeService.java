@@ -99,7 +99,7 @@ public class EmployeeService implements IEmployeeService {
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
         employeeRepository.delete(userOpt.get());
-        String okMessage ="Запись о поверителе" + userOpt.get().getSurname() + "успешно удалена";
+        String okMessage ="Запись о поверителе " + userOpt.get().getSurname() + " успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

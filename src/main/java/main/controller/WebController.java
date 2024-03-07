@@ -1,8 +1,5 @@
 package main.controller;
 
-
-import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +34,26 @@ public class WebController {
     public String getEditEmployeeForm(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
         return "employee/employeeEdit";
+    }
+
+    //Работа с типами средств измерений
+    @GetMapping("/mits/form")
+    public String getMiTypeFormView(){
+        return "miType/miTypeForm";
+    }
+    @GetMapping("/mits")
+    public String getMiTypeListView(){
+        return "miType/miTypeList";
+    }
+    @GetMapping("/mits/{id}")
+    public String getMiTypeView(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "miType/miTypeCard";
+    }
+    @GetMapping("/mits/form/{id}")
+    public String getEditMiTypeForm(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "miType/miTypeEdit";
     }
 
 

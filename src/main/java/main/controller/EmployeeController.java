@@ -38,7 +38,7 @@ public class EmployeeController {
     }
 
     @GetMapping
-    public List<EmployeeDto> geEmployeeNonpageableList(){
+    public List<EmployeeDto> geEmployeeWithoutPageableList(){
         return employeeService.findAll();
     }
 

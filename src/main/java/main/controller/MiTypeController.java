@@ -38,26 +38,26 @@ public class MiTypeController {
     }
 
     @GetMapping
-    public List<MiTypeDto> geEmployeeNonpageableList(){
+    public List<MiTypeDto> getMiTypeWthoutPageableList(){
         return miTypeService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getEmployee(@PathVariable("id") String id){
+    public ResponseEntity<?> getMiType(@PathVariable("id") String id){
         return miTypeService.findById(Integer.parseInt(id));
     }
     @PostMapping
-    public ResponseEntity<?> addEmployee(@RequestBody MiTypeDto miTypeDto){
+    public ResponseEntity<?> addMiType(@RequestBody MiTypeDto miTypeDto){
         return miTypeService.save(miTypeDto);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<?> editEmployee(@RequestBody MiTypeDto miTypeDto){
+    public ResponseEntity<?> editMiType(@RequestBody MiTypeDto miTypeDto){
         return miTypeService.update(miTypeDto);
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteEmployee(@PathVariable("id") int id){
+    public ResponseEntity<?> deleteMiType(@PathVariable("id") int id){
         return miTypeService.delete(id);
     }
 }
