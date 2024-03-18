@@ -5,9 +5,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.awt.print.Pageable;
-
-
 @Controller
 public class WebController {
 
@@ -36,7 +33,7 @@ public class WebController {
         return "employee/employeeEdit";
     }
 
-    //Работа с типами средств измерений
+    //Вывод шаблонов для типов средств измерений
     @GetMapping("/mits/form")
     public String getMiTypeFormView(){
         return "miType/miTypeForm";
@@ -56,8 +53,28 @@ public class WebController {
         return "miType/miTypeEdit";
     }
 
+    //Вывод шаблонов для средств измерений
+    @GetMapping("/mis/form")
+    public String getMeasurementInstrumentFormView(){
+        return "measurementInstrument/measurementInstrumentForm";
+    }
+    @GetMapping("/mis")
+    public String getMeasurementInstrumentListView(){
+        return "measurementInstrument/measurementInstrumentList";
+    }
+    @GetMapping("/mis/{id}")
+    public String getMeasurementInstrumentView(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "measurementInstrument/measurementInstrumentCard";
+    }
+    @GetMapping("/mis/form/{id}")
+    public String getEditMeasurementInstrumentForm(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "measurementInstrument/measurementInstrumentEdit";
+    }
 
-    // Работа с заявками на регистрацию поверки
+
+    // Вывод шаблонов для заявок на регистрацию поверки
     @GetMapping("/issues/form")
     public String getAddVerificationIssueView(){
         return "verificationIssue/verificationIssueForm";

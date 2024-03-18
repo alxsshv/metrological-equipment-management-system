@@ -323,8 +323,8 @@ public class EmployeeServiceTest {
         employee.setSnils("11111111111");
         employees.add(employee);
         Pageable pageable = PageRequest.of(1,10, Sort.by(Sort.Direction.ASC, "surname"));
-        long totalEmployees = 10;
-        Page<Employee> page = new PageImpl<>(employees,pageable,totalEmployees);
+        long totalPages = 1;
+        Page<Employee> page = new PageImpl<>(employees,pageable,totalPages);
         when(employeeRepository.findAll(pageable)).thenReturn(page);
         Page<EmployeeDto> employeeDtos = employeeService.findAll(pageable);
         assertEquals(employees.size(),employeeDtos.getContent().size());

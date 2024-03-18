@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Изменение типа средства измерений</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/jquery-3.7.1.min.js"></script>
+</head>
+<script type="text/javascript">
+    var app = angular.module("MI_TYPE_EDIT", []);
+    var idAttr = new URL(document.URL).searchParams.get("id");
+    app.controller("MI_TYPE_EDIT_CTRL", function ($scope, $http) {
+
+        $scope.getMiType = function () {
+            $http({
+                url: "/mit/" + idAttr,
+                method: "GET"
+            }).then(function (response) {
+                $scope.miType = response.data;
+                $scope.startDate = new Date(response.data.startDate);
+                $scope.endDate = new Date(response.data.endDate);
+                $scope.modifications = response.data.modifications;
+            });
+        }
+
+        $scope.getMiType();
+
+
+        $scope.updateMiType = function () {
+            $http({
+                url: "/mit/" + idAttr,
+                method: "PATCH",
+                data: {
+                    id:idAttr,
+                    number: $scope.miType.number,
+                    title: $scope.miType.title,
+                    notation: $scope.miType.notation,
+                    startDate: new Date($scope.startDate),
+                    endDate: new Date($scope.endDate),
+                    modifications: $scope.modifications,
+                    verificationPeriod: $scope.miType.verificationPeriod,
+                    instructionNotation: $scope.miType.instructionNotation,
+                    instructionTitle: $scope.miType.instructionTitle,
+                    humidityLowLimit: $scope.miType.humidityLowLimit,
+                    humidityHiLimit: $scope.miType.humidityHiLimit,
+                    temperatureHiLimit: $scope.miType.temperatureHiLimit,
+                    temperatureLowLimit: $scope.miType.temperatureLowLimit,
+                    pressureHiLimit: $scope.miType.pressureHiLimit,
+                    pressureLowLimit: $scope.miType.pressureLowLimit
+                }
+            }).then(function successCallback(response) {
+                alert(response.data.message);
+            }, function errorCallback(response) {
+                alert(response.data.message)
+            });
+        }
+
+
+
+        // добавление модификаций
+        $scope.modifications = [];
+        $scope.addModification = function (modification) {
+            if ($scope.modifications.includes(modification)) {
+                alert("Эта модификация уже добавлена");
+            } else
+                if (modification != "") {
+                    $scope.modifications.push(modification);
+                }
+        }
+
+        //удаление последней добавленой модификации
+        $scope.deleteLastModification = function () {
+            $scope.modifications.pop();
+        }
+
+    });
+</script>
+
+<body ng-app="MI_TYPE_EDIT" ng-controller="MI_TYPE_EDIT_CTRL">
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <div class="container text-left">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/mits'">Перечень
+                    типов СИ</button>
+            </form>
+        </nav>
+
+        <div class="row text-center">
+            <h5>Редактирование информации о типе средства измерений</h5>
+        </div>
+        <div class="row-center">Основные сведения о типе средства измерений</div>
+
+        <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="row g-2">
+                <div class="col-md-2">
+                    <label for="inputText1" class="form-label">№ типа СИ</label>
+                    <input type="text" ng-model="miType.number" placeholder="XXXXX-XX" class="form-control"
+                        id="inputText1" value="${{miType.number}}">
+                </div>
+                <div class="col-md-7">
+                    <label for="inputText2" class="form-label">Наименование типа средства измерений</label>
+                    <input type="text" ng-model="miType.title" placeholder="Пример: Микроскопы сканирующие электронные"
+                        class="form-control" id="inputText2" value="${{miType.title}}">
+                </div>
+                <div class="col-md-3">
+                    <label for="inputText3" class="form-label">Обозначение типа СИ</label>
+                    <input type="text" ng-model="miType.notation" placeholder="Пример: МС-33" class="form-control"
+                        id="inputText3" value="${{miType.notatiom}}">
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+        <div class="row">
+            <div class="col-md-3">Период действия
+                <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+                    <div class="col-md-12">
+                        <label for="inputDate1" class="form-label">Дата начала срока действия</label>
+                        <input type="date" ng-model="startDate " ng-model-options="{timezone: 'UTC'}"
+                            class="form-control" id="inputDate1" value="${{startDate | date: dd:MM:yyyy}}">
+                    </div>
+                    <div class="col-md-12">
+                        <label for="inputDate2" class="form-label">Дата окончания срока действия</label>
+                        <input type="date" ng-model="endDate" ng-model-options="{timezone: 'UTC'}" class="form-control"
+                            id="inputDate2" value="${{endDate | date: dd:MM:yyyy}}">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9"> Модификации
+                <div class="bg-info bg-opacity-10 border border-info overflow-y-scroll rounded-3 ">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="table-responsive" style="max-height: 170px;">
+                                <table class="table table-striped">
+                                    <tr ng-repeat="modification in modifications">
+                                        <td>{{modification}}</td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon11">Модификация</span>
+                                    <input ng-model="modification" type="text" class="form-control"
+                                        placeholder="Пример: МС-33-01" aria-label="Модификация"
+                                        aria-describedby="basic-addon11">
+                                    <button ng-click="addModification(modification)" type="button"
+                                        class="btn btn-primary">Добавить</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <p></p>
+                                <p></p>
+                                <p></p>
+                                <p></p>
+                                <p></p>
+                                <button ng-click="deleteLastModification()" type="button"
+                                    class="btn btn-success">Удалить последнюю модификацию</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p></p>
+        <div class="row-center">Сведения о методике поверки</div>
+        <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <label for="inputNumber1" class="form-label">МПИ, год (лет)</label>
+                    <input type="number" step="0.05" ng-model="miType.verificationPeriod" class="form-control"
+                        id="inputNumber1" value="${{miType.verificationPeriod}}">
+                </div>
+                <div class="col-md-3">
+                    <label for="inputText4" class="form-label">Обозначение методики поверки</label>
+                    <input type="text" ng-model="miType.instructionNotation" class="form-control" id="inputText4"
+                        value="${{miType.instructionNotation}}">
+                </div>
+                <div class="col-md-7">
+                    <label for="inputText5" class="form-label">Назначение методики поверки</label>
+                    <input type="text" ng-model="miType.instructionTitle" class="form-control" id="inputText5"
+                        value="${{miType.instructionTitle}}">
+                </div>
+            </div>
+        </div>
+        <p></p>
+        <div class="row-center">Условия поверки</div>
+        <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="row g-3">
+                <div class="col-md-2">
+                    <label for="inputNumber2" class="form-label">Минималное значение влажности, %</label>
+                    <input type="number" step="0.01" ng-model="miType.humidityLowLimit" class="form-control"
+                        id="inputNumber2" value="">
+                </div>
+                <div class="col-md-2">
+                    <label for="inputNumber3" class="form-label">Максимальное значение влажности, %</label>
+                    <input type="number" step="0.01" ng-model="miType.humidityHiLimit" class="form-control"
+                        id="inputNumber3" value="">
+                </div>
+                <div class="col-md-2">
+                    <label for="inputNumber4" class="form-label">Минималное значение температуры, &degC</label>
+                    <input type="number" step="0.01" ng-model="miType.temperatureLowLimit" class="form-control"
+                        id="inputNumber4" value="">
+                </div>
+                <div class="col-md-2">
+                    <label for="inputNumber5" class="form-label">Максимальное значение температуры, , &degC</label>
+                    <input type="number" step="0.01" ng-model="miType.temperatureHiLimit" class="form-control"
+                        id="inputNumber5" value="">
+                </div>
+                <div class="col-md-2">
+                    <label for="inputNumber6" class="form-label">Минималное значение давления, кПа</label>
+                    <input type="number" step="0.01" ng-model="miType.pressureLowLimit" class="form-control"
+                        id="inputNumber6" value="">
+                </div>
+                <div class="col-md-2">
+                    <label for="inputNumber7" class="form-label">Максимальное значение давления, кПа</label>
+                    <input type="number" step="0.01" ng-model="miType.pressureHiLimit" class="form-control"
+                        id="inputNumber7" value="">
+                </div>
+            </div>
+        </div>
+        <p></p>
+        <div class="col-12">
+            <button class="btn btn-primary" ng-click="updateMiType()" type="button">Сохранить</button>
+        </div>
+    </div>
+    </div>
+</body>
+
+</html>

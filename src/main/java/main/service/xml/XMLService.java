@@ -28,7 +28,7 @@ public class XMLService implements IXMLService {
 
     @Autowired
     private VerificationIssueRepository issueRepository;
-    @Value("${upload.path}")
+    @Value("${upload.files.path}")
     private String filePath;
 
     @Override

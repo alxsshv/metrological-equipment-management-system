@@ -1,9 +1,6 @@
 package main.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,43 +11,41 @@ import java.util.List;
 @Getter
 @Setter
 @Entity
+@Table(name = "mi_types")
 @NoArgsConstructor
 @AllArgsConstructor
 public class MiType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private int id;
+    @Column(name = "number")
     private String number; //Номер в реестре утвержденного типа СИ
+    @Column(name = "title")
     private String title; //Наименование типа СИ
+    @Column(name = "notation")
     private String notation; //Обозначение типа СИ
+    @Column(name = "start_date")
     private LocalDate startDate; //Начало срока действия
+    @Column(name = "end_date")
     private LocalDate endDate; //Окончание срока действия
-    private String verificationPeriod; //межповерочный интервал
+    @Column(name = "verification_period")
+    private double verificationPeriod; //межповерочный интервал, лет
+    @Column(name ="modifications")
     private List<String> modifications; // Модификации
-    private String instructionNotation; //Обозначение методики поверки
-    private String instructionTitle; // Наименование методики поверки
-    private double humidityLowLimit;
-    private double humidityHiLimit;
-    private double temperatureLowLimit;
-    private double temperatureHiLimit;
-    private double pressureLowLimit;
-    private double pressureHiLimit;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "instruction_id", referencedColumnName = "id")
+    private MiTypeInstruction instruction; // Методика поверки
+
 
     public void updateFrom(MiType newData){
-        number = newData.getNumber();
-        title = newData.getTitle();
-        notation = newData.getNotation();
-        startDate = newData.getStartDate();
-        endDate = newData.getEndDate();
-        verificationPeriod = newData.getVerificationPeriod();
-        modifications = newData.getModifications();
-        instructionNotation = newData.getInstructionNotation();
-        instructionTitle = newData.getInstructionTitle();
-        humidityLowLimit = newData.getHumidityLowLimit();
-        humidityHiLimit = newData.getHumidityHiLimit();
-        temperatureHiLimit = newData.getTemperatureHiLimit();
-        temperatureLowLimit = newData.getTemperatureLowLimit();
-        pressureHiLimit = newData.getPressureHiLimit();
-        pressureLowLimit = newData.getPressureLowLimit();
+        this.number = newData.getNumber();
+        this.title = newData.getTitle();
+        this.notation = newData.getNotation();
+        this.startDate = newData.getStartDate();
+        this.endDate = newData.getEndDate();
+        this.verificationPeriod = newData.getVerificationPeriod();
+        this.modifications = newData.getModifications();
+        this.instruction = newData.getInstruction();
     }
 }

@@ -1,0 +1,34 @@
+package main.model;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "mi_type_instructions")
+public class MiTypeInstruction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private int id;
+    @Column(name = "instruction_notation")
+    private String instructionNotation; //Обозначение методики поверки
+    @Column(name = "instruction_title")
+    private String instructionTitle; // Наименование методики поверки
+    @Column(name = "humidity_low_limit" )
+    private double humidityLowLimit; //Нижнее допустимое значение относительно влажности, %
+    @Column(name = "humidity_hi_limit")
+    private double humidityHiLimit; //Верхенее допустимое значение относительной влажности, %
+    @Column(name = "temperature_low_limit")
+    private double temperatureLowLimit; //Нижнее допустимое значение температуры, градусов Цельсия
+    @Column(name = "temperature_hi_limit")
+    private double temperatureHiLimit; //Верхнее допустимое значение температуры, градусов Цельсия
+    @Column(name = "pressure_low_limit")
+    private double pressureLowLimit; //Нижнее допустимое значение атмосферного давления, кПа
+    @Column(name = "pressure_hi_limit")
+    private double pressureHiLimit; //Верхнее допустимое значение атмосферного давления, кПа
+    @OneToOne(mappedBy = "instruction")
+    private MiType miType;
+}

@@ -3,7 +3,8 @@ package main.controller;
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.MiTypeDto;
-import main.service.MiTypeService;
+import main.dto.MiTypeFullDto;
+import main.service.mi_type.MiTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -47,12 +49,12 @@ public class MiTypeController {
         return miTypeService.findById(Integer.parseInt(id));
     }
     @PostMapping
-    public ResponseEntity<?> addMiType(@RequestBody MiTypeDto miTypeDto){
+    public ResponseEntity<?> addMiType(@RequestBody MiTypeFullDto miTypeDto) throws IOException {
         return miTypeService.save(miTypeDto);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<?> editMiType(@RequestBody MiTypeDto miTypeDto){
+    public ResponseEntity<?> editMiType(@RequestBody MiTypeFullDto miTypeDto){
         return miTypeService.update(miTypeDto);
     }
 

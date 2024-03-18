@@ -1,9 +1,9 @@
 package main.dto.mappers;
 
-import main.dto.EmployeeDto;
 import main.dto.MiTypeDto;
-import main.model.Employee;
+import main.dto.MiTypeFullDto;
 import main.model.MiType;
+import main.model.MiTypeInstruction;
 
 
 public class MiTypeDtoMapper {
@@ -13,40 +13,64 @@ public class MiTypeDtoMapper {
         dto.setNumber(type.getNumber());
         dto.setNotation(type.getNotation());
         dto.setTitle(type.getTitle());
+        dto.setStartDate(type.getStartDate());
+        dto.setEndDate(type.getEndDate());
+        dto.setVerificationPeriod(type.getVerificationPeriod());
+        return dto;
+    }
+
+    public static MiTypeFullDto mapToFullDto(MiType type){
+        MiTypeFullDto dto = new MiTypeFullDto();
+        dto.setId(type.getId());
+        dto.setNumber(type.getNumber());
+        dto.setNotation(type.getNotation());
+        dto.setTitle(type.getTitle());
         dto.setModifications(type.getModifications());
         dto.setStartDate(type.getStartDate());
         dto.setEndDate(type.getEndDate());
         dto.setVerificationPeriod(type.getVerificationPeriod());
-        dto.setInstructionTitle(type.getInstructionTitle());
-        dto.setInstructionNotation(type.getInstructionNotation());
-        dto.setPressureHiLimit(type.getPressureHiLimit());
-        dto.setPressureLowLimit(type.getPressureLowLimit());
-        dto.setHumidityHiLimit(type.getHumidityHiLimit());
-        dto.setHumidityLowLimit(type.getHumidityLowLimit());
-        dto.setTemperatureHiLimit(type.getTemperatureHiLimit());
-        dto.setTemperatureLowLimit(type.getTemperatureLowLimit());
+        dto.setInstructionTitle(type.getInstruction().getInstructionTitle());
+        dto.setInstructionNotation(type.getInstruction().getInstructionNotation());
+        dto.setPressureHiLimit(type.getInstruction().getPressureHiLimit());
+        dto.setPressureLowLimit(type.getInstruction().getPressureLowLimit());
+        dto.setHumidityHiLimit(type.getInstruction().getHumidityHiLimit());
+        dto.setHumidityLowLimit(type.getInstruction().getHumidityLowLimit());
+        dto.setTemperatureHiLimit(type.getInstruction().getTemperatureHiLimit());
+        dto.setTemperatureLowLimit(type.getInstruction().getTemperatureLowLimit());
         dto.setModifications(type.getModifications());
         return dto;
     }
-    public static MiType mapToEntity (MiTypeDto dto){
+
+    public static MiType mapToEntity (MiTypeFullDto dto){
         MiType type = new MiType();
         type.setId(dto.getId());
         type.setNumber(dto.getNumber());
-        type.setNotation(dto.getNotation());
+        assert dto.getNotation() != null;
+        if (dto.getNotation().isEmpty() | dto.getNotation().equals("-")) {
+            type.setNotation("Обозначение отсутствует");
+        } else {
+            type.setNotation(dto.getNotation());
+        }
         type.setTitle(dto.getTitle());
         type.setModifications(dto.getModifications());
         type.setStartDate(dto.getStartDate());
         type.setEndDate(dto.getEndDate());
         type.setVerificationPeriod(dto.getVerificationPeriod());
-        type.setInstructionTitle(dto.getInstructionTitle());
-        type.setInstructionNotation(dto.getInstructionNotation());
-        type.setPressureHiLimit(dto.getPressureHiLimit());
-        type.setPressureLowLimit(dto.getPressureLowLimit());
-        type.setHumidityHiLimit(dto.getHumidityHiLimit());
-        type.setHumidityLowLimit(dto.getHumidityLowLimit());
-        type.setTemperatureHiLimit(dto.getTemperatureHiLimit());
-        type.setTemperatureLowLimit(dto.getTemperatureLowLimit());
         type.setModifications(dto.getModifications());
+        type.setInstruction(getMiTypeInstruction(dto));
         return type;
+    }
+
+    private static MiTypeInstruction getMiTypeInstruction(MiTypeFullDto dto) {
+        MiTypeInstruction instruction = new MiTypeInstruction();
+        instruction.setInstructionTitle(dto.getInstructionTitle());
+        instruction.setInstructionNotation(dto.getInstructionNotation());
+        instruction.setPressureHiLimit(dto.getPressureHiLimit());
+        instruction.setPressureLowLimit(dto.getPressureLowLimit());
+        instruction.setHumidityHiLimit(dto.getHumidityHiLimit());
+        instruction.setHumidityLowLimit(dto.getHumidityLowLimit());
+        instruction.setTemperatureHiLimit(dto.getTemperatureHiLimit());
+        instruction.setTemperatureLowLimit(dto.getTemperatureLowLimit());
+        return instruction;
     }
 }

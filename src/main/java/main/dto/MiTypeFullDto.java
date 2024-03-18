@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @Getter
 @Setter
-public class MiTypeDto {
+public class MiTypeFullDto {
     private int id;
     private String number;
     private String title;
@@ -19,4 +19,13 @@ public class MiTypeDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private double verificationPeriod;
+    private List<String> modifications = new ArrayList<>();
+    private String instructionNotation;
+    private String instructionTitle;
+    private double humidityLowLimit;
+    private double humidityHiLimit;
+    private double temperatureLowLimit;
+    private double temperatureHiLimit;
+    private double pressureLowLimit;
+    private double pressureHiLimit;
 }
