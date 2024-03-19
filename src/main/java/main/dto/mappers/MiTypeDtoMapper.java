@@ -19,58 +19,57 @@ public class MiTypeDtoMapper {
         return dto;
     }
 
-    public static MiTypeFullDto mapToFullDto(MiType type){
+    public static MiTypeFullDto mapToFullDto(MiTypeInstruction instruction){
         MiTypeFullDto dto = new MiTypeFullDto();
-        dto.setId(type.getId());
-        dto.setNumber(type.getNumber());
-        dto.setNotation(type.getNotation());
-        dto.setTitle(type.getTitle());
-        dto.setModifications(type.getModifications());
-        dto.setStartDate(type.getStartDate());
-        dto.setEndDate(type.getEndDate());
-        dto.setVerificationPeriod(type.getVerificationPeriod());
-        dto.setInstructionTitle(type.getInstruction().getInstructionTitle());
-        dto.setInstructionNotation(type.getInstruction().getInstructionNotation());
-        dto.setPressureHiLimit(type.getInstruction().getPressureHiLimit());
-        dto.setPressureLowLimit(type.getInstruction().getPressureLowLimit());
-        dto.setHumidityHiLimit(type.getInstruction().getHumidityHiLimit());
-        dto.setHumidityLowLimit(type.getInstruction().getHumidityLowLimit());
-        dto.setTemperatureHiLimit(type.getInstruction().getTemperatureHiLimit());
-        dto.setTemperatureLowLimit(type.getInstruction().getTemperatureLowLimit());
-        dto.setModifications(type.getModifications());
+        dto.setId(instruction.getMiType().getId());
+        dto.setNumber(instruction.getMiType().getNumber());
+        dto.setNotation(instruction.getMiType().getNotation());
+        dto.setTitle(instruction.getMiType().getTitle());
+        dto.setModifications(instruction.getMiType().getModifications());
+        dto.setStartDate(instruction.getMiType().getStartDate());
+        dto.setEndDate(instruction.getMiType().getEndDate());
+        dto.setVerificationPeriod(instruction.getMiType().getVerificationPeriod());
+        dto.setInstructionTitle(instruction.getInstructionTitle());
+        dto.setInstructionNotation(instruction.getInstructionNotation());
+        dto.setPressureHiLimit(instruction.getPressureHiLimit());
+        dto.setPressureLowLimit(instruction.getPressureLowLimit());
+        dto.setHumidityHiLimit(instruction.getHumidityHiLimit());
+        dto.setHumidityLowLimit(instruction.getHumidityLowLimit());
+        dto.setTemperatureHiLimit(instruction.getTemperatureHiLimit());
+        dto.setTemperatureLowLimit(instruction.getTemperatureLowLimit());
+        dto.setModifications(instruction.getMiType().getModifications());
         return dto;
     }
 
-    public static MiType mapToEntity (MiTypeFullDto dto){
-        MiType type = new MiType();
-        type.setId(dto.getId());
-        type.setNumber(dto.getNumber());
-        assert dto.getNotation() != null;
-        if (dto.getNotation().isEmpty() | dto.getNotation().equals("-")) {
-            type.setNotation("Обозначение отсутствует");
-        } else {
-            type.setNotation(dto.getNotation());
-        }
-        type.setTitle(dto.getTitle());
-        type.setModifications(dto.getModifications());
-        type.setStartDate(dto.getStartDate());
-        type.setEndDate(dto.getEndDate());
-        type.setVerificationPeriod(dto.getVerificationPeriod());
-        type.setModifications(dto.getModifications());
-        type.setInstruction(getMiTypeInstruction(dto));
-        return type;
+    public static MiTypeInstruction mapToEntity (MiTypeFullDto fullDto){
+        MiTypeInstruction instruction = new MiTypeInstruction();
+        instruction.setInstructionTitle(fullDto.getInstructionTitle());
+        instruction.setInstructionNotation(fullDto.getInstructionNotation());
+        instruction.setPressureHiLimit(fullDto.getPressureHiLimit());
+        instruction.setPressureLowLimit(fullDto.getPressureLowLimit());
+        instruction.setHumidityHiLimit(fullDto.getHumidityHiLimit());
+        instruction.setHumidityLowLimit(fullDto.getHumidityLowLimit());
+        instruction.setTemperatureHiLimit(fullDto.getTemperatureHiLimit());
+        instruction.setTemperatureLowLimit(fullDto.getTemperatureLowLimit());
+        instruction.setMiType(getMiType(fullDto));
+        return instruction;
     }
 
-    private static MiTypeInstruction getMiTypeInstruction(MiTypeFullDto dto) {
-        MiTypeInstruction instruction = new MiTypeInstruction();
-        instruction.setInstructionTitle(dto.getInstructionTitle());
-        instruction.setInstructionNotation(dto.getInstructionNotation());
-        instruction.setPressureHiLimit(dto.getPressureHiLimit());
-        instruction.setPressureLowLimit(dto.getPressureLowLimit());
-        instruction.setHumidityHiLimit(dto.getHumidityHiLimit());
-        instruction.setHumidityLowLimit(dto.getHumidityLowLimit());
-        instruction.setTemperatureHiLimit(dto.getTemperatureHiLimit());
-        instruction.setTemperatureLowLimit(dto.getTemperatureLowLimit());
-        return instruction;
+    private static MiType getMiType(MiTypeFullDto fullDto) {
+        MiType type = new MiType();
+        type.setId(fullDto.getId());
+        type.setNumber(fullDto.getNumber());
+        if (fullDto.getNotation().isEmpty() | fullDto.getNotation().equals("-")) {
+            type.setNotation("Обозначение отсутствует");
+        } else {
+            type.setNotation(fullDto.getNotation());
+        }
+        type.setTitle(fullDto.getTitle());
+        type.setModifications(fullDto.getModifications());
+        type.setStartDate(fullDto.getStartDate());
+        type.setEndDate(fullDto.getEndDate());
+        type.setVerificationPeriod(fullDto.getVerificationPeriod());
+        type.setModifications(fullDto.getModifications());
+        return type;
     }
 }

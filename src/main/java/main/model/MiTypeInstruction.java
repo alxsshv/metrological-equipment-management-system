@@ -10,7 +10,6 @@ import lombok.Setter;
 @Table(name = "mi_type_instructions")
 public class MiTypeInstruction {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
     @Column(name = "instruction_notation")
@@ -29,6 +28,20 @@ public class MiTypeInstruction {
     private double pressureLowLimit; //Нижнее допустимое значение атмосферного давления, кПа
     @Column(name = "pressure_hi_limit")
     private double pressureHiLimit; //Верхнее допустимое значение атмосферного давления, кПа
-    @OneToOne(mappedBy = "instruction")
+    @OneToOne(fetch = FetchType.LAZY)
+    @MapsId
     private MiType miType;
+
+    public void updateFrom(MiTypeInstruction updateData){
+        this.miType = updateData.getMiType();
+        this.pressureHiLimit = updateData.getPressureHiLimit();
+        this.pressureLowLimit = updateData.getPressureLowLimit();
+        this.temperatureHiLimit = updateData.getTemperatureHiLimit();
+        this.temperatureLowLimit = updateData.getTemperatureLowLimit();
+        this.humidityHiLimit = updateData.getHumidityHiLimit();
+        this.humidityLowLimit = updateData.getHumidityLowLimit();
+        this.instructionTitle = updateData.getInstructionTitle();
+        this.instructionNotation = updateData.getInstructionNotation();
+    }
+
 }

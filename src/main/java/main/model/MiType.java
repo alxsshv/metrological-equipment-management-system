@@ -33,9 +33,6 @@ public class MiType {
     private double verificationPeriod; //межповерочный интервал, лет
     @Column(name ="modifications")
     private List<String> modifications; // Модификации
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "instruction_id", referencedColumnName = "id")
-    private MiTypeInstruction instruction; // Методика поверки
 
 
     public void updateFrom(MiType newData){
@@ -46,6 +43,5 @@ public class MiType {
         this.endDate = newData.getEndDate();
         this.verificationPeriod = newData.getVerificationPeriod();
         this.modifications = newData.getModifications();
-        this.instruction = newData.getInstruction();
     }
 }

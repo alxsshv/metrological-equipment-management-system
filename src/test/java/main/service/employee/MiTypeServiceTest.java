@@ -5,6 +5,7 @@ import main.dto.MiTypeFullDto;
 import main.dto.mappers.MiTypeDtoMapper;
 import main.model.MiType;
 import main.model.MiTypeInstruction;
+import main.repository.MiTypeInstructionRepository;
 import main.repository.MiTypeRepository;
 import main.service.mi_type.MiTypeService;
 import org.junit.jupiter.api.DisplayName;
@@ -23,8 +24,10 @@ import static org.mockito.Mockito.*;
 public class MiTypeServiceTest {
     private final MiTypeRepository miTypeRepository =
             Mockito.mock(MiTypeRepository.class);
+    private final MiTypeInstructionRepository miTypeInstructionRepository =
+            Mockito.mock(MiTypeInstructionRepository.class);
     private final MiTypeService miTypeService =
-            new MiTypeService(miTypeRepository);
+            new MiTypeService(miTypeRepository, miTypeInstructionRepository);
 
     @Test
     @DisplayName("Test save if miType already exists")

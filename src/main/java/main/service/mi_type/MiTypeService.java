@@ -4,6 +4,8 @@ import main.dto.MiTypeDto;
 import main.dto.MiTypeFullDto;
 import main.dto.mappers.MiTypeDtoMapper;
 import main.model.MiType;
+import main.model.MiTypeInstruction;
+import main.repository.MiTypeInstructionRepository;
 import main.repository.MiTypeRepository;
 import main.service.ServiceMessage;
 import org.slf4j.Logger;
@@ -23,11 +25,13 @@ import java.util.regex.Pattern;
 public class MiTypeService implements IMiTypeService {
     public static final Logger log = LoggerFactory.getLogger(MiTypeService.class);
     private final MiTypeRepository miTypeRepository;
+    private final MiTypeInstructionRepository miTypeInstructionRepository;
     @Value("${upload.images.path}")
     private String imageUploadPath;
 
-    public MiTypeService(MiTypeRepository miTypeRepository) {
+    public MiTypeService(MiTypeRepository miTypeRepository, MiTypeInstructionRepository miTypeInstructionRepository) {
         this.miTypeRepository = miTypeRepository;
+        this.miTypeInstructionRepository = miTypeInstructionRepository;
     }
 
     @Override
@@ -45,7 +49,7 @@ public class MiTypeService implements IMiTypeService {
             return ResponseEntity.status(422).body(
                     new ServiceMessage(errorMessage));
         }
-        miTypeRepository.save(MiTypeDtoMapper.mapToEntity(miTypeDto));
+        miTypeInstructionRepository.save(MiTypeDtoMapper.mapToEntity(miTypeDto));
         String okMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.ok(
@@ -80,17 +84,17 @@ public class MiTypeService implements IMiTypeService {
             return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
 
-        Optional<MiType> userOpt = miTypeRepository.findById(miTypeDto.getId());
-        if (userOpt.isEmpty()){
+        Optional<MiTypeInstruction> instructionOpt = miTypeInstructionRepository.findById(miTypeDto.getId());
+        if (instructionOpt.isEmpty()){
             errorMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " не найдена";
             log.info(errorMessage);
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
-        MiType updatingMiTypeData = MiTypeDtoMapper.mapToEntity(miTypeDto);
-        MiType miType = userOpt.get();
-        miType.updateFrom(updatingMiTypeData);
-        miTypeRepository.save(miType);
-        String okMessage ="Cведения о типе СИ " + miType.getNumber() +  " обновлены";
+        MiTypeInstruction newMiTypeInstructionData = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        MiTypeInstruction instruction = instructionOpt.get();
+        instruction.updateFrom(newMiTypeInstructionData);
+        miTypeInstructionRepository.save(instruction);
+        String okMessage ="Cведения о типе СИ " + instruction.getMiType().getNumber() +  " обновлены";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
@@ -111,9 +115,9 @@ public class MiTypeService implements IMiTypeService {
 
     @Override
     public ResponseEntity<?> findById(int id) {
-        Optional<MiType> miTypeOpt = miTypeRepository.findById(id);
-        if (miTypeOpt.isPresent()) {
-            MiTypeFullDto miTypeDto = MiTypeDtoMapper.mapToFullDto(miTypeOpt.get());
+        Optional<MiTypeInstruction> instructionOpt = miTypeInstructionRepository.findById(id);
+        if (instructionOpt.isPresent()) {
+            MiTypeFullDto miTypeDto = MiTypeDtoMapper.mapToFullDto(instructionOpt.get());
             return ResponseEntity.ok(miTypeDto);
         } else {
             return ResponseEntity.notFound().build();
