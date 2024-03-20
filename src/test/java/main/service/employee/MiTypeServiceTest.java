@@ -42,12 +42,13 @@ public class MiTypeServiceTest {
         modifications.add("В7-78/1");
         modifications.add("В7-78/2");
         miTypeDto.setModifications(modifications);
-        MiType miType = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        MiType miType = new MiType();
+        miType.setId(miTypeId);
         when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(miType);
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miTypeRepository,times(1)).findByNumber(miTypeDto.getNumber());
-        verify(miTypeRepository,never()).save(any(MiType.class));
+        verify(miTypeInstructionRepository,never()).save(any(MiTypeInstruction.class));
     }
 
     @Test
@@ -63,12 +64,13 @@ public class MiTypeServiceTest {
         modifications.add("В7-78/1");
         modifications.add("В7-78/2");
         miTypeDto.setModifications(modifications);
-        MiType miType = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        MiType miType = new MiType();
+        miType.setId(miTypeId);
         when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(miType);
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miTypeRepository, never()).findByNumber(miTypeDto.getNumber());
-        verify(miTypeRepository, never()).save(any(MiType.class));
+        verify(miTypeInstructionRepository, never()).save(any(MiTypeInstruction.class));
     }
 
     @Test
@@ -83,12 +85,13 @@ public class MiTypeServiceTest {
         modifications.add("В7-78/1");
         modifications.add("В7-78/2");
         miTypeDto.setModifications(modifications);
-        MiType miType = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        MiType miType = new MiType();
+        miType.setId(miTypeId);
         when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(miType);
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miTypeRepository, never()).findByNumber(miTypeDto.getNumber());
-        verify(miTypeRepository, never()).save(any(MiType.class));
+        verify(miTypeInstructionRepository, never()).save(any(MiTypeInstruction.class));
     }
 
     @Test
@@ -100,12 +103,13 @@ public class MiTypeServiceTest {
         miTypeDto.setNumber("12345-78");
         miTypeDto.setTitle("Вольтметры");
         miTypeDto.setNotation("В7-78");
-        MiType miType = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        MiType miType = new MiType();
+        miType.setId(miTypeId);
         when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(miType);
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miTypeRepository, never()).findByNumber(miTypeDto.getNumber());
-        verify(miTypeRepository, never()).save(any(MiType.class));
+        verify(miTypeInstructionRepository, never()).save(any(MiTypeInstruction.class));
     }
 
     @Test
@@ -125,7 +129,7 @@ public class MiTypeServiceTest {
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
         verify(miTypeRepository,times(1)).findByNumber(miTypeDto.getNumber());
-        verify(miTypeRepository,times(1)).save(any(MiType.class));
+        verify(miTypeInstructionRepository,times(1)).save(any(MiTypeInstruction.class));
     }
 
     @Test
@@ -141,11 +145,11 @@ public class MiTypeServiceTest {
         modifications.add("В7-78/1");
         modifications.add("В7-78/2");
         miTypeDto.setModifications(modifications);
-        when(miTypeRepository.findById(miTypeId)).thenReturn(Optional.empty());
+        when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.empty());
         ResponseEntity<?> responseEntity = miTypeService.update(miTypeDto);
         assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
-        verify(miTypeRepository,times(1)).findById(miTypeId);
-        verify(miTypeRepository,never()).save(any(MiType.class));
+        verify(miTypeInstructionRepository,times(1)).findById(miTypeId);
+        verify(miTypeInstructionRepository,never()).save(any(MiTypeInstruction.class));
     }
 
     @Test
@@ -157,12 +161,12 @@ public class MiTypeServiceTest {
         miTypeDto.setNumber("12345-78");
         miTypeDto.setTitle("Вольтметры");
         miTypeDto.setNotation("В7-78");
-        MiType miType = MiTypeDtoMapper.mapToEntity(miTypeDto);
-        when(miTypeRepository.findById(miTypeId)).thenReturn(Optional.of(miType));
+        MiTypeInstruction instruction = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.of(instruction));
         ResponseEntity<?> responseEntity = miTypeService.update(miTypeDto);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
-        verify(miTypeRepository, never()).findById(miTypeId);
-        verify(miTypeRepository, never()).save(any(MiType.class));
+        verify(miTypeInstructionRepository, never()).findById(miTypeId);
+        verify(miTypeInstructionRepository, never()).save(any(MiTypeInstruction.class));
     }
 
     @Test
@@ -201,16 +205,17 @@ public class MiTypeServiceTest {
     @DisplayName("Test findById if miType found")
     public void testFindByIDIfMiTypeFound() {
         int miTypeId = 5;
+        MiTypeInstruction instruction = new MiTypeInstruction();
         MiType miType = new MiType();
         miType.setId(miTypeId);
         miType.setNumber("12345-78");
         miType.setTitle("Вольтметры");
         miType.setNotation("В7-78");
-        miType.setInstruction(new MiTypeInstruction());
-        when(miTypeRepository.findById(miTypeId)).thenReturn(Optional.of(miType));
+        instruction.setMiType(miType);
+        when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.of(instruction));
         ResponseEntity<?> responseEntity = miTypeService.findById(miTypeId);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
-        verify(miTypeRepository,times(1)).findById(miTypeId);
+        verify(miTypeInstructionRepository,times(1)).findById(miTypeId);
     }
 
     @Test

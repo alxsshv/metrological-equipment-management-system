@@ -4,6 +4,10 @@ import main.dto.MiTypeDto;
 import main.dto.MiTypeFullDto;
 import main.model.MiType;
 import main.model.MiTypeInstruction;
+import main.model.MiTypeModification;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class MiTypeDtoMapper {
@@ -25,7 +29,7 @@ public class MiTypeDtoMapper {
         dto.setNumber(instruction.getMiType().getNumber());
         dto.setNotation(instruction.getMiType().getNotation());
         dto.setTitle(instruction.getMiType().getTitle());
-        dto.setModifications(instruction.getMiType().getModifications());
+        dto.setModifications(instruction.getMiType().getModifications().stream().map(MiTypeModification::getNotation).toList());
         dto.setStartDate(instruction.getMiType().getStartDate());
         dto.setEndDate(instruction.getMiType().getEndDate());
         dto.setVerificationPeriod(instruction.getMiType().getVerificationPeriod());
@@ -37,7 +41,6 @@ public class MiTypeDtoMapper {
         dto.setHumidityLowLimit(instruction.getHumidityLowLimit());
         dto.setTemperatureHiLimit(instruction.getTemperatureHiLimit());
         dto.setTemperatureLowLimit(instruction.getTemperatureLowLimit());
-        dto.setModifications(instruction.getMiType().getModifications());
         return dto;
     }
 
@@ -64,12 +67,17 @@ public class MiTypeDtoMapper {
         } else {
             type.setNotation(fullDto.getNotation());
         }
+        List<MiTypeModification> modifications = new ArrayList<>();
+        for (String s : fullDto.getModifications()){
+            MiTypeModification modification = new MiTypeModification();
+            modification.setNotation(s);
+            modifications.add(modification);
+        }
         type.setTitle(fullDto.getTitle());
-        type.setModifications(fullDto.getModifications());
+        type.setModifications(modifications);
         type.setStartDate(fullDto.getStartDate());
         type.setEndDate(fullDto.getEndDate());
         type.setVerificationPeriod(fullDto.getVerificationPeriod());
-        type.setModifications(fullDto.getModifications());
         return type;
     }
 }
