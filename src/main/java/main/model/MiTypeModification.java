@@ -18,6 +18,5 @@ public class MiTypeModification {
     @Column(name = "notation")
     private String notation;
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "mi_type")
     private MiType miType;
 }

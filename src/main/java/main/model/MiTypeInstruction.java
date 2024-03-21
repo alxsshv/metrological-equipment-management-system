@@ -33,6 +33,8 @@ public class MiTypeInstruction {
     private MiType miType;
 
     public void updateFrom(MiTypeInstruction updateData){
+        MiType miType = updateData.getMiType();
+        miType.setModifications(updateData.getMiType().getModifications());
         this.miType = updateData.getMiType();
         this.pressureHiLimit = updateData.getPressureHiLimit();
         this.pressureLowLimit = updateData.getPressureLowLimit();
