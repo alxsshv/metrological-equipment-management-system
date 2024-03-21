@@ -83,18 +83,18 @@ public class MiTypeService implements IMiTypeService {
             log.info(errorMessage);
             return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
-
+        System.out.println("Выдергиваем инструкцию");
         Optional<MiTypeInstruction> instructionOpt = miTypeInstructionRepository.findById(miTypeDto.getId());
         if (instructionOpt.isEmpty()){
             errorMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " не найдена";
             log.info(errorMessage);
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
-        MiTypeInstruction newMiTypeInstructionData = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        MiTypeInstruction updateData = MiTypeDtoMapper.mapToEntity(miTypeDto);
         MiTypeInstruction instruction = instructionOpt.get();
-        instruction.updateFrom(newMiTypeInstructionData);
+        instruction.updateFrom(updateData);
         miTypeInstructionRepository.save(instruction);
-        String okMessage ="Cведения о типе СИ " + instruction.getMiType().getNumber() +  " обновлены";
+        String okMessage ="Cведения о типе СИ " + miTypeDto.getNumber() +  " обновлены";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

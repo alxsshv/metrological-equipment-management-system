@@ -33,7 +33,7 @@ public class MiType {
     @Column(name = "verification_period")
     private double verificationPeriod; //межповерочный интервал, лет
     @OneToMany(mappedBy = "miType", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name ="modifications")
+    @Column(name = "modifications")
     private List<MiTypeModification> modifications = new ArrayList<>(); // Модификации
 
     public void addModification(MiTypeModification modification){
@@ -41,7 +41,7 @@ public class MiType {
         modifications.add(modification);
     }
 
-    public  void setModifications(List<MiTypeModification> modifications){
+    public void setModifications(List<MiTypeModification> modifications){
         modifications.forEach(modification -> modification.setMiType(this));
         this.modifications = modifications;
     }
@@ -58,6 +58,21 @@ public class MiType {
         this.startDate = newData.getStartDate();
         this.endDate = newData.getEndDate();
         this.verificationPeriod = newData.getVerificationPeriod();
-        this.modifications = newData.getModifications();
+        this.modifications.clear();
+        this.modifications.addAll(newData.getModifications());
+    }
+
+    @Override
+    public String toString() {
+        return "MiType{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", title='" + title + '\'' +
+                ", notation='" + notation + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", verificationPeriod=" + verificationPeriod +
+                ", modifications=" + modifications +
+                '}';
     }
 }

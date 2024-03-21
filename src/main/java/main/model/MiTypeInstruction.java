@@ -33,9 +33,7 @@ public class MiTypeInstruction {
     private MiType miType;
 
     public void updateFrom(MiTypeInstruction updateData){
-        MiType miType = updateData.getMiType();
-        miType.setModifications(updateData.getMiType().getModifications());
-        this.miType = updateData.getMiType();
+        this.miType.updateFrom(updateData.getMiType());
         this.pressureHiLimit = updateData.getPressureHiLimit();
         this.pressureLowLimit = updateData.getPressureLowLimit();
         this.temperatureHiLimit = updateData.getTemperatureHiLimit();
@@ -46,4 +44,19 @@ public class MiTypeInstruction {
         this.instructionNotation = updateData.getInstructionNotation();
     }
 
+    @Override
+    public String toString() {
+        return "MiTypeInstruction{" +
+                "id=" + id +
+                ", instructionNotation='" + instructionNotation + '\'' +
+                ", instructionTitle='" + instructionTitle + '\'' +
+                ", humidityLowLimit=" + humidityLowLimit +
+                ", humidityHiLimit=" + humidityHiLimit +
+                ", temperatureLowLimit=" + temperatureLowLimit +
+                ", temperatureHiLimit=" + temperatureHiLimit +
+                ", pressureLowLimit=" + pressureLowLimit +
+                ", pressureHiLimit=" + pressureHiLimit +
+                ", miType=" + miType +
+                '}';
+    }
 }

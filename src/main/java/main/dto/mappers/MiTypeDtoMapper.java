@@ -67,17 +67,21 @@ public class MiTypeDtoMapper {
         } else {
             type.setNotation(fullDto.getNotation());
         }
+        type.setTitle(fullDto.getTitle());
+        type.setModifications(getModifications(fullDto));
+        type.setStartDate(fullDto.getStartDate());
+        type.setEndDate(fullDto.getEndDate());
+        type.setVerificationPeriod(fullDto.getVerificationPeriod());
+        return type;
+    }
+
+    private static List<MiTypeModification> getModifications(MiTypeFullDto fullDto){
         List<MiTypeModification> modifications = new ArrayList<>();
         for (String s : fullDto.getModifications()){
             MiTypeModification modification = new MiTypeModification();
             modification.setNotation(s);
             modifications.add(modification);
         }
-        type.setTitle(fullDto.getTitle());
-        type.setModifications(modifications);
-        type.setStartDate(fullDto.getStartDate());
-        type.setEndDate(fullDto.getEndDate());
-        type.setVerificationPeriod(fullDto.getVerificationPeriod());
-        return type;
+        return modifications;
     }
 }

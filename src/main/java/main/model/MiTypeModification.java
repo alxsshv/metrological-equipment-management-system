@@ -19,4 +19,13 @@ public class MiTypeModification {
     private String notation;
     @ManyToOne(fetch = FetchType.LAZY)
     private MiType miType;
+
+    @Override
+    public String toString() {
+        return "MiTypeModification{" +
+                "id=" + id +
+                ", notation='" + notation + '\'' +
+                ", miType=" + miType.getId() +
+                '}';
+    }
 }
