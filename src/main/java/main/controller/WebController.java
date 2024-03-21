@@ -56,21 +56,21 @@ public class WebController {
     //Вывод шаблонов для средств измерений
     @GetMapping("/mis/form")
     public String getMeasurementInstrumentFormView(){
-        return "measurementInstrument/measurementInstrumentForm";
+        return "measurementInstrument/form";
     }
     @GetMapping("/mis")
     public String getMeasurementInstrumentListView(){
-        return "measurementInstrument/measurementInstrumentList";
+        return "measurementInstrument/list";
     }
     @GetMapping("/mis/{id}")
     public String getMeasurementInstrumentView(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
-        return "measurementInstrument/measurementInstrumentCard";
+        return "measurementInstrument/card";
     }
     @GetMapping("/mis/form/{id}")
     public String getEditMeasurementInstrumentForm(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
-        return "measurementInstrument/measurementInstrumentEdit";
+        return "measurementInstrument/edit";
     }
 
 

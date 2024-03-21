@@ -83,7 +83,6 @@ public class MiTypeService implements IMiTypeService {
             log.info(errorMessage);
             return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
-        System.out.println("Выдергиваем инструкцию");
         Optional<MiTypeInstruction> instructionOpt = miTypeInstructionRepository.findById(miTypeDto.getId());
         if (instructionOpt.isEmpty()){
             errorMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " не найдена";
