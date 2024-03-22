@@ -13,6 +13,7 @@
     var app = angular.module("MI_FORM", []);
     app.controller("MI_FORM_CTRL", function ($scope, $http) {
 
+        // Поиск типа СИ по номеру в ФИФ ОЕИ
         $scope.searchTypeOnNumber = function () {
             if (/^[0-9]{5}-[0-9]{2}$/.exec($scope.typeNumber)) {
                 console.log("Поиск типа си")
@@ -21,10 +22,49 @@
                     method: "GET"
                 }).then(function (response) {
                     $scope.miType = response.data.content[0];
+                    $scope.typeTitle = $scope.miType.title;
                     console.log($scope.miType)
                 });
             }
         }
+
+        //Поиск типа СИ по подстроке
+        $scope.types = [];
+        $scope.searchType = function () {
+            if ($scope.typeTitle.length > 3) {
+                console.log("Ищем тип СИ по подстроке")
+                $http({
+                    url: "/mit/search?search=" + $scope.typeTitle,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.types = response.data.content;
+                    console.log($scope.types)
+                });
+            }
+        }
+
+        //Получение модификаций для выбранного типа СИ
+        $scope.modifications = [];
+        $scope.getModifications = function () {
+            if ($scope.miType.id >= 0 ) {
+                console.log("Получаем модификации")
+                $http({
+                    url: "/mit/modifications/" + $scope.miType.id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.modifications = response.data;
+                    console.log($scope.modifications)
+                });
+            }
+        }
+
+        $scope.selectType = function (item) {
+            $scope.miType = item;
+            $scope.typeTitle = $scope.miType.title;
+            $scope.typeNumber = $scope.miType.number;
+            $scope.getModifications();
+        }
+
 
         // сохранение в БД;
         $scope.addMi = function () {
@@ -114,15 +154,24 @@
                     <input type="text" ng-change="searchTypeOnNumber()" ng-model="typeNumber" placeholder="XXXXX-XX"
                         class="form-control" id="inputText1" value="" required>
                 </div>
-                <div class="col-md-7">
-                    <label for="inputText2" class="form-label">Наименование типа средства измерений</label>
-                    <input type="text" ng-model="miType.title" placeholder="Пример: Микроскопы сканирующие электронные"
-                        class="form-control" id="inputText2" value="" required>
+                <div class="col-md-7 ">
+                    <label for="inputText2" class="form-label">Наименование типа</label>
+                    <input type="text" ng-change="searchType()" ng-model="typeTitle" data-bs-toggle="dropdown"
+                        class="form-control dropdown-toggle" id="inputText2" value="">
+
+                    <ul class="dropdown-menu" ng-model="typeTitle">
+                        <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
+                                ng-click="selectType(item)" href="#">{{item.title}} {{item.notation}}</a></li>
+                    </ul>
                 </div>
+
+
                 <div class="col-md-3">
                     <label for="select1" class="form-label">Модификация</label>
                     <select ng-model="employee" class="form-select mb-3" aria-label="Заводской номер">
-                        <option ng-repeat="modification in miType.modifications" value="{{modification}}">{{modification}}</option>
+                        <option ng-repeat="modification in modifications" value="{{modification}}">
+                            {{modification}}
+                        </option>
                     </select>
                 </div>
             </div>

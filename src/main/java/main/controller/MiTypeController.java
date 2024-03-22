@@ -48,8 +48,12 @@ public class MiTypeController {
     public ResponseEntity<?> getMiType(@PathVariable("id") String id){
         return miTypeService.findById(Integer.parseInt(id));
     }
+    @GetMapping("/modifications/{id}")
+    public ResponseEntity<?> getMiTypeModifications(@PathVariable("id") String id){
+        return miTypeService.findModifications(Integer.parseInt(id));
+    }
     @PostMapping
-    public ResponseEntity<?> addMiType(@RequestBody MiTypeFullDto miTypeDto) throws IOException {
+    public ResponseEntity<?> addMiType(@RequestBody MiTypeFullDto miTypeDto) {
         return miTypeService.save(miTypeDto);
     }
 

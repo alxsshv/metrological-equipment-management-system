@@ -5,7 +5,9 @@ import main.dto.MiTypeFullDto;
 import main.dto.mappers.MiTypeDtoMapper;
 import main.model.MiType;
 import main.model.MiTypeInstruction;
+import main.model.MiTypeModification;
 import main.repository.MiTypeInstructionRepository;
+import main.repository.MiTypeModificationRepository;
 import main.repository.MiTypeRepository;
 import main.service.ServiceMessage;
 import org.slf4j.Logger;
@@ -26,12 +28,15 @@ public class MiTypeService implements IMiTypeService {
     public static final Logger log = LoggerFactory.getLogger(MiTypeService.class);
     private final MiTypeRepository miTypeRepository;
     private final MiTypeInstructionRepository miTypeInstructionRepository;
+    private final MiTypeModificationRepository miTypeModificationRepository;
     @Value("${upload.images.path}")
     private String imageUploadPath;
 
-    public MiTypeService(MiTypeRepository miTypeRepository, MiTypeInstructionRepository miTypeInstructionRepository) {
+    public MiTypeService(MiTypeRepository miTypeRepository, MiTypeInstructionRepository miTypeInstructionRepository,
+                         MiTypeModificationRepository miTypeModificationRepository) {
         this.miTypeRepository = miTypeRepository;
         this.miTypeInstructionRepository = miTypeInstructionRepository;
+        this.miTypeModificationRepository = miTypeModificationRepository;
     }
 
     @Override
@@ -123,6 +128,18 @@ public class MiTypeService implements IMiTypeService {
         }
     }
 
+
+    @Override
+    public ResponseEntity<?> findByNumber(String number) {
+        MiType type = miTypeRepository.findByNumber(number);
+        if (type != null) {
+            MiTypeDto miTypeDto = MiTypeDtoMapper.mapToDto(type);
+            return ResponseEntity.ok(miTypeDto);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
     @Override
     public ResponseEntity<?> findBySearchString(String searchString, Pageable pageable) {
         if (searchString == null || searchString.isEmpty()){
@@ -131,10 +148,22 @@ public class MiTypeService implements IMiTypeService {
             return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
         }
         Page<MiTypeDto> page =  miTypeRepository
-                .findByNumberOrTitleOrNotationContaining(searchString.trim(),searchString.trim(),searchString.trim(), pageable)
+                .findByNumberContainingOrTitleContainingOrNotationContaining(searchString.trim(),searchString.trim(),searchString.trim(), pageable)
                 .map(MiTypeDtoMapper::mapToDto);
         return ResponseEntity.ok(page);
     }
+
+    public ResponseEntity<?> findModifications(int miTypeId){
+        Optional<MiType> typeOpt = miTypeRepository.findById(miTypeId);
+        if (typeOpt.isPresent()) {
+            List<MiTypeModification> modifications = miTypeModificationRepository.findByMiType(typeOpt.get());
+            List<String> modificationNotations = modifications.stream().map(MiTypeModification::getNotation).toList();
+            return ResponseEntity.ok(modificationNotations);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @Override
     public Page<MiTypeDto> findAll(Pageable pageable) {

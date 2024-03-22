@@ -13,6 +13,7 @@ public interface IMiTypeService {
     ResponseEntity<?> update(MiTypeFullDto miTypeDto);
     ResponseEntity<?>delete(int id);
     ResponseEntity<?> findById(int id);
+    ResponseEntity<?> findByNumber(String number);
     ResponseEntity<?> findBySearchString(String searchString, Pageable pageable);
     Page<MiTypeDto> findAll(Pageable pageable);
     List<MiTypeDto> findAll();

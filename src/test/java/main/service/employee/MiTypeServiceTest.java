@@ -6,6 +6,7 @@ import main.dto.mappers.MiTypeDtoMapper;
 import main.model.MiType;
 import main.model.MiTypeInstruction;
 import main.repository.MiTypeInstructionRepository;
+import main.repository.MiTypeModificationRepository;
 import main.repository.MiTypeRepository;
 import main.service.mi_type.MiTypeService;
 import org.junit.jupiter.api.DisplayName;
@@ -26,8 +27,10 @@ public class MiTypeServiceTest {
             Mockito.mock(MiTypeRepository.class);
     private final MiTypeInstructionRepository miTypeInstructionRepository =
             Mockito.mock(MiTypeInstructionRepository.class);
+    private final MiTypeModificationRepository miTypeModificationRepository =
+            Mockito.mock(MiTypeModificationRepository.class);
     private final MiTypeService miTypeService =
-            new MiTypeService(miTypeRepository, miTypeInstructionRepository);
+            new MiTypeService(miTypeRepository, miTypeInstructionRepository, miTypeModificationRepository);
 
     @Test
     @DisplayName("Test save if miType already exists")
@@ -232,7 +235,9 @@ public class MiTypeServiceTest {
     public void testFindBySearchStringIfSearcStringIsEmpty() {
         String searchString = "";
         Pageable pageable = PageRequest.of(0,10, Sort.by(Sort.Direction.ASC,"number"));
-        when(miTypeRepository.findByNumberOrTitleOrNotationContaining(searchString,searchString,searchString, pageable)).thenReturn(null);
+        when(miTypeRepository
+                .findByNumberContainingOrTitleContainingOrNotationContaining(searchString,searchString,searchString, pageable))
+                .thenReturn(null);
         ResponseEntity<?> responseEntity = miTypeService.findBySearchString(searchString, pageable);
         assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
     }
@@ -251,12 +256,13 @@ public class MiTypeServiceTest {
         findedMiTypes.add(miType);
         Pageable pageable = PageRequest.of(0,10, Sort.by(Sort.Direction.ASC,"number"));
         Page<MiType> page = new PageImpl<>(findedMiTypes,pageable,totalPages);
-        when(miTypeRepository.findByNumberOrTitleOrNotationContaining(searchString,searchString,searchString, pageable))
+        when(miTypeRepository
+                .findByNumberContainingOrTitleContainingOrNotationContaining(searchString,searchString,searchString, pageable))
                 .thenReturn(page);
         ResponseEntity<?> responseEntity = miTypeService.findBySearchString(searchString, pageable);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
         verify(miTypeRepository,times(1))
-                .findByNumberOrTitleOrNotationContaining(searchString,searchString,searchString, pageable);
+                .findByNumberContainingOrTitleContainingOrNotationContaining(searchString,searchString,searchString, pageable);
     }
 
     @Test

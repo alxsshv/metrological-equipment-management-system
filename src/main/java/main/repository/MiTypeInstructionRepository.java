@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MiTypeInstructionRepository extends JpaRepository<MiTypeInstruction, Integer> {
+
 }
