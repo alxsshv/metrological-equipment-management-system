@@ -15,6 +15,7 @@ public interface IMiTypeService {
     ResponseEntity<?> findById(int id);
     ResponseEntity<?> findByNumber(String number);
     ResponseEntity<?> findBySearchString(String searchString, Pageable pageable);
+    ResponseEntity<?> findModifications(int miTypeId);
     Page<MiTypeDto> findAll(Pageable pageable);
     List<MiTypeDto> findAll();
 }

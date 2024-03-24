@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @NoArgsConstructor
 @Setter
 @Getter
@@ -13,7 +15,9 @@ public class MeasurementInstrumentDto {
     private String modification;
     private String serialNum;
     private String inventoryNum;
-    private int manufactureYear;
-    private int commissioningYear;
-    private String owner;
+    private LocalDate manufactureDate;
+    private LocalDate startUseDate;
+    private long ownerId;
+    private String user;
+
 }

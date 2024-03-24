@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Редактирование данных организации</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/angular.min.js"></script>
+</head>
+
+<script type="text/javascript">
+    var app = angular.module("ORGANIZATION_CARD", []);
+    var idAttr = new URL(document.URL).searchParams.get("id");
+    app.controller("ORGANIZATION_CARD_CTRL", function ($scope, $http) {
+        $scope.reference = "/organizations/form/" + idAttr + "?id=" + idAttr
+
+        $scope.getOrganization = function () {
+            $http({
+                url: "/organization/" + idAttr,
+                method: "GET"
+            }).then(function (response) {
+                $scope.organization = response.data;
+            });
+        }
+
+        $scope.getOrganization();
+
+    });
+
+
+</script>
+
+<body ng-app="ORGANIZATION_CARD" ng-controller="ORGANIZATION_CARD_CTRL">
+    <div class="container text-center">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/organizations'">К перечню
+                    организаций</button>
+                <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
+            </form>
+        </nav>
+
+        <div class="row">
+            <div class="col-sm-9">
+                <dl class="row text-start">
+                    <dt class="col-sm-6">Краткое наименование</dt>
+                    <dd ng-model="type" class="col-sm-6">{{organization.notation}}</dd>
+
+                    <dt class="col-sm-6">Полное наименование</dt>
+                    <dd ng-model="type" class="col-sm-6">{{organization.title}}</dd>
+
+                    <dt class="col-sm-6 text-truncate">Адрес</dt>
+                    <dd ng-model="type" class="col-sm-6">{{organization.address}}</dd>
+            </div>
+        </div>
+    </div>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

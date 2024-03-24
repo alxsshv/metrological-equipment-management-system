@@ -73,6 +73,25 @@ public class WebController {
         return "measurementInstrument/edit";
     }
 
+    //Вывод шиблонов для организаций
+    @GetMapping("/organizations/form")
+    public String getOrganizationFormView(){
+        return "organization/form";
+    }
+    @GetMapping("/organizations")
+    public String getOrganizationListView(){
+        return "organization/list";
+    }
+    @GetMapping("/organizations/{id}")
+    public String getOrganizationView(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "organization/card";
+    }
+    @GetMapping("/organizations/form/{id}")
+    public String getOrganizationEditForm(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "organization/edit";
+    }
 
     // Вывод шаблонов для заявок на регистрацию поверки
     @GetMapping("/issues/form")

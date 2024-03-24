@@ -3,15 +3,16 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Список типов средств измерений</title>
+    <title>Перечень организаций</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <script src="/js/angular.min.js"></script>
     
 </head>
 <script type="text/javascript">
-        var app = angular.module("MI_LIST", []);
-        app.controller("MI_LIST_CTRL", function($scope, $http){
-        $scope.contentUrl =  "/mi";
+        var app = angular.module("ORGANIZATION_LIST", []);
+        app.controller("ORGANIZATION_LIST_CTRL", function($scope, $http){
+        $scope.contentUrl =  "/organization";
+        $scope.viewReference = "/organizations"
 
         $scope.getPagesContentlist = function(contentUrl){
             $scope.getPageAttributes();
@@ -20,6 +21,7 @@
                 method: "GET"
             }).then(function(response){
                 $scope.contentlist = response.data.content;
+                console.log($scope.contentlist)
                 $scope.createPaginationParams(response.data.totalPages);
             });
         }
@@ -63,7 +65,7 @@
         $scope.getSearchContentlist = function(contentUrl){
             $scope.getPageAttributes();
                 $http({
-                url: contentUrl + "/search?search=" + $scope.searchString,
+                url: contentUrl + "/pages/search?search=" + $scope.searchString,
                 method: "GET"
             }).then(function(response){
                 $scope.contentlist = response.data.content;
@@ -76,12 +78,12 @@
             $scope.deleteableId = id;
         }
 
-        $scope.deleteMiType = function(delId){
+        $scope.deleteOrganization = function(delId){
             var myModalEl = document.getElementById('modal')
             var modal = bootstrap.Modal.getInstance(myModalEl);
             modal.hide();
                 $http({
-                url: "/mit/"+delId,
+                url: $scope.contentUrl +"/"+delId,
                 method: "DELETE"
             }).then(function(response){
                 alert(response.data.message);
@@ -93,27 +95,26 @@
 
     });
 </script>
-<body ng-app="MI_LIST" ng-controller="MI_LIST_CTRL">
-<script src="js/bootstrap.bundle.min.js"></script>
+<body ng-app="ORGANIZATION_LIST" ng-controller="ORGANIZATION_LIST_CTRL">
 <div class="container text-center">
     <nav class="navbar bg-body-tertiary">
         <form class="container-fluid justify-content-start">
             <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/mits/form'">Добавить тип СИ</button>
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/organizations/form'">Добавить организацию</button>
             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Сортировать
             </a>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/mits?page=0&dir=ASC&size={{pageSize}}">По возрастанию</a></li>
-                <li><a class="dropdown-item" href="/mits?page=0&dir=DESC&size={{pageSize}}">По убыванию</a></li>
+                <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}">По возрастанию</a></li>
+                <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}">По убыванию</a></li>
             </ul>
             <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Выводить по
             </a>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="/mits?page=0&dir={{sortDirection}}&size=10">10</a></li>
-                <li><a class="dropdown-item" href="/mits?page=0&dir={{sortDirection}}&size=20">20</a></li>
-                <li><a class="dropdown-item" href="/mits?page=0&dir={{sortDirection}}&size=50">50</a></li>
+                <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10">10</a></li>
+                <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=20">20</a></li>
+                <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50">50</a></li>
             </ul>
     
             <form class="d-flex" role="search">
@@ -126,52 +127,47 @@
     <div class="row">
         <table class="table table-info table-striped table-hover">
             <tr>
-                <th>Наименование</th>
-                <th>Модификация</th>
-                <th>Заводской №</th>
-                <th>Инвентарный номер</th>
-                <th>Год выпуска</th>
-                <th>Год ввода в эксплуатацию</th>
-                <th>Владелец</th>
+                <th>Краткое наименование</th>
+                <th>Полное наименование</th>
+                <th>Адрес</th>
                 <th></th>
             </tr>
-            <tr ng-repeat="miType in contentlist">
-                <td><a href="mits/{{miType.id}}?id={{miType.id}}">{{miType.number}}</a></td>
-                <td>{{miType.title}}</td>
-                <td>{{miType.notation}}</td>
-                <td>{{miType.verificationPeriod}}</td>
-                <td>{{miType.startDate[2]}}.{{miType.startDate[1]}}.{{miType.startDate[0]}}</td>
-                <td>{{miType.endDate[2]}}.{{miType.endDate[1]}}.{{miType.endDate[0]}}</td>
-                <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" ng-click="getDeleteableId(miType.id)" type="button">Удалить</button></td>
+            <tr ng-repeat="item in contentlist">
+                <td><a href="{{viewReference}}/{{item.id}}?id={{item.id}}">{{item.notation}}</a></td>
+                <td>{{item.title}}</td>
+                <td>{{item.address}}</td>
+                <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal" ng-click="getDeleteableId(item.id)" type="button">Удалить</button></td>
             </tr>
         </table>
     </div>
     <div class="row">
         <nav aria-label="Page navigation">
             <ul class="pagination">
-              <li class="page-item"><a class="page-link" href="/mits?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}">Предыдущая</a></li>
-              <li ng-repeat="item in pageArray track by $index" class="page-item"><a class="page-link" href="/mits?page={{item}}&dir={{sortDirection}}&size={{pageSize}}">{{item+1}}</a></li>
-              <li class="page-item"><a class="page-link" href="/mits?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}">Следующая</a></li>
+              <li class="page-item"><a class="page-link" href="{{viewReference}}?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}">Предыдущая</a></li>
+              <li ng-repeat="item in pageArray track by $index" class="page-item"><a class="page-link" href="{{viewReference}}?page={{item}}&dir={{sortDirection}}&size={{pageSize}}">{{item+1}}</a></li>
+              <li class="page-item"><a class="page-link" href="{{viewReference}}?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}">Следующая</a></li>
             </ul>
           </nav>
     </div> 
 </div>
+
 <!-- Модальное окно -->
-<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаленя" aria-hidden="true">
+<div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаления" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить запись о типе средства измерений?</h5>
+          <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить запись об организации</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
         </div>
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-          <button type="button" class="btn btn-primary" ng-click="deleteMiType(deleteableId)" >Удалить</button>
+          <button type="button" class="btn btn-primary" ng-click="deleteOrganization(deleteableId)" >Удалить</button>
         </div>
       </div>
     </div>
   </div>
+  <script src="js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

@@ -24,13 +24,13 @@ public class MeasurementInstrument {
     @Column(name = "modification")
     private String modification; // Модификация
     @Column(name = "serial_number")
-    private String serialNum; //Заводской номер или серийный номер
+    private String serialNum; // Заводской номер или серийный номер
     @Column(name = "inventory_number")
-    private String inventoryNum; //Инвентарный номер или буквенное-цифровое обозначение СИ
-    @Column(name = "manufacture_year")
-    private int manufactureYear; // Год выпуска
-    @Column(name = "commissioning_year")
-    private int commissioningYear; //Год ввода в эксплуатацию
+    private String inventoryNum; // Инвентарный номер или буквенное-цифровое обозначение СИ
+    @Column(name = "manufacture_date")
+    private LocalDate manufactureDate; // Дата выпуска
+    @Column(name = "start_use_date")
+    private LocalDate startUseDate; //Дата ввода в эксплуатацию
     @Column(name = "verification_date")
     private LocalDate verificationDate; //Дата поверки
     @Column(name = "valid_date")
@@ -38,7 +38,9 @@ public class MeasurementInstrument {
     @Column(name = "applicable")
     private boolean applicable; //Результат поверки
     @Column(name = "owner")
-    private String owner; // Владелец СИ
+    private long ownerId; // Владелец СИ
+    @Column(name = "mi_user")
+    private String user; // Ответственный за эксплуатацию
 
     public void updateFrom(MeasurementInstrument updatingData){
         this.miTypeId = updatingData.miTypeId;
@@ -48,8 +50,9 @@ public class MeasurementInstrument {
         this.verificationDate = updatingData.getVerificationDate();
         this.validDate = updatingData.getValidDate();
         this.applicable = updatingData.isApplicable();
-        this.manufactureYear = updatingData.getManufactureYear();
-        this.commissioningYear = updatingData.getCommissioningYear();
-        this.owner = updatingData.getOwner();
+        this.manufactureDate = updatingData.getManufactureDate();
+        this.startUseDate = updatingData.getStartUseDate();
+        this.ownerId = updatingData.getOwnerId();
+        this.user = updatingData.getUser();
     }
 }

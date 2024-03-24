@@ -11,9 +11,10 @@ public class MeasurementInstrumentMapper {
         dto.setModification(measurementInstrument.getModification());
         dto.setSerialNum(measurementInstrument.getSerialNum());
         dto.setInventoryNum(measurementInstrument.getInventoryNum());
-        dto.setOwner(dto.getOwner());
-        dto.setManufactureYear(measurementInstrument.getManufactureYear());
-        dto.setCommissioningYear(measurementInstrument.getCommissioningYear());
+        dto.setOwnerId(dto.getOwnerId());
+        dto.setManufactureDate(measurementInstrument.getManufactureDate());
+        dto.setStartUseDate(measurementInstrument.getStartUseDate());
+        dto.setUser(dto.getUser());
         return dto;
     }
     public static MeasurementInstrument mapToEntity (MeasurementInstrumentDto dto){
@@ -23,9 +24,10 @@ public class MeasurementInstrumentMapper {
         measurementInstrument.setModification(dto.getModification());
         measurementInstrument.setSerialNum(dto.getSerialNum());
         measurementInstrument.setInventoryNum(dto.getInventoryNum());
-        measurementInstrument.setOwner(dto.getOwner());
-        measurementInstrument.setCommissioningYear(dto.getCommissioningYear());
-        measurementInstrument.setManufactureYear(dto.getManufactureYear());
+        measurementInstrument.setOwnerId(dto.getOwnerId());
+        measurementInstrument.setStartUseDate(dto.getStartUseDate());
+        measurementInstrument.setManufactureDate(dto.getManufactureDate());
+        measurementInstrument.setUser(dto.getUser());
         return measurementInstrument;
     }
 }

@@ -153,6 +153,7 @@ public class MiTypeService implements IMiTypeService {
         return ResponseEntity.ok(page);
     }
 
+    @Override
     public ResponseEntity<?> findModifications(int miTypeId){
         Optional<MiType> typeOpt = miTypeRepository.findById(miTypeId);
         if (typeOpt.isPresent()) {
