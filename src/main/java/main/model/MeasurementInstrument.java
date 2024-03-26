@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -19,8 +20,9 @@ public class MeasurementInstrument {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name ="id")
     private int id;
-    @Column(name = "mi_type_id")
-    private int miTypeId; // Идентификатор типа СИ
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "mi_type_id")
+    private MiType miType; // Идентификатор типа СИ
     @Column(name = "modification")
     private String modification; // Модификация
     @Column(name = "serial_number")
@@ -37,13 +39,18 @@ public class MeasurementInstrument {
     private LocalDate validDate; //Дата действия поверки
     @Column(name = "applicable")
     private boolean applicable; //Результат поверки
-    @Column(name = "owner")
-    private long ownerId; // Владелец СИ
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "owner_id")
+    private Organization owner; // Владелец СИ
     @Column(name = "mi_user")
     private String user; // Ответственный за эксплуатацию
+    @Column(name = "creation_date_time")
+    private LocalDateTime creationDateTime;
+    @Column(name = "updating_date_time")
+    private LocalDateTime updatingDateTime;
 
     public void updateFrom(MeasurementInstrument updatingData){
-        this.miTypeId = updatingData.miTypeId;
+        this.miType = updatingData.getMiType();
         this.modification = updatingData.getModification();
         this.serialNum = updatingData.getSerialNum();
         this.inventoryNum = updatingData.getInventoryNum();
@@ -52,7 +59,8 @@ public class MeasurementInstrument {
         this.applicable = updatingData.isApplicable();
         this.manufactureDate = updatingData.getManufactureDate();
         this.startUseDate = updatingData.getStartUseDate();
-        this.ownerId = updatingData.getOwnerId();
+        this.owner = updatingData.getOwner();
         this.user = updatingData.getUser();
+        this.updatingDateTime = LocalDateTime.now();
     }
 }

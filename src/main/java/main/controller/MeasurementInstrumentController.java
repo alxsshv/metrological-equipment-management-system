@@ -2,7 +2,8 @@ package main.controller;
 
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
-import main.dto.MeasurementInstrumentDto;
+import main.dto.MiDto;
+import main.dto.MiFullDto;
 import main.service.measurement_instrument.MeasurementInstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,7 +24,7 @@ public class MeasurementInstrumentController {
     private MeasurementInstrumentService measurementInstrumentService;
 
     @GetMapping("/pages")
-    public Page<MeasurementInstrumentDto> getMeasurementInstrumentPageableList(
+    public Page<MiDto> getMeasurementInstrumentPageableList(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNum,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir){
@@ -41,7 +42,7 @@ public class MeasurementInstrumentController {
     }
 
     @GetMapping
-    public List<MeasurementInstrumentDto> getMeasurementInstrumentWthoutPageableList(){
+    public List<MiDto> getMeasurementInstrumentWthoutPageableList(){
         return measurementInstrumentService.findAll();
     }
 
@@ -50,12 +51,12 @@ public class MeasurementInstrumentController {
         return measurementInstrumentService.findById(Integer.parseInt(id));
     }
     @PostMapping
-    public ResponseEntity<?> addMeasurementInstrument(@RequestBody MeasurementInstrumentDto instrumentDto) throws IOException {
+    public ResponseEntity<?> addMeasurementInstrument(@RequestBody MiFullDto instrumentDto) throws IOException {
         return measurementInstrumentService.save(instrumentDto);
     }
 
     @PatchMapping("{id}")
-    public ResponseEntity<?> editMeasurementInstrument(@RequestBody MeasurementInstrumentDto instrumentDto){
+    public ResponseEntity<?> editMeasurementInstrument(@RequestBody MiFullDto instrumentDto){
         return measurementInstrumentService.update(instrumentDto);
     }
 

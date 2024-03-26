@@ -81,17 +81,18 @@
 
         // сохранение в БД;
         $scope.addMi = function () {
+            console.log($scope.owner)
                $http({
                     url: "/mi",
                     method: "POST",
                     data: {
-                        miTypeId: $scope.miType.id,
+                        miType: $scope.miType,
                         modification: $scope.modification,
                         serialNum: $scope.serialNumber,
                         inventoryNum: $scope.inventoryNumber,
                         manufactureDate: new Date($scope.manufactureDate),
                         startUseDate: new Date($scope.startUseDate),
-                        ownerId: $scope.owner.id,
+                        owner: $scope.organization,
                         user: $scope.user
                     }
                 }).then(function successCallback(response) {
@@ -164,6 +165,7 @@
                     <label for="inputText6" class="form-label">Владелец</label>
                     <input type="text" ng-change="searchOrganization()" ng-model="owner" data-bs-toggle="dropdown"
                         class="form-control dropdown-toggle" id="inputText6" value="">
+
                     <ul class="dropdown-menu" ng-model="owner">
                         <li ng-repeat="item in organizations" value="{{item}}"> <a class="dropdown-item"
                                 ng-click="selectOrganization(item)" href="#">{{item.notation}}</a></li>

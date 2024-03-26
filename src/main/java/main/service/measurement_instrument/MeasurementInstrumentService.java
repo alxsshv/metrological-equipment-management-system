@@ -1,9 +1,14 @@
 package main.service.measurement_instrument;
 
-import main.dto.MeasurementInstrumentDto;
+import main.dto.MiDto;
+import main.dto.MiFullDto;
 import main.dto.mappers.MeasurementInstrumentMapper;
 import main.model.MeasurementInstrument;
+import main.model.MiType;
+import main.model.Organization;
 import main.repository.MeasurementInstrumentRepository;
+import main.repository.MiTypeRepository;
+import main.repository.OrganizationRepository;
 import main.service.ServiceMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,13 +25,19 @@ import java.util.Optional;
 public class MeasurementInstrumentService implements IMeasurementInstrumentService {
     public static final Logger log = LoggerFactory.getLogger(MeasurementInstrumentService.class);
     private final MeasurementInstrumentRepository measurementInstrumentRepository;
+    private final OrganizationRepository organizationRepository;
+    private final MiTypeRepository miTypeRepository;
 
-    public MeasurementInstrumentService(MeasurementInstrumentRepository measurementInstrumentRepository) {
+    public MeasurementInstrumentService(MeasurementInstrumentRepository measurementInstrumentRepository,
+                                        OrganizationRepository organizationRepository,
+                                        MiTypeRepository miTypeRepository) {
         this.measurementInstrumentRepository = measurementInstrumentRepository;
+        this.organizationRepository = organizationRepository;
+        this.miTypeRepository = miTypeRepository;
     }
 
     @Override
-    public ResponseEntity<?> save(MeasurementInstrumentDto instrumentDto) {
+    public ResponseEntity<?> save(MiFullDto instrumentDto) {
         String errorMessage = checkMeasurementInstrumentDtoComposition(instrumentDto);
         if (!errorMessage.isEmpty()) {
             log.info(errorMessage);
@@ -40,7 +52,9 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
             return ResponseEntity.status(422).body(
                     new ServiceMessage(errorMessage));
         }
-        measurementInstrumentRepository.save(MeasurementInstrumentMapper.mapToEntity(instrumentDto));
+        MeasurementInstrument instrument = MeasurementInstrumentMapper.mapToEntity(instrumentDto);
+        instrument.setCreationDateTime(LocalDateTime.now());
+        measurementInstrumentRepository.save(instrument);
         String okMessage = "Запись о средстве измерений " + instrumentDto.getModification() + " зав. № " +
                 instrumentDto.getSerialNum() + " успешно добавлена";
         log.info(okMessage);
@@ -48,18 +62,30 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
 
     }
 
-    private String checkMeasurementInstrumentDtoComposition(MeasurementInstrumentDto dto){
+    private String checkMeasurementInstrumentDtoComposition(MiFullDto dto){
         if (dto.getModification() == null || dto.getModification().isEmpty()) {
             return "Некорректно указана мдификация средства измерений";
         }
         if (dto.getSerialNum() == null || dto.getSerialNum().isEmpty()){
             return "Пожалуйста заполните заводской номер средства измерений";
         }
+
+        Optional<MiType> miTypeFromDb = miTypeRepository.findById(dto.getMiType().getId());
+        if (miTypeFromDb.isEmpty()){
+            return "Выбранный тип средства измерений отсутствует в базе данных пожалуйста выберите имеющийся тип" +
+                    " средства измерений  или добавьте требуемый тип средства измерений в базу";
+        }
+        Optional<Organization> ownerFromDb = organizationRepository.findById(dto.getOwner().getId());
+        if (ownerFromDb.isEmpty()){
+            return "Указанная организация отсутствует в базе данных, пожалуйста проверьте правильность выбора " +
+                    "организации или добавьте требуемую организацию в базу данных";
+        }
+
         return "";
     }
 
     @Override
-    public ResponseEntity<?> update(MeasurementInstrumentDto instrumentDto) {
+    public ResponseEntity<?> update(MiFullDto instrumentDto) {
         String errorMessage = checkMeasurementInstrumentDtoComposition(instrumentDto);
         if (!errorMessage.isEmpty()) {
             log.info(errorMessage);
@@ -102,7 +128,7 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
     public ResponseEntity<?> findById(int id) {
         Optional<MeasurementInstrument> instrumentOpt = measurementInstrumentRepository.findById(id);
         if (instrumentOpt.isPresent()) {
-            MeasurementInstrumentDto dto = MeasurementInstrumentMapper.mapToDto(instrumentOpt.get());
+            MiFullDto dto = MeasurementInstrumentMapper.mapToFullDto(instrumentOpt.get());
             return ResponseEntity.ok(dto);
         } else {
             return ResponseEntity.notFound().build();
@@ -116,7 +142,7 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
             log.info(errorMessage);
             return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
         }
-        Page<MeasurementInstrumentDto> page =  measurementInstrumentRepository
+        Page<MiDto> page =  measurementInstrumentRepository
                 .findByModificationOrSerialNumOrInventoryNumContaining(
                         searchString.trim(),searchString.trim(),searchString.trim(), pageable)
                 .map(MeasurementInstrumentMapper::mapToDto);
@@ -124,12 +150,12 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
     }
 
     @Override
-    public Page<MeasurementInstrumentDto> findAll(Pageable pageable) {
+    public Page<MiDto> findAll(Pageable pageable) {
         return measurementInstrumentRepository.findAll(pageable).map(MeasurementInstrumentMapper ::mapToDto);
     }
 
     @Override
-    public List<MeasurementInstrumentDto> findAll() {
+    public List<MiDto> findAll() {
         return measurementInstrumentRepository.findAll().stream().map(MeasurementInstrumentMapper::mapToDto).toList();
     }
 }
