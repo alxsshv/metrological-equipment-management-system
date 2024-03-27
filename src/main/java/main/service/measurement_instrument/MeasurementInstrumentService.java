@@ -124,7 +124,7 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
         measurementInstrumentRepository.delete(instrumentOpt.get());
-        String okMessage ="Запись о средстве измерений" + instrumentOpt.get().getModification() +" зав. № "
+        String okMessage ="Запись о средстве измерений " + instrumentOpt.get().getModification() +" зав. № "
                 + instrumentOpt.get().getSerialNum() + " успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
@@ -149,7 +149,7 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
             return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
         }
         Page<MiDto> page =  measurementInstrumentRepository
-                .findByModificationOrSerialNumOrInventoryNumContaining(
+                .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
                         searchString.trim(),searchString.trim(),searchString.trim(), pageable)
                 .map(MeasurementInstrumentMapper::mapToDto);
         return ResponseEntity.ok(page);

@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Добавление средства измерений</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/jquery-3.7.1.min.js"></script>
+</head>
+<script type="text/javascript">
+    var app = angular.module("MI_FORM", []);
+    var idAttr = new URL(document.URL).searchParams.get("id");
+    app.controller("MI_FORM_CTRL", function ($scope, $http) {
+
+        $scope.getMeasurementInstrument = function () {
+            $http({
+                url: "/mi/" + idAttr,
+                method: "GET"
+            }).then(function (response) {
+                $scope.mi = response.data;
+                $scope.miType = $scope.mi.miType;
+                $scope.typeNumber = $scope.mi.miType.number;
+                $scope.typeTitle = $scope.mi.miType.title;
+                $scope.modification = $scope.mi.modification;
+                $scope.serialNumber = $scope.mi.serialNum;
+                $scope.inventoryNumber = $scope.mi.inventoryNum;
+                if ($scope.mi.manufactureDate != null){
+                    $scope.manufactureDate = new Date($scope.mi.manufactureDate);
+                } 
+                if ($scope.mi.startUseDate != null){
+                $scope.startUseDate = new Date ($scope.mi.startUseDate);
+                }
+                if ($scope.mi.verificationDate != null){
+                $scope.verificationDate = new Date($scope.mi.verificationDate);
+                }
+                if ($scope.mi.validDate){
+                    $scope.validDate = new Date($scope.mi.validDate);
+                }
+                $scope.applicable = $scope.mi.applicable;
+                $scope.organization = $scope.mi.owner;
+                $scope.owner = $scope.mi.owner.notation;
+                $scope.user = $scope.mi.user;
+
+            });
+        }
+
+
+        $scope.getMeasurementInstrument();
+
+        // Поиск типа СИ по номеру в ФИФ ОЕИ
+        $scope.searchTypeOnNumber = function () {
+            if (/^[0-9]{5}-[0-9]{2}$/.exec($scope.typeNumber)) {
+                console.log("Поиск типа си")
+                $http({
+                    url: "/mit/search?search=" + $scope.typeNumber,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.miType = response.data.content[0];
+                    $scope.typeTitle = $scope.miType.title;
+                    console.log($scope.miType)
+                });
+            }
+        }
+
+        //Поиск типа СИ по подстроке
+        $scope.types = [];
+        $scope.searchType = function () {
+            if ($scope.typeTitle.length > 3) {
+                $http({
+                    url: "/mit/search?search=" + $scope.typeTitle,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.types = response.data.content;
+                });
+            }
+        }
+
+        //Получение модификаций для выбранного типа СИ
+        $scope.modifications = [];
+        $scope.getModifications = function () {
+            if ($scope.miType.id >= 0 ) {
+                $http({
+                    url: "/mit/modifications/" + $scope.miType.id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.modifications = response.data;
+                });
+            }
+        }
+
+    
+        $scope.selectType = function (item) {
+            $scope.miType = item;
+            $scope.typeTitle = $scope.miType.title;
+            $scope.typeNumber = $scope.miType.number;
+            $scope.getModifications();
+        }
+
+        $scope.organizations = [];
+        $scope.searchOrganization = function () {
+            if ($scope.owner.length >= 3) {
+                $http({
+                    url: "/organization/search?search=" + $scope.owner,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.organizations = response.data;
+                });
+            }
+        }
+
+        $scope.selectOrganization = function (item) {
+            $scope.organization = item;
+            $scope.owner = $scope.organization.notation;
+        }
+
+        // сохранение в БД;
+        $scope.addMi = function () {
+            console.log($scope.owner)
+               $http({
+                    url: "/mi/" + idAttr,
+                    method: "PATCH",
+                    data: {
+                        miType: $scope.miType,
+                        modification: $scope.modification,
+                        serialNum: $scope.serialNumber,
+                        inventoryNum: $scope.inventoryNumber,
+                        manufactureDate: new Date($scope.manufactureDate),
+                        startUseDate: new Date($scope.startUseDate),
+                        verificationDate: new Date($scope.verificationDate),
+                        validDate: new Date($scope.validDate),
+                        applicable: $scope.applicable,
+                        owner: $scope.organization,
+                        user: $scope.user
+                    }
+                }).then(function successCallback(response) {
+                    alert(response.data.message);
+                }, function errorCallback(response) {
+                    alert(response.data.message)
+                });
+        }
+
+    });
+</script>
+
+<body ng-app="MI_FORM" ng-controller="MI_FORM_CTRL">
+    <div class="container text-left">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/mis'">Перечень
+                    средств измерений</button>
+            </form>
+        </nav>
+
+        <div class="row text-center">
+            <h5>Добавление сведений о средстве измерений</h5>
+        </div>
+        <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="row g-2">
+                <div class="col-md-2">
+                    <label for="inputText1" class="form-label">№ типа СИ</label>
+                    <input type="text" ng-change="searchTypeOnNumber()" ng-model="typeNumber" placeholder="XXXXX-XX"
+                        class="form-control" id="inputText1" value="" required>
+                </div>
+                <div class="col-md-5 ">
+                    <label for="inputText2" class="form-label">Наименование типа</label>
+                    <input type="text" ng-change="searchType()" ng-model="typeTitle" data-bs-toggle="dropdown"
+                        class="form-control dropdown-toggle" id="inputText2" value="">
+
+                    <ul class="dropdown-menu" ng-model="typeTitle">
+                        <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
+                                ng-click="selectType(item)" href="#">{{item.number}} {{item.title}} {{item.notation}}</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-2">
+                    <label for="inputText3" class="form-label">Обозначение типа СИ</label>
+                    <input type="text" ng-model="miType.notation" class="form-control" id="inputText3" value="">
+                </div>
+                <div class="col-md-3">
+                    <label for="select1" class="form-label">Модификация</label>
+                    <select ng-model="modification" class="form-select mb-3" aria-label="Заводской номер">
+                        <option ng-repeat="modification in modifications" value="{{modification}}">
+                            {{modification}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <p></p>
+
+        <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label for="inputText4" class="form-label">Заводской №</label>
+                    <input type="text" ng-model="serialNumber" class="form-control" id="inputText4" value="" required>
+                </div>
+                <div class="col-md-3">
+                    <label for="inputText5" class="form-label">Инвентарный №</label>
+                    <input type="text" ng-model="inventoryNumber" class="form-control" id="inputText5" value="" required>
+                </div>
+                <div class="col-md-6 ">
+                    <label for="inputText6" class="form-label">Владелец</label>
+                    <input type="text" ng-change="searchOrganization()" ng-model="owner" data-bs-toggle="dropdown"
+                        class="form-control dropdown-toggle" id="inputText6" value="">
+
+                    <ul class="dropdown-menu" ng-model="owner">
+                        <li ng-repeat="item in organizations" value="{{item}}"> <a class="dropdown-item"
+                                ng-click="selectOrganization(item)" href="#">{{item.notation}}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label for="inputDate1" class="form-label">Изготовлено</label>
+                    <input type="date" ng-model="manufactureDate" ng-model-options="{timezone: 'UTC'}" class="form-control" id="inputDate1" value="">
+                </div>
+                <div class="col-md-3">
+                    <label for="inputDate2" class="form-label">Введено в эксплуатацию</label>
+                    <input type="date" ng-model="startUseDate" ng-model-options="{timezone: 'UTC'}" class="form-control" id="inputDate2" value="">
+                </div>
+                <div class="col-md-6">
+                    <label for="inputText7" class="form-label">Ответственный за эксплуатацию</label>
+                    <input type="text" ng-model="user" class="form-control" id="inputText7" value="" required>
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+
+        <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <label for="inputDate3" class="form-label">Дата поверки</label>
+                    <input type="date" ng-model="verificationDate" ng-model-options="{timezone: 'UTC'}"
+                        class="form-control" id="inputDate3" value="" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="inputDate4" class="form-label">Действительно до</label>
+                    <input type="date" ng-model="validDate" ng-model-options="{timezone: 'UTC'}"
+                        class="form-control" id="inputDate4" value="" required>
+                </div>
+                <div class="col-md-4">
+                    <label for="select2" class="form-label">Пригодность</label>
+                    <select ng-model="applicable" class="form-select" aria-label="Заводской номер">
+                        <option value="true">Пригоден</option>
+                        <option value="false">Непригоден</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+
+        <div class="col-12">
+            <button class="btn btn-primary" ng-click="addMi()" type="button">Добавить</button>
+        </div>
+    </div>
+    </div>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

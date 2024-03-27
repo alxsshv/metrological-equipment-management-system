@@ -1,5 +1,6 @@
 package main.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class MiType {
     private double verificationPeriod; //межповерочный интервал, лет
     @OneToMany(mappedBy = "miType", cascade = CascadeType.ALL, orphanRemoval = true)
     @Column(name = "modifications")
+    @JsonIgnore
     private List<MiTypeModification> modifications = new ArrayList<>(); // Модификации
 
     public void addModification(MiTypeModification modification){

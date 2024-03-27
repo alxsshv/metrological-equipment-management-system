@@ -41,7 +41,7 @@ public class OrganizationService {
                     new ServiceMessage(errorMessage));
         }
         organizationRepository.save(OrganizationDtoMapper.mapToEntity(organizationDto));
-        String okMessage = "Запись о типе СИ № " + organizationDto.getNotation() + " успешно добавлена";
+        String okMessage = "Запись об организации " + organizationDto.getNotation() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

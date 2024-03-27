@@ -33,7 +33,7 @@ public class MeasurementInstrumentController {
         return measurementInstrumentService.findAll(pageable);
     }
 
-    @GetMapping("/search")
+    @GetMapping("/pages/search")
     public ResponseEntity<?> searchMeasurementInstrument(
             @RequestParam(value = "search", required = true) String searchString){
         Pageable pageable = PageRequest.of(0,10,
