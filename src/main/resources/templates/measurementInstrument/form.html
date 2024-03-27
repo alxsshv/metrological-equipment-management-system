@@ -92,6 +92,9 @@
                         inventoryNum: $scope.inventoryNumber,
                         manufactureDate: new Date($scope.manufactureDate),
                         startUseDate: new Date($scope.startUseDate),
+                        verificationDate: new Date($scope.verificationDate),
+                        validDate: new Date($scope.validDate),
+                        applicable: $scope.applicable,
                         owner: $scope.organization,
                         user: $scope.user
                     }
@@ -194,17 +197,17 @@
             <div class="row g-2">
                 <div class="col-md-4">
                     <label for="inputDate3" class="form-label">Дата поверки</label>
-                    <input type="date" ng-model="mi.verificationDate" ng-model-options="{timezone: 'UTC'}"
+                    <input type="date" ng-model="verificationDate" ng-model-options="{timezone: 'UTC'}"
                         class="form-control" id="inputDate3" value="" required>
                 </div>
                 <div class="col-md-4">
                     <label for="inputDate4" class="form-label">Действительно до</label>
-                    <input type="date" ng-model="mi.validDate" ng-model-options="{timezone: 'UTC'}"
+                    <input type="date" ng-model="validDate" ng-model-options="{timezone: 'UTC'}"
                         class="form-control" id="inputDate4" value="" required>
                 </div>
                 <div class="col-md-4">
                     <label for="select2" class="form-label">Пригодность</label>
-                    <select ng-model="mi.applicable" class="form-select" aria-label="Заводской номер">
+                    <select ng-model="applicable" class="form-select" aria-label="Заводской номер">
                         <option value="true">Пригоден</option>
                         <option value="false">Непригоден</option>
                     </select>

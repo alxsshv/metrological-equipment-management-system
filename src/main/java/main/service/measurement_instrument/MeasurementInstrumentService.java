@@ -70,6 +70,12 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
             return "Пожалуйста заполните заводской номер средства измерений";
         }
 
+        if (dto.getMiType() == null){
+            return "Пожалуйста укажите тип средства измерений";
+        }
+        if (dto.getOwner() == null){
+            return "Пожалуйста укажите владельца средства измерений";
+        }
         Optional<MiType> miTypeFromDb = miTypeRepository.findById(dto.getMiType().getId());
         if (miTypeFromDb.isEmpty()){
             return "Выбранный тип средства измерений отсутствует в базе данных пожалуйста выберите имеющийся тип" +
