@@ -57,7 +57,7 @@ public class MiTypeController {
         return miTypeService.save(miTypeDto);
     }
 
-    @PatchMapping("{id}")
+    @PutMapping("{id}")
     public ResponseEntity<?> editMiType(@RequestBody MiTypeFullDto miTypeDto){
         return miTypeService.update(miTypeDto);
     }

@@ -28,7 +28,7 @@
             $scope.saveEmployee = function(){
             $http({
                 url: "/employee/"+idAttr,
-                method: "PATCH",
+                method: "PUT",
                 data: {
                     id:idAttr,
                     snils:$scope.employee.snils,

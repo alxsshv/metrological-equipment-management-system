@@ -29,7 +29,7 @@
         $scope.updateOrganization = function () {
             $http({
                 url: "/organization/" + idAttr,
-                method: "PATCH",
+                method: "PUT",
                 data: $scope.organization
             }).then(function successCallback(response) {
                 alert(response.data.message);

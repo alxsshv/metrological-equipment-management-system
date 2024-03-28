@@ -19,6 +19,10 @@ public class OrganizationDtoMapper {
         dto.setTitle(organization.getTitle());
         dto.setNotation(organization.getNotation());
         dto.setAddress(organization.getAddress());
+        dto.setCreationDateTime(organization.getCreationDateTime().toString());
+        if (organization.getUpdatingDateTime() != null) {
+            dto.setUpdatingDateTime(organization.getUpdatingDateTime().toString());
+        }
         return dto;
     }
 }

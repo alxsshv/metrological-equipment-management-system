@@ -51,7 +51,7 @@ public class EmployeeController {
         return employeeService.save(employeeDto);
     }
 
-    @PatchMapping("{id}")
+    @PutMapping("{id}")
     public ResponseEntity<?> editEmployee(@RequestBody EmployeeDto employeeDto){
         return employeeService.update(employeeDto);
     }

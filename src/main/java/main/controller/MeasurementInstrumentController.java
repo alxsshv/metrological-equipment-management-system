@@ -55,7 +55,7 @@ public class MeasurementInstrumentController {
         return measurementInstrumentService.save(instrumentDto);
     }
 
-    @PatchMapping("{id}")
+    @PutMapping("{id}")
     public ResponseEntity<?> editMeasurementInstrument(@RequestBody MiFullDto instrumentDto){
         return measurementInstrumentService.update(instrumentDto);
     }

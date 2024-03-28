@@ -32,7 +32,7 @@
         $scope.updateMiType = function () {
             $http({
                 url: "/mit/" + idAttr,
-                method: "PATCH",
+                method: "PUT",
                 data: {
                     id:idAttr,
                     number: $scope.miType.number,

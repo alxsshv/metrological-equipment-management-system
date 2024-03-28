@@ -21,7 +21,17 @@
                 method: "GET"
             }).then(function (response) {
                 $scope.organization = response.data;
+                $scope.formatDateFieldsFromOrganization();
             });
+        }
+
+        $scope.formatDateFieldsFromOrganization = function(){
+            if ($scope.organization.creationDateTime != null){
+                $scope.organization.creationDateTime = new Date($scope.organization.creationDateTime);
+            }
+            if ($scope.organization.updatingDateTime != null){
+                $scope.organization.updatingDateTime = new Date($scope.organization.updatingDateTime);
+            }
         }
 
         $scope.getOrganization();
@@ -53,6 +63,15 @@
 
                     <dt class="col-sm-6 text-truncate">Адрес</dt>
                     <dd ng-model="type" class="col-sm-6">{{organization.address}}</dd>
+            </div>
+        </div>
+        <div class="row text-start">
+            <div class="col-sm-6">
+                <dt class="col-sm-6"><i>Запись создана<i></dt>
+                <dd class="col-sm-6"><i>{{organization.creationDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+
+                <dt class="col-sm-3"><i>Запись обновлена<i></dt>
+                <dd class="col-sm-3"><i>{{organization.updatingDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
             </div>
         </div>
     </div>

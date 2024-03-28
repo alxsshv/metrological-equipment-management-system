@@ -58,7 +58,7 @@ public class OrganizationController {
         return organizationService.save(organizationDto);
     }
 
-    @PatchMapping("{id}")
+    @PutMapping("{id}")
     public ResponseEntity<?> editOrganization(@RequestBody OrganizationDto organizationDto){
         return organizationService.update(organizationDto);
     }

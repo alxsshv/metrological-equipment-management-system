@@ -26,6 +26,19 @@
                 $scope.modification = $scope.mi.modification;
                 $scope.serialNumber = $scope.mi.serialNum;
                 $scope.inventoryNumber = $scope.mi.inventoryNum;
+                $scope.organization = $scope.mi.owner;
+                $scope.owner = $scope.mi.owner.notation;
+                $scope.user = $scope.mi.user;
+                $scope.formatDateFieldsFromMi();
+                $scope.setApplicableFromMi(); 
+                $scope.getModifications();
+            });
+        }
+
+
+        $scope.getMeasurementInstrument();
+
+        $scope.formatDateFieldsFromMi = function(){
                 if ($scope.mi.manufactureDate != null){
                     $scope.manufactureDate = new Date($scope.mi.manufactureDate);
                 } 
@@ -38,26 +51,16 @@
                 if ($scope.mi.validDate){
                     $scope.validDate = new Date($scope.mi.validDate);
                 }
-                $scope.organization = $scope.mi.owner;
-                $scope.owner = $scope.mi.owner.notation;
-                $scope.user = $scope.mi.user;
-                $scope.setApplicableFromMi();  
-            });
         }
 
-
-        $scope.getMeasurementInstrument();
-
         $scope.applicables = [{'title' : 'Пригоден', 'value' : true},
-                                    {'title' : 'Непригоден', 'value' : false}];
+                              {'title' : 'Непригоден', 'value' : false}];
         
         $scope.applicable = {'title' : 'Пригоден', 'value' : true};
         $scope.setApplicableFromMi = function(){
-            console.log($scope.mi);
             if($scope.mi.applicable == false){
                 $scope.applicable = {'title' : 'Непригоден', 'value' : false};
             }
-            console.log($scope.applicable);    
         } 
 
 
@@ -129,15 +132,14 @@
             $scope.owner = $scope.organization.notation;
         }
 
-
-
         // сохранение в БД;
         $scope.addMi = function () {
             console.log($scope.owner)
                $http({
                     url: "/mi/" + idAttr,
-                    method: "PATCH",
+                    method: "PUT",
                     data: {
+                        id: idAttr,
                         miType: $scope.miType,
                         modification: $scope.modification,
                         serialNum: $scope.serialNumber,
@@ -146,7 +148,7 @@
                         startUseDate: new Date($scope.startUseDate),
                         verificationDate: new Date($scope.verificationDate),
                         validDate: new Date($scope.validDate),
-                        applicable: $scope.applicable,
+                        applicable: $scope.applicable.value,
                         owner: $scope.organization,
                         user: $scope.user
                     }
@@ -196,11 +198,9 @@
                 </div>
                 <div class="col-md-3">
                     <label for="select1" class="form-label">Модификация</label>
-                    <select ng-model="modification" class="form-select mb-3" aria-label="Заводской номер">
-                        <option ng-repeat="modification in modifications" value="{{modification}}">
-                            {{modification}}
-                        </option>
-                    </select>
+                    <select ng-model="modification" ng-options="modification as modification for modification in modifications track by modification"
+                      class="form-select" aria-label="Пригодность">
+                    </select>                
                 </div>
             </div>
         </div>

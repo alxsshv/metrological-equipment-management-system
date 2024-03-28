@@ -12,4 +12,6 @@ public class OrganizationDto {
     private String title;
     private String notation;
     private String address;
+    private String creationDateTime;
+    private String updatingDateTime;
 }

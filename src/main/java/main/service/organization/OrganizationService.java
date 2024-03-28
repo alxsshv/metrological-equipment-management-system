@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,11 +41,14 @@ public class OrganizationService {
             return ResponseEntity.status(422).body(
                     new ServiceMessage(errorMessage));
         }
-        organizationRepository.save(OrganizationDtoMapper.mapToEntity(organizationDto));
+        Organization organization = OrganizationDtoMapper.mapToEntity(organizationDto);
+        organization.setCreationDateTime(LocalDateTime.now());
+        organizationRepository.save(organization);
         String okMessage = "Запись об организации " + organizationDto.getNotation() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
+
     private String checkOrganisationDtoComposition(OrganizationDto organizationDto){
         if (organizationDto.getTitle() == null || organizationDto.getTitle().isEmpty()) {
             return "Пожалуйста заполните полное наименование организации";
