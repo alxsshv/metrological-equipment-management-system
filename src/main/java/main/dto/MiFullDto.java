@@ -7,7 +7,7 @@ import main.model.MiType;
 import main.model.Organization;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+
 
 @NoArgsConstructor
 @Setter
@@ -25,7 +25,7 @@ public class MiFullDto {
     private boolean applicable;
     private Organization owner;
     private String user;
-    private LocalDateTime creationDateTime;
-    private LocalDateTime updatingDateTime;
+    private String creationDateTime;
+    private String updatingDateTime;
 
 }

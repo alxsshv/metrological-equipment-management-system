@@ -36,21 +36,21 @@ public class WebController {
     //Вывод шаблонов для типов средств измерений
     @GetMapping("/mits/form")
     public String getMiTypeFormView(){
-        return "miType/miTypeForm";
+        return "miType/form";
     }
     @GetMapping("/mits")
     public String getMiTypeListView(){
-        return "miType/miTypeList";
+        return "miType/list";
     }
     @GetMapping("/mits/{id}")
     public String getMiTypeView(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
-        return "miType/miTypeCard";
+        return "miType/card";
     }
     @GetMapping("/mits/form/{id}")
     public String getEditMiTypeForm(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
-        return "miType/miTypeEdit";
+        return "miType/edit";
     }
 
     //Вывод шаблонов для средств измерений

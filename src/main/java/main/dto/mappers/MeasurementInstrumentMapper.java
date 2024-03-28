@@ -31,8 +31,10 @@ public class MeasurementInstrumentMapper {
         dto.setStartUseDate(measurementInstrument.getStartUseDate());
         dto.setOwner(measurementInstrument.getOwner());
         dto.setUser(measurementInstrument.getUser());
-        dto.setCreationDateTime(measurementInstrument.getCreationDateTime());
-        dto.setUpdatingDateTime(measurementInstrument.getUpdatingDateTime());
+        dto.setCreationDateTime(measurementInstrument.getCreationDateTime().toString());
+        if (measurementInstrument.getUpdatingDateTime()!= null) {
+            dto.setUpdatingDateTime(measurementInstrument.getUpdatingDateTime().toString());
+        }
         return dto;
     }
     public static MeasurementInstrument mapToEntity (MiFullDto dto){

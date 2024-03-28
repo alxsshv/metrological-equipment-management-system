@@ -28,18 +28,25 @@
 
 
         $scope.formatMiDateFields = function () {
-            if ($scope.mi.manufactureDate != null){
-            $scope.mi.manufactureDate = new Date($scope.mi.manufactureDate);
+            if ($scope.mi.manufactureDate != null) {
+                $scope.mi.manufactureDate = new Date($scope.mi.manufactureDate);
             }
-            if ($scope.mi.startUseDate != null){
-            $scope.mi.startUseDate = new Date($scope.mi.startUseDate);
+            if ($scope.mi.startUseDate != null) {
+                $scope.mi.startUseDate = new Date($scope.mi.startUseDate);
             }
-            if ($scope.mi.verificationDate != null){
-            $scope.mi.verificationDate = new Date($scope.mi.verificationDate);
+            if ($scope.mi.verificationDate != null) {
+                $scope.mi.verificationDate = new Date($scope.mi.verificationDate);
             }
-            if ($scope.mi.validDate != null){
-            $scope.mi.validDate = new Date($scope.mi.validDate);
+            if ($scope.mi.validDate != null) {
+                $scope.mi.validDate = new Date($scope.mi.validDate);
             }
+            if ($scope.mi.creationDateTime != null) {
+                $scope.mi.creationDateTime = new Date($scope.mi.creationDateTime);
+            }
+            if ($scope.mi.updatingDateTime != null) {
+                $scope.mi.updatingDateTime = new Date($scope.mi.updatingDateTime);
+            }
+
         }
 
         $scope.getMeasurementInstrument();
@@ -61,7 +68,7 @@
         </nav>
 
         <div class="row">
-            <div class="col-sm-7">
+            <div class="col-sm-6">
                 <dl class="row text-start">
                     <h5>Основные сведения о средстве измерений</h5>
 
@@ -87,17 +94,19 @@
 
                     <h5>Сведения о владельце</h5>
 
-                    <dt class="col-sm-6 text-truncate">Наименование</dt>
+                    <dt class="col-sm-6">Наименование</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.owner. title}}</dd>
 
-                    <dt class="col-sm-6 text-truncate"></dt>
+                    <dt class="col-sm-6"></dt>
                     <dd ng-model="type" class="col-sm-6">({{mi.owner.notation}})</dd>
 
-                    <dt class="col-sm-6 text-truncate">Адрес</dt>
+                    <dt class="col-sm-6">Адрес</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.owner. address}}</dd>
+
+
             </div>
 
-            <div class="col-sm-5">
+            <div class="col-sm-4">
                 <dl class="row text-start">
                     <h5>Результаты поверки</h5>
 
@@ -109,6 +118,16 @@
 
                     <dt class="col-sm-6 ">Пригоден</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.applicable}}</dd>
+            </div>
+        </div>
+        <p></p>
+        <div class="row text-start">
+            <div class="col-sm-6">
+                <dt class="col-sm-6"><i>Запись создана<i></dt>
+                <dd class="col-sm-6"><i>{{mi.creationDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+
+                <dt class="col-sm-3"><i>Запись обновлена<i></dt>
+                <dd class="col-sm-3"><i>{{mi.updatingDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
             </div>
         </div>
     </div>
