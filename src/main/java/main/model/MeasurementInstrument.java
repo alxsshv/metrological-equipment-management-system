@@ -12,9 +12,9 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "measurement_instruments")
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "measurement_instruments")
 public class MeasurementInstrument {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -39,6 +39,10 @@ public class MeasurementInstrument {
     private LocalDate validDate; //Дата действия поверки
     @Column(name = "applicable")
     private boolean applicable; //Результат поверки
+    @Column(name = "verification_organization")
+    private String verificationOrganization; // Организация-поверитель
+    @Column(name = "certificate_number")
+    private String certificateNumber; // номер свидетельства о поверке
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private Organization owner; // Владелец СИ
