@@ -13,7 +13,7 @@ import main.model.Employee;
 public class Record {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private long id;
     @Column(name = "arshin_record_number")
     private String arshinRecordNumber;
     @Column(name = "mi_type_number")

@@ -8,7 +8,7 @@ import main.model.MiTypeInstruction;
 import main.repository.MiTypeInstructionRepository;
 import main.repository.MiTypeModificationRepository;
 import main.repository.MiTypeRepository;
-import main.service.mi_type.MiTypeService;
+import main.service.implementations.MiTypeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -35,7 +35,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test save if miType already exists")
     public void testSaveIfMiTypeAlreadyExists(){
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiTypeFullDto miTypeDto = new MiTypeFullDto();
         miTypeDto.setId(miTypeId);
         miTypeDto.setNumber("12345-12");
@@ -57,7 +57,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test save if number is not corrected")
     public void testSaveIfMiTypeNumberIsNotCorrected() {
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiTypeFullDto miTypeDto = new MiTypeFullDto();
         miTypeDto.setId(miTypeId);
         miTypeDto.setNumber("12345678");
@@ -79,7 +79,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test save if title is null")
     public void testSaveIfMiTypeTitleIsNull() {
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiTypeFullDto miTypeDto = new MiTypeFullDto();
         miTypeDto.setId(miTypeId);
         miTypeDto.setNumber("12345-78");
@@ -100,7 +100,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test save if modification is null")
     public void testSaveIfMiTypeModificationIsNull() {
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiTypeFullDto miTypeDto = new MiTypeFullDto();
         miTypeDto.setId(miTypeId);
         miTypeDto.setNumber("12345-78");
@@ -118,7 +118,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test save if created new MiType")
     public void testSaveIfCreatedNewMiType(){
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiTypeFullDto miTypeDto = new MiTypeFullDto();
         miTypeDto.setId(miTypeId);
         miTypeDto.setNumber("12345-12");
@@ -138,7 +138,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test update if miType not found")
     public void testUpdateIfMiTypeNotFound(){
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiTypeFullDto miTypeDto = new MiTypeFullDto();
         miTypeDto.setId(miTypeId);
         miTypeDto.setNumber("12345-12");
@@ -158,7 +158,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test update if modification is null")
     public void testUpdateIfMiTypeModificationIsNull() {
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiTypeFullDto miTypeDto = new MiTypeFullDto();
         miTypeDto.setId(miTypeId);
         miTypeDto.setNumber("12345-78");
@@ -175,7 +175,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test delete if miType not found")
     public void testDeleteIfMiTypeNotFound() {
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiType miType = new MiType();
         miType.setId(miTypeId);
         miType.setNumber("12345-78");
@@ -191,7 +191,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test delete if miType found")
     public void testDeleteIfMiTypeFound() {
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiType miType = new MiType();
         miType.setId(miTypeId);
         miType.setNumber("12345-78");
@@ -207,7 +207,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test findById if miType found")
     public void testFindByIDIfMiTypeFound() {
-        int miTypeId = 5;
+        long miTypeId = 5L;
         MiTypeInstruction instruction = new MiTypeInstruction();
         MiType miType = new MiType();
         miType.setId(miTypeId);
@@ -224,7 +224,7 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test findById if miType not found")
     public void testFindByIDIfMiTypeNotFound() {
-        int miTypeId = 5;
+        long miTypeId = 5L;
         when(miTypeRepository.findById(miTypeId)).thenReturn(Optional.empty());
         ResponseEntity<?> responseEntity = miTypeService.findById(miTypeId);
         assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
@@ -245,11 +245,11 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test findBySearchString if searchString is not empty")
     public void testFindBySearchStringIfMiTypeNotFound() {
-        int totalPages = 1;
+        long totalPages = 1L;
         String searchString = "В7-78";
         List <MiType> findedMiTypes = new ArrayList<>();
         MiType miType = new MiType();
-        miType.setId(1);
+        miType.setId(1L);
         miType.setNumber("12345-78");
         miType.setTitle("Вольтметры");
         miType.setNotation("В7-78");
@@ -271,7 +271,7 @@ public class MiTypeServiceTest {
         int totalPages = 1;
         List <MiType> miTypes = new ArrayList<>();
         MiType miType = new MiType();
-        miType.setId(1);
+        miType.setId(1L);
         miType.setNumber("12345-78");
         miType.setTitle("Вольтметры");
         miType.setNotation("В7-78");
@@ -289,7 +289,7 @@ public class MiTypeServiceTest {
     public void testFindAllWithoutPageable(){
         List <MiType> miTypes = new ArrayList<>();
         MiType miType1 = new MiType();
-        miType1.setId(1);
+        miType1.setId(1L);
         miType1.setNumber("12345-78");
         miType1.setTitle("Вольтметры");
         miType1.setNotation("В7-78");

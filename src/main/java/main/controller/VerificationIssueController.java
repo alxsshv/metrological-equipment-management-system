@@ -3,7 +3,7 @@ package main.controller;
 
 import main.dto.VerificationRecordDto;
 import main.dto.VerificationIssueDto;
-import main.service.verificationissue.VerificationIssueService;
+import main.service.implementations.VerificationIssueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

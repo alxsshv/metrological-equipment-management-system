@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface EmployeeRepository extends JpaRepository<Employee,Integer> {
+public interface EmployeeRepository extends JpaRepository<Employee,Long> {
 
     Employee findBySnils(String snils);
     Page<Employee> findBySurname(String surname, Pageable pageable);

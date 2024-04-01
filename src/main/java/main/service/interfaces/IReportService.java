@@ -1,4 +1,4 @@
-package main.service.verification;
+package main.service.interfaces;
 
 import main.dto.verification.RecordDto;
 import main.dto.verification.ReportDto;
@@ -9,10 +9,10 @@ import java.util.List;
 public interface IReportService {
     ResponseEntity<?> createReport(ReportDto reportDto);
     ResponseEntity<?> updateRecord(RecordDto recordDto);
-    ResponseEntity<?> findById(int id);
-    ResponseEntity<?> findRecordById(int id);
+    ResponseEntity<?> findById(long id);
+    ResponseEntity<?> findRecordById(long id);
     List<ReportDto> findAll();
-    ResponseEntity<?> deleteReport(int id);
+    ResponseEntity<?> deleteReport(long id);
 
 
 }

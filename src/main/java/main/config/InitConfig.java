@@ -5,9 +5,9 @@ import lombok.NoArgsConstructor;
 import main.dto.EmployeeDto;
 import main.dto.MiTypeFullDto;
 import main.dto.OrganizationDto;
-import main.service.employee.EmployeeService;
-import main.service.mi_type.MiTypeService;
-import main.service.organization.OrganizationService;
+import main.service.implementations.EmployeeService;
+import main.service.implementations.MiTypeService;
+import main.service.implementations.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;

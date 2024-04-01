@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MeasurementInstrumentRepository extends JpaRepository <MeasurementInstrument, Integer> {
+public interface MeasurementInstrumentRepository extends JpaRepository <MeasurementInstrument, Long> {
     MeasurementInstrument findByModificationAndSerialNum(String modification, String serialNum);
     Page<MeasurementInstrument> findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
             String modification,

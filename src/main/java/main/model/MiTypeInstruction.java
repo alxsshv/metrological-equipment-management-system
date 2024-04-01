@@ -11,7 +11,7 @@ import lombok.Setter;
 public class MiTypeInstruction {
     @Id
     @Column(name = "id")
-    private int id;
+    private long id;
     @Column(name = "instruction_notation")
     private String instructionNotation; //Обозначение методики поверки
     @Column(name = "instruction_title")

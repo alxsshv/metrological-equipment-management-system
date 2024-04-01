@@ -1,4 +1,4 @@
-package main.service.verificationissue;
+package main.service.implementations;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -10,6 +10,7 @@ import main.model.VerificationRecord;
 import main.repository.VerificationIssueRepository;
 import main.repository.VerificationRecordRepository;
 import main.service.ServiceMessage;
+import main.service.interfaces.IVerificationIssueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -55,7 +56,7 @@ public class VerificationIssueService implements IVerificationIssueService {
     }
 
     @Override
-    public ResponseEntity<?> findById(int id) {
+    public ResponseEntity<?> findById(long id) {
         Optional<VerificationIssue> issueOpt = verificationIssueRepository.findById(id);
         if (issueOpt.isPresent()) {
             VerificationIssueDto issueDto = IssueDtoMapper.mapIssueToDto(issueOpt.get());
@@ -67,7 +68,7 @@ public class VerificationIssueService implements IVerificationIssueService {
 
 
     @Override
-    public ResponseEntity<?> findRecordById(int id) {
+    public ResponseEntity<?> findRecordById(long id) {
         Optional<VerificationRecord> recordOpt = verificationRecordRepository.findById(id);
         if (recordOpt.isPresent()) {
             VerificationRecordDto recordDto = IssueDtoMapper.mapRecordToDto(recordOpt.get());

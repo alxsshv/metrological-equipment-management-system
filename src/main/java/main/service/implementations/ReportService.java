@@ -1,4 +1,4 @@
-package main.service.verification;
+package main.service.implementations;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -10,6 +10,7 @@ import main.model.verification.Report;
 import main.repository.verification.ReportRepository;
 import main.repository.verification.RecordRepository;
 import main.service.ServiceMessage;
+import main.service.interfaces.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -56,7 +57,7 @@ public class ReportService implements IReportService {
     }
 
     @Override
-    public ResponseEntity<?> findById(int id) {
+    public ResponseEntity<?> findById(long id) {
         Optional<Report> reportOpt = reportRepository.findById(id);
         if (reportOpt.isPresent()) {
             ReportDto reportDto = ReportDtoMapper.mapReportToDto(reportOpt.get());
@@ -68,7 +69,7 @@ public class ReportService implements IReportService {
 
 
     @Override
-    public ResponseEntity<?> findRecordById(int id) {
+    public ResponseEntity<?> findRecordById(long id) {
         Optional<Record> recordOpt = recordRepository.findById(id);
         if (recordOpt.isPresent()) {
             RecordDto recordDto = ReportDtoMapper.mapRecordToDto(recordOpt.get());
@@ -84,7 +85,7 @@ public class ReportService implements IReportService {
                 .stream().map(ReportDtoMapper::mapReportToDto).toList();
     }
 
-    public ResponseEntity<?> deleteReport(int id){
+    public ResponseEntity<?> deleteReport(long id){
         Optional<Report> reportOpt = reportRepository.findById(id);
         if (reportOpt.isPresent()) {
           for (Record record : reportOpt.get().getRecords()){
@@ -99,6 +100,5 @@ public class ReportService implements IReportService {
         System.out.println(errorMessage);
         return ResponseEntity.status(404).body(errorMessage);
     }
-
 
 }

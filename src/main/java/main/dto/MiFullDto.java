@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 public class MiFullDto {
-    private int id;
+    private long id;
     private MiType miType;
     private String modification;
     private String serialNum;

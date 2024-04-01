@@ -4,6 +4,7 @@ import main.dto.EmployeeDto;
 import main.dto.mappers.EmployeeDtoMapper;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
+import main.service.implementations.EmployeeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -43,7 +44,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test save if employee surname is null")
     public void testSaveIfEmployeeSurnameIsNull(){
-        int employeeId = 5;
+        long employeeId = 5L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setName("Ivan");
@@ -58,7 +59,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test save if employee name is null")
     public void testSaveIfEmployeeNameIsNull(){
-        int employeeId = 5;
+        long employeeId = 5L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setSurname("Ivanov");
@@ -73,7 +74,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test save if employee patronymic is null")
     public void testSaveIfEmployeePatronymicIsNull(){
-        int employeeId = 5;
+        long employeeId = 5L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setName("Ivan");
@@ -88,7 +89,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test save if employee snils is not corrected")
     public void testSaveIfEmployeeSnilsIsNotCorrected(){
-        int employeeId = 3;
+        long employeeId = 3L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setName("Ivan");
@@ -104,7 +105,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test save if  created new employee")
     public void testSaveIfCreatedNewEmployee(){
-        int employeeId = 3;
+        long employeeId = 3L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setName("Ivan");
@@ -120,7 +121,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test update If employee found")
     public void testUpdateIfEmployeeFound(){
-        int employeeId = 3;
+        long employeeId = 3L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setName("Ivan");
@@ -137,7 +138,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test update if employee surname is null")
     public void testUpdateIfEmployeeSurnameIsNull(){
-        int employeeId = 3;
+        long employeeId = 3L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setName("Ivan");
@@ -154,7 +155,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test update if employee name is null")
     public void testUpdateIfEmployeeNameIsNull(){
-        int employeeId = 3;
+        long employeeId = 3L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setSurname("Ivanov");
@@ -171,7 +172,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test update if employee patronymic is null")
     public void testUpdateIfEmployeePatronymicIsNull(){
-        int employeeId = 3;
+        long employeeId = 3L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setName("Ivan");
@@ -188,7 +189,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test update if employee snils is not corrected")
     public void testUpdateIfEmployeeSnilsIsNotCorrected(){
-        int employeeId = 3;
+        long employeeId = 3L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(employeeId);
         employeeDto.setName("Ivan");
@@ -206,7 +207,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test update If employee not found")
     public void testUpdateIfEmployeeNotFound(){
-        int employeeId = 3;
+        long employeeId = 3L;
         EmployeeDto employeeDto = new EmployeeDto();
         employeeDto.setId(3);
         employeeDto.setName("Ivan");
@@ -221,7 +222,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test delete if employee found")
     public void testDeleteIfEmployeeFound(){
-        int employeeId = 2;
+        long employeeId = 2L;
         Employee employee = new Employee();
         employee.setId(employeeId);
         employee.setName("Ivan");
@@ -237,7 +238,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test delete if employee not found")
     public void testDeleteIfEmployeeNotFound(){
-        int employeeId = 2;
+        long employeeId = 2L;
         Employee employee = new Employee();
         employee.setId(employeeId);
         employee.setName("Ivan");
@@ -253,7 +254,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test get by Id if employee found")
     public void testGetByIdIfEmployeeFound(){
-        int employeeId = 2;
+        long employeeId = 2L;
         Employee employee = new Employee();
         employee.setId(employeeId);
         employee.setName("Ivan");
@@ -269,7 +270,7 @@ public class EmployeeServiceTest {
     @Test
     @DisplayName("Test get by Id if employee not found")
     public void testGetByIdIfEmployeeNotFound(){
-        int employeeId = 3;
+        long employeeId = 3L;
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
         ResponseEntity<?> responseEntity = employeeService.findById(employeeId);
         assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
@@ -287,7 +288,7 @@ public class EmployeeServiceTest {
         employee.setSnils("11111111111");
         employees.add(employee);
         Pageable pageable = PageRequest.of(1,10, Sort.by(Sort.Direction.ASC, "surname"));
-        long totalEmployees = 10;
+        long totalEmployees = 10L;
         Page<Employee> page = new PageImpl<>(employees,pageable,totalEmployees);
         when(employeeRepository.findBySurname(employee.getSurname(), pageable)).thenReturn(page);
        ResponseEntity<?> responseEntity = employeeService.findBySurname(employee.getSurname(), pageable);
@@ -323,7 +324,7 @@ public class EmployeeServiceTest {
         employee.setSnils("11111111111");
         employees.add(employee);
         Pageable pageable = PageRequest.of(1,10, Sort.by(Sort.Direction.ASC, "surname"));
-        long totalPages = 1;
+        long totalPages = 1L;
         Page<Employee> page = new PageImpl<>(employees,pageable,totalPages);
         when(employeeRepository.findAll(pageable)).thenReturn(page);
         Page<EmployeeDto> employeeDtos = employeeService.findAll(pageable);

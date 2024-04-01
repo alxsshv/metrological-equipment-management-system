@@ -12,7 +12,7 @@ import java.io.FileOutputStream;
 @Service
 public class JaxbWriter {
     protected String filePath = "/home/alexei/dev/";
-    public void write(MessageDto message, int issueNumber){
+    public void write(MessageDto message, long issueNumber){
         try{
             JAXBContext context = JAXBContext.newInstance(MessageDto.class);
             Marshaller marshaller = context.createMarshaller();

@@ -1,4 +1,4 @@
-package main.service.mi_type;
+package main.service.interfaces;
 
 import main.dto.MiTypeDto;
 import main.dto.MiTypeFullDto;
@@ -11,11 +11,11 @@ import java.util.List;
 public interface IMiTypeService {
     ResponseEntity<?> save(MiTypeFullDto miTypeDto);
     ResponseEntity<?> update(MiTypeFullDto miTypeDto);
-    ResponseEntity<?>delete(int id);
-    ResponseEntity<?> findById(int id);
+    ResponseEntity<?>delete(long id);
+    ResponseEntity<?> findById(long id);
     ResponseEntity<?> findByNumber(String number);
     ResponseEntity<?> findBySearchString(String searchString, Pageable pageable);
-    ResponseEntity<?> findModifications(int miTypeId);
+    ResponseEntity<?> findModifications(long miTypeId);
     Page<MiTypeDto> findAll(Pageable pageable);
     List<MiTypeDto> findAll();
 }

@@ -51,7 +51,7 @@ public class XMLService implements IXMLService {
 
 
     private void createFsaXMLForVerificationIssue(String id) {
-        VerificationIssue verificationIssue = issueRepository.getReferenceById(Integer.valueOf(id));
+        VerificationIssue verificationIssue = issueRepository.getReferenceById(Long.valueOf(id));
         MeasuringInstrumentDataDto data = new MeasuringInstrumentDataDto();
         for (VerificationRecord record : verificationIssue.getVerificationRecords()) {
             MeasurementInstrumentDto instrument = MeasurementInstrumentDtoMapper.mapRecordToDto(record);

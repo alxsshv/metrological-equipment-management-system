@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ReportDto {
-    private int id;
+    private long id;
     private String creationDateTime;
     private List<RecordDto> records;
 }

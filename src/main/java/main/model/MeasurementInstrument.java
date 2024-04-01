@@ -19,7 +19,7 @@ public class MeasurementInstrument {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name ="id")
-    private int id;
+    private long id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mi_type_id")
     private MiType miType; // Идентификатор типа СИ

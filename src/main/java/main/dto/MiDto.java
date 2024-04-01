@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Setter
 @Getter
 public class MiDto {
-    private int id;
+    private long id;
     private String miTypeTitle;
     private String modification;
     private String serialNum;

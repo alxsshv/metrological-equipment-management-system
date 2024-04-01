@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 
 @Repository
-public interface VerificationIssueRepository extends JpaRepository<VerificationIssue, Integer> {
+public interface VerificationIssueRepository extends JpaRepository<VerificationIssue, Long> {
 
 }

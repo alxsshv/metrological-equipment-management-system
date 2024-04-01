@@ -12,7 +12,7 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class RecordDto {
-    private int id;
+    private long id;
     private String arshinRecordNumber;
     private String miTypeNumber;
     private String modification;

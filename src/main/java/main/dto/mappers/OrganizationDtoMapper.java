@@ -6,7 +6,6 @@ import main.model.Organization;
 public class OrganizationDtoMapper {
     public static Organization mapToEntity(OrganizationDto dto){
         Organization organization = new Organization();
-        organization.setId(dto.getId());
         organization.setTitle(dto.getTitle());
         organization.setNotation(dto.getNotation());
         organization.setAddress(dto.getAddress());

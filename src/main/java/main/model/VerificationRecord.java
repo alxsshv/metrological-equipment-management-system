@@ -17,7 +17,7 @@ public class VerificationRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
     @Column(name = "number_verification")
     private String numberVerification;
     @Column(name = "date_verification")

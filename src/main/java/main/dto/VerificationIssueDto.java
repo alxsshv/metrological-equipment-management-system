@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class VerificationIssueDto {
-    private int id;
+    private long id;
     private String creationDateTime;
     private List<VerificationRecordDto> verificationRecords;
 

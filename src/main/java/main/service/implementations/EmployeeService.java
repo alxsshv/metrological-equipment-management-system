@@ -1,4 +1,4 @@
-package main.service.employee;
+package main.service.implementations;
 
 import lombok.RequiredArgsConstructor;
 import main.dto.EmployeeDto;
@@ -6,6 +6,7 @@ import main.dto.mappers.EmployeeDtoMapper;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
 import main.service.ServiceMessage;
+import main.service.interfaces.IEmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -91,7 +92,7 @@ public class EmployeeService implements IEmployeeService {
     }
 
 @Override
-    public ResponseEntity<?>delete(int id){
+    public ResponseEntity<?>delete(long id){
         Optional<Employee> userOpt = employeeRepository.findById(id);
         if (userOpt.isEmpty()){
             String errorMessage = "Данные по id = "+ id +" не найдены";
@@ -105,7 +106,7 @@ public class EmployeeService implements IEmployeeService {
     }
 
     @Override
-    public ResponseEntity<?> findById(int id) {
+    public ResponseEntity<?> findById(long id) {
         Optional<Employee> employeeOpt = employeeRepository.findById(id);
         if (employeeOpt.isPresent()) {
             EmployeeDto employeeDto = EmployeeDtoMapper.mapToDto(employeeOpt.get());

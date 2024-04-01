@@ -1,4 +1,4 @@
-package main.service.verificationissue;
+package main.service.interfaces;
 
 
 import main.dto.VerificationRecordDto;
@@ -9,8 +9,8 @@ import java.util.List;
 
 public interface IVerificationIssueService {
     ResponseEntity<?> addIssue(VerificationIssueDto issueDto);
-    ResponseEntity<?> findById(int id);
+    ResponseEntity<?> findById(long id);
     List<VerificationIssueDto> findAll();
     ResponseEntity<?> updateRecord(VerificationRecordDto updatingData);
-    ResponseEntity<?> findRecordById(int id);
+    ResponseEntity<?> findRecordById(long id);
 }

@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MiTypeModificationRepository extends JpaRepository<MiTypeModification, Integer> {
+public interface MiTypeModificationRepository extends JpaRepository<MiTypeModification, Long> {
    List<MiTypeModification> findByMiType(MiType miType);
 }

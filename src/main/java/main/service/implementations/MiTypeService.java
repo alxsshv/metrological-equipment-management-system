@@ -1,4 +1,4 @@
-package main.service.mi_type;
+package main.service.implementations;
 
 import main.dto.MiTypeDto;
 import main.dto.MiTypeFullDto;
@@ -10,6 +10,7 @@ import main.repository.MiTypeInstructionRepository;
 import main.repository.MiTypeModificationRepository;
 import main.repository.MiTypeRepository;
 import main.service.ServiceMessage;
+import main.service.interfaces.IMiTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -104,7 +105,7 @@ public class MiTypeService implements IMiTypeService {
     }
 
     @Override
-    public ResponseEntity<?>delete(int id){
+    public ResponseEntity<?>delete(long id){
         Optional<MiType> miTypeOpt = miTypeRepository.findById(id);
         if (miTypeOpt.isEmpty()){
             String errorMessage = "Данные для удаления не найдены";
@@ -118,7 +119,7 @@ public class MiTypeService implements IMiTypeService {
     }
 
     @Override
-    public ResponseEntity<?> findById(int id) {
+    public ResponseEntity<?> findById(long id) {
         Optional<MiTypeInstruction> instructionOpt = miTypeInstructionRepository.findById(id);
         if (instructionOpt.isPresent()) {
             MiTypeFullDto miTypeDto = MiTypeDtoMapper.mapToFullDto(instructionOpt.get());
@@ -154,7 +155,7 @@ public class MiTypeService implements IMiTypeService {
     }
 
     @Override
-    public ResponseEntity<?> findModifications(int miTypeId){
+    public ResponseEntity<?> findModifications(long miTypeId){
         Optional<MiType> typeOpt = miTypeRepository.findById(miTypeId);
         if (typeOpt.isPresent()) {
             List<MiTypeModification> modifications = miTypeModificationRepository.findByMiType(typeOpt.get());

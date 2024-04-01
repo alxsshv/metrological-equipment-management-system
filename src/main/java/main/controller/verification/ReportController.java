@@ -2,7 +2,7 @@ package main.controller.verification;
 
 import main.dto.verification.RecordDto;
 import main.dto.verification.ReportDto;
-import main.service.verification.IReportService;
+import main.service.interfaces.IReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

@@ -20,7 +20,7 @@ public class MiType {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    private int id;
+    private long id;
     @Column(name = "number")
     private String number; //Номер в реестре утвержденного типа СИ
     @Column(name = "title")

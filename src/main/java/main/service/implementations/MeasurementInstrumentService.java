@@ -1,4 +1,4 @@
-package main.service.measurement_instrument;
+package main.service.implementations;
 
 import main.dto.MiDto;
 import main.dto.MiFullDto;
@@ -10,6 +10,7 @@ import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiTypeRepository;
 import main.repository.OrganizationRepository;
 import main.service.ServiceMessage;
+import main.service.interfaces.IMeasurementInstrumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -116,7 +117,7 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
     }
 
     @Override
-    public ResponseEntity<?> delete(int id) {
+    public ResponseEntity<?> delete(long id) {
         Optional<MeasurementInstrument> instrumentOpt = measurementInstrumentRepository.findById(id);
         if (instrumentOpt.isEmpty()){
             String errorMessage = "Данные для удаления не найдены";
@@ -131,7 +132,7 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
     }
 
     @Override
-    public ResponseEntity<?> findById(int id) {
+    public ResponseEntity<?> findById(long id) {
         Optional<MeasurementInstrument> instrumentOpt = measurementInstrumentRepository.findById(id);
         if (instrumentOpt.isPresent()) {
             MiFullDto dto = MeasurementInstrumentMapper.mapToFullDto(instrumentOpt.get());

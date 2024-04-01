@@ -17,7 +17,7 @@ public class Report {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private int id;
+    private long id;
     @CreationTimestamp
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;

@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class MiTypeFullDto {
-    private int id;
+    private long id;
     private String number;
     private String title;
     private String notation;

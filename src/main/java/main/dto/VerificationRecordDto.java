@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 public class VerificationRecordDto {
-    private int id;
+    private long id;
     private String numberVerification;
     private String dateVerification;
     private String dateEndVerification;

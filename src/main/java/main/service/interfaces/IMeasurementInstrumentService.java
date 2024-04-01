@@ -1,4 +1,4 @@
-package main.service.measurement_instrument;
+package main.service.interfaces;
 
 import main.dto.MiDto;
 import main.dto.MiFullDto;
@@ -11,8 +11,8 @@ import java.util.List;
 public interface IMeasurementInstrumentService {
     ResponseEntity<?> save(MiFullDto instrumentDto);
     ResponseEntity<?> update(MiFullDto instrumentDto);
-    ResponseEntity<?>delete(int id);
-    ResponseEntity<?> findById(int id);
+    ResponseEntity<?>delete(long id);
+    ResponseEntity<?> findById(long id);
     ResponseEntity<?> findBySearchString(String searchString, Pageable pageable);
     Page<MiDto> findAll(Pageable pageable);
     List<MiDto> findAll();

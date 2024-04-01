@@ -1,4 +1,4 @@
-package main.service.organization;
+package main.service.implementations;
 
 
 import main.dto.OrganizationDto;
@@ -6,6 +6,7 @@ import main.dto.mappers.OrganizationDtoMapper;
 import main.model.Organization;
 import main.repository.OrganizationRepository;
 import main.service.ServiceMessage;
+import main.service.interfaces.IOrganizationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -18,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class OrganizationService {
+public class OrganizationService implements IOrganizationService {
     public static final Logger log = LoggerFactory.getLogger(OrganizationService.class);
     private final OrganizationRepository organizationRepository;
 
@@ -26,7 +27,7 @@ public class OrganizationService {
         this.organizationRepository = organizationRepository;
     }
 
-
+    @Override
     public ResponseEntity<?> save(OrganizationDto organizationDto){
         String errorMessage = checkOrganisationDtoComposition(organizationDto);
         if (!errorMessage.isEmpty()) {
@@ -61,7 +62,7 @@ public class OrganizationService {
         return "";
     }
 
-
+    @Override
     public ResponseEntity<?> update(OrganizationDto organizationDto){
         String errorMessage = checkOrganisationDtoComposition(organizationDto);
         if (!errorMessage.isEmpty()) {
@@ -83,7 +84,7 @@ public class OrganizationService {
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
-
+    @Override
     public ResponseEntity<?>delete(long id){
         Optional<Organization> organizationOpt = organizationRepository.findById(id);
         if (organizationOpt.isEmpty()){
@@ -97,7 +98,7 @@ public class OrganizationService {
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
-
+    @Override
     public ResponseEntity<?> findById(long id) {
         Optional<Organization> instructionOpt = organizationRepository.findById(id);
         if (instructionOpt.isPresent()) {
@@ -108,6 +109,7 @@ public class OrganizationService {
         }
     }
 
+    @Override
     public ResponseEntity<?> findBySearchString(String searchString) {
         if (searchString == null || searchString.isEmpty()){
             String errorMessage = "Поле для поиска не может быть пустым";
@@ -120,6 +122,7 @@ public class OrganizationService {
         return ResponseEntity.ok(organizationDtos);
     }
 
+    @Override
     public ResponseEntity<?> findBySearchStringWithPages (String searchString, Pageable pageable) {
         if (searchString == null || searchString.isEmpty()){
             String errorMessage = "Поле для поиска не может быть пустым";
@@ -132,11 +135,12 @@ public class OrganizationService {
         return ResponseEntity.ok(organizationDtos);
     }
 
+    @Override
     public Page<OrganizationDto> findAll(Pageable pageable) {
         return organizationRepository.findAll(pageable).map(OrganizationDtoMapper ::mapToDto);
     }
 
-
+    @Override
     public List<OrganizationDto> findAll() {
         return organizationRepository.findAll().stream().map(OrganizationDtoMapper ::mapToDto).toList();
     }
