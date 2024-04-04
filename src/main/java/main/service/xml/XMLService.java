@@ -2,6 +2,7 @@ package main.service.xml;
 
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import main.dto.xml.fsa.mappers.MeasurementInstrumentDtoMapper;
 import main.dto.xml.fsa.MeasurementInstrumentDto;
@@ -24,11 +25,12 @@ import java.util.Scanner;
 @Service
 @AllArgsConstructor
 @NoArgsConstructor
+
 public class XMLService implements IXMLService {
 
     @Autowired
     private VerificationIssueRepository issueRepository;
-    @Value("${upload.files.path}")
+    @Value("${upload.documents.path}")
     private String filePath;
 
     @Override

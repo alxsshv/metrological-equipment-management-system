@@ -10,6 +10,7 @@ import main.service.implementations.MiTypeService;
 import main.service.implementations.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,7 +24,7 @@ public class InitConfig {
     @Autowired
     private OrganizationService organizationService;
 
-    public void initiate(){
+    public void initiate() throws IOException {
 
         MiTypeFullDto type1 = new MiTypeFullDto();
         type1.setNumber("88363-23");
@@ -64,9 +65,9 @@ public class InitConfig {
         type3.setInstructionTitle("Датчики давления Вт 206. Методика поверки");
         type3.setInstructionNotation("СДАИ.413455.045МП");
 
-        miTypeService.save(type1);
-        miTypeService.save(type2);
-        miTypeService.save(type3);
+        miTypeService.save(type1, null);
+        miTypeService.save(type2, null);
+        miTypeService.save(type3, null);
 
         EmployeeDto employee1 = new EmployeeDto();
         employee1.setName("Иван");

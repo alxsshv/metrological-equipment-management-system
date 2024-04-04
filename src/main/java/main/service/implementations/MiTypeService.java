@@ -3,6 +3,7 @@ package main.service.implementations;
 import main.dto.MiTypeDto;
 import main.dto.MiTypeFullDto;
 import main.dto.mappers.MiTypeDtoMapper;
+import main.model.Document;
 import main.model.MiType;
 import main.model.MiTypeInstruction;
 import main.model.MiTypeModification;
@@ -18,9 +19,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,18 +35,18 @@ public class MiTypeService implements IMiTypeService {
     private final MiTypeRepository miTypeRepository;
     private final MiTypeInstructionRepository miTypeInstructionRepository;
     private final MiTypeModificationRepository miTypeModificationRepository;
-    @Value("${upload.images.path}")
-    private String imageUploadPath;
+    @Value("${upload.documents.path}")
+    private String documentUploadPath;
 
     public MiTypeService(MiTypeRepository miTypeRepository, MiTypeInstructionRepository miTypeInstructionRepository,
-                         MiTypeModificationRepository miTypeModificationRepository) {
+                             MiTypeModificationRepository miTypeModificationRepository) {
         this.miTypeRepository = miTypeRepository;
         this.miTypeInstructionRepository = miTypeInstructionRepository;
         this.miTypeModificationRepository = miTypeModificationRepository;
     }
 
     @Override
-    public ResponseEntity<?> save(MiTypeFullDto miTypeDto){
+    public ResponseEntity<?> save(MiTypeFullDto miTypeDto, MultipartFile file) throws IOException {
         String errorMessage = checkMiTypeDtoComposition(miTypeDto);
         if (!errorMessage.isEmpty()) {
             log.info(errorMessage);
@@ -55,7 +60,23 @@ public class MiTypeService implements IMiTypeService {
             return ResponseEntity.status(422).body(
                     new ServiceMessage(errorMessage));
         }
-        miTypeInstructionRepository.save(MiTypeDtoMapper.mapToEntity(miTypeDto));
+
+        MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        if (file != null){
+            File uploadFolder = new File(documentUploadPath);
+            if (!uploadFolder.exists()){
+                uploadFolder.mkdir();
+            }
+            String storageFileName = UUID.randomUUID() + "." + file.getOriginalFilename();
+            file.transferTo(new File(documentUploadPath + "/" + storageFileName));
+            Document document = new Document();
+            document.setStorageFileName(storageFileName);
+            miTypeInstruction.addDocument(document);
+        }
+
+
+
+        miTypeInstructionRepository.save(miTypeInstruction);
         String okMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.ok(

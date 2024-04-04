@@ -12,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -52,8 +54,8 @@ public class MiTypeController {
         return miTypeService.findModifications(Integer.parseInt(id));
     }
     @PostMapping
-    public ResponseEntity<?> addMiType(@RequestBody MiTypeFullDto miTypeDto) {
-        return miTypeService.save(miTypeDto);
+    public ResponseEntity<?> addMiType(@RequestParam("miType") MiTypeFullDto miTypeDto, @RequestParam("file") MultipartFile file) throws IOException {
+        return miTypeService.save(miTypeDto, file);
     }
 
     @PutMapping("{id}")

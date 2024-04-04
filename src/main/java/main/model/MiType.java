@@ -38,6 +38,8 @@ public class MiType {
     @JsonIgnore
     private List<MiTypeModification> modifications = new ArrayList<>(); // Модификации
 
+
+
     public void addModification(MiTypeModification modification){
         modification.setMiType(this);
         modifications.add(modification);
@@ -47,6 +49,8 @@ public class MiType {
         modifications.forEach(modification -> modification.setMiType(this));
         this.modifications = modifications;
     }
+
+
 
     public void removeModification(MiTypeModification modification){
         modification.setMiType(null);

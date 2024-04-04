@@ -1,6 +1,7 @@
 package main.controller;
 
 import main.service.xml.IXMLService;
+import main.service.xml.XMLService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,7 +15,7 @@ import java.io.IOException;
 @Controller
 public class XMLController {
     @Autowired
-    private IXMLService xmlService;
+    private XMLService xmlService;
 
     @GetMapping(value = "/xml/{id}", produces = "application/xml")
     @ResponseBody

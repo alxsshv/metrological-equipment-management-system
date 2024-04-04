@@ -1,8 +1,12 @@
 package main.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -31,6 +35,11 @@ public class MiTypeInstruction {
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private MiType miType;
+    @OneToMany(mappedBy = "miTypeInstruction", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "documents")
+    @JsonIgnore
+    private List<Document> documents = new ArrayList<>(); // Файлы
+
 
     public void updateFrom(MiTypeInstruction updateData){
         this.miType.updateFrom(updateData.getMiType());
@@ -44,6 +53,10 @@ public class MiTypeInstruction {
         this.instructionNotation = updateData.getInstructionNotation();
     }
 
+    public void addDocument(Document document){
+        document.setMiTypeInstruction(this);
+        documents.add(document);
+    }
     @Override
     public String toString() {
         return "MiTypeInstruction{" +

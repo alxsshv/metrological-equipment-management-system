@@ -18,7 +18,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class MVCConfig implements WebMvcConfigurer {
     @Value("${upload.images.path}")
     private String imageUploadFolder;
-    @Value("${upload.files.path}")
+    @Value("${upload.documents.path}")
     private String fileUploadFolder;
 
 
