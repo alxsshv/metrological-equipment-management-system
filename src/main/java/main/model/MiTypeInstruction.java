@@ -35,10 +35,7 @@ public class MiTypeInstruction {
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private MiType miType;
-    @OneToMany(mappedBy = "miTypeInstruction", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "documents")
-    @JsonIgnore
-    private List<Document> documents = new ArrayList<>(); // Файлы
+
 
 
     public void updateFrom(MiTypeInstruction updateData){

@@ -9,9 +9,12 @@ import main.service.implementations.EmployeeService;
 import main.service.implementations.MiTypeService;
 import main.service.implementations.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @NoArgsConstructor
@@ -65,9 +68,12 @@ public class InitConfig {
         type3.setInstructionTitle("Датчики давления Вт 206. Методика поверки");
         type3.setInstructionNotation("СДАИ.413455.045МП");
 
-        miTypeService.save(type1, null);
-        miTypeService.save(type2, null);
-        miTypeService.save(type3, null);
+        MultipartFile[] files = {};
+        String[] descriptions = {};
+
+        miTypeService.save(type1, files, descriptions);
+        miTypeService.save(type2, files, descriptions);
+        miTypeService.save(type3, files,descriptions);
 
         EmployeeDto employee1 = new EmployeeDto();
         employee1.setName("Иван");

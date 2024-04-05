@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main.service.Category;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -25,10 +26,10 @@ public class Document {
     @Column(name = "extension")
     private String extension;
     @Column(name = "category")
-    private Category category;
+    private String category;
     @Column(name = "category_id")
     private long categoryId;
-    @Timestamp
+    @CreationTimestamp
     @Column(name = "uploading_date")
     private LocalDateTime uploadingDate;
 }
