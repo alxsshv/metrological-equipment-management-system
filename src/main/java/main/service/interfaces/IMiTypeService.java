@@ -11,7 +11,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IMiTypeService {
-    ResponseEntity<?> save(MiTypeFullDto miTypeDto, MultipartFile file) throws IOException;
+    ResponseEntity<?> save(MiTypeFullDto miTypeDto, MultipartFile[] files,String[] descriptions) throws IOException;
     ResponseEntity<?> update(MiTypeFullDto miTypeDto);
     ResponseEntity<?>delete(long id);
     ResponseEntity<?> findById(long id);

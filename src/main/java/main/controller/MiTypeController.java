@@ -54,8 +54,8 @@ public class MiTypeController {
         return miTypeService.findModifications(Integer.parseInt(id));
     }
     @PostMapping
-    public ResponseEntity<?> addMiType(@RequestParam("miType") MiTypeFullDto miTypeDto, @RequestParam("file") MultipartFile file) throws IOException {
-        return miTypeService.save(miTypeDto, file);
+    public ResponseEntity<?> addMiType(@RequestPart("miType") MiTypeFullDto miTypeDto, @RequestPart("files") MultipartFile[] files) throws IOException {
+        return miTypeService.save(miTypeDto, files);
     }
 
     @PutMapping("{id}")

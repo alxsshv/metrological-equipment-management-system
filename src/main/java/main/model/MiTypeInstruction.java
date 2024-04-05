@@ -53,10 +53,6 @@ public class MiTypeInstruction {
         this.instructionNotation = updateData.getInstructionNotation();
     }
 
-    public void addDocument(Document document){
-        document.setMiTypeInstruction(this);
-        documents.add(document);
-    }
     @Override
     public String toString() {
         return "MiTypeInstruction{" +

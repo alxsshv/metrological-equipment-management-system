@@ -3,29 +3,26 @@ package main.service.implementations;
 import main.dto.MiTypeDto;
 import main.dto.MiTypeFullDto;
 import main.dto.mappers.MiTypeDtoMapper;
-import main.model.Document;
 import main.model.MiType;
 import main.model.MiTypeInstruction;
 import main.model.MiTypeModification;
 import main.repository.MiTypeInstructionRepository;
 import main.repository.MiTypeModificationRepository;
 import main.repository.MiTypeRepository;
+import main.service.Category;
 import main.service.ServiceMessage;
 import main.service.interfaces.IMiTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,18 +32,20 @@ public class MiTypeService implements IMiTypeService {
     private final MiTypeRepository miTypeRepository;
     private final MiTypeInstructionRepository miTypeInstructionRepository;
     private final MiTypeModificationRepository miTypeModificationRepository;
-    @Value("${upload.documents.path}")
-    private String documentUploadPath;
+    private final DocumentService documentService;
 
-    public MiTypeService(MiTypeRepository miTypeRepository, MiTypeInstructionRepository miTypeInstructionRepository,
-                             MiTypeModificationRepository miTypeModificationRepository) {
+    public MiTypeService(MiTypeRepository miTypeRepository,
+                         MiTypeInstructionRepository miTypeInstructionRepository,
+                         MiTypeModificationRepository miTypeModificationRepository,
+                         DocumentService documentService) {
         this.miTypeRepository = miTypeRepository;
         this.miTypeInstructionRepository = miTypeInstructionRepository;
         this.miTypeModificationRepository = miTypeModificationRepository;
+        this.documentService = documentService;
     }
 
     @Override
-    public ResponseEntity<?> save(MiTypeFullDto miTypeDto, MultipartFile file) throws IOException {
+    public ResponseEntity<?> save(MiTypeFullDto miTypeDto, MultipartFile[] files,String[] descriptions) throws IOException {
         String errorMessage = checkMiTypeDtoComposition(miTypeDto);
         if (!errorMessage.isEmpty()) {
             log.info(errorMessage);
@@ -60,23 +59,10 @@ public class MiTypeService implements IMiTypeService {
             return ResponseEntity.status(422).body(
                     new ServiceMessage(errorMessage));
         }
-
         MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeDto);
-        if (file != null){
-            File uploadFolder = new File(documentUploadPath);
-            if (!uploadFolder.exists()){
-                uploadFolder.mkdir();
-            }
-            String storageFileName = UUID.randomUUID() + "." + file.getOriginalFilename();
-            file.transferTo(new File(documentUploadPath + "/" + storageFileName));
-            Document document = new Document();
-            document.setStorageFileName(storageFileName);
-            miTypeInstruction.addDocument(document);
-        }
+        MiTypeInstruction miTypeInstructionFromDB = miTypeInstructionRepository.save(miTypeInstruction);
+        documentService.uploadAll(files,descriptions, Category.MI_TYPE, miTypeInstructionFromDB.getId());
 
-
-
-        miTypeInstructionRepository.save(miTypeInstruction);
         String okMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.ok(
