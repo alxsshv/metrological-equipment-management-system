@@ -1,5 +1,7 @@
 package main.service.implementations;
 
+import main.dto.DocumentDto;
+import main.dto.mappers.DocumentDtoMapper;
 import main.model.Document;
 import main.repository.DocumentRepository;
 import main.service.Category;
@@ -15,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -56,6 +59,13 @@ public class DocumentService {
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
+    public void deleteAll(Category category, long categoryId) throws IOException {
+        List<Document> documents = documentRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
+        for (Document document : documents){
+            delete(document.getId());
+        }
+    }
+
     public void addDocument(MultipartFile file, String description, Category category, Long CategoryId) throws IOException {
         if (file != null){
                 createFolderIfNotExist();
@@ -66,13 +76,32 @@ public class DocumentService {
                 document.setStorageFileName(storageFileName);
                 document.setDescription(description);
                 document.setExtension(extension);
-                document.setCategory(category.name());
+                document.setCategoryName(category.name());
                 document.setCategoryId(CategoryId);
                 file.transferTo(new File(documentUploadPath + "/" + storageFileName));
                 documentRepository.save(document);
                 log.info("Файл " + filename + " успешно загружен на сервер");
         }
 
+    }
+    public ResponseEntity<?> descriptionUpdate(long id, String description){
+        Optional<Document> documentOpt = documentRepository.findById(id);
+        if (documentOpt.isEmpty()){
+            String errorMessage = "Файл с id " + id + " не найден";
+            log.info(errorMessage);
+            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+        }
+        Document document = documentOpt.get();
+        document.setDescription(description);
+        documentRepository.save(document);
+        String okMessage = "Описание файла " + id + " успешно обновлено";
+        log.info(okMessage);
+        return  ResponseEntity.ok(new ServiceMessage(okMessage));
+    }
+
+    public List<DocumentDto> getDocuments(Category category, long categoryId){
+        List<Document> documents = documentRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
+        return documents.stream().map(DocumentDtoMapper ::mapToDto).toList();
     }
 
 }

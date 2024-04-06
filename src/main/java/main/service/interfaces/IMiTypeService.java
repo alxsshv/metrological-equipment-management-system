@@ -13,7 +13,7 @@ import java.util.List;
 public interface IMiTypeService {
     ResponseEntity<?> save(MiTypeFullDto miTypeDto, MultipartFile[] files,String[] descriptions) throws IOException;
     ResponseEntity<?> update(MiTypeFullDto miTypeDto);
-    ResponseEntity<?>delete(long id);
+    ResponseEntity<?>delete(long id) throws IOException;
     ResponseEntity<?> findById(long id);
     ResponseEntity<?> findByNumber(String number);
     ResponseEntity<?> findBySearchString(String searchString, Pageable pageable);

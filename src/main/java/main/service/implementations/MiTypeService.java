@@ -112,13 +112,14 @@ public class MiTypeService implements IMiTypeService {
     }
 
     @Override
-    public ResponseEntity<?>delete(long id){
+    public ResponseEntity<?>delete(long id) throws IOException {
         Optional<MiType> miTypeOpt = miTypeRepository.findById(id);
         if (miTypeOpt.isEmpty()){
             String errorMessage = "Данные для удаления не найдены";
             log.info(errorMessage);
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
+        documentService.deleteAll(Category.MI_TYPE, id);
         miTypeRepository.delete(miTypeOpt.get());
         String okMessage ="Запись о типе СИ №" + miTypeOpt.get().getNumber() + " успешно удалена";
         log.info(okMessage);

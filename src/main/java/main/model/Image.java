@@ -6,21 +6,20 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "documents")
-public class Document {
+@Table(name = "images")
+public class Image {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "storage_file_name")
     private String storageFileName;
-    @Column(name = "description")
-    private String description;
     @Column(name = "extension")
     private String extension;
     @Column(name = "category_name")
@@ -30,7 +29,4 @@ public class Document {
     @CreationTimestamp
     @Column(name = "uploading_date")
     private LocalDateTime uploadingDate;
-    @UpdateTimestamp
-    @Column(name = "update_date")
-    private LocalDateTime updatingDate;
 }
