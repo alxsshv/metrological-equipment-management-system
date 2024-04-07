@@ -11,14 +11,15 @@
 <script type="text/javascript">
     var app = angular.module("MI_TYPE_FORM", []);
     app.controller("MI_TYPE_FORM_CTRL", function($scope, $http){
+
+
+        
+        let formData = new FormData();
+
                
         // сохранение в БД;
         $scope.addMiType = function(){
-         if (/^[0-9]{5}-[0-9]{2}$/.exec($scope.miType.number)){
-        $http({
-            url: "/mit",
-            method: "POST",
-            data: {
+            var type = {
                 number:$scope.miType.number,
                 title:$scope.miType.title,
                 notation:$scope.miType.notation,
@@ -34,11 +35,23 @@
                 temperatureLowLimit:$scope.miType.temperatureLowLimit,
                 pressureHiLimit:$scope.miType.pressureHiLimit,
                 pressureLowLimit:$scope.miType.pressureLowLimit
+            };
+            formData.append('miType', type);
+            formData.append('files', $scope.files);
+            formData.append('descriptions', $scope.descriptions);
+         if (/^[0-9]{5}-[0-9]{2}$/.exec($scope.miType.number)){
+        $http({
+            url: "/mit",
+            method: "POST",
+            data: formData,
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'multipart/form-data'
             }
         }).then(function successCallback(response){
-                console.log($scope.miType);
-                alert(response.data.message);
-                $scope.clearFields();
+                    console.log($scope.miType);
+                    alert(response.data.message);
+                    $scope.clearFields();
                 }, function errorCallback(response){
                    alert(response.data.message)
                 });
@@ -46,8 +59,6 @@
                 alert('Неверный формат номера типа средства измерений');
             }
         }
-
-
 
         // добавление модификаций
         $scope.modifications = [];
@@ -65,6 +76,15 @@
         $scope.deleteLastModification = function(){
             $scope.modifications.pop();
         }
+
+        //Добавление описаний файлов
+        $scope.descriptions = [];
+        $scope.addDescription = function (description) {
+            console.log("добавляем " + description);
+            $scope.descriptions.push(description);
+        }
+        
+
 
     });
 </script>
@@ -149,7 +169,7 @@
         <div class="row g-3">
             <div class="col-md-2">        
                 <label for="inputNumber1" class="form-label">МПИ, год (лет)</label>
-                <input type="number" step="0.05" ng-model="miType.verificationPeriod" class="form-control" id="inputNumber1" value="" required>
+                <input type="number" step="0.083334" ng-model="miType.verificationPeriod" class="form-control" id="inputNumber1" value="" required>
             </div>
             <div class="col-md-3">    
                 <label for="inputText4" class="form-label">Обозначение методики поверки</label>
@@ -192,10 +212,42 @@
         </div>
     </div>
     <p></p>
+    <div class="col-md-9"> Файлы 
+        <div class="bg-info bg-opacity-10 border border-info overflow-y-scroll rounded-3 ">           
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="table-responsive" style="max-height: 170px;" >
+                        <table class="table table-striped">
+                            <tr ng-repeat="description in descriptions"><td>{{description}}</td></tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon12">Файлы</span>
+                            <input ng-model="description" type="text" class="form-control" placeholder="Описание файла" aria-label="Описание файла" aria-describedby="basic-addon12">
+                            <input ng-model="file" type="file"  multiple="" class="form-control" placeholder="Описание файла" aria-label="Файл" aria-describedby="basic-addon12">
+                            <button ng-click="addDescription(description)" type="button" class="btn btn-primary">Добавить</button>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <p></p>
+                        <button ng-click="deleteLastModification()" type="button" class="btn btn-success">Удалить последнюю модификацию</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <p></p>
     <div class="col-12">
       <button class="btn btn-primary" ng-click="addMiType()" type="button">Добавить</button>
     </div>
-    </div>
+    </p>
 </div>
 </body>
 </html>

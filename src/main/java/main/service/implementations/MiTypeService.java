@@ -32,16 +32,16 @@ public class MiTypeService implements IMiTypeService {
     private final MiTypeRepository miTypeRepository;
     private final MiTypeInstructionRepository miTypeInstructionRepository;
     private final MiTypeModificationRepository miTypeModificationRepository;
-    private final DocumentService documentService;
+    private final FileService fileService;
 
     public MiTypeService(MiTypeRepository miTypeRepository,
                          MiTypeInstructionRepository miTypeInstructionRepository,
                          MiTypeModificationRepository miTypeModificationRepository,
-                         DocumentService documentService) {
+                         FileService fileService) {
         this.miTypeRepository = miTypeRepository;
         this.miTypeInstructionRepository = miTypeInstructionRepository;
         this.miTypeModificationRepository = miTypeModificationRepository;
-        this.documentService = documentService;
+        this.fileService = fileService;
     }
 
     @Override
@@ -61,7 +61,7 @@ public class MiTypeService implements IMiTypeService {
         }
         MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeDto);
         MiTypeInstruction miTypeInstructionFromDB = miTypeInstructionRepository.save(miTypeInstruction);
-        documentService.uploadAll(files,descriptions, Category.MI_TYPE, miTypeInstructionFromDB.getId());
+        fileService.uploadAllFiles(files,descriptions, Category.MI_TYPE, miTypeInstructionFromDB.getId());
 
         String okMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " успешно добавлена";
         log.info(okMessage);
@@ -119,7 +119,7 @@ public class MiTypeService implements IMiTypeService {
             log.info(errorMessage);
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
-        documentService.deleteAll(Category.MI_TYPE, id);
+        fileService.deleteAllFiles(Category.MI_TYPE, id);
         miTypeRepository.delete(miTypeOpt.get());
         String okMessage ="Запись о типе СИ №" + miTypeOpt.get().getNumber() + " успешно удалена";
         log.info(okMessage);

@@ -32,9 +32,9 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    public void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
-        for (int i = 0; i < files.length; i++) {
-            addImage(files[i], descriptions[i], category, categoryId);
+    public void uploadAll(MultipartFile[] files, Category category, Long categoryId) throws IOException {
+        for (MultipartFile file : files) {
+            addImage(file, category, categoryId);
         }
     }
     private void createFolderIfNotExist(){
@@ -66,7 +66,7 @@ public class ImageService {
         }
     }
 
-    public void addImage(MultipartFile file, String description, Category category, Long CategoryId) throws IOException {
+    public void addImage(MultipartFile file, Category category, Long CategoryId) throws IOException {
         if (file != null){
                 createFolderIfNotExist();
                 String filename = file.getOriginalFilename();
