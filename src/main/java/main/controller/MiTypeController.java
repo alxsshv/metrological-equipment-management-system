@@ -1,5 +1,6 @@
 package main.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.MiTypeDto;
@@ -54,10 +55,15 @@ public class MiTypeController {
         return miTypeService.findModifications(Integer.parseInt(id));
     }
     @PostMapping
-    public ResponseEntity<?> addMiType(@RequestPart("miType") MiTypeFullDto miTypeDto,
-                                       @RequestPart("files") MultipartFile[] files,
-                                       @RequestPart("descriptions") String[] descriptions) throws IOException {
-        return miTypeService.save(miTypeDto, files, descriptions);
+    public ResponseEntity<?> addMiType(@RequestParam("miType") String miType,
+                                       @RequestParam("files") MultipartFile[] files,
+                                       @RequestParam("descriptions") String[] descriptions) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        MiTypeFullDto miTypeFullDto = mapper.readValue(miType, MiTypeFullDto.class);
+        System.out.println(miTypeFullDto);
+        System.out.println(files.length);
+        System.out.println(descriptions.length);
+        return miTypeService.save(miTypeFullDto, files, descriptions);
     }
 
     @PutMapping("{id}")

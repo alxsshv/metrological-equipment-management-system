@@ -19,12 +19,15 @@
                
         // сохранение в БД;
         $scope.addMiType = function(){
+            var startDateArr = String($scope.miType.startDate).split('T');
+            console.log(startDateArr);
+            var endDateArr = String($scope.miType.endDate).split('T');
             var type = {
                 number:$scope.miType.number,
                 title:$scope.miType.title,
                 notation:$scope.miType.notation,
-                startDate: new Date($scope.miType.startDate),
-                endDate: new Date($scope.miType.endDate),
+                startDate: startDateArr[0],
+                endDate: endDateArr[0],
                 modifications: $scope.modifications,
                 verificationPeriod:$scope.miType.verificationPeriod,
                 instructionNotation:$scope.miType.instructionNotation,
@@ -36,8 +39,8 @@
                 pressureHiLimit:$scope.miType.pressureHiLimit,
                 pressureLowLimit:$scope.miType.pressureLowLimit
             };
-            formData.append('miType', type);
-            formData.append('files', $scope.files);
+            formData.append('miType', JSON.stringify(type));
+            formData.append('files', file.files[0]);
             formData.append('descriptions', $scope.descriptions);
          if (/^[0-9]{5}-[0-9]{2}$/.exec($scope.miType.number)){
         $http({
@@ -45,8 +48,8 @@
             method: "POST",
             data: formData,
             headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'multipart/form-data'
+                'Accept': '*/*', 
+                'Content-Type': undefined
             }
         }).then(function successCallback(response){
                     console.log($scope.miType);
@@ -227,7 +230,7 @@
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="basic-addon12">Файлы</span>
                             <input ng-model="description" type="text" class="form-control" placeholder="Описание файла" aria-label="Описание файла" aria-describedby="basic-addon12">
-                            <input ng-model="file" type="file"  multiple="" class="form-control" placeholder="Описание файла" aria-label="Файл" aria-describedby="basic-addon12">
+                            <input class="inline-block" type="file" name="file" ng-model="file" data-rule-required="true" id="file" >
                             <button ng-click="addDescription(description)" type="button" class="btn btn-primary">Добавить</button>
                         </div>
                     </div>
