@@ -12,6 +12,7 @@
 <script type="text/javascript">
     var app = angular.module("MI_TYPE_FORM", []);
     app.controller("MI_TYPE_FORM_CTRL", function ($scope, $http) {
+        $scope.descriptions = [];
 
         // сохранение в БД;
         $scope.addMiType = function () {
@@ -59,13 +60,14 @@
             };
             formData.append('miType', JSON.stringify(type));
             formData.append('descriptions', $scope.descriptions);
+            console.log($scope.descriptions);
             for (let i = 0; i < file.files.length; i++) {
                 formData.append('files', file.files[i])
             }
         }
-        $scope.filenames = [];
-        $scope.buildFileNameList = function(){
-            console.log("Заполняем")
+
+        $scope.buildFileNameList = function () {
+            $scope.filenames = [];
             for (let i = 0; i < file.files.length; i++) {
                 $scope.filenames.push(file.files[i].name);
                 console.log(i);
@@ -88,15 +90,6 @@
         $scope.deleteLastModification = function () {
             $scope.modifications.pop();
         }
-
-        //Добавление описаний файлов
-        $scope.descriptions = [];
-        $scope.addDescription = function (description) {
-            console.log("добавляем " + description);
-            $scope.descriptions.push(description);
-        }
-
-
 
     });
 </script>
@@ -156,7 +149,7 @@
             <div class="col-md-9"> Модификации
                 <div class="bg-info bg-opacity-10 border border-info overflow-y-scroll rounded-3 ">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="table-responsive" style="max-height: 170px;">
                                 <table class="table table-striped">
                                     <tr ng-repeat="modification in modifications">
@@ -165,7 +158,7 @@
                                 </table>
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-7">
                             <div class="row">
                                 <div class="input-group mb-3">
                                     <span class="input-group-text" id="basic-addon11">Модификация</span>
@@ -173,7 +166,7 @@
                                         placeholder="Пример: МС-33-01" aria-label="Модификация"
                                         aria-describedby="basic-addon11">
                                     <button ng-click="addModification(modification)" type="button"
-                                        class="btn btn-primary">Добавить</button>
+                                        class="btn btn-outline-primary">Добавить модификацию</button>
                                 </div>
                             </div>
                             <div class="row">
@@ -183,7 +176,7 @@
                                 <p></p>
                                 <p></p>
                                 <button ng-click="deleteLastModification()" type="button"
-                                    class="btn btn-success">Удалить последнюю модификацию</button>
+                                    class="btn btn-outline-primary">Удалить последнюю модификацию</button>
                             </div>
                         </div>
                     </div>
@@ -250,28 +243,25 @@
         <div class="col-md-12"> Файлы
             <div class="bg-info bg-opacity-10 border border-info overflow-y-scroll rounded-3 ">
                 <div class="row">
-                    
+
                     <div class="col-md-12">
-                        <input class="inline-block" type="file" file-model="change.fnEvidence" name="file" ng-model="file"
-                                    data-rule-required="true" multiple id="file">
-                                    <div class="col-12">
-                                        <button class="btn btn-primary" ng-click="buildFileNameList()" type="button">Добавить файлы</button>
-                                    </div>
-                        <div class="table-responsive" style="max-height: 170px;">
-                            <table class="table table-striped">
-                                <tr ng-repeat="item in filenames">
-                                    <td>{{item}}</td>
-                                </tr>
-                            </table>
-                        </div>
+                        <input class="inline-block" type="file" file-model="change.fnEvidence" name="file"
+                            ng-model="file" data-rule-required="true" multiple id="file" accept=".jpg,.jpeg,.png,.gif,.bmp,.svg,.pdf,.odf,.ods,.docx,.doc,.odt">
+                        <button class="btn btn-outline-primary" ng-click="buildFileNameList()" type="button">Добавить
+                            файлы</button>
                     </div>
                 </div>
-                   
-                </div>
+                <table class="table table-striped">
+                    <tr ng-repeat="item in filenames">
+                        <td class="col-md-3">Файл: {{item}}</td>
+                        <td class="col-md-8"><input type="text" ng-model="descriptions[$index]" placeholder="Добавьте описание файла" class="form-control"></td>
+                    </tr>
+                </table>
             </div>
+        </div>
 
         <p></p>
-        
+
         <div class="col-12">
             <button class="btn btn-primary" ng-click="addMiType()" type="button">Добавить</button>
         </div>

@@ -60,9 +60,7 @@ public class MiTypeController {
     public ResponseEntity<?> addMiType(@RequestParam("miType") String miType,
                                        @RequestParam("files") MultipartFile[] files,
                                        @RequestParam("descriptions") String[] descriptions) throws IOException {
-        ObjectMapper mapper = JsonMapper.builder()
-                .addModule(new JavaTimeModule())
-                .build();
+        ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
         MiTypeFullDto miTypeFullDto = mapper.readValue(miType, MiTypeFullDto.class);
         return miTypeService.save(miTypeFullDto, files, descriptions);
     }

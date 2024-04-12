@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Редактирование данных пользователя</title>
+    <title>Информация о типе средства измерений</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
     <script src="/js/angular.min.js"></script>
 </head>
@@ -13,6 +13,7 @@
     var idAttr = new URL (document.URL).searchParams.get("id");
         app.controller("MI_TYPE_CARD_CTRL", function($scope, $http){
             $scope.reference = "/mits/form/"+idAttr+"?id="+idAttr
+            $scope.filenames = [];
 
             $scope.getMiType = function(){
                 $http({
@@ -24,6 +25,10 @@
                 $scope.endDate = new Date (response.data.endDate);
             });
             }
+
+
+
+
 
             $scope.getMiType();
 
@@ -69,6 +74,7 @@
                
                 <p></p>
                 <dt><u>Условия поверки</u></dt>
+
                 <dt class="col-sm-6">Допустимый диапазон температуры окружающей среды</dt>
                 <dd ng-model="type" class="col-sm-6">от {{miType.temperatureLowLimit}}&degC  до {{miType.temperatureHiLimit}}&degC</dd>
 
@@ -77,7 +83,14 @@
 
                 <dt class="col-sm-6">Допустимый диапазон атмосферного давления</dt>
                 <dd ng-model="type" class="col-sm-6">от {{miType.pressureLowLimit}} %  до {{miType.pressureHiLimit}} %</dd>
+                
+                <p></p>
+                <dt><u>Файлы</u></dt>
+                <dd ng-repeat="filename in filenames"></dd>
+
+
             </dl>
+
         </div>
         <div class="col-sm-3">
             <div class="table-responsive" style="max-height: 250px;" >
