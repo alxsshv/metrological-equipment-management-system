@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -26,7 +27,7 @@ public class FileController {
     }
 
     @GetMapping("/documents/{id}")
-    public ResponseEntity<?> getDocumentFile(@PathVariable(value = "id") String id) throws IOException {
+    public ResponseEntity<?> getDocumentFile(@PathVariable(value = "id") String id) throws IOException, URISyntaxException {
         return documentService.getDocumentFile(Long.parseLong(id));
     }
 

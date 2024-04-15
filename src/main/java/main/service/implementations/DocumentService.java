@@ -9,18 +9,27 @@ import main.service.ServiceMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MimeType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.springframework.http.MediaType.APPLICATION_OCTET_STREAM_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
 
 @Service
 public class DocumentService {
@@ -105,7 +114,7 @@ public class DocumentService {
         return documents.stream().map(DocumentDtoMapper ::mapToDto).toList();
     }
 
-    public ResponseEntity<?> getDocumentFile(Long id) throws IOException {
+    public ResponseEntity<?> getDocumentFile(Long id) throws IOException, URISyntaxException {
         Optional<Document> documentOpt = documentRepository.findById(id);
         if(documentOpt.isEmpty()){
             String errorMessage = "Документ № "+ id +" не найден";
@@ -124,10 +133,41 @@ public class DocumentService {
         String okMessage = "Файл " + document.getStorageFileName() + " передан";
         log.info(okMessage);
         return ResponseEntity.ok()
-                .header("Content-Type","application/octet-stream")
-                .header("Content-Disposition: attachment; filename=\""+ document.getStorageFileName()+"\"")
-                .body(Files.readAllBytes(Path.of(documentUploadPath + document.getStorageFileName())));
+                .header("Content-Type", getContentTypeString(document))
+                .header("Content-Disposition", "attachment; filename=\""+ document.getOriginalFilename()+"\"")
+                .body(new ByteArrayResource(Files.readAllBytes(Path.of(documentUploadPath + document.getStorageFileName()))));
     }
+    private String getContentTypeString (Document document){
+        switch(document.getExtension().toLowerCase()){
+            case "pdf" : return APPLICATION_PDF_VALUE;
+            case "doc", "dot": return "application/msword";
+            case "docx" : return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            case "dotx" : return "application/vnd.openxmlformats-officedocument.wordprocessingml.template";
+            case "docm", "dotm" : return "application/vnd.ms-word.document.macroEnabled.12";
+            case "xls", "xlt", "xla" : return "application/vnd.ms-excel";
+            case "xlsx" : return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            case "xltx" : return "application/vnd.openxmlformats-officedocument.spreadsheetml.template";
+            case "xlsm" : return "application/vnd.ms-excel.sheet.macroEnabled.12";
+            case "xltm" : return "application/vnd.ms-excel.template.macroEnabled.12";
+            case "xlam" : return "application/vnd.ms-excel.addin.macroEnabled.12";
+            case "xlsb" : return "application/vnd.ms-excel.sheet.binary.macroEnabled.12";
+            case "ppt", "pot", "pps", "ppa" : return "application/vnd.ms-powerpoint";
+            case "pptx" : return "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            case "potx" : return "application/vnd.openxmlformats-officedocument.presentationml.template";
+            case "ppsx" : return "application/vnd.openxmlformats-officedocument.presentationml.slideshow";
+            case "ppam" : return "application/vnd.ms-powerpoint.addin.macroEnabled.12";
+            case "pptm" : return "application/vnd.ms-powerpoint.presentation.macroEnabled.12";
+            case "potm" : return "application/vnd.ms-powerpoint.template.macroEnabled.12";
+            case "ppsm" : return " application/vnd.ms-powerpoint.slideshow.macroEnabled.12";
+            case "vsd" : return "application/vnd.visio";
+            case "csv" : return "text/csv";
+            case "ods":  return "application/vnd.oasis.opendocument.spreadsheet";
+            case "odt": return "application/vnd.oasis.opendocument.text";
+            case "odg" : return "application/vnd.oasis.opendocument.graphics";
+            default: return APPLICATION_OCTET_STREAM_VALUE;
+        }
+    }
+
 
 
 
