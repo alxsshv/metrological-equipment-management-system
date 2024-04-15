@@ -19,6 +19,8 @@ public class Document {
     private long id;
     @Column(name = "storage_file_name")
     private String storageFileName;
+    @Column(name = "original_file_name")
+    private String originalFilename;
     @Column(name = "description")
     private String description;
     @Column(name = "extension")

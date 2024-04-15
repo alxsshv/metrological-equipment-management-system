@@ -9,6 +9,7 @@ import main.service.ServiceMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -103,5 +104,31 @@ public class DocumentService {
         List<Document> documents = documentRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
         return documents.stream().map(DocumentDtoMapper ::mapToDto).toList();
     }
+
+    public ResponseEntity<?> getDocumentFile(Long id) throws IOException {
+        Optional<Document> documentOpt = documentRepository.findById(id);
+        if(documentOpt.isEmpty()){
+            String errorMessage = "Документ № "+ id +" не найден";
+            log.info(errorMessage);
+            return ResponseEntity.status(404).body(
+                    new ServiceMessage(errorMessage));
+        }
+        Document document = documentOpt.get();
+        File documentFile = new File(documentUploadPath + document.getStorageFileName());
+        if (!documentFile.exists()){
+        String errorMessage = "Файл " + document.getStorageFileName() + " не найден";
+            log.info(errorMessage);
+            return ResponseEntity.status(404).body(
+                    new ServiceMessage(errorMessage));
+        }
+        String okMessage = "Файл " + document.getStorageFileName() + " передан";
+        log.info(okMessage);
+        return ResponseEntity.ok()
+                .header("Content-Type","application/octet-stream")
+                .header("Content-Disposition: attachment; filename=\""+ document.getStorageFileName()+"\"")
+                .body(Files.readAllBytes(Path.of(documentUploadPath + document.getStorageFileName())));
+    }
+
+
 
 }

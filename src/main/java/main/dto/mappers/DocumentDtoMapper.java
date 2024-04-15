@@ -10,6 +10,7 @@ public class DocumentDtoMapper {
         dto.setDescription(document.getDescription());
         dto.setExtension(document.getExtension());
         dto.setStorageFileName(document.getStorageFileName());
+        dto.setOriginalFilename(document.getOriginalFilename());
         dto.setCategoryName(document.getCategoryName());
         dto.setCategoryId(document.getCategoryId());
         dto.setUploadingDate(document.getUploadingDate());
@@ -20,6 +21,7 @@ public class DocumentDtoMapper {
     public static Document mapToEntity(DocumentDto dto){
         Document document = new Document();
         document.setId(dto.getId());
+        document.setOriginalFilename(dto.getOriginalFilename());
         document.setDescription(dto.getDescription());
         document.setExtension(dto.getExtension());
         document.setStorageFileName(dto.getStorageFileName());

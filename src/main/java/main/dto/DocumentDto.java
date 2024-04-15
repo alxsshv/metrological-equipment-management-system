@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 public class DocumentDto {
 
     private long id;
+    private String originalFilename;
     private String storageFileName;
     private String description;
     private String extension;
