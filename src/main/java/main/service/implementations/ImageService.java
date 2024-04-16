@@ -32,9 +32,9 @@ public class ImageService {
         this.imageRepository = imageRepository;
     }
 
-    public void uploadAll(MultipartFile[] files, Category category, Long categoryId) throws IOException {
-        for (MultipartFile file : files) {
-            addImage(file, category, categoryId);
+    public void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
+        for (int i = 0; i < files.length; i++) {
+            addImage(files[i], descriptions[i], category, categoryId);
         }
     }
     private void createFolderIfNotExist(){
@@ -66,7 +66,7 @@ public class ImageService {
         }
     }
 
-    public void addImage(MultipartFile file, Category category, Long CategoryId) throws IOException {
+    public void addImage(MultipartFile file, String description, Category category, Long CategoryId) throws IOException {
         if (file != null){
                 createFolderIfNotExist();
                 String filename = file.getOriginalFilename();
@@ -74,6 +74,7 @@ public class ImageService {
                 String storageFileName = UUID.randomUUID() + "." + filename;
                 Image image = new Image();
                 image.setStorageFileName(storageFileName);
+                image.setDescription(description);
                 image.setExtension(extension);
                 image.setCategoryName(category.name());
                 image.setCategoryId(CategoryId);
@@ -84,7 +85,7 @@ public class ImageService {
 
     }
 
-    public List<ImageDto> getDocuments(Category category, long categoryId){
+    public List<ImageDto> getImages(Category category, long categoryId){
         List<Image> images = imageRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
         return images.stream().map(ImageDtoMapper::mapToDto).toList();
     }

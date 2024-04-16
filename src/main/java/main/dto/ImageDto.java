@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 public class ImageDto {
     private long id;
     private String storageFileName;
+    private String description;
     private String extension;
     private String categoryName;
     private long categoryId;

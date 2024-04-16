@@ -9,6 +9,7 @@ public class ImageDtoMapper {
         ImageDto dto = new ImageDto();
         dto.setId(image.getId());
         dto.setExtension(image.getExtension());
+        dto.setDescription(image.getDescription());
         dto.setStorageFileName(image.getStorageFileName());
         dto.setCategoryName(image.getCategoryName());
         dto.setCategoryId(image.getCategoryId());
@@ -20,6 +21,7 @@ public class ImageDtoMapper {
         Image image = new Image();
         image.setId(dto.getId());
         image.setExtension(dto.getExtension());
+        image.setDescription(dto.getDescription());
         image.setStorageFileName(dto.getStorageFileName());
         image.setCategoryName(dto.getCategoryName());
         image.setCategoryId(dto.getCategoryId());

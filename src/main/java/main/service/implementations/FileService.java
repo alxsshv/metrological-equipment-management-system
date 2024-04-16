@@ -25,7 +25,8 @@ public class FileService {
 
     public void uploadFile(MultipartFile file, String description, Category category, Long categoryId) throws IOException {
         if (isImage(file)){
-            imageService.addImage(file, category, categoryId);
+            imageService.addImage(file, description, category, categoryId);
+            return;
         }
         documentService.addDocument(file, description, category, categoryId);
     }
@@ -33,8 +34,7 @@ public class FileService {
     private boolean isImage(MultipartFile file){
         boolean result = false;
         for (String imageExtension : AppConstants.IMAGE_EXTENSIONS){
-            result = result || getFileExtension(file).equalsIgnoreCase(imageExtension);
-            System.out.println(imageExtension);
+            result = result || getFileExtension(file).equalsIgnoreCase(imageExtension.toLowerCase());
         }
         return result;
     }

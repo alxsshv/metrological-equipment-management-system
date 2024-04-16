@@ -20,8 +20,12 @@ public class Image {
     private long id;
     @Column(name = "storage_file_name")
     private String storageFileName;
+    @Column(name = "original_file_name")
+    private String originalFileName;
     @Column(name = "extension")
     private String extension;
+    @Column(name = "description")
+    private String description;
     @Column(name = "category_name")
     private String categoryName;
     @Column(name = "category_id")
