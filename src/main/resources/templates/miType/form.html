@@ -13,6 +13,7 @@
     var app = angular.module("MI_TYPE_FORM", []);
     app.controller("MI_TYPE_FORM_CTRL", function ($scope, $http) {
         $scope.descriptions = [];
+        $scope.miType = {};
 
         // сохранение в БД;
         $scope.addMiType = function () {
@@ -29,7 +30,6 @@
                 }).then(function successCallback(response) {
                     console.log($scope.miType);
                     alert(response.data.message);
-                    $scope.clearFields();
                 }, function errorCallback(response) {
                     alert(response.data.message)
                 });
@@ -41,54 +41,36 @@
         //Подготовка formData для отправки
         let formData = new FormData();
         $scope.buildFormData = function () {
-            let type = {
-                number: $scope.miType.number,
-                title: $scope.miType.title,
-                notation: $scope.miType.notation,
-                startDate: $scope.miType.startDate,
-                endDate: $scope.miType.endDate,
-                modifications: $scope.modifications,
-                verificationPeriod: $scope.miType.verificationPeriod,
-                instructionNotation: $scope.miType.instructionNotation,
-                instructionTitle: $scope.miType.instructionTitle,
-                humidityLowLimit: $scope.miType.humidityLowLimit,
-                humidityHiLimit: $scope.miType.humidityHiLimit,
-                temperatureHiLimit: $scope.miType.temperatureHiLimit,
-                temperatureLowLimit: $scope.miType.temperatureLowLimit,
-                pressureHiLimit: $scope.miType.pressureHiLimit,
-                pressureLowLimit: $scope.miType.pressureLowLimit
-            };
-            formData.append('miType', JSON.stringify(type));
+            formData.append('miType', JSON.stringify($scope.miType));
             formData.append('descriptions', $scope.descriptions);
-            console.log($scope.descriptions);
             for (let i = 0; i < file.files.length; i++) {
                 formData.append('files', file.files[i])
             }
         }
 
+
         $scope.buildFileNameList = function () {
             $scope.filenames = [];
             for (let i = 0; i < file.files.length; i++) {
                 $scope.filenames.push(file.files[i].name);
-                console.log(i);
             }
         }
 
         // добавление модификаций
-        $scope.modifications = [];
+        $scope.miType.modifications = [];
         $scope.addModification = function (modification) {
             console.log("добавляем " + modification);
-            if ($scope.modifications.includes(modification)) {
+            if ($scope.miType.modifications.includes(modification)) {
                 alert("Эта модификация уже добавлена");
             } else
                 if (modification != "") {
-                    $scope.modifications.push(modification);
+                    $scope.miType.modifications.push(modification);
                 }
         }
 
         //удаление последней добавленой модификации
         $scope.deleteLastModification = function () {
-            $scope.modifications.pop();
+            $scope.miType.modifications.pop();
         }
 
     });
@@ -136,7 +118,7 @@
                 <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
                     <div class="col-md-12">
                         <label for="inputDate1" class="form-label">Дата начала срока действия</label>
-                        <input type="date" ng-model="miType.startDate" ng-model-options="{timezone: 'UTC'}"
+                        <input type="date" ng-model="startDate" ng-model-options="{timezone: 'UTC'}"
                             class="form-control" id="inputDate1" value="" required>
                     </div>
                     <div class="col-md-12">
@@ -152,7 +134,7 @@
                         <div class="col-md-5">
                             <div class="table-responsive" style="max-height: 170px;">
                                 <table class="table table-striped">
-                                    <tr ng-repeat="modification in modifications">
+                                    <tr ng-repeat="modification in miType.modifications">
                                         <td>{{modification}}</td>
                                     </tr>
                                 </table>
@@ -190,12 +172,12 @@
                 <div class="col-md-2">
                     <label for="inputNumber1" class="form-label">МПИ, год (лет)</label>
                     <input type="number" step="0.083334" ng-model="miType.verificationPeriod" class="form-control"
-                        id="inputNumber1" value="" required>
+                        id="inputNumber1" value="">
                 </div>
                 <div class="col-md-3">
                     <label for="inputText4" class="form-label">Обозначение методики поверки</label>
                     <input type="text" ng-model="miType.instructionNotation" class="form-control" id="inputText4"
-                        value="" required>
+                        value="">
                 </div>
                 <div class="col-md-7">
                     <label for="inputText5" class="form-label">Наименование методики поверки</label>
@@ -210,12 +192,12 @@
                 <div class="col-md-2">
                     <label for="inputNumber2" class="form-label">Минималное значение влажности, %</label>
                     <input type="number" step="0.01" ng-model="miType.humidityLowLimit" class="form-control"
-                        id="inputNumber2" value="" required>
+                        id="inputNumber2" value="">
                 </div>
                 <div class="col-md-2">
                     <label for="inputNumber3" class="form-label">Максимальное значение влажности, %</label>
                     <input type="number" step="0.01" ng-model="miType.humidityHiLimit" class="form-control"
-                        id="inputNumber3" value="" required>
+                        id="inputNumber3" value="">
                 </div>
                 <div class="col-md-2">
                     <label for="inputNumber4" class="form-label">Минималное значение температуры, &degC</label>

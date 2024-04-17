@@ -49,24 +49,21 @@ public class MiTypeService implements IMiTypeService {
         String errorMessage = checkMiTypeDtoComposition(miTypeDto);
         if (!errorMessage.isEmpty()) {
             log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
+            return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
         MiType miTypeFromDb = miTypeRepository.findByNumber(miTypeDto.getNumber());
         if (miTypeFromDb != null){
             errorMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " уже существует";
             log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
+            return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
         MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        System.out.println(miTypeInstruction);
         MiTypeInstruction miTypeInstructionFromDB = miTypeInstructionRepository.save(miTypeInstruction);
         fileService.uploadAllFiles(files,descriptions, Category.MI_TYPE, miTypeInstructionFromDB.getId());
-
         String okMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " успешно добавлена";
         log.info(okMessage);
-        return ResponseEntity.ok(
-                new ServiceMessage(okMessage));
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
     private String checkMiTypeDtoComposition(MiTypeFullDto dto){
         String miTypeNumberTemplate = "[0-9]{5}-[0-9]{2}";

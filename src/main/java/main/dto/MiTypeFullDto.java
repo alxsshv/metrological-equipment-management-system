@@ -30,4 +30,26 @@ public class MiTypeFullDto {
     private double temperatureHiLimit;
     private double pressureLowLimit;
     private double pressureHiLimit;
+
+    @Override
+    public String toString() {
+        return "MiTypeFullDto{" +
+                "id=" + id +
+                ", number='" + number + '\'' +
+                ", title='" + title + '\'' +
+                ", notation='" + notation + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                ", verificationPeriod=" + verificationPeriod +
+                ", modifications=" + modifications +
+                ", instructionNotation='" + instructionNotation + '\'' +
+                ", instructionTitle='" + instructionTitle + '\'' +
+                ", humidityLowLimit=" + humidityLowLimit +
+                ", humidityHiLimit=" + humidityHiLimit +
+                ", temperatureLowLimit=" + temperatureLowLimit +
+                ", temperatureHiLimit=" + temperatureHiLimit +
+                ", pressureLowLimit=" + pressureLowLimit +
+                ", pressureHiLimit=" + pressureHiLimit +
+                '}';
+    }
 }

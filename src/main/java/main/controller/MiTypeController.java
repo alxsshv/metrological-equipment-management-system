@@ -62,6 +62,7 @@ public class MiTypeController {
                                        @RequestParam("descriptions") String[] descriptions) throws IOException {
         ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
         MiTypeFullDto miTypeFullDto = mapper.readValue(miType, MiTypeFullDto.class);
+        System.out.println(miTypeFullDto);
         return miTypeService.save(miTypeFullDto, files, descriptions);
     }
 

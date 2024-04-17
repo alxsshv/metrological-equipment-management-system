@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ru">
 
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -9,12 +10,14 @@
     <script src="/js/angular.min.js"></script>
 </head>
 
+
 <script type="text/javascript">
     var app = angular.module("MI_TYPE_CARD", []);
     var idAttr = new URL(document.URL).searchParams.get("id");
     app.controller("MI_TYPE_CARD_CTRL", function ($scope, $http) {
         $scope.reference = "/mits/form/" + idAttr + "?id=" + idAttr
         $scope.documents = [];
+
 
         $scope.getMiType = function () {
             $http({
@@ -28,6 +31,8 @@
         }
 
 
+
+
         $scope.getDocuments = function () {
             $http({
                 url: "/files/documents?category=MI_TYPE&id=" + idAttr,
@@ -39,15 +44,19 @@
         }
 
 
+        $scope.shortImages = [];
         $scope.getImages = function () {
             $http({
                 url: "/files/images?category=MI_TYPE&id=" + idAttr,
                 method: "GET"
             }).then(function (response) {
                 $scope.images = response.data;
-                console.log($scope.images);
+                $scope.shortImages = $scope.images.slice();
+                $scope.shortImages.shift();
             });
         }
+
+
 
 
 
@@ -55,11 +64,13 @@
         $scope.getMiType();
         $scope.getDocuments();
         $scope.getImages();
-
     });
 
 
+
+
 </script>
+
 
 <body ng-app="MI_TYPE_CARD" ng-controller="MI_TYPE_CARD_CTRL">
     <script src="/js/bootstrap.bundle.min.js"></script>
@@ -72,45 +83,56 @@
                 <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
             </form>
         </nav>
-            <div class="row">
+        <div class="row">
             <div class="col-sm-8">
                 <dl class="row text-start">
                     <dt class="col-sm-6">Номер в ФИФ ОЕИ</dt>
                     <dd ng-model="type" class="col-sm-6">{{miType.number}}</dd>
 
+
                     <dt class="col-sm-6">Наименование</dt>
                     <dd ng-model="type" class="col-sm-6">{{miType.title}}</dd>
 
+
                     <dt class="col-sm-6 text-truncate">Обозначение</dt>
                     <dd ng-model="type" class="col-sm-6">{{miType.notation}}</dd>
+
 
                     <dt class="col-sm-6">Перbод действия</dt>
                     <dd ng-model="type" class="col-sm-6"> c {{startDate | date:"dd.MM.yyyy"}} по {{endDate |
                         date:"dd.MM.yyyy"}}</dd>
 
+
                     <dt class="col-sm-6">Интервал между поверками (МПИ), лет</dt>
                     <dd ng-model="type" class="col-sm-6">{{miType.verificationPeriod}}</dd>
+
 
                     <dt class="col-sm-6">Обозначение методики поверки</dt>
                     <dd ng-model="type" class="col-sm-6">{{miType.instructionNotation}}</dd>
 
+
                     <dt class="col-sm-6">Наименование методики поверки</dt>
                     <dd ng-model="type" class="col-sm-6">{{miType.instructionTitle}}</dd>
 
+
                     <p></p>
                     <dt><u>Условия поверки</u></dt>
+
 
                     <dt class="col-sm-6">Допустимый диапазон температуры окружающей среды</dt>
                     <dd ng-model="type" class="col-sm-6">от {{miType.temperatureLowLimit}}&degC до
                         {{miType.temperatureHiLimit}}&degC</dd>
 
+
                     <dt class="col-sm-6">Допустимый диапазон относительной влажности воздуха</dt>
                     <dd ng-model="type" class="col-sm-6">от {{miType.humidityLowLimit}} % до {{miType.humidityHiLimit}}
                         %</dd>
 
+
                     <dt class="col-sm-6">Допустимый диапазон атмосферного давления</dt>
                     <dd ng-model="type" class="col-sm-6">от {{miType.pressureLowLimit}} % до {{miType.pressureHiLimit}}
                         %</dd>
+
 
                     <p></p>
                     <dt><u>Файлы</u></dt>
@@ -118,6 +140,7 @@
                             target="_blank">{{document.description}}</a></dd>
                 </dl>
             </div>
+
 
             <div class="col-sm-4">
                 <div class="table-responsive" style="max-height: 250px;">
@@ -129,27 +152,36 @@
                     </table>
                 </div>
                 <p></p>
-                    <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                          <div ng-repeat="image in images" class="carousel-item active">
-                            <img ng-src="/storage/images/{{image.storageFileName}}" class="d-block w-100">
+                <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div ng-model="images" class="carousel-item active">
+                            <img ng-src="/storage/images/{{images[0].storageFileName}}" class="d-block w-100">
                             <div class="carousel-caption d-none d-md-block">
-                              <p>{{image.description}}</p>
+                                <p>{{images[0].description}}</p>
                             </div>
-                          </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev">
-                          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Предыдущий</span>
+                        </div>
+                        <div ng-repeat="item in shortImages" class="carousel-item">
+                            <img ng-src="/storage/images/{{item.storageFileName}}" class="d-block w-100">
+                            <div class="carousel-caption d-none d-md-block">
+                                <p>{{item.description}}</p>
+                            </div>
+                        </div>
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+                            data-bs-slide="prev">
+                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Предыдущий</span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next">
-                          <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                          <span class="visually-hidden">Следующий</span>
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                            data-bs-slide="next">
+                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                            <span class="visually-hidden">Следующий</span>
                         </button>
-                      </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+
 
 </html>

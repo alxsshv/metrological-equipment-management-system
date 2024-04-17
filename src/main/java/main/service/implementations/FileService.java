@@ -5,6 +5,8 @@ import main.service.Category;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.util.Arrays;
+
 @Service
 public class FileService {
     private final DocumentService documentService;
@@ -16,11 +18,22 @@ public class FileService {
     }
 
     public void uploadAllFiles (MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
+        String [] filesDescriptions = equalizeDescriptionsArrayLength(files, descriptions);
         for (int i = 0; i < files.length; i++) {
             if (files[i] != null){
-                uploadFile(files[i], descriptions[i], category, categoryId);
+                uploadFile(files[i], filesDescriptions[i], category, categoryId);
             }
         }
+    }
+
+    private String [] equalizeDescriptionsArrayLength(MultipartFile[] files, String[] descriptions){
+        if (descriptions == null) {
+            return new String[files.length];
+        }
+        if (files.length != descriptions.length){
+            return Arrays.copyOf(descriptions, files.length);
+        }
+        return descriptions;
     }
 
     public void uploadFile(MultipartFile file, String description, Category category, Long categoryId) throws IOException {
@@ -30,6 +43,9 @@ public class FileService {
         }
         documentService.addDocument(file, description, category, categoryId);
     }
+
+
+
 
     private boolean isImage(MultipartFile file){
         boolean result = false;
