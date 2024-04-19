@@ -2,11 +2,7 @@ package main.controller;
 
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
-import main.dto.MiDto;
-import main.dto.MiFullDto;
 import main.dto.MiStandardDto;
-import main.model.MiStandard;
-import main.service.implementations.MeasurementInstrumentService;
 import main.service.implementations.MiStandardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,8 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 import java.util.List;
 
 @RestController
