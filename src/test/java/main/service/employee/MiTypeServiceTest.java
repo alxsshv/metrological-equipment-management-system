@@ -132,29 +132,30 @@ public class MiTypeServiceTest {
     @DisplayName("Test save if created new MiType")
     public void testSaveIfCreatedNewMiType() throws IOException {
         long miTypeId = 5L;
-        MiTypeFullDto miTypeDto = new MiTypeFullDto();
-        miTypeDto.setId(miTypeId);
-        miTypeDto.setNumber("12345-12");
-        miTypeDto.setTitle("Вольтметры");
-        miTypeDto.setNotation("В7-78");
+        MiTypeFullDto miTypeFullDto = new MiTypeFullDto();
+        miTypeFullDto.setId(miTypeId);
+        miTypeFullDto.setNumber("12345-12");
+        miTypeFullDto.setTitle("Вольтметры");
+        miTypeFullDto.setNotation("В7-78");
         List<String> modifications = new ArrayList<>();
         modifications.add("В7-78/1");
         modifications.add("В7-78/2");
-        miTypeDto.setModifications(modifications);
-        miTypeDto.setInstructionNotation("В7-78МП");
-        miTypeDto.setInstructionTitle("Методика поверки В7-78");
-        miTypeDto.setVerificationPeriod(12);
+        miTypeFullDto.setModifications(modifications);
+        miTypeFullDto.setInstructionNotation("В7-78МП");
+        miTypeFullDto.setInstructionTitle("Методика поверки В7-78");
+        miTypeFullDto.setVerificationPeriod(12);
         MultipartFile[] files = {};
         String[] descriptions = {};
-        when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(null);
-        MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeDto);
-        when(miTypeInstructionRepository.save(miTypeInstruction)).thenReturn(miTypeInstruction);
-        System.out.println(miTypeInstruction);
-        ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto, files, descriptions);
+        when(miTypeRepository.findByNumber(miTypeFullDto.getNumber())).thenReturn(null);
+        MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeFullDto);
+        miTypeInstruction.setId(miTypeFullDto.getId());
+        when(miTypeInstructionRepository.save(any(MiTypeInstruction.class))).thenReturn(miTypeInstruction);
+        ResponseEntity<?> responseEntity = miTypeService.save(miTypeFullDto, files, descriptions);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
-        verify(miTypeRepository,times(1)).findByNumber(miTypeDto.getNumber());
+        verify(miTypeRepository,times(1)).findByNumber(miTypeFullDto.getNumber());
         verify(miTypeInstructionRepository,times(1)).save(any(MiTypeInstruction.class));
     }
+
 
     @Test
     @DisplayName("Test update if miType not found")

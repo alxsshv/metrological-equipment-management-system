@@ -45,23 +45,22 @@ public class MiTypeService implements IMiTypeService {
     }
 
     @Override
-    public ResponseEntity<?> save(MiTypeFullDto miTypeDto, MultipartFile[] files,String[] descriptions) throws IOException {
-        String errorMessage = checkMiTypeDtoComposition(miTypeDto);
+    public ResponseEntity<?> save(MiTypeFullDto miTypeFullDto, MultipartFile[] files,String[] descriptions) throws IOException {
+        String errorMessage = checkMiTypeDtoComposition(miTypeFullDto);
         if (!errorMessage.isEmpty()) {
             log.info(errorMessage);
             return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
-        MiType miTypeFromDb = miTypeRepository.findByNumber(miTypeDto.getNumber());
+        MiType miTypeFromDb = miTypeRepository.findByNumber(miTypeFullDto.getNumber());
         if (miTypeFromDb != null){
-            errorMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " уже существует";
+            errorMessage = "Запись о типе СИ № " + miTypeFullDto.getNumber() + " уже существует";
             log.info(errorMessage);
             return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
-        MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeDto);
-        System.out.println(miTypeInstruction);
+        MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeFullDto);
         MiTypeInstruction miTypeInstructionFromDB = miTypeInstructionRepository.save(miTypeInstruction);
         fileService.uploadAllFiles(files,descriptions, Category.MI_TYPE, miTypeInstructionFromDB.getId());
-        String okMessage = "Запись о типе СИ № " + miTypeDto.getNumber() + " успешно добавлена";
+        String okMessage = "Запись о типе СИ № " + miTypeFullDto.getNumber() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
