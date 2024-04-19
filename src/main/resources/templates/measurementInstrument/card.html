@@ -6,55 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Редактирование данных организации</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/js/angular.min.js"></script>
 </head>
-
-<script type="text/javascript">
-    var app = angular.module("MI_CARD", []);
-    var idAttr = new URL(document.URL).searchParams.get("id");
-    app.controller("MI_CARD_CTRL", function ($scope, $http) {
-        $scope.reference = "/mis/form/" + idAttr + "?id=" + idAttr
-
-        $scope.getMeasurementInstrument = function () {
-            $http({
-                url: "/mi/" + idAttr,
-                method: "GET"
-            }).then(function (response) {
-                $scope.mi = response.data;
-                $scope.formatMiDateFields();
-                $scope.mi.applicable = $scope.mi.applicable ? "Пригоден" : "Не пригоден";
-            });
-        }
-
-
-        $scope.formatMiDateFields = function () {
-            if ($scope.mi.manufactureDate != null) {
-                $scope.mi.manufactureDate = new Date($scope.mi.manufactureDate);
-            }
-            if ($scope.mi.startUseDate != null) {
-                $scope.mi.startUseDate = new Date($scope.mi.startUseDate);
-            }
-            if ($scope.mi.verificationDate != null) {
-                $scope.mi.verificationDate = new Date($scope.mi.verificationDate);
-            }
-            if ($scope.mi.validDate != null) {
-                $scope.mi.validDate = new Date($scope.mi.validDate);
-            }
-            if ($scope.mi.creationDateTime != null) {
-                $scope.mi.creationDateTime = new Date($scope.mi.creationDateTime);
-            }
-            if ($scope.mi.updatingDateTime != null) {
-                $scope.mi.updatingDateTime = new Date($scope.mi.updatingDateTime);
-            }
-
-        }
-
-        $scope.getMeasurementInstrument();
-
-    });
-
-
-</script>
 
 <body ng-app="MI_CARD" ng-controller="MI_CARD_CTRL">
     <div class="container text-center">
@@ -103,6 +55,10 @@
                     <dt class="col-sm-6">Адрес</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.owner. address}}</dd>
 
+                    <p></p>
+                    <h5>Файлы</h5>
+                    <dd ng-repeat="document in miTypeDocuments"><a href="/files/documents/{{document.id}}"
+                            target="_blank">{{document.description}}</a></dd>
 
             </div>
 
@@ -118,6 +74,35 @@
 
                     <dt class="col-sm-6 ">Пригоден</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.applicable}}</dd>
+
+                    <p></p>
+
+                    <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+                        <div class="carousel-inner">
+                            <div ng-model="miTypeImages" class="carousel-item active">
+                                <img ng-src="/storage/images/{{miTypeImages[0].storageFileName}}" class="d-block w-100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>{{images[0].description}}</p>
+                                </div>
+                            </div>
+                            <div ng-repeat="item in miTypeImagesExceptFirst" class="carousel-item">
+                                <img ng-src="/storage/images/{{item.storageFileName}}" class="d-block w-100">
+                                <div class="carousel-caption d-none d-md-block">
+                                    <p>{{item.description}}</p>
+                                </div>
+                            </div>
+                            <button class="carousel-control-prev" type="button" data-bs-target="#carousel"
+                                data-bs-slide="prev">
+                                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Предыдущий</span>
+                            </button>
+                            <button class="carousel-control-next" type="button" data-bs-target="#carousel"
+                                data-bs-slide="next">
+                                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                <span class="visually-hidden">Следующий</span>
+                            </button>
+                        </div>
+                    </div>
             </div>
         </div>
         <p></p>
@@ -131,7 +116,82 @@
             </div>
         </div>
     </div>
+    <script src="/js/angular.min.js"></script>
     <script src="/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("MI_CARD", []);
+        var idAttr = new URL(document.URL).searchParams.get("id");
+        app.controller("MI_CARD_CTRL", function ($scope, $http) {
+            $scope.reference = "/mis/form/" + idAttr + "?id=" + idAttr
+
+
+
+            $scope.mi = {};
+            $scope.mi.miType = {};
+            $scope.getMeasurementInstrument = function () {
+                $http({
+                    url: "/mi/" + idAttr,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.mi = response.data;
+                    $scope.formatMiDateFields();
+                    $scope.mi.applicable = $scope.mi.applicable ? "Пригоден" : "Не пригоден";
+                    $scope.getMiTypeDocuments();
+                    $scope.getMiTypeImages();
+                });
+            }
+
+
+            $scope.formatMiDateFields = function () {
+                if ($scope.mi.manufactureDate != null) {
+                    $scope.mi.manufactureDate = new Date($scope.mi.manufactureDate);
+                }
+                if ($scope.mi.startUseDate != null) {
+                    $scope.mi.startUseDate = new Date($scope.mi.startUseDate);
+                }
+                if ($scope.mi.verificationDate != null) {
+                    $scope.mi.verificationDate = new Date($scope.mi.verificationDate);
+                }
+                if ($scope.mi.validDate != null) {
+                    $scope.mi.validDate = new Date($scope.mi.validDate);
+                }
+                if ($scope.mi.creationDateTime != null) {
+                    $scope.mi.creationDateTime = new Date($scope.mi.creationDateTime);
+                }
+                if ($scope.mi.updatingDateTime != null) {
+                    $scope.mi.updatingDateTime = new Date($scope.mi.updatingDateTime);
+                }
+
+            }
+
+            $scope.getMiTypeDocuments = function () {
+                $http({
+                    url: "/files/documents?category=MI_TYPE&id=" + $scope.mi.miType.id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.miTypeDocuments = response.data;
+                });
+            }
+
+            $scope.miTypeImagesExceptFirst = [];
+            $scope.getMiTypeImages = function () {
+                $http({
+                    url: "/files/images?category=MI_TYPE&id=" + $scope.mi.miType.id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.miTypeImages = response.data;
+                    $scope.miTypeImagesExceptFirst = $scope.miTypeImages.slice();
+                    $scope.miTypeImagesExceptFirst.shift();
+                });
+            }
+
+
+            $scope.getMeasurementInstrument();
+
+        });
+
+
+    </script>
 </body>
 
 </html>

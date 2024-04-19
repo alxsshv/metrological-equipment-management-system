@@ -6,40 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Редактирование данных организации</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/js/angular.min.js"></script>
 </head>
-
-<script type="text/javascript">
-    var app = angular.module("ORGANIZATION_CARD", []);
-    var idAttr = new URL(document.URL).searchParams.get("id");
-    app.controller("ORGANIZATION_CARD_CTRL", function ($scope, $http) {
-        $scope.reference = "/organizations/form/" + idAttr + "?id=" + idAttr
-
-        $scope.getOrganization = function () {
-            $http({
-                url: "/organization/" + idAttr,
-                method: "GET"
-            }).then(function (response) {
-                $scope.organization = response.data;
-                $scope.formatDateFieldsFromOrganization();
-            });
-        }
-
-        $scope.formatDateFieldsFromOrganization = function(){
-            if ($scope.organization.creationDateTime != null){
-                $scope.organization.creationDateTime = new Date($scope.organization.creationDateTime);
-            }
-            if ($scope.organization.updatingDateTime != null){
-                $scope.organization.updatingDateTime = new Date($scope.organization.updatingDateTime);
-            }
-        }
-
-        $scope.getOrganization();
-
-    });
-
-
-</script>
 
 <body ng-app="ORGANIZATION_CARD" ng-controller="ORGANIZATION_CARD_CTRL">
     <div class="container text-center">
@@ -76,6 +43,38 @@
         </div>
     </div>
     <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("ORGANIZATION_CARD", []);
+        var idAttr = new URL(document.URL).searchParams.get("id");
+        app.controller("ORGANIZATION_CARD_CTRL", function ($scope, $http) {
+            $scope.reference = "/organizations/form/" + idAttr + "?id=" + idAttr
+    
+            $scope.getOrganization = function () {
+                $http({
+                    url: "/organization/" + idAttr,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.organization = response.data;
+                    $scope.formatDateFieldsFromOrganization();
+                });
+            }
+    
+            $scope.formatDateFieldsFromOrganization = function(){
+                if ($scope.organization.creationDateTime != null){
+                    $scope.organization.creationDateTime = new Date($scope.organization.creationDateTime);
+                }
+                if ($scope.organization.updatingDateTime != null){
+                    $scope.organization.updatingDateTime = new Date($scope.organization.updatingDateTime);
+                }
+            }
+    
+            $scope.getOrganization();
+    
+        });
+    
+    
+    </script>
 </body>
 
 </html>

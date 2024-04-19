@@ -13,24 +13,24 @@ public class WebController {
         return "index";
     }
 
-    // Работа с поверителями
+    // Вывод шаблонов для поверителей
     @GetMapping("/employees/form")
     public String getEmployeeFormView(){
-        return "employee/employeeForm";
+        return "employee/form";
     }
     @GetMapping("/employees")
     public String getEmployeeListView(){
-        return "employee/employeeList";
+        return "employee/list";
     }
     @GetMapping("/employees/{id}")
     public String getEmployeeView(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
-        return "employee/employeeCard";
+        return "employee/card";
     }
     @GetMapping("/employees/form/{id}")
     public String getEditEmployeeForm(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
-        return "employee/employeeEdit";
+        return "employee/edit";
     }
 
     //Вывод шаблонов для типов средств измерений
@@ -93,45 +93,5 @@ public class WebController {
         return "organization/edit";
     }
 
-    // Вывод шаблонов для заявок на регистрацию поверки
-    @GetMapping("/issues/form")
-    public String getAddVerificationIssueView(){
-        return "verificationIssue/verificationIssueForm";
-    }
-    @GetMapping("/issues")
-    public String getVerificationIssuesListView(){
-        return "verificationIssue/verificationIssueList";
-    }
-    @GetMapping("/issues/{id}")
-    public String getVerificationIssueView(@RequestParam("id") String id, Model model){
-        model.addAttribute("id",id);
-        return "verificationIssue/verificationIssueCard";
-    }
-    @GetMapping("/issues/record/{id}")
-    public String getEditVerificationRecordView(@RequestParam("id") String id, Model model){
-        model.addAttribute("id",id);
-        return "verificationIssue/verificationRecordEdit";
-    }
-
-    //Работа с отчетами о поверке
-    // Работа с заявками на регистрацию поверки
-    @GetMapping("/reports/form")
-    public String getVerificationReportForm(){
-        return "verification/verificationReportForm";
-    }
-    @GetMapping("/reports")
-    public String getReportListView(){
-        return "verification/verificationReportList";
-    }
-    @GetMapping("/reports/{id}")
-    public String getVerificationReportView(@RequestParam("id") String id, Model model){
-        model.addAttribute("id",id);
-        return "verification/verificationReportCard";
-    }
-    @GetMapping("/reports/record/{id}")
-    public String getVerificationRecordEditor(@RequestParam("id") String id, Model model){
-        model.addAttribute("id",id);
-        return "verification/recordUpdateForm";
-    }
 
 }

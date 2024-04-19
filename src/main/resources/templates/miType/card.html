@@ -7,70 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Информация о типе средства измерений</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/js/angular.min.js"></script>
 </head>
-
-
-<script type="text/javascript">
-    var app = angular.module("MI_TYPE_CARD", []);
-    var idAttr = new URL(document.URL).searchParams.get("id");
-    app.controller("MI_TYPE_CARD_CTRL", function ($scope, $http) {
-        $scope.reference = "/mits/form/" + idAttr + "?id=" + idAttr
-        $scope.documents = [];
-
-
-        $scope.getMiType = function () {
-            $http({
-                url: "/mit/" + idAttr,
-                method: "GET"
-            }).then(function (response) {
-                $scope.miType = response.data;
-                $scope.startDate = new Date(response.data.startDate);
-                $scope.endDate = new Date(response.data.endDate);
-            });
-        }
-
-
-
-
-        $scope.getDocuments = function () {
-            $http({
-                url: "/files/documents?category=MI_TYPE&id=" + idAttr,
-                method: "GET"
-            }).then(function (response) {
-                $scope.documents = response.data;
-                console.log($scope.documents);
-            });
-        }
-
-
-        $scope.shortImages = [];
-        $scope.getImages = function () {
-            $http({
-                url: "/files/images?category=MI_TYPE&id=" + idAttr,
-                method: "GET"
-            }).then(function (response) {
-                $scope.images = response.data;
-                $scope.shortImages = $scope.images.slice();
-                $scope.shortImages.shift();
-            });
-        }
-
-
-
-
-
-
-        $scope.getMiType();
-        $scope.getDocuments();
-        $scope.getImages();
-    });
-
-
-
-
-</script>
-
 
 <body ng-app="MI_TYPE_CARD" ng-controller="MI_TYPE_CARD_CTRL">
     <script src="/js/bootstrap.bundle.min.js"></script>
@@ -140,8 +77,6 @@
                             target="_blank">{{document.description}}</a></dd>
                 </dl>
             </div>
-
-
             <div class="col-sm-4">
                 <div class="table-responsive" style="max-height: 250px;">
                     <table class="table table-striped">
@@ -152,7 +87,7 @@
                     </table>
                 </div>
                 <p></p>
-                <div id="carouselExampleCaptions" class="carousel slide" data-bs-ride="carousel">
+                <div id="carousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div ng-model="images" class="carousel-item active">
                             <img ng-src="/storage/images/{{images[0].storageFileName}}" class="d-block w-100">
@@ -160,18 +95,18 @@
                                 <p>{{images[0].description}}</p>
                             </div>
                         </div>
-                        <div ng-repeat="item in shortImages" class="carousel-item">
+                        <div ng-repeat="item in imagesExceptFirst" class="carousel-item">
                             <img ng-src="/storage/images/{{item.storageFileName}}" class="d-block w-100">
                             <div class="carousel-caption d-none d-md-block">
                                 <p>{{item.description}}</p>
                             </div>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions"
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carousel"
                             data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Предыдущий</span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions"
+                        <button class="carousel-control-next" type="button" data-bs-target="#carousel"
                             data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Следующий</span>
@@ -181,6 +116,62 @@
             </div>
         </div>
     </div>
+    <script src="/js/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("MI_TYPE_CARD", []);
+        var idAttr = new URL(document.URL).searchParams.get("id");
+        app.controller("MI_TYPE_CARD_CTRL", function ($scope, $http) {
+            $scope.reference = "/mits/form/" + idAttr + "?id=" + idAttr
+            $scope.documents = [];
+    
+            $scope.getMiType = function () {
+                $http({
+                    url: "/mit/" + idAttr,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.miType = response.data;
+                    $scope.startDate = new Date(response.data.startDate);
+                    $scope.endDate = new Date(response.data.endDate);
+                });
+            }
+    
+            $scope.getDocuments = function () {
+                $http({
+                    url: "/files/documents?category=MI_TYPE&id=" + idAttr,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.documents = response.data;
+                    console.log($scope.documents);
+                });
+            }
+    
+    
+            $scope.imagesExceptFirst = [];
+            $scope.getImages = function () {
+                $http({
+                    url: "/files/images?category=MI_TYPE&id=" + idAttr,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.images = response.data;
+                    $scope.imagesExceptFirst = $scope.images.slice();
+                    $scope.imagesExceptFirst.shift();
+                });
+            }
+    
+    
+    
+    
+    
+    
+            $scope.getMiType();
+            $scope.getDocuments();
+            $scope.getImages();
+        });
+    
+    
+    
+    
+    </script>
 </body>
 
 

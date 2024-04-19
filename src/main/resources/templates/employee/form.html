@@ -5,9 +5,36 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Список пользователей</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/js/angular.min.js"></script>
-    <script src="/js/jquery-3.7.1.min.js"></script>
 </head>
+<body ng-app="EMPLOYEE_FORM" ng-controller="EMPLOYEE_FORM_CTRL">
+<div class="container text-center">
+    <nav class="navbar bg-body-tertiary">
+        <form class="container-fluid justify-content-start">
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/employees'">Cписок поверителей</button>
+        </form>
+
+    </nav>
+    <div class="col-md-4">
+          <span class="input-group-text">Фамилия</span>
+          <input type="text" ng-model="employee.surname" class="form-control" value="" required>
+
+          <span class="input-group-text">Имя</span>
+          <input type="text" ng-model="employee.name" class="form-control" value="" required>
+
+          <span class="input-group-text">Отчество</span>
+          <input type="text" ng-model="employee.patronymic" class="form-control" value="" required>
+
+          <span class="input-group-text">СНИЛС (указывается числом, без тире и пробелов)</span>
+          <input type="text" ng-model="employee.snils" class="form-control" value="" required>
+    <div class="col-12">
+      <button class="btn btn-primary" ng-click="addEmployee()" type="button">Добавить поверителя</button>
+    </div>
+    </div>
+</div>
+<script src="/js/angular.min.js"></script>
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
 <script type="text/javascript">
     var app = angular.module("EMPLOYEE_FORM", []);
     app.controller("EMPLOYEE_FORM_CTRL", function($scope, $http){
@@ -45,32 +72,5 @@
 
         });
 </script>
-<body ng-app="EMPLOYEE_FORM" ng-controller="EMPLOYEE_FORM_CTRL">
-<script src="/js/bootstrap.bundle.min.js"></script>
-<div class="container text-center">
-    <nav class="navbar bg-body-tertiary">
-        <form class="container-fluid justify-content-start">
-            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/employees'">Cписок поверителей</button>
-        </form>
-
-    </nav>
-    <div class="col-md-4">
-          <span class="input-group-text">Фамилия</span>
-          <input type="text" ng-model="employee.surname" class="form-control" value="" required>
-
-          <span class="input-group-text">Имя</span>
-          <input type="text" ng-model="employee.name" class="form-control" value="" required>
-
-          <span class="input-group-text">Отчество</span>
-          <input type="text" ng-model="employee.patronymic" class="form-control" value="" required>
-
-          <span class="input-group-text">СНИЛС (указывается числом, без тире и пробелов)</span>
-          <input type="text" ng-model="employee.snils" class="form-control" value="" required>
-    <div class="col-12">
-      <button class="btn btn-primary" ng-click="addEmployee()" type="button">Добавить поверителя</button>
-    </div>
-    </div>
-</div>
 </body>
 </html>

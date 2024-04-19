@@ -6,36 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Добавление типа средства измерений</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/js/angular.min.js"></script>
-    <script src="/js/jquery-3.7.1.min.js"></script>
 </head>
-<script type="text/javascript">
-    var app = angular.module("ORGANIZATION_FORM", []);
-    app.controller("ORGANIZATION_FORM_CTRL", function ($scope, $http) {
-
-        // сохранение в БД;
-        $scope.addOrganization = function () {
-            $http({
-                url: "/organization",
-                method: "POST",
-                data: $scope.organization
-            }).then(function successCallback(response) {
-                alert(response.data.message);
-                $scope.clearFields();
-            }, function errorCallback(response) {
-                alert(response.data.message)
-            });
-        }
-
-        $scope.clearFields = function () {
-            $scope.organization.title = "";
-            $scope.organization.notation = "";
-            $scope.organization.address = "";
-        }
-
-    });
-</script>
-
 <body ng-app="ORGANIZATION_FORM" ng-controller="ORGANIZATION_FORM_CTRL">
     <div class="container text-left">
         <nav class="navbar bg-body-tertiary">
@@ -77,6 +48,34 @@
     </div>
     </div>
     <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("ORGANIZATION_FORM", []);
+        app.controller("ORGANIZATION_FORM_CTRL", function ($scope, $http) {
+    
+            // сохранение в БД;
+            $scope.addOrganization = function () {
+                $http({
+                    url: "/organization",
+                    method: "POST",
+                    data: $scope.organization
+                }).then(function successCallback(response) {
+                    alert(response.data.message);
+                    $scope.clearFields();
+                }, function errorCallback(response) {
+                    alert(response.data.message)
+                });
+            }
+    
+            $scope.clearFields = function () {
+                $scope.organization.title = "";
+                $scope.organization.notation = "";
+                $scope.organization.address = "";
+            }
+    
+        });
+    </script>    
 </body>
 
 </html>

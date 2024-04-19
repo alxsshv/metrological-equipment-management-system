@@ -5,7 +5,6 @@ import main.service.Category;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
-import java.util.Arrays;
 
 @Service
 public class FileService {
@@ -27,13 +26,21 @@ public class FileService {
     }
 
     private String [] equalizeDescriptionsArrayLength(MultipartFile[] files, String[] descriptions){
-        if (descriptions == null) {
-            return new String[files.length];
+        if (descriptions == null || descriptions.length == 0) {
+            descriptions = new String[files.length];
+            fillDescriptionsToFilesLength(descriptions,files,0);
         }
         if (files.length != descriptions.length){
-            return Arrays.copyOf(descriptions, files.length);
+            fillDescriptionsToFilesLength(descriptions, files,descriptions.length-1);
         }
         return descriptions;
+    }
+
+    private void fillDescriptionsToFilesLength(String[] descriptions, MultipartFile[] files, int startIndex){
+        for (int i = startIndex; i < files.length; i++){
+            System.out.println(i);
+            descriptions[i] = "";
+        }
     }
 
     public void uploadFile(MultipartFile file, String description, Category category, Long categoryId) throws IOException {

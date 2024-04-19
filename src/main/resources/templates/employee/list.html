@@ -4,97 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Список поверителей</title>
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
-    <script src="/js/angular.min.js"></script>
-    
+    <link href="/css/bootstrap.min.css" rel="stylesheet">    
 </head>
-<script type="text/javascript">
-        var app = angular.module("EMPLOYEE_LIST", []);
-        app.controller("EMPLOYEE_LIST_CTRL", function($scope, $http){
-        $scope.contentUrl =  "/employee";
-
-        $scope.getPagesContentlist = function(contentUrl){
-            $scope.getPageAttributes();
-                $http({
-                url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection+"&size=" + $scope.pageSize,
-                method: "GET"
-            }).then(function(response){
-                $scope.contentlist = response.data.content;
-                $scope.createPaginationParams(response.data.totalPages);
-            });
-        }
-
-        
-        $scope.getPageAttributes = function(){
-            var documentUrl = new URL (document.URL);
-            $scope.pageNum = documentUrl.searchParams.get("page");
-            $scope.sortDirection = documentUrl.searchParams.get("dir");
-            $scope.pageSize = documentUrl.searchParams.get("size");
-        
-            if ($scope.pageSize == null || $scope.pageSize == undefined){
-                $scope.pageSize = "10";
-            }
-            if ($scope.sortDirection == null || $scope.sortDirection == undefined){
-                $scope.sortDirection = "ASC";
-            }
-            if ($scope.pageNum == null || $scope.pageNum == undefined){
-                $scope.pageNum = "0";
-            }
-        }
-        
-        $scope.createPaginationParams = function(totalPages){
-            $scope.pageArray = [];
-            $scope.previousPage = 0;
-            $scope.nextPage= Number($scope.pageNum) + 1;
-
-            if ($scope.pageNum > 0){
-                $scope.previousPage = $scope.pageNum - 1;
-            }
-            if ($scope.pageNum >= totalPages-1){
-                $scope.nextPage = totalPages-1;
-            }
-            $scope.pageArray = [];
-            for (let i =0; i < totalPages; i++){
-                $scope.pageArray.push(i);        
-            }        
-        }    
-        
-
-        $scope.getSearchContentlist = function(contentUrl){
-            $scope.getPageAttributes();
-                $http({
-                url: contentUrl + "/search?search=" + $scope.searchString,
-                method: "GET"
-            }).then(function(response){
-                $scope.contentlist = response.data.content;
-                $scope.createPaginationParams(response.data.totalPages);
-            });
-        }
-
-
-        $scope.getDeleteableId = function(id){
-            $scope.deleteableId = id;
-        }
-
-        $scope.deleteEmployee = function(delId){
-            var myModalEl = document.getElementById('modal')
-            var modal = bootstrap.Modal.getInstance(myModalEl);
-            modal.hide();
-                $http({
-                url: "/employee/"+delId,
-                method: "DELETE"
-            }).then(function(response){
-                alert(response.data.message);
-                $scope.getPagesContentlist($scope.contentUrl);
-            });
-            }
-
-        $scope.getPagesContentlist($scope.contentUrl);
-
-    });
-</script>
 <body ng-app="EMPLOYEE_LIST" ng-controller="EMPLOYEE_LIST_CTRL">
-<script src="js/bootstrap.bundle.min.js"></script>
 <div class="container text-center">
     <nav class="navbar bg-body-tertiary">
         <form class="container-fluid justify-content-start">
@@ -161,6 +73,93 @@
       </div>
     </div>
   </div>
+  <script src="/js/angular.min.js"></script>
+  <script src="js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript">
+    var app = angular.module("EMPLOYEE_LIST", []);
+    app.controller("EMPLOYEE_LIST_CTRL", function($scope, $http){
+    $scope.contentUrl =  "/employee";
+
+    $scope.getPagesContentlist = function(contentUrl){
+        $scope.getPageAttributes();
+            $http({
+            url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection+"&size=" + $scope.pageSize,
+            method: "GET"
+        }).then(function(response){
+            $scope.contentlist = response.data.content;
+            $scope.createPaginationParams(response.data.totalPages);
+        });
+    }
+
+    
+    $scope.getPageAttributes = function(){
+        var documentUrl = new URL (document.URL);
+        $scope.pageNum = documentUrl.searchParams.get("page");
+        $scope.sortDirection = documentUrl.searchParams.get("dir");
+        $scope.pageSize = documentUrl.searchParams.get("size");
+    
+        if ($scope.pageSize == null || $scope.pageSize == undefined){
+            $scope.pageSize = "10";
+        }
+        if ($scope.sortDirection == null || $scope.sortDirection == undefined){
+            $scope.sortDirection = "ASC";
+        }
+        if ($scope.pageNum == null || $scope.pageNum == undefined){
+            $scope.pageNum = "0";
+        }
+    }
+    
+    $scope.createPaginationParams = function(totalPages){
+        $scope.pageArray = [];
+        $scope.previousPage = 0;
+        $scope.nextPage= Number($scope.pageNum) + 1;
+
+        if ($scope.pageNum > 0){
+            $scope.previousPage = $scope.pageNum - 1;
+        }
+        if ($scope.pageNum >= totalPages-1){
+            $scope.nextPage = totalPages-1;
+        }
+        $scope.pageArray = [];
+        for (let i =0; i < totalPages; i++){
+            $scope.pageArray.push(i);        
+        }        
+    }    
+    
+
+    $scope.getSearchContentlist = function(contentUrl){
+        $scope.getPageAttributes();
+            $http({
+            url: contentUrl + "/search?search=" + $scope.searchString,
+            method: "GET"
+        }).then(function(response){
+            $scope.contentlist = response.data.content;
+            $scope.createPaginationParams(response.data.totalPages);
+        });
+    }
+
+
+    $scope.getDeleteableId = function(id){
+        $scope.deleteableId = id;
+    }
+
+    $scope.deleteEmployee = function(delId){
+        var myModalEl = document.getElementById('modal')
+        var modal = bootstrap.Modal.getInstance(myModalEl);
+        modal.hide();
+            $http({
+            url: "/employee/"+delId,
+            method: "DELETE"
+        }).then(function(response){
+            alert(response.data.message);
+            $scope.getPagesContentlist($scope.contentUrl);
+        });
+        }
+
+    $scope.getPagesContentlist($scope.contentUrl);
+
+});
+</script>
 </body>
 </html>
 
