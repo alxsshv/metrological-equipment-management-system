@@ -1,4 +1,4 @@
-package main.service.employee;
+package main.service.implementations;
 
 import main.dto.MiTypeDto;
 import main.dto.MiTypeFullDto;
@@ -8,14 +8,14 @@ import main.model.MiTypeInstruction;
 import main.repository.MiTypeInstructionRepository;
 import main.repository.MiTypeModificationRepository;
 import main.repository.MiTypeRepository;
-import main.service.implementations.FileService;
-import main.service.implementations.MiTypeService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
+import testutils.TestDtoGenerator;
+import testutils.TestEntityGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +33,7 @@ public class MiTypeServiceTest {
     private final MiTypeModificationRepository miTypeModificationRepository =
             Mockito.mock(MiTypeModificationRepository.class);
     private final FileService fileService = Mockito.mock(FileService.class);
+    private final Pageable pageable = PageRequest.of(0,10, Sort.by(Sort.Direction.ASC,"number"));
     private final MiTypeService miTypeService =
             new MiTypeService(miTypeRepository, miTypeInstructionRepository,
                     miTypeModificationRepository, fileService);
@@ -41,23 +42,15 @@ public class MiTypeServiceTest {
     @DisplayName("Test save if miType already exists")
     public void testSaveIfMiTypeAlreadyExists() throws IOException {
         long miTypeId = 5L;
-        MiTypeFullDto miTypeDto = new MiTypeFullDto();
-        miTypeDto.setId(miTypeId);
-        miTypeDto.setNumber("12345-12");
-        miTypeDto.setTitle("Вольтметры");
-        miTypeDto.setNotation("В7-78");
-        List<String> modifications = new ArrayList<>();
-        modifications.add("В7-78/1");
-        modifications.add("В7-78/2");
-        miTypeDto.setModifications(modifications);
+        MiTypeFullDto miTypeFullDto = TestDtoGenerator.generateMiTypeFullDtoWithId(miTypeId);
         MiType miType = new MiType();
         miType.setId(miTypeId);
-        when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(miType);
+        when(miTypeRepository.findByNumber(miTypeFullDto.getNumber())).thenReturn(miType);
         MultipartFile[] files = {};
         String[] descriptions = {};
-        ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto, files, descriptions);
+        ResponseEntity<?> responseEntity = miTypeService.save(miTypeFullDto, files, descriptions);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
-        verify(miTypeRepository,times(1)).findByNumber(miTypeDto.getNumber());
+        verify(miTypeRepository,times(1)).findByNumber(miTypeFullDto.getNumber());
         verify(miTypeInstructionRepository,never()).save(any(MiTypeInstruction.class));
     }
 
@@ -65,23 +58,23 @@ public class MiTypeServiceTest {
     @DisplayName("Test save if number is not corrected")
     public void testSaveIfMiTypeNumberIsNotCorrected() throws IOException {
         long miTypeId = 5L;
-        MiTypeFullDto miTypeDto = new MiTypeFullDto();
-        miTypeDto.setId(miTypeId);
-        miTypeDto.setNumber("12345678");
-        miTypeDto.setTitle("Вольтметры");
-        miTypeDto.setNotation("В7-78");
+        MiTypeFullDto miTypeFullDto = new MiTypeFullDto();
+        miTypeFullDto.setId(miTypeId);
+        miTypeFullDto.setNumber("12345678");
+        miTypeFullDto.setTitle("Вольтметры");
+        miTypeFullDto.setNotation("В7-78");
         List<String> modifications = new ArrayList<>();
         modifications.add("В7-78/1");
         modifications.add("В7-78/2");
-        miTypeDto.setModifications(modifications);
+        miTypeFullDto.setModifications(modifications);
         MultipartFile[] files = {};
         String[] descriptions = {};
         MiType miType = new MiType();
         miType.setId(miTypeId);
-        when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(miType);
-        ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto, files, descriptions);
+        when(miTypeRepository.findByNumber(miTypeFullDto.getNumber())).thenReturn(miType);
+        ResponseEntity<?> responseEntity = miTypeService.save(miTypeFullDto, files, descriptions);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
-        verify(miTypeRepository, never()).findByNumber(miTypeDto.getNumber());
+        verify(miTypeRepository, never()).findByNumber(miTypeFullDto.getNumber());
         verify(miTypeInstructionRepository, never()).save(any(MiTypeInstruction.class));
     }
 
@@ -132,18 +125,7 @@ public class MiTypeServiceTest {
     @DisplayName("Test save if created new MiType")
     public void testSaveIfCreatedNewMiType() throws IOException {
         long miTypeId = 5L;
-        MiTypeFullDto miTypeFullDto = new MiTypeFullDto();
-        miTypeFullDto.setId(miTypeId);
-        miTypeFullDto.setNumber("12345-12");
-        miTypeFullDto.setTitle("Вольтметры");
-        miTypeFullDto.setNotation("В7-78");
-        List<String> modifications = new ArrayList<>();
-        modifications.add("В7-78/1");
-        modifications.add("В7-78/2");
-        miTypeFullDto.setModifications(modifications);
-        miTypeFullDto.setInstructionNotation("В7-78МП");
-        miTypeFullDto.setInstructionTitle("Методика поверки В7-78");
-        miTypeFullDto.setVerificationPeriod(12);
+        MiTypeFullDto miTypeFullDto = TestDtoGenerator.generateMiTypeFullDtoWithId(miTypeId);
         MultipartFile[] files = {};
         String[] descriptions = {};
         when(miTypeRepository.findByNumber(miTypeFullDto.getNumber())).thenReturn(null);
@@ -156,20 +138,11 @@ public class MiTypeServiceTest {
         verify(miTypeInstructionRepository,times(1)).save(any(MiTypeInstruction.class));
     }
 
-
     @Test
     @DisplayName("Test update if miType not found")
     public void testUpdateIfMiTypeNotFound(){
         long miTypeId = 5L;
-        MiTypeFullDto miTypeDto = new MiTypeFullDto();
-        miTypeDto.setId(miTypeId);
-        miTypeDto.setNumber("12345-12");
-        miTypeDto.setTitle("Вольтметры");
-        miTypeDto.setNotation("В7-78");
-        List<String> modifications = new ArrayList<>();
-        modifications.add("В7-78/1");
-        modifications.add("В7-78/2");
-        miTypeDto.setModifications(modifications);
+        MiTypeFullDto miTypeDto = TestDtoGenerator.generateMiTypeFullDtoWithId(miTypeId);
         when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.empty());
         ResponseEntity<?> responseEntity = miTypeService.update(miTypeDto);
         assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
@@ -198,13 +171,6 @@ public class MiTypeServiceTest {
     @DisplayName("Test delete if miType not found")
     public void testDeleteIfMiTypeNotFound() throws IOException {
         long miTypeId = 5L;
-        MiType miType = new MiType();
-        miType.setId(miTypeId);
-        miType.setNumber("12345-78");
-        miType.setTitle("Вольтметры");
-        miType.setNotation("В7-78");
-        MultipartFile[] files = {};
-        String[] descriptions = {};
         when(miTypeRepository.findById(miTypeId)).thenReturn(Optional.empty());
         ResponseEntity<?> responseEntity = miTypeService.delete(miTypeId);
         assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
@@ -216,11 +182,7 @@ public class MiTypeServiceTest {
     @DisplayName("Test delete if miType found")
     public void testDeleteIfMiTypeFound() throws IOException {
         long miTypeId = 5L;
-        MiType miType = new MiType();
-        miType.setId(miTypeId);
-        miType.setNumber("12345-78");
-        miType.setTitle("Вольтметры");
-        miType.setNotation("В7-78");
+        MiType miType = TestEntityGenerator.generateMiTypeWithId(miTypeId);
         when(miTypeRepository.findById(miTypeId)).thenReturn(Optional.of(miType));
         ResponseEntity<?> responseEntity = miTypeService.delete(miTypeId);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
@@ -232,13 +194,7 @@ public class MiTypeServiceTest {
     @DisplayName("Test findById if miType found")
     public void testFindByIDIfMiTypeFound() {
         long miTypeId = 5L;
-        MiTypeInstruction instruction = new MiTypeInstruction();
-        MiType miType = new MiType();
-        miType.setId(miTypeId);
-        miType.setNumber("12345-78");
-        miType.setTitle("Вольтметры");
-        miType.setNotation("В7-78");
-        instruction.setMiType(miType);
+        MiTypeInstruction instruction = TestEntityGenerator.generateMiTypeInstructionWithId(miTypeId);
         when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.of(instruction));
         ResponseEntity<?> responseEntity = miTypeService.findById(miTypeId);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
@@ -258,7 +214,6 @@ public class MiTypeServiceTest {
     @DisplayName("Test findBySearchString if searchString is empty")
     public void testFindBySearchStringIfSearcStringIsEmpty() {
         String searchString = "";
-        Pageable pageable = PageRequest.of(0,10, Sort.by(Sort.Direction.ASC,"number"));
         when(miTypeRepository
                 .findByNumberContainingOrTitleContainingOrNotationContaining(searchString,searchString,searchString, pageable))
                 .thenReturn(null);
@@ -272,13 +227,8 @@ public class MiTypeServiceTest {
         long totalPages = 1L;
         String searchString = "В7-78";
         List <MiType> findedMiTypes = new ArrayList<>();
-        MiType miType = new MiType();
-        miType.setId(1L);
-        miType.setNumber("12345-78");
-        miType.setTitle("Вольтметры");
-        miType.setNotation("В7-78");
+        MiType miType = TestEntityGenerator.generateMiTypeWithId(1L);
         findedMiTypes.add(miType);
-        Pageable pageable = PageRequest.of(0,10, Sort.by(Sort.Direction.ASC,"number"));
         Page<MiType> page = new PageImpl<>(findedMiTypes,pageable,totalPages);
         when(miTypeRepository
                 .findByNumberContainingOrTitleContainingOrNotationContaining(searchString,searchString,searchString, pageable))
@@ -294,13 +244,8 @@ public class MiTypeServiceTest {
     public void testPageableFindAll(){
         int totalPages = 1;
         List <MiType> miTypes = new ArrayList<>();
-        MiType miType = new MiType();
-        miType.setId(1L);
-        miType.setNumber("12345-78");
-        miType.setTitle("Вольтметры");
-        miType.setNotation("В7-78");
+        MiType miType = TestEntityGenerator.generateMiTypeWithId(1L);
         miTypes.add(miType);
-        Pageable pageable = PageRequest.of(0,10, Sort.by(Sort.Direction.ASC,"number"));
         Page<MiType> page = new PageImpl<>(miTypes,pageable,totalPages);
         when(miTypeRepository.findAll(pageable)).thenReturn(page);
         Page<MiTypeDto> miTypeDtos = miTypeService.findAll(pageable);

@@ -93,7 +93,7 @@ public class OrganizationService implements IOrganizationService {
             return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
         }
         organizationRepository.delete(organizationOpt.get());
-        String okMessage ="Запись об организации" + organizationOpt.get().getNotation() + " успешно удалена";
+        String okMessage ="Запись об организации"  + organizationOpt.get().getNotation() + " успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
