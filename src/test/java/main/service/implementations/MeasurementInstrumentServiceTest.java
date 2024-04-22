@@ -4,6 +4,7 @@ import main.dto.MiDto;
 import main.dto.MiFullDto;
 import main.dto.mappers.MeasurementInstrumentMapper;
 import main.model.MeasurementInstrument;
+import main.model.MiType;
 import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiTypeRepository;
 import main.repository.OrganizationRepository;
@@ -62,8 +63,159 @@ public class MeasurementInstrumentServiceTest {
         ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
-
     }
+
+    @Test
+    @DisplayName("Test save if modification is empty")
+    public void testSaveIfModificationIsEmpty(){
+        long miId = 1L;
+        MiFullDto miFullDto = new MiFullDto();
+        miFullDto.setId(miId);
+        miFullDto.setSerialNum("SN1");
+        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
+        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
+        miFullDto.setUser("User");
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        verify(miRepository, never()).save(any(MeasurementInstrument.class));
+    }
+
+    @Test
+    @DisplayName("Test save if serial number is empty")
+    public void testSaveIfSerialNumberIsEmpty(){
+        long miId = 1L;
+        MiFullDto miFullDto = new MiFullDto();
+        miFullDto.setId(miId);
+        miFullDto.setModification("В7-78/1");
+        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
+        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
+        miFullDto.setUser("User");
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        verify(miRepository, never()).save(any(MeasurementInstrument.class));
+    }
+
+    @Test
+    @DisplayName("Test save if miType is empty")
+    public void testSaveIfMiTypeIsEmpty(){
+        long miId = 1L;
+        MiFullDto miFullDto = new MiFullDto();
+        miFullDto.setId(miId);
+        miFullDto.setModification("В7-78/1");
+        miFullDto.setSerialNum("SN1");
+        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
+        miFullDto.setUser("User");
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        verify(miRepository, never()).save(any(MeasurementInstrument.class));
+    }
+
+    @Test
+    @DisplayName("Test save if owner is empty")
+    public void testSaveIfOwnerIsEmpty(){
+        long miId = 1L;
+        MiFullDto miFullDto = new MiFullDto();
+        miFullDto.setId(miId);
+        miFullDto.setModification("В7-78/1");
+        miFullDto.setSerialNum("SN1");
+        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
+        miFullDto.setUser("User");
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        verify(miRepository, never()).save(any(MeasurementInstrument.class));
+    }
+
+    @Test
+    @DisplayName("Test update if updated measurement instrument not found")
+    public void testUpdateIfUpdatedMeasurementInstrumentNotFound(){
+        long miId = 1L;
+        MiFullDto miFullDto = TestDtoGenerator.generateMeasurementInstrumentFullDto(miId);
+        when(miTypeRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getMiType()));
+        when(organizationRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getOwner()));
+        when(miRepository.findById(miId)).thenReturn(Optional.empty());
+        ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
+        assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
+        verify(miRepository, times(1)).findById(miId);
+        verify(miRepository, never()).save(any(MeasurementInstrument.class));
+    }
+
+    @Test
+    @DisplayName("Test update if updated measurement instrument found")
+    public void testUpdateIfUpdatedMeasurementInstrumentFound(){
+        long miId = 1L;
+        MiFullDto miFullDto = TestDtoGenerator.generateMeasurementInstrumentFullDto(miId);
+        when(miTypeRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getMiType()));
+        when(organizationRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getOwner()));
+        MeasurementInstrument measurementInstrument = MeasurementInstrumentMapper.mapToEntity(miFullDto);
+        when(miRepository.findById(miId)).thenReturn(Optional.of(measurementInstrument));
+        ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
+        assertEquals("200 OK", responseEntity.getStatusCode().toString());
+        verify(miRepository, times(1)).findById(miId);
+        verify(miRepository, times(1)).save(measurementInstrument);
+    }
+
+    @Test
+    @DisplayName("Test update if modification is empty")
+    public void testUpdateIfModificationIsEmpty(){
+        long miId = 1L;
+        MiFullDto miFullDto = new MiFullDto();
+        miFullDto.setId(miId);
+        miFullDto.setSerialNum("SN1");
+        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
+        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
+        miFullDto.setUser("User");
+        ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
+        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        verify(miRepository, never()).save(any(MeasurementInstrument.class));
+    }
+
+    @Test
+    @DisplayName("Test update if serial number is empty")
+    public void testUpdateIfSerialNumberIsEmpty(){
+        long miId = 1L;
+        MiFullDto miFullDto = new MiFullDto();
+        miFullDto.setId(miId);
+        miFullDto.setModification("В7-78/1");
+        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
+        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
+        miFullDto.setUser("User");
+        ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
+        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        verify(miRepository, never()).save(any(MeasurementInstrument.class));
+    }
+
+    @Test
+    @DisplayName("Test update if miType is empty")
+    public void testUpdateIfMiTypeIsEmpty(){
+        long miId = 1L;
+        MiFullDto miFullDto = new MiFullDto();
+        miFullDto.setId(miId);
+        miFullDto.setModification("В7-78/1");
+        miFullDto.setSerialNum("SN1");
+        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
+        miFullDto.setUser("User");
+        ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
+        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        verify(miRepository, never()).save(any(MeasurementInstrument.class));
+    }
+
+    @Test
+    @DisplayName("Test update if owner is empty")
+    public void testUpdateIfOwnerIsEmpty(){
+        long miId = 1L;
+        MiFullDto miFullDto = new MiFullDto();
+        miFullDto.setId(miId);
+        miFullDto.setModification("В7-78/1");
+        miFullDto.setSerialNum("SN1");
+        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
+        miFullDto.setUser("User");
+        ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
+        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        verify(miRepository, never()).save(any(MeasurementInstrument.class));
+    }
+
+
+
 
     @Test
     @DisplayName("Test delete if measurement instrument not found")
@@ -135,7 +287,6 @@ public class MeasurementInstrumentServiceTest {
                 .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(searchString,
                         searchString,searchString,pageable);
     }
-
 
     @Test
     @DisplayName("Test findAll without pages")
