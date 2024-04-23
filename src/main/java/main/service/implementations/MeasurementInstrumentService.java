@@ -9,6 +9,7 @@ import main.model.Organization;
 import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiTypeRepository;
 import main.repository.OrganizationRepository;
+import main.service.Category;
 import main.service.ServiceMessage;
 import main.service.interfaces.IMeasurementInstrumentService;
 import org.slf4j.Logger;
@@ -17,7 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,17 +31,20 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
     private final MeasurementInstrumentRepository measurementInstrumentRepository;
     private final OrganizationRepository organizationRepository;
     private final MiTypeRepository miTypeRepository;
+    private final FileService fileService;
 
     public MeasurementInstrumentService(MeasurementInstrumentRepository measurementInstrumentRepository,
                                         OrganizationRepository organizationRepository,
-                                        MiTypeRepository miTypeRepository) {
+                                        MiTypeRepository miTypeRepository,
+                                        FileService fileService) {
         this.measurementInstrumentRepository = measurementInstrumentRepository;
         this.organizationRepository = organizationRepository;
         this.miTypeRepository = miTypeRepository;
+        this.fileService = fileService;
     }
 
     @Override
-    public ResponseEntity<?> save(MiFullDto instrumentDto) {
+    public ResponseEntity<?> save(MiFullDto instrumentDto, MultipartFile[] files, String[] descriptions) throws IOException {
         String errorMessage = checkMeasurementInstrumentDtoComposition(instrumentDto);
         if (!errorMessage.isEmpty()) {
             log.info(errorMessage);
@@ -50,12 +56,12 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
         if (instrumentFromDb != null){
             errorMessage = "Данная модификация средства измерений с заводским номером " + instrumentDto.getSerialNum() + " уже существует";
             log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
+            return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
         MeasurementInstrument instrument = MeasurementInstrumentMapper.mapToEntity(instrumentDto);
         instrument.setCreationDateTime(LocalDateTime.now());
-        measurementInstrumentRepository.save(instrument);
+        MeasurementInstrument savedInstrument =  measurementInstrumentRepository.save(instrument);
+        fileService.uploadAllFiles(files,descriptions, Category.MEASUREMENT_INSTRUMENT,savedInstrument.getId());
         String okMessage = "Запись о средстве измерений " + instrumentDto.getModification() + " зав. № " +
                 instrumentDto.getSerialNum() + " успешно добавлена";
         log.info(okMessage);

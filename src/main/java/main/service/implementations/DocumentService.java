@@ -6,6 +6,7 @@ import main.model.Document;
 import main.repository.DocumentRepository;
 import main.service.Category;
 import main.service.ServiceMessage;
+import main.service.interfaces.IDocumentService;
 import main.service.utils.FileContentTypeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +29,7 @@ import java.util.UUID;
 
 
 @Service
-public class DocumentService {
+public class DocumentService implements IDocumentService {
     private final static Logger log = LoggerFactory.getLogger(DocumentService.class);
     @Value("${upload.documents.path}")
     private String documentUploadPath;
@@ -38,6 +39,7 @@ public class DocumentService {
         this.documentRepository = documentRepository;
     }
 
+    @Override
     public void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
         for (int i = 0; i < files.length; i++) {
             addDocument(files[i], descriptions[i], category, categoryId);
@@ -50,6 +52,7 @@ public class DocumentService {
         }
     }
 
+    @Override
     public ResponseEntity<?> delete(long id) throws IOException {
         Optional<Document> documentOpt = documentRepository.findById(id);
         if (documentOpt.isEmpty()){
@@ -65,6 +68,7 @@ public class DocumentService {
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
+    @Override
     public void deleteAll(Category category, long categoryId) throws IOException {
         List<Document> documents = documentRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
         for (Document document : documents){
@@ -72,6 +76,7 @@ public class DocumentService {
         }
     }
 
+    @Override
     public void addDocument(MultipartFile file, String description, Category category, Long CategoryId) throws IOException {
         if (file != null){
                 createFolderIfNotExist();
@@ -93,6 +98,8 @@ public class DocumentService {
         }
 
     }
+
+    @Override
     public ResponseEntity<?> descriptionUpdate(long id, String description){
         Optional<Document> documentOpt = documentRepository.findById(id);
         if (documentOpt.isEmpty()){
@@ -108,12 +115,14 @@ public class DocumentService {
         return  ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
+    @Override
     public List<DocumentDto> getDocuments(Category category, long categoryId){
         List<Document> documents = documentRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
         return documents.stream().map(DocumentDtoMapper ::mapToDto).toList();
     }
 
-    public ResponseEntity<?> getDocumentFile(Long id) throws IOException {
+    @Override
+    public ResponseEntity<?> getDocumentFile(Long id) {
         Optional<Document> documentOpt = documentRepository.findById(id);
         if(documentOpt.isEmpty()){
             String errorMessage = "Документ № "+ id +" не найден";

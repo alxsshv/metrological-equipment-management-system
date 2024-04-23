@@ -6,6 +6,7 @@ import main.model.Image;
 import main.repository.ImageRepository;
 import main.service.Category;
 import main.service.ServiceMessage;
+import main.service.interfaces.IImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +23,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-public class ImageService {
+public class ImageService implements IImageService {
     private final static Logger log = LoggerFactory.getLogger(ImageService.class);
     @Value("${upload.images.path}")
     private String imageUploadPath;
@@ -31,7 +32,7 @@ public class ImageService {
     public ImageService(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
     }
-
+    @Override
     public void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
         for (int i = 0; i < files.length; i++) {
             addImage(files[i], descriptions[i], category, categoryId);
@@ -43,7 +44,7 @@ public class ImageService {
             uploadFolder.mkdir();
         }
     }
-
+@Override
     public ResponseEntity<?> delete(long id) throws IOException {
         Optional<Image> imageOpt = imageRepository.findById(id);
         if (imageOpt.isEmpty()){
@@ -58,7 +59,7 @@ public class ImageService {
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
-
+@Override
     public void deleteAll(Category category, long categoryId) throws IOException {
         List<Image> images = imageRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
         for (Image image : images){
@@ -66,6 +67,7 @@ public class ImageService {
         }
     }
 
+    @Override
     public void addImage(MultipartFile file, String description, Category category, Long CategoryId) throws IOException {
         if (file != null){
                 createFolderIfNotExist();
@@ -85,6 +87,7 @@ public class ImageService {
 
     }
 
+    @Override
     public List<ImageDto> getImages(Category category, long categoryId){
         List<Image> images = imageRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
         return images.stream().map(ImageDtoMapper::mapToDto).toList();

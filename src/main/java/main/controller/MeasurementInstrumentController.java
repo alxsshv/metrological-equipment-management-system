@@ -1,9 +1,13 @@
 package main.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.MiDto;
 import main.dto.MiFullDto;
+import main.dto.MiTypeFullDto;
 import main.service.implementations.MeasurementInstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -51,8 +56,12 @@ public class MeasurementInstrumentController {
         return measurementInstrumentService.findById(Integer.parseInt(id));
     }
     @PostMapping
-    public ResponseEntity<?> addMeasurementInstrument(@RequestBody MiFullDto instrumentDto) throws IOException {
-        return measurementInstrumentService.save(instrumentDto);
+    public ResponseEntity<?> addMeasurementInstrument(@RequestParam("instrument") String instrument,
+                                                      @RequestParam("files") MultipartFile[] files,
+                                                      @RequestParam("descriptions") String[] descriptions) throws IOException {
+        ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
+        MiFullDto miFullDto = mapper.readValue(instrument, MiFullDto.class);
+        return measurementInstrumentService.save(miFullDto,files,descriptions);
     }
 
     @PutMapping("{id}")

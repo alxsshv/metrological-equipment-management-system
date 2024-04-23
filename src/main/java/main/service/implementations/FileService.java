@@ -2,12 +2,13 @@ package main.service.implementations;
 
 import main.config.AppConstants;
 import main.service.Category;
+import main.service.interfaces.IFileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
-public class FileService {
+public class FileService implements IFileService {
     private final DocumentService documentService;
     private final ImageService imageService;
 
@@ -16,6 +17,7 @@ public class FileService {
         this.imageService = imageService;
     }
 
+    @Override
     public void uploadAllFiles (MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
         String [] filesDescriptions = equalizeDescriptionsArrayLength(files, descriptions);
         for (int i = 0; i < files.length; i++) {
@@ -43,6 +45,7 @@ public class FileService {
         }
     }
 
+    @Override
     public void uploadFile(MultipartFile file, String description, Category category, Long categoryId) throws IOException {
         if (isImage(file)){
             imageService.addImage(file, description, category, categoryId);
@@ -67,6 +70,7 @@ public class FileService {
         return  filename.substring(filename.lastIndexOf(".")+1);
     }
 
+    @Override
     public void deleteAllFiles(Category category, long categoryId) throws IOException {
         imageService.deleteAll(category,categoryId);
         documentService.deleteAll(category, categoryId);

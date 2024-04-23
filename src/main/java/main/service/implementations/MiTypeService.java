@@ -58,8 +58,8 @@ public class MiTypeService implements IMiTypeService {
             return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
         MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeFullDto);
-        MiTypeInstruction miTypeInstructionFromDB = miTypeInstructionRepository.save(miTypeInstruction);
-        fileService.uploadAllFiles(files,descriptions, Category.MI_TYPE, miTypeInstructionFromDB.getId());
+        MiTypeInstruction savedInstruction = miTypeInstructionRepository.save(miTypeInstruction);
+        fileService.uploadAllFiles(files,descriptions, Category.MI_TYPE, savedInstruction.getId());
         String okMessage = "Запись о типе СИ № " + miTypeFullDto.getNumber() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));

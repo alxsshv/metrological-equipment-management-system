@@ -4,7 +4,6 @@ import main.dto.MiDto;
 import main.dto.MiFullDto;
 import main.dto.mappers.MeasurementInstrumentMapper;
 import main.model.MeasurementInstrument;
-import main.model.MiType;
 import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiTypeRepository;
 import main.repository.OrganizationRepository;
@@ -13,9 +12,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 import testutils.TestDtoGenerator;
 import testutils.TestEntityGenerator;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -27,23 +28,28 @@ public class MeasurementInstrumentServiceTest {
     private final MeasurementInstrumentRepository miRepository = Mockito.mock(MeasurementInstrumentRepository.class);
     private final OrganizationRepository organizationRepository = Mockito.mock(OrganizationRepository.class);
     private final MiTypeRepository miTypeRepository = Mockito.mock(MiTypeRepository.class);
+    private final FileService fileService = Mockito.mock(FileService.class);
     private final Pageable pageable = PageRequest.of(1, 10,
             Sort.by(Sort.Direction.ASC, "modification","serialNum"));
 
     public MeasurementInstrumentService measurementInstrumentService =
-            new MeasurementInstrumentService(miRepository, organizationRepository, miTypeRepository);
+            new MeasurementInstrumentService(miRepository, organizationRepository, miTypeRepository, fileService);
 
 
     @Test
     @DisplayName("Test save if created new measurement instrument")
-    public void testSaveIfCreatedNewMeasurementInstrument(){
+    public void testSaveIfCreatedNewMeasurementInstrument() throws IOException {
         long miId = 1L;
         MiFullDto miFullDto = TestDtoGenerator.generateMeasurementInstrumentFullDto(miId);
         when(miTypeRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getMiType()));
         when(organizationRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getOwner()));
         when(miRepository.findByModificationAndSerialNum(miFullDto.getModification(), miFullDto.getSerialNum()))
                 .thenReturn(null);
-        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        MeasurementInstrument mi = MeasurementInstrumentMapper.mapToEntity(miFullDto);
+        when(miRepository.save(any(MeasurementInstrument.class))).thenReturn(mi);
+        MultipartFile[] files = {};
+        String[] descriptions = {};
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
         verify(miRepository, times(1))
                 .findByModificationAndSerialNum(miFullDto.getModification(), miFullDto.getSerialNum());
@@ -52,7 +58,7 @@ public class MeasurementInstrumentServiceTest {
 
     @Test
     @DisplayName("Test save if measurement instrument already exist")
-    public void testSaveIfMeasurementInstrumentAlreadyExist(){
+    public void testSaveIfMeasurementInstrumentAlreadyExist() throws IOException {
         long miId = 1L;
         MiFullDto miFullDto = TestDtoGenerator.generateMeasurementInstrumentFullDto(miId);
         when(miTypeRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getMiType()));
@@ -60,14 +66,16 @@ public class MeasurementInstrumentServiceTest {
         MeasurementInstrument mi = MeasurementInstrumentMapper.mapToEntity(miFullDto);
         when(miRepository.findByModificationAndSerialNum(miFullDto.getModification(), miFullDto.getSerialNum()))
                 .thenReturn(mi);
-        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        MultipartFile[] files = {};
+        String[] descriptions = {};
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test save if modification is empty")
-    public void testSaveIfModificationIsEmpty(){
+    public void testSaveIfModificationIsEmpty() throws IOException {
         long miId = 1L;
         MiFullDto miFullDto = new MiFullDto();
         miFullDto.setId(miId);
@@ -75,14 +83,16 @@ public class MeasurementInstrumentServiceTest {
         miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
         miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
         miFullDto.setUser("User");
-        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        MultipartFile[] files = {};
+        String[] descriptions = {};
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test save if serial number is empty")
-    public void testSaveIfSerialNumberIsEmpty(){
+    public void testSaveIfSerialNumberIsEmpty() throws IOException {
         long miId = 1L;
         MiFullDto miFullDto = new MiFullDto();
         miFullDto.setId(miId);
@@ -90,14 +100,16 @@ public class MeasurementInstrumentServiceTest {
         miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
         miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
         miFullDto.setUser("User");
-        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        MultipartFile[] files = {};
+        String[] descriptions = {};
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test save if miType is empty")
-    public void testSaveIfMiTypeIsEmpty(){
+    public void testSaveIfMiTypeIsEmpty() throws IOException {
         long miId = 1L;
         MiFullDto miFullDto = new MiFullDto();
         miFullDto.setId(miId);
@@ -105,14 +117,16 @@ public class MeasurementInstrumentServiceTest {
         miFullDto.setSerialNum("SN1");
         miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
         miFullDto.setUser("User");
-        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        MultipartFile[] files = {};
+        String[] descriptions = {};
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test save if owner is empty")
-    public void testSaveIfOwnerIsEmpty(){
+    public void testSaveIfOwnerIsEmpty() throws IOException {
         long miId = 1L;
         MiFullDto miFullDto = new MiFullDto();
         miFullDto.setId(miId);
@@ -120,7 +134,9 @@ public class MeasurementInstrumentServiceTest {
         miFullDto.setSerialNum("SN1");
         miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
         miFullDto.setUser("User");
-        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto);
+        MultipartFile[] files = {};
+        String[] descriptions = {};
+        ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
         assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
