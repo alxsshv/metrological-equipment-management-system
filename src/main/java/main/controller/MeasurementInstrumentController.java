@@ -1,5 +1,6 @@
 package main.controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -7,7 +8,6 @@ import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.MiDto;
 import main.dto.MiFullDto;
-import main.dto.MiTypeFullDto;
 import main.service.implementations.MeasurementInstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -60,6 +60,7 @@ public class MeasurementInstrumentController {
                                                       @RequestParam("files") MultipartFile[] files,
                                                       @RequestParam("descriptions") String[] descriptions) throws IOException {
         ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MiFullDto miFullDto = mapper.readValue(instrument, MiFullDto.class);
         return measurementInstrumentService.save(miFullDto,files,descriptions);
     }

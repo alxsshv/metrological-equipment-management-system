@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Редактирование данных организации</title>
+    <title>Сведения о СИ</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -57,6 +57,8 @@
 
                     <p></p>
                     <h5>Файлы</h5>
+                    <dd ng-repeat="document in miDocuments"><a href="/files/documents/{{document.id}}"
+                            target="_blank">{{document.description}}</a></dd>
                     <dd ng-repeat="document in miTypeDocuments"><a href="/files/documents/{{document.id}}"
                             target="_blank">{{document.description}}</a></dd>
 
@@ -79,13 +81,13 @@
 
                     <div id="carousel" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner">
-                            <div ng-model="miTypeImages" class="carousel-item active">
-                                <img ng-src="/storage/images/{{miTypeImages[0].storageFileName}}" class="d-block w-100">
+                            <div ng-model="images" class="carousel-item active">
+                                <img ng-src="/storage/images/{{images[0].storageFileName}}" class="d-block w-100">
                                 <div class="carousel-caption d-none d-md-block">
                                     <p>{{images[0].description}}</p>
                                 </div>
                             </div>
-                            <div ng-repeat="item in miTypeImagesExceptFirst" class="carousel-item">
+                            <div ng-repeat="item in imagesExceptFirst" class="carousel-item">
                                 <img ng-src="/storage/images/{{item.storageFileName}}" class="d-block w-100">
                                 <div class="carousel-caption d-none d-md-block">
                                     <p>{{item.description}}</p>
@@ -108,10 +110,10 @@
         <p></p>
         <div class="row text-start">
             <div class="col-sm-6">
-                <dt class="col-sm-6"><i>Запись создана<i></dt>
+                <dt class="col-sm-6"><i>Запись создана</i></dt>
                 <dd class="col-sm-6"><i>{{mi.creationDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
 
-                <dt class="col-sm-3"><i>Запись обновлена<i></dt>
+                <dt class="col-sm-3"><i>Запись обновлена</i></dt>
                 <dd class="col-sm-3"><i>{{mi.updatingDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
             </div>
         </div>
@@ -137,7 +139,9 @@
                     $scope.formatMiDateFields();
                     $scope.mi.applicable = $scope.mi.applicable ? "Пригоден" : "Не пригоден";
                     $scope.getMiTypeDocuments();
+                    $scope.getMiDocuments();
                     $scope.getMiTypeImages();
+                    $scope.getMiImages();
                 });
             }
 
@@ -164,8 +168,9 @@
 
             }
 
-            $scope.getMiTypeDocuments = function () {
-                $http({
+            $scope.miTypeDocuments = [];
+            $scope.getMiTypeDocuments = async function () {
+                await $http({
                     url: "/files/documents?category=MI_TYPE&id=" + $scope.mi.miType.id,
                     method: "GET"
                 }).then(function (response) {
@@ -173,18 +178,44 @@
                 });
             }
 
-            $scope.miTypeImagesExceptFirst = [];
+            $scope.miDocuments = [];
+            $scope.getMiDocuments = async function() {
+                await $http({
+                    url: "/files/documents?category=MEASUREMENT_INSTRUMENT&id=" + $scope.mi.id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.miDocuments = response.data;
+                });
+            }
+
+            $scope.images = [];
+            $scope.imagesExceptFirst = [];
+            $scope.getImages = function(){
+                $scope.imagesExceptFirst = $scope.images.slice();            
+                $scope.imagesExceptFirst.shift(); 
+                console.log($scope.imagesExceptFirst); 
+            }
+            
+            $scope.miTypeImages = [];
             $scope.getMiTypeImages = function () {
                 $http({
                     url: "/files/images?category=MI_TYPE&id=" + $scope.mi.miType.id,
                     method: "GET"
                 }).then(function (response) {
-                    $scope.miTypeImages = response.data;
-                    $scope.miTypeImagesExceptFirst = $scope.miTypeImages.slice();
-                    $scope.miTypeImagesExceptFirst.shift();
+                    $scope.images = $scope.images.concat(response.data);
                 });
             }
-
+            $scope.miImages = [];
+            $scope.getMiImages = function () {
+                $http({
+                    url: "/files/images?category=MEASUREMENT_INSTRUMENT&id=" + $scope.mi.id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.images = $scope.images.concat(response.data);
+                    $scope.getImages();
+                    console.log($scope.images);
+                });
+            }
 
             $scope.getMeasurementInstrument();
 
