@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Добавление СИ, применяемого в качестве эталона</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="MI_STANDARD_FORM" ng-controller="MI_STANDARD_FORM_CTRL">
+    <div class="container text-left">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/mits'">Перечень
+                    типов СИ</button>
+            </form>
+        </nav>
+
+        <div class="row text-center">
+            <h5>Добавление сведений о средстве измерений, применяемом в качестве эталона</h5>
+        </div>
+        <div class="row-center">Основные сведения</div>
+
+        <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label for="inputText1" class="form-label">№ эталона в ФИФ ОЕИ</label>
+                    <input type="text" ng-model="miStandard.arshinNumber" placeholder="" class="form-control" id="inputText1"
+                        value="" required>
+                </div>
+                <div class="col-md-9">
+                    <label for="inputText2" class="form-label">Средство измерений</label>
+                    <input type="text" ng-change="searchMi()" ng-model="searchString" data-bs-toggle="dropdown"
+                        class="form-control dropdown-toggle" id="inputText2" value="">
+
+                    <ul class="dropdown-menu" ng-model="mi">
+                        <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item"
+                                ng-click="selectMi(item)" href="#">{{item.modification}} №{{item.serialNum}}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+        <div class="row">
+            <div class="col-md-12">Поверочная схема
+                <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+                    <div class="row">
+                    <div class="col-md-12">
+                        <label for="inputText3" class="form-label">Наименование поверочной схемы</label>
+                        <input type="text" ng-model="miStandard.schemaTitle" placeholder="" class="form-control"
+                            id="inputText3" value="">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="select2" class="form-label">Тип поверочной схемы</label>
+                        <select ng-model="miStandard.schemaType" class="form-select" aria-label="Тип схемы" id="select2">
+                            <option value="Государственная">Государственная</option>
+                            <option value="Локальная">Локальная</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="inputText4" class="form-label">Обоначение разряда по поверочной схеме</label>
+                        <input type="text" ng-model="miStandard.levelTitle" placeholder="" class="form-control"
+                            id="inputText4" value="">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="inputText6" class="form-label">Код разряда по поверочной схеме</label>
+                        <input type="text" ng-model="miStandard.levelCode" placeholder="" class="form-control"
+                            id="inputText6" value="">
+                    </div>
+                </div>
+                </div>
+            </div>
+            
+        <p></p>
+        <div class="col-md-12"> Файлы
+            <div class="bg-info bg-opacity-10 border border-info overflow-y-scroll rounded-3 ">
+                <div class="row">
+                    <div class="col-md-12">
+                        <input class="inline-block" type="file" file-model="change.fnEvidence" name="file"
+                            ng-model="file" data-rule-required="true" multiple id="file"
+                            accept=".jpg,.jpeg,.png,.gif,.bmp,.svg,.pdf,.odf,.ods,.docx,.doc,.odt">
+                        <button class="btn btn-outline-primary" ng-click="buildFileNameList()" type="button">Добавить
+                            файлы</button>
+                    </div>
+                </div>
+                <table class="table table-striped">
+                    <tr ng-repeat="item in filenames">
+                        <td class="col-md-3">Файл: {{item}}</td>
+                        <td class="col-md-8"><input type="text" ng-model="descriptions[$index]"
+                                placeholder="Добавьте описание файла" class="form-control"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <p></p>
+
+        <div class="col-12">
+            <button class="btn btn-primary" ng-click="addMiType()" type="button">Добавить</button>
+        </div>
+        </p>
+    </div>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("MI_STANDARD_FORM", []);
+        app.controller("MI_STANDARD_FORM_CTRL", function ($scope, $http) {
+            $scope.descriptions = [];
+
+
+            //Поиск типа СИ по подстроке
+            $scope.mis = [];
+            $scope.searchMi = function () {
+                if ($scope.searchString.length > 3) {
+                    $http({
+                        url: "/mi/search?search=" + $scope.searchString,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.mis = response.data;
+                    });
+                }
+            }
+
+            $scope.selectMi = function(item){
+                $scope.searchString = item.modification + " зав. №" +item.serialNum;
+                $scope.miStandard.measurementInstrument = item;
+            }
+
+            // сохранение в БД;
+            $scope.addMiStandard = function () {
+                if (/^[0-9]{5}-[0-9]{2}$/.exec($scope.miType.number)) {
+                    $scope.buildFormData();
+                    $http({
+                        url: "/mi",
+                        method: "POST",
+                        data: formData,
+                        headers: {
+                            'Accept': '*/*',
+                            'Content-Type': undefined
+                        }
+                    }).then(function successCallback(response) {
+                        console.log($scope.miType);
+                        alert(response.data.message);
+                    }, function errorCallback(response) {
+                        alert(response.data.message)
+                    });
+                } else {
+                    alert('Неверный формат номера типа средства измерений');
+                }
+            }
+
+
+            //Подготовка formData для отправки
+            let formData = new FormData();
+            $scope.buildFormData = function () {
+                formData.append('miStandard', JSON.stringify($scope.miStandard));
+                formData.append('descriptions', $scope.descriptions);
+                for (let i = 0; i < file.files.length; i++) {
+                    formData.append('files', file.files[i])
+                }
+            }
+
+
+            $scope.buildFileNameList = function () {
+                $scope.filenames = [];
+                for (let i = 0; i < file.files.length; i++) {
+                    $scope.filenames.push(file.files[i].name);
+                }
+            }
+
+
+        });
+    </script>
+</body>
+
+</html>

@@ -16,6 +16,8 @@ public interface IMeasurementInstrumentService {
     ResponseEntity<?>delete(long id);
     ResponseEntity<?> findById(long id);
     ResponseEntity<?> findBySearchString(String searchString, Pageable pageable);
+    ResponseEntity<?> findBySearchString(String searchString);
+
     Page<MiDto> findAll(Pageable pageable);
     List<MiDto> findAll();
 }

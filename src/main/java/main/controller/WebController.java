@@ -73,7 +73,27 @@ public class WebController {
         return "measurementInstrument/edit";
     }
 
-    //Вывод шиблонов для организаций
+    //Вывод шиблонов для СИ применяемых в качестве эталонов
+    @GetMapping("/standard/form")
+    public String getStandardForm(){
+        return "miStandard/form";
+    }
+    @GetMapping("/standard")
+    public String getStandardListView(){
+        return "miStandard/list";
+    }
+    @GetMapping("/standard/{id}")
+    public String getStandardCard(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "miStandard/card";
+    }
+    @GetMapping("/standard/form/{id}")
+    public String getStandardEditionForm(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "miStandard/edit";
+    }
+
+    //Вывод шаблонов для организаций
     @GetMapping("/organizations/form")
     public String getOrganizationFormView(){
         return "organization/form";

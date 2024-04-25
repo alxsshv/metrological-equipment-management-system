@@ -39,11 +39,17 @@ public class MeasurementInstrumentController {
     }
 
     @GetMapping("/pages/search")
-    public ResponseEntity<?> searchMeasurementInstrument(
+    public ResponseEntity<?> searchMeasurementInstrumentWithPages(
             @RequestParam(value = "search", required = true) String searchString){
         Pageable pageable = PageRequest.of(0,10,
                 Sort.by(Sort.Direction.ASC,"modification","serialNum"));
         return measurementInstrumentService.findBySearchString(searchString,pageable);
+    }
+    @GetMapping("/search")
+    public ResponseEntity<?> searchMeasurementInstrumentWithoutPages(
+            @RequestParam(value = "search") String searchString){
+        System.out.println("поиск...");
+        return measurementInstrumentService.findBySearchString(searchString);
     }
 
     @GetMapping

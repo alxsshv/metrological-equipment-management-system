@@ -7,6 +7,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface MeasurementInstrumentRepository extends JpaRepository <MeasurementInstrument, Long> {
     MeasurementInstrument findByModificationAndSerialNum(String modification, String serialNum);
@@ -15,6 +17,10 @@ public interface MeasurementInstrumentRepository extends JpaRepository <Measurem
             String serialNum,
             String inventoryNum,
             Pageable pageable);
+    List<MeasurementInstrument> findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
+            String modification,
+            String serialNum,
+            String inventoryNum);
     @Override
     @NonNull
     Page<MeasurementInstrument> findAll(@NonNull Pageable pageable);

@@ -163,6 +163,20 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
     }
 
     @Override
+    public ResponseEntity<?> findBySearchString(String searchString) {
+        if (searchString == null || searchString.isEmpty()){
+            String errorMessage = "Поле для поиска не может быть пустым";
+            log.info(errorMessage);
+            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        }
+        List<MiDto> instruments =  measurementInstrumentRepository
+                .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
+                        searchString.trim(),searchString.trim(),searchString.trim())
+                .stream().map(MeasurementInstrumentMapper::mapToDto).toList();
+        return ResponseEntity.ok(instruments);
+    }
+
+    @Override
     public Page<MiDto> findAll(Pageable pageable) {
         return measurementInstrumentRepository.findAll(pageable).map(MeasurementInstrumentMapper ::mapToDto);
     }
