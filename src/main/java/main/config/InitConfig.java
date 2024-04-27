@@ -3,9 +3,13 @@ package main.config;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import main.dto.EmployeeDto;
+import main.dto.MiFullDto;
 import main.dto.MiTypeFullDto;
 import main.dto.OrganizationDto;
+import main.repository.MiTypeRepository;
+import main.repository.OrganizationRepository;
 import main.service.implementations.EmployeeService;
+import main.service.implementations.MeasurementInstrumentService;
 import main.service.implementations.MiTypeService;
 import main.service.implementations.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +27,12 @@ public class InitConfig {
     private EmployeeService employeeService;
     @Autowired
     private OrganizationService organizationService;
+    @Autowired
+    private MeasurementInstrumentService miService;
+    @Autowired
+    private MiTypeRepository miTypeRepository;
+    @Autowired
+    private OrganizationRepository organizationRepository;
 
     public void initiate() throws IOException {
 
@@ -73,12 +83,14 @@ public class InitConfig {
         miTypeService.save(type3, files,descriptions);
 
         EmployeeDto employee1 = new EmployeeDto();
+        employee1.setId(1L);
         employee1.setName("Иван");
         employee1.setPatronymic("Иванович");
         employee1.setSurname("Иванов");
         employee1.setSnils("11111111111");
 
         EmployeeDto employee2 = new EmployeeDto();
+        employee2.setId(2L);
         employee2.setName("Сергей");
         employee2.setPatronymic("Сергеевич");
         employee2.setSurname("Сергеев");
@@ -99,8 +111,8 @@ public class InitConfig {
         organization1.setNotation("ООО \"ЦСМ\"");
         organization1.setAddress("г. Старый Оскол");
 
-
         OrganizationDto organization2 = new OrganizationDto();
+        organization2.setId(2L);
         organization2.setTitle("АНО \"Лаборатория испытаний\"");
         organization2.setNotation("АНО \"ЛабИ\"");
         organization2.setAddress("г. Нижний Новгород");
@@ -113,6 +125,45 @@ public class InitConfig {
         organizationService.save(organization1);
         organizationService.save(organization2);
         organizationService.save(organization3);
+
+        MiFullDto mi1 = new MiFullDto();
+        mi1.setMiType(miTypeRepository.findById(2L).get());
+        mi1.setSerialNum("SN1");
+        mi1.setModification("ДХС 524-02");
+        mi1.setOwner(organizationRepository.findById(2L).get());
+        mi1.setApplicable(true);
+        mi1.setUser("И.И. Иванов");
+        mi1.setVerificationDate(LocalDate.now());
+        mi1.setValidDate(LocalDate.now().plusYears(1));
+        mi1.setInventoryNum("ИНВ1");
+
+        MiFullDto mi2 = new MiFullDto();
+        mi2.setMiType(miTypeRepository.findById(2L).get());
+        mi2.setSerialNum("SN2");
+        mi2.setModification("ДХС 524-01");
+        mi2.setOwner(organizationRepository.findById(2L).get());
+        mi2.setApplicable(true);
+        mi2.setUser("П.П. Перов");
+        mi2.setVerificationDate(LocalDate.now());
+        mi2.setValidDate(LocalDate.now().plusYears(1));
+        mi2.setInventoryNum("ИНВ2");
+
+        MiFullDto mi3 = new MiFullDto();
+        mi3.setMiType(miTypeRepository.findById(2L).get());
+        mi3.setSerialNum("SN3");
+        mi3.setModification("ДХС 524-03");
+        mi3.setOwner(organizationRepository.findById(2L).get());
+        mi3.setApplicable(false);
+        mi3.setUser("С.С. Сидоров");
+        mi3.setVerificationDate(LocalDate.now());
+        mi3.setValidDate(LocalDate.now().plusYears(1));
+        mi3.setInventoryNum("ИНВ3");
+
+
+        miService.save(mi1, files, descriptions);
+        miService.save(mi2, files, descriptions);
+        miService.save(mi3, files, descriptions);
+
 
     }
 

@@ -1,8 +1,12 @@
 package main.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.MiStandardDto;
+import main.dto.MiTypeFullDto;
 import main.service.implementations.MiStandardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -11,11 +15,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/standards/mi")
+@RequestMapping("/standards/mis/")
 public class MiStandardController {
     @Autowired
     private MiStandardService miStandardService;
@@ -48,8 +55,12 @@ public class MiStandardController {
         return miStandardService.findById(Integer.parseInt(id));
     }
     @PostMapping
-    public ResponseEntity<?> addMiStandard(@RequestBody MiStandardDto miStandardDto) {
-        return miStandardService.save(miStandardDto);
+    public ResponseEntity<?> addMiStandard(@RequestParam("miStandard") String miStandard,
+                                           @RequestParam("descriptions") String[] descriptions,
+                                           @RequestParam("files")MultipartFile[] files) throws IOException {
+        ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
+        MiStandardDto miStandardDto = mapper.readValue(miStandard,MiStandardDto.class);
+        return miStandardService.save(miStandardDto, files, descriptions);
     }
 
     @PutMapping("{id}")
