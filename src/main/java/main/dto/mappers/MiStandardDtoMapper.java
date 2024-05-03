@@ -6,6 +6,7 @@ import main.model.MiStandard;
 public class MiStandardDtoMapper {
     public static MiStandardDto mapToDto(MiStandard standard){
         MiStandardDto dto = new MiStandardDto();
+        dto.setId(standard.getId());
         dto.setArshinNumber(standard.getArshinNumber());
         dto.setMeasurementInstrument(standard.getMeasurementInstrument());
         dto.setSchemaType(standard.getSchemaType());
@@ -20,6 +21,7 @@ public class MiStandardDtoMapper {
 
     public static MiStandard mapToEntity(MiStandardDto dto){
         MiStandard standard = new MiStandard();
+        standard.setId(dto.getId());
         standard.setArshinNumber(dto.getArshinNumber());
         standard.setMeasurementInstrument(dto.getMeasurementInstrument());
         standard.setSchemaTitle(dto.getSchemaTitle());

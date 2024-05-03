@@ -73,7 +73,7 @@ public class WebController {
         return "measurementInstrument/edit";
     }
 
-    //Вывод шиблонов для СИ применяемых в качестве эталонов
+    //Вывод шиблонов для СИ, применяемых в качестве эталонов
     @GetMapping("/standard/form")
     public String getStandardForm(){
         return "miStandard/form";

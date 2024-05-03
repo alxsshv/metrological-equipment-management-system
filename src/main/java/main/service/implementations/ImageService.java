@@ -76,7 +76,11 @@ public class ImageService implements IImageService {
                 String storageFileName = UUID.randomUUID() + "." + filename;
                 Image image = new Image();
                 image.setStorageFileName(storageFileName);
+                if (description.isEmpty()){
+                description = file.getOriginalFilename();
+                }
                 image.setDescription(description);
+                image.setOriginalFileName(file.getOriginalFilename());
                 image.setExtension(extension);
                 image.setCategoryName(category.name());
                 image.setCategoryId(CategoryId);

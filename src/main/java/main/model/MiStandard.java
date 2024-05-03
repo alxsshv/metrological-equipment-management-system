@@ -23,7 +23,7 @@ public class MiStandard {
     private long id;
     @Column(name = "arshin_number")
     private String arshinNumber; // номер эталона, присвоенный организацией-владельцем
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @MapsId
     private MeasurementInstrument measurementInstrument; // Средство измерения, являющееся эталоном
     @Column(name = "schema_type")

@@ -85,6 +85,7 @@ public class DocumentService implements IDocumentService {
                 String storageFileName = UUID.randomUUID() + "." + filename;
                 Document document = new Document();
                 document.setStorageFileName(storageFileName);
+                document.setOriginalFilename(file.getOriginalFilename());
                 if (description.isEmpty()){
                     description = file.getOriginalFilename();
                 }

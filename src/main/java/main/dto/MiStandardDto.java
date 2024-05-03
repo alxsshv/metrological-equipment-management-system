@@ -20,4 +20,20 @@ public class MiStandardDto {
     private String levelTitle;
     private String creationDateTime;
     private String updatingDateTime;
+
+    @Override
+    public String toString() {
+        return "MiStandardDto{" +
+                "id=" + id +
+                ", arshinNumber='" + arshinNumber + '\'' +
+                ", measurementInstrument=" + measurementInstrument +
+                ", schemaType='" + schemaType + '\'' +
+                ", schemaTitle='" + schemaTitle + '\'' +
+                ", stateStandardNumber='" + stateStandardNumber + '\'' +
+                ", levelCode='" + levelCode + '\'' +
+                ", levelTitle='" + levelTitle + '\'' +
+                ", creationDateTime='" + creationDateTime + '\'' +
+                ", updatingDateTime='" + updatingDateTime + '\'' +
+                '}';
+    }
 }

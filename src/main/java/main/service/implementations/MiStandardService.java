@@ -118,6 +118,8 @@ public class MiStandardService implements IMiStandardService {
             MiStandardDto miStandardDto = MiStandardDtoMapper.mapToDto(miStandardOpt.get());
             return ResponseEntity.ok(miStandardDto);
         } else {
+            String okMessage ="Запись об эталоне № " + id + " не найдена";
+            log.info(okMessage);
             return ResponseEntity.notFound().build();
         }
     }
