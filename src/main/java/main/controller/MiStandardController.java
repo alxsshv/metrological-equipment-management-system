@@ -51,7 +51,7 @@ public class MiStandardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getMiStandard(@PathVariable("id") String id){
-        return miStandardService.findById(Integer.parseInt(id));
+        return miStandardService.findById(Long.parseLong(id));
     }
     @PostMapping
     public ResponseEntity<?> addMiStandard(@RequestParam("miStandard") String miStandard,
@@ -62,12 +62,12 @@ public class MiStandardController {
         return miStandardService.save(miStandardDto, files, descriptions);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> editMiStandard(@RequestBody MiStandardDto miStandardDto){
         return miStandardService.update(miStandardDto);
     }
 
-    @DeleteMapping("{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMiStandard(@PathVariable("id") int id){
         return miStandardService.delete(id);
     }

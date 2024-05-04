@@ -22,7 +22,7 @@ public class MiStandard {
     @Column(name = "id")
     private long id;
     @Column(name = "arshin_number")
-    private String arshinNumber; // номер эталона, в ФИФ ОЕИ
+    private String arshinNumber; // номер эталона, присвоенный организацией-владельцем
     @OneToOne(fetch = FetchType.EAGER)
     @MapsId
     private MeasurementInstrument measurementInstrument; // Средство измерения, являющееся эталоном

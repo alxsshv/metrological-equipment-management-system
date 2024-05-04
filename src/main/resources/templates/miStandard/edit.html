@@ -1,0 +1,300 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Редактирование записи об эталоне</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="MI_STANDARD_EDIT" ng-controller="MI_STANDARD_EDIT_CTRL">
+    <div class="container text-left">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/standard'">Перечень
+                    эталонов</button>
+            </form>
+        </nav>
+
+        <div class="row text-center">
+            <h5>Изменение сведений о средстве измерений, применяемом в качестве эталона</h5>
+        </div>
+        <div class="row-center">Основные сведения</div>
+
+        <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="row g-2">
+                <div class="col-md-3">
+                    <label for="inputText1" class="form-label">№ эталона в ФИФ ОЕИ</label>
+                    <input type="text" ng-model="miStandard.arshinNumber" placeholder="12345.67.1Р.12345678"
+                        class="form-control" id="inputText1" value="" required>
+                </div>
+                <div class="col-md-9">
+                    <label for="inputText2" class="form-label">Средство измерений</label>
+                    <input type="text" ng-change="searchMi()" ng-model="searchString" data-bs-toggle="dropdown"
+                        class="form-control dropdown-toggle" id="inputText2" value="">
+
+                    <ul class="dropdown-menu" ng-model="mi">
+                        <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" ng-click="selectMi(item)"
+                                href="#">{{item.modification}} №{{item.serialNum}}</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+        <div class="row">
+            <div class="col-md-12">Поверочная схема
+                <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="inputText3" class="form-label">Наименование поверочной схемы</label>
+                            <textarea ng-model="miStandard.schemaTitle" placeholder="" class="form-control"
+                                id="inputText3" value=""></textarea>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label for="select2" class="form-label">Тип поверочной схемы</label>
+                            <select ng-model="miStandard.schemaType" class="form-select" aria-label="Тип схемы"
+                                id="select2">
+                                <option value="Государственная">Государственная</option>
+                                <option value="Локальная">Локальная</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputText4" class="form-label">Обоначение разряда по поверочной схеме</label>
+                            <input type="text" ng-model="miStandard.levelTitle" placeholder="" class="form-control"
+                                id="inputText4" value="">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="inputText6" class="form-label">Код разряда по поверочной схеме</label>
+                            <input type="text" ng-model="miStandard.levelCode" placeholder="" class="form-control"
+                                id="inputText6" value="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+            <div class="col-md-12"> Файлы
+                <div class="bg-info bg-opacity-10 border border-info overflow-y-scroll rounded-3 ">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <table class="table table-info table-striped table-hover">
+                                <tr ng-repeat="document in documents">
+                                    <td a href="/files/documents/{{document.id}}" target="_blank">
+                                        {{document.description}}
+                                    </td>
+                                    <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
+                                            ng-click="getDeleteableIdandFiletype(document.id, 'document')"
+                                            type="button">Удалить</button></td>
+                                <tr ng-repeat="image in images">
+                                    <td a href="/files/images/{{image.id}}" target="_blank">{{document.description}}
+                                    </td>
+                                    <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
+                                            ng-click="getDeleteableIdandFiletype(document.id, 'image')"
+                                            type="button">Удалить</button></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <input class="inline-block" type="file" file-model="change.fnEvidence" name="file"
+                                ng-model="file" data-rule-required="true" id="file"
+                                accept=".jpg,.jpeg,.png,.gif,.bmp,.svg,.pdf,.odf,.ods,.docx,.doc,.odt">
+                            <input class="inline-block" type="text" ng-model="description">
+                            <button class="btn btn-outline-primary" ng-click="addFile()" type="button">Добавить
+                                файл</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p></p>
+
+            <div class="col-12">
+                <button class="btn btn-primary" ng-click="saveMiStandard()" type="button">Сохранить изменения</button>
+            </div>
+            </p>
+        </div>
+        <!-- Модальное окно -->
+        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаленя" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="modalLabel">Вы уверены, что хотите удалить файл</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary"
+                            ng-click="deleteFile(deleteableId, fileType)">Удалить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script src="/js/angular.min.js"></script>
+        <script src="/js/jquery-3.7.1.min.js"></script>
+        <script type="text/javascript">
+            var app = angular.module("MI_STANDARD_EDIT", []);
+            var idAttr = new URL(document.URL).searchParams.get("id");
+            app.controller("MI_STANDARD_EDIT_CTRL", function ($scope, $http) {
+
+                $scope.miStandard = {};
+                $scope.getMiStandard = function () {
+                    $http({
+                        url: "/standards/mis/" + idAttr,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.miStandard = response.data;
+                        console.log($scope.miStandard)
+                        $scope.formatDateFieldsFromMiStandard();
+                        $scope.searchString = $scope.miStandard.measurementInstrument.modification + " зав. №" + $scope.miStandard.measurementInstrument.serialNum;
+                    });
+                }
+
+                $scope.formatDateFieldsFromMiStandard = function () {
+                    if ($scope.miStandard.measurementInstrument.verificationDate != null) {
+                        $scope.miStandard.measurementInstrument.verificationDate = new Date($scope.miStandard.measurementInstrument.verificationDate);
+                    }
+                    if ($scope.miStandard.measurementInstrument.validDate != null) {
+                        $scope.miStandard.measurementInstrument.validDate = new Date($scope.miStandard.measurementInstrument.validDate);
+                    }
+                }
+
+                //Поиск типа СИ по подстроке
+                $scope.mis = [];
+                $scope.searchMi = function () {
+                    if ($scope.searchString.length > 3) {
+                        $http({
+                            url: "/mi/search?search=" + $scope.searchString,
+                            method: "GET"
+                        }).then(function (response) {
+                            $scope.mis = response.data;
+                        });
+                    }
+                }
+
+                $scope.selectMi = function (item) {
+                    $scope.searchString = item.modification + " зав. №" + item.serialNum;
+                    $scope.getMiFullData(item.id);
+                }
+
+                //Получение полных сведений о выбранном средстве измерений
+                $scope.getMiFullData = function (id) {
+                    $http({
+                        url: "/mi/" + id,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.miStandard.measurementInstrument = response.data;
+                    });
+                }
+
+
+                // сохранение в БД;
+                $scope.saveMiStandard = function () {
+                    if ($scope.miStandard.arshinNumber != null) {
+                        $scope.buildFormData();
+                        $http({
+                            url: "/standards/mis/" + idAttr,
+                            method: "PUT",
+                            data: $scope.miStandard,
+                        }).then(function successCallback(response) {
+                            alert(response.data.message);
+                        }, function errorCallback(response) {
+                            alert(response.data.message)
+                        });
+                    } else {
+                        alert('Регистрационный номер эталона не может быть пустым');
+                    }
+                }
+
+                $scope.documents = [];
+                $scope.getMiStandardDocuments = function () {
+                    $http({
+                        url: "/files/documents?category=MI_STANDARD&id=" + idAttr,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.documents = response.data;
+                        console.log($scope.documents)
+                    });
+                }
+
+                $scope.images = [];
+                $scope.getMiStandardImages = function () {
+                    $http({
+                        url: "/files/images?category=MI_STANDARD&id=" + idAttr,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.images = response.data;
+                    });
+                }
+
+                $scope.getDeleteableIdandFiletype = function (id, fileType) {
+                    $scope.deleteableId = id;
+                    $scope.fileType = fileType;
+                }
+
+                $scope.deleteFile = function () {
+                    var myModalEl = document.getElementById('modal')
+                    var modal = bootstrap.Modal.getInstance(myModalEl);
+                    modal.hide();
+                    if ($scope.fileType = 'document') { deleteUrl = "/files/documents/" }
+                    else { deleteUrl = "/files/images/" }
+                    $http({
+                        url: deleteUrl + $scope.deleteableId,
+                        method: "DELETE"
+                    }).then(function (response) {
+                        alert(response.data.message);
+                        $scope.getMiStandardDocuments();
+                        $scope.getMiStandardImages();
+                    });
+                }
+
+                $scope.addFile = function () {
+                    if (file.files.length > 0) {
+                        $scope.buildFormData();
+                        $http({
+                            url: "/files",
+                            method: "POST",
+                            data: formData,
+                            headers: {
+                                'Accept': '*/*',
+                                'Content-Type': undefined
+                            }
+                        }).then(function (response) {
+                            $scope.description = "";
+                            $scope.getMiStandardDocuments();
+                            $scope.getMiStandardImages();
+                        });
+                    } else {
+                        alert('Выберите файл');
+                    }
+                }
+
+
+                //Подготовка formData для отправки
+                let formData = new FormData();
+                $scope.description = "";
+                $scope.buildFormData = function () {
+                    formData.append('description', $scope.description);
+                    formData.append('category', 'MI_STANDARD');
+                    formData.append('categoryId', idAttr);
+                    formData.append('file', file.files[0]);
+                }
+
+
+                $scope.getMiStandard();
+                $scope.getMiStandardDocuments();
+                $scope.getMiStandardImages();
+
+            });
+        </script>
+</body>
+
+</html>
