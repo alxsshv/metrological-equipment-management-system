@@ -32,13 +32,7 @@
                 </div>
                 <div class="col-md-9">
                     <label for="inputText2" class="form-label">Средство измерений</label>
-                    <input type="text" ng-change="searchMi()" ng-model="searchString" data-bs-toggle="dropdown"
-                        class="form-control dropdown-toggle" id="inputText2" value="">
-
-                    <ul class="dropdown-menu" ng-model="mi">
-                        <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" ng-click="selectMi(item)"
-                                href="#">{{item.modification}} №{{item.serialNum}}</a></li>
-                    </ul>
+                    <input type="text" class="form-control" disabled ng-model="searchString" id="inputText2" value="">
                 </div>
             </div>
         </div>
@@ -84,17 +78,17 @@
                         <div class="col-md-12">
                             <table class="table table-info table-striped table-hover">
                                 <tr ng-repeat="document in documents">
-                                    <td a href="/files/documents/{{document.id}}" target="_blank">
+                                    <td><a href="/files/documents/{{document.id}}" target="_blank">
                                         {{document.description}}
-                                    </td>
+                                    </a></td>
                                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
                                             ng-click="getDeleteableIdandFiletype(document.id, 'document')"
                                             type="button">Удалить</button></td>
                                 <tr ng-repeat="image in images">
-                                    <td a href="/files/images/{{image.id}}" target="_blank">{{document.description}}
-                                    </td>
+                                    <td> <a href="/files/images/{{image.id}}" target="_blank">{{image.description}}
+                                    </a></td>
                                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
-                                            ng-click="getDeleteableIdandFiletype(document.id, 'image')"
+                                            ng-click="getDeleteableIdandFiletype(image.id, 'image')"
                                             type="button">Удалить</button></td>
                                 </tr>
                             </table>
@@ -121,7 +115,7 @@
             </p>
         </div>
         <!-- Модальное окно -->
-        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаленя" aria-hidden="true">
+        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаления" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -165,34 +159,6 @@
                     if ($scope.miStandard.measurementInstrument.validDate != null) {
                         $scope.miStandard.measurementInstrument.validDate = new Date($scope.miStandard.measurementInstrument.validDate);
                     }
-                }
-
-                //Поиск типа СИ по подстроке
-                $scope.mis = [];
-                $scope.searchMi = function () {
-                    if ($scope.searchString.length > 3) {
-                        $http({
-                            url: "/mi/search?search=" + $scope.searchString,
-                            method: "GET"
-                        }).then(function (response) {
-                            $scope.mis = response.data;
-                        });
-                    }
-                }
-
-                $scope.selectMi = function (item) {
-                    $scope.searchString = item.modification + " зав. №" + item.serialNum;
-                    $scope.getMiFullData(item.id);
-                }
-
-                //Получение полных сведений о выбранном средстве измерений
-                $scope.getMiFullData = function (id) {
-                    $http({
-                        url: "/mi/" + id,
-                        method: "GET"
-                    }).then(function (response) {
-                        $scope.miStandard.measurementInstrument = response.data;
-                    });
                 }
 
 
@@ -282,6 +248,7 @@
                 let formData = new FormData();
                 $scope.description = "";
                 $scope.buildFormData = function () {
+                    formData = new FormData();
                     formData.append('description', $scope.description);
                     formData.append('category', 'MI_STANDARD');
                     formData.append('categoryId', idAttr);

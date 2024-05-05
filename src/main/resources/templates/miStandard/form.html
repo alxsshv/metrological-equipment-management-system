@@ -173,12 +173,15 @@
                 $scope.buildFormData = function () {
                     formData.append('miStandard', JSON.stringify($scope.miStandard));
                     formData.append('descriptions', $scope.descriptions);
+                    if (file.files.length ==0){
+                        formData.append('files', []);
+                    }
                     for (let i = 0; i < file.files.length; i++) {
-                        formData.append('files', file.files[i])
+                        formData.append('files', file.files[i]);
                     }
                 }
 
-
+                $scope.filenames = [];
                 $scope.buildFileNameList = function () {
                     $scope.filenames = [];
                     for (let i = 0; i < file.files.length; i++) {
