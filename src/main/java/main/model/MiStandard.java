@@ -45,7 +45,6 @@ public class MiStandard {
 
     public void updateFrom(MiStandard updateData){
         this.arshinNumber = updateData.getArshinNumber();
-        this.measurementInstrument = updateData.getMeasurementInstrument();
         this.schemaType = updateData.getSchemaType();
         this.schemaTitle = updateData.getSchemaTitle();
         this.levelCode = updateData.getLevelCode();
