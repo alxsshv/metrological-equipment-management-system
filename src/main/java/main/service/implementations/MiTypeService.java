@@ -59,7 +59,7 @@ public class MiTypeService implements IMiTypeService {
         }
         MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeFullDto);
         MiTypeInstruction savedInstruction = miTypeInstructionRepository.save(miTypeInstruction);
-        fileService.uploadAllFiles(files,descriptions, Category.MI_TYPE, savedInstruction.getId());
+        uploadFilesIfFilesExist(files, descriptions, savedInstruction.getId());
         String okMessage = "Запись о типе СИ № " + miTypeFullDto.getNumber() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
@@ -83,6 +83,12 @@ public class MiTypeService implements IMiTypeService {
                     " соответствующую обозначению типа СИ или фразу \"Модификация отсутствует\"";
         }
         return "";
+    }
+
+    private void uploadFilesIfFilesExist(MultipartFile[] files, String[] descriptions, Long categoryId) throws IOException {
+        if (files.length > 0) {
+            fileService.uploadAllFiles(files, descriptions, Category.MI_TYPE, categoryId);
+        }
     }
 
     @Override

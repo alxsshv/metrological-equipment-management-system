@@ -20,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -63,11 +64,12 @@ public class MeasurementInstrumentController {
     }
     @PostMapping
     public ResponseEntity<?> addMeasurementInstrument(@RequestParam("instrument") String instrument,
-                                                      @RequestParam("files") MultipartFile[] files,
+                                                      @RequestParam(name = "files", required = false) Optional<MultipartFile[]> filesOpt,
                                                       @RequestParam("descriptions") String[] descriptions) throws IOException {
         ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MiFullDto miFullDto = mapper.readValue(instrument, MiFullDto.class);
+        MultipartFile[] files = filesOpt.orElseGet(() -> new MultipartFile[0]);
         return measurementInstrumentService.save(miFullDto,files,descriptions);
     }
 

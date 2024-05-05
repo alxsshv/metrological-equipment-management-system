@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -58,10 +59,11 @@ public class MiTypeController {
     }
     @PostMapping
     public ResponseEntity<?> addMiType(@RequestParam("miType") String miType,
-                                       @RequestParam("files") MultipartFile[] files,
+                                       @RequestParam(name = "files", required = false) Optional<MultipartFile[]> filesOpt,
                                        @RequestParam("descriptions") String[] descriptions) throws IOException {
         ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
         MiTypeFullDto miTypeFullDto = mapper.readValue(miType, MiTypeFullDto.class);
+        MultipartFile[] files = filesOpt.orElseGet(() -> new MultipartFile[0]);
         return miTypeService.save(miTypeFullDto, files, descriptions);
     }
 

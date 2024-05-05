@@ -1,5 +1,6 @@
 package main.controller;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
@@ -38,7 +40,7 @@ public class MiStandardController {
 
     @GetMapping("/pages/search")
     public ResponseEntity<?> searchMiStandard(
-            @RequestParam(value = "search", required = true) String searchString){
+            @RequestParam(value = "search") String searchString){
         Pageable pageable = PageRequest.of(0,10,
                 Sort.by(Sort.Direction.ASC,"arshinNumber"));
         return miStandardService.findBySearchString(searchString,pageable);
@@ -56,11 +58,14 @@ public class MiStandardController {
     @PostMapping
     public ResponseEntity<?> addMiStandard(@RequestParam("miStandard") String miStandard,
                                            @RequestParam("descriptions") String[] descriptions,
-                                           @RequestParam("files")MultipartFile[] files) throws IOException {
+                                           @RequestParam(name = "files", required = false) Optional<MultipartFile[]> filesOpt) throws IOException {
         ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MiStandardDto miStandardDto = mapper.readValue(miStandard,MiStandardDto.class);
+        MultipartFile[] files = filesOpt.orElseGet(() -> new MultipartFile[0]);
         return miStandardService.save(miStandardDto, files, descriptions);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<?> editMiStandard(@RequestBody MiStandardDto miStandardDto){

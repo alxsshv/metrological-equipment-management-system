@@ -51,28 +51,32 @@ public class MiStandardService implements IMiStandardService {
         MiStandard standard = MiStandardDtoMapper.mapToEntity(miStandardDto);
         Optional<MeasurementInstrument> parentMiOpt = miRepository.findById(standard.getMeasurementInstrument().getId());
         if (parentMiOpt.isEmpty()){
-            errorMessage = "Выбранное средство измерений не найдено";
+            errorMessage = "Выбранное в качестве эталона средство измерений не найдено";
             log.info(errorMessage);
-            return ResponseEntity.status(500).body(
-                    new ServiceMessage(errorMessage));
+            return ResponseEntity.status(500).body(new ServiceMessage(errorMessage));
         }
         standard.setMeasurementInstrument(parentMiOpt.get());
         MiStandard savedMiStandard = miStandardRepository.save(standard);
-        fileService.uploadAllFiles(files,descriptions, Category.MI_STANDARD,savedMiStandard.getId());
+        uploadFilesIfFilesExist(files, descriptions, savedMiStandard.getId());
         String okMessage = "Запись об эталоне № " + miStandardDto.getArshinNumber() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
+
     private String checkMiStandardDtoComposition(MiStandardDto dto){
         if (dto.getMeasurementInstrument() == null) {
             return "Некорректно указано средство измерений, применяемой в качестве эталона";
         }
-
         if (dto.getArshinNumber() == null || dto.getArshinNumber().isEmpty()){
             return "Пожалуйста укажите регистрационный номер эталона в ФГИС\"Аршин\"";
         }
-
         return "";
+    }
+
+    private void uploadFilesIfFilesExist(MultipartFile[] files, String[] descriptions, Long categoryId) throws IOException {
+        if (files.length > 0) {
+            fileService.uploadAllFiles(files, descriptions, Category.MI_STANDARD, categoryId);
+        }
     }
 
     @Override

@@ -61,7 +61,7 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
         MeasurementInstrument instrument = MeasurementInstrumentMapper.mapToEntity(instrumentDto);
         instrument.setCreationDateTime(LocalDateTime.now());
         MeasurementInstrument savedInstrument =  measurementInstrumentRepository.save(instrument);
-        fileService.uploadAllFiles(files,descriptions, Category.MEASUREMENT_INSTRUMENT,savedInstrument.getId());
+        uploadFilesIfFilesExist(files, descriptions, savedInstrument.getId());
         String okMessage = "Запись о средстве измерений " + instrumentDto.getModification() + " зав. № " +
                 instrumentDto.getSerialNum() + " успешно добавлена";
         log.info(okMessage);
@@ -93,8 +93,13 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
             return "Указанная организация отсутствует в базе данных, пожалуйста проверьте правильность выбора " +
                     "организации или добавьте требуемую организацию в базу данных";
         }
-
         return "";
+    }
+
+    private void uploadFilesIfFilesExist(MultipartFile[] files, String[] descriptions, Long categoryId) throws IOException {
+        if (files.length > 0) {
+            fileService.uploadAllFiles(files, descriptions, Category.MEASUREMENT_INSTRUMENT, categoryId);
+        }
     }
 
     @Override
