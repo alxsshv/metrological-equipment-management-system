@@ -156,7 +156,6 @@ public class InitConfig {
         mi3.setApplicable(false);
         mi3.setUser("С.С. Сидоров");
         mi3.setVerificationDate(LocalDate.now());
-        mi3.setValidDate(LocalDate.now().plusYears(1));
         mi3.setInventoryNum("ИНВ3");
 
 

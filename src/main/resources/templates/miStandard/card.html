@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Сведения о СИ, применяемом в качестве эталона</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="MI_CARD" ng-controller="MI_CARD_CTRL">
+    <div class="container text-center">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/miStandard'">К
+                    перечню
+                    средств измерений</button>
+                <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
+            </form>
+        </nav>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <dl class="row text-start">
+                    <h5>Основные сведения об эталоне</h5>
+
+                    <dt class="col-sm-6">Номер эталона в ФИФ ОЕИ</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.arshinNumber}}</dd>
+
+                    <dt class="col-sm-6">Разряд эталона по поверочной схеме</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.levelCode}}</dd>
+
+                    <dt class="col-sm-6 ">Полное наименование поверочной схемы</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.schemaTitle}}</dd>
+
+                    <dt class="col-sm-6 ">Краткое обозначение поверочной схемы</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.schemaNotation}}</dd>
+
+                    <dt class="col-sm-6 ">Тип поверочной схемы</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.schemaType}}</dd>
+
+                    <p></p>
+
+                    <h5>Сведения о средстве измерений</h5>
+
+                    <dt class="col-sm-6">Наименование</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.miType.title}}</dd>
+
+                    <dt class="col-sm-6">Модификация</dt>
+                    <dd ng-model="type" class="col-sm-6"><a
+                            href="/mis/{{miStandard.measurementInstrument.id}}?id={{miStandard.measurementInstrument.id}}">{{miStandard.measurementInstrument.modification}}</a>
+                    </dd>
+
+                    <dt class="col-sm-6">Зав. №</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.serialNumber}}</dd>
+
+                    <dt class="col-sm-6">Дата поверки</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.verificationDate | date:
+                        "dd.MM.yyyy"}}</dd>
+
+                    <dt class="col-sm-6">Действительно до</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.validDate | date:
+                        "dd.MM.yyyy"}}</dd>
+
+                    <dt class="col-sm-6 ">Пригоден</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.applicable}}</dd>
+
+                    <p></p>
+                    <h5>Файлы</h5>
+                    <dd ng-repeat="document in documents"><a href="/files/documents/{{document.id}}"
+                            target="_blank">{{document.description}}</a></dd>
+
+            </div>
+            <div class="row text-start">
+                <div class="col-sm-4">
+                    <dl class="row text-start">
+
+                        <p></p>
+
+                        <div id="carousel" class="carousel slide" data-bs-ride="carousel">
+                            <div class="carousel-inner">
+                                <div ng-model="images" class="carousel-item active">
+                                    <img ng-src="/storage/images/{{images[0].storageFileName}}" class="d-block w-100">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <p>{{images[0].description}}</p>
+                                    </div>
+                                </div>
+                                <div ng-repeat="item in imagesExceptFirst" class="carousel-item">
+                                    <img ng-src="/storage/images/{{item.storageFileName}}" class="d-block w-100">
+                                    <div class="carousel-caption d-none d-md-block">
+                                        <p>{{item.description}}</p>
+                                    </div>
+                                </div>
+                                <button class="carousel-control-prev" type="button" data-bs-target="#carousel"
+                                    data-bs-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Предыдущий</span>
+                                </button>
+                                <button class="carousel-control-next" type="button" data-bs-target="#carousel"
+                                    data-bs-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="visually-hidden">Следующий</span>
+                                </button>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+        <p></p>
+        <div class="row text-start">
+            <div class="col-sm-6">
+                <dt class="col-sm-6"><i>Запись создана</i></dt>
+                <dd class="col-sm-6"><i>{{miStandard.creationDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+
+                <dt class="col-sm-3"><i>Запись обновлена</i></dt>
+                <dd class="col-sm-3"><i>{{miStandard.updatingDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+            </div>
+        </div>
+    </div>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("MI_CARD", []);
+        let idAttr = new URL(document.URL).searchParams.get("id");
+        app.controller("MI_CARD_CTRL", function ($scope, $http) {
+            $scope.reference = "/mis/form/" + idAttr + "?id=" + idAttr
+
+            $scope.miStandard = {};
+            $scope.getMiStandard = function () {
+                $http({
+                    url: "/standards/mis/" + idAttr,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.miStandard = response.data;
+                    $scope.formatDateFieldsFromMiStandard();
+                    $scope.getMiStandardImages();
+                    $scope.getMiStandardDocuments();
+                });
+            }
+
+            $scope.formatDateFieldsFromMiStandard = function () {
+                if ($scope.miStandard.measurementInstrument.verificationDate != null) {
+                    $scope.miStandard.measurementInstrument.verificationDate = new Date($scope.miStandard.measurementInstrument.verificationDate);
+                }
+                if ($scope.miStandard.measurementInstrument.validDate != null) {
+                    $scope.miStandard.measurementInstrument.validDate = new Date($scope.miStandard.measurementInstrument.validDate);
+                }
+                if ($scope.miStandard.creationDateTime != null) {
+                    $scope.miStandard.creationDateTime = new Date($scope.miStandard.creationDateTime);
+                }
+                if ($scope.miStandard.updatingDateTime != null) {
+                    $scope.miStandard.updatingDateTime = new Date($scope.miStandard.updatingDateTime);
+                }
+            }
+
+
+            $scope.documents = [];
+            $scope.getMiStandardDocuments = async function () {
+                await $http({
+                    url: "/files/documents?category=MI_STANDARD&id=" + $scope.miStandard.id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.documents = response.data;
+                });
+            }
+
+            $scope.images = [];
+            $scope.imagesExceptFirst = [];
+            $scope.getImages = function () {
+                $scope.imagesExceptFirst = $scope.images.slice();
+                $scope.imagesExceptFirst.shift();
+            }
+
+   
+    
+            $scope.getMiStandardImages = function () {
+                $http({
+                    url: "/files/images?category=MI_STANDARD&id=" + $scope.miStandard.id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.images = $scope.images.concat(response.data);
+                    $scope.getImages();
+                });
+            }
+
+            $scope.getMiStandard();
+ 
+
+
+        });
+
+
+    </script>
+</body>
+
+</html>
