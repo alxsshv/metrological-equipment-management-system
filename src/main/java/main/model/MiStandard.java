@@ -29,13 +29,14 @@ public class MiStandard {
     @Column(name = "schema_type")
     private String schemaType; // локальная или государственная поверочная схема
     @Column(name = "schema_title")
-    private String schemaTitle;
+    private String schemaTitle; //полное наименование поверочной схемы
+    @Column(name= "schema_notation")
+    private String schemaNotation; // краткое наименование поверочной схемы
     @Column(name = "state_standard_num")
     private String stateStandardNumber; // номер государственного поверочного
-    @Column(name = "level_code")
-    private String levelCode; // код рязряда по поверочой схеме
-    @Column(name= "leve_title")
-    private String levelTitle; // разряд по поверочной схеме
+    @Column(name = "level")
+    private String level; // код рязряда по поверочой схеме
+
     @CreationTimestamp
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
@@ -47,8 +48,8 @@ public class MiStandard {
         this.arshinNumber = updateData.getArshinNumber();
         this.schemaType = updateData.getSchemaType();
         this.schemaTitle = updateData.getSchemaTitle();
-        this.levelCode = updateData.getLevelCode();
-        this.levelTitle = updateData.getLevelTitle();
+        this.level = updateData.getLevel();
+        this.schemaNotation = updateData.getSchemaNotation();
         this.stateStandardNumber = updateData.getStateStandardNumber();
         this.updatingDateTime = LocalDateTime.now();
     }

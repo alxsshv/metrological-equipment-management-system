@@ -11,8 +11,8 @@ public class MiStandardDtoMapper {
         dto.setMeasurementInstrument(standard.getMeasurementInstrument());
         dto.setSchemaType(standard.getSchemaType());
         dto.setSchemaTitle(standard.getSchemaTitle());
-        dto.setLevelCode(standard.getLevelCode());
-        dto.setLevelTitle(standard.getLevelTitle());
+        dto.setSchemaNotation(standard.getSchemaNotation());
+        dto.setLevel(standard.getLevel());
         dto.setStateStandardNumber(standard.getStateStandardNumber());
         dto.setCreationDateTime(standard.getCreationDateTime().toString());
         dto.setUpdatingDateTime(standard.getUpdatingDateTime().toString());
@@ -26,8 +26,8 @@ public class MiStandardDtoMapper {
         standard.setMeasurementInstrument(dto.getMeasurementInstrument());
         standard.setSchemaTitle(dto.getSchemaTitle());
         standard.setSchemaType(dto.getSchemaType());
-        standard.setLevelCode(dto.getLevelCode());
-        standard.setLevelTitle(dto.getLevelTitle());
+        standard.setSchemaNotation(dto.getSchemaNotation());
+        standard.setLevel(dto.getLevel());
         standard.setStateStandardNumber(dto.getStateStandardNumber());
         return standard;
     }

@@ -29,7 +29,7 @@
                     <dd ng-model="type" class="col-sm-6">{{miStandard.arshinNumber}}</dd>
 
                     <dt class="col-sm-6">Разряд эталона по поверочной схеме</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miStandard.levelCode}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.level}}</dd>
 
                     <dt class="col-sm-6 ">Полное наименование поверочной схемы</dt>
                     <dd ng-model="type" class="col-sm-6">{{miStandard.schemaTitle}}</dd>
@@ -53,7 +53,7 @@
                     </dd>
 
                     <dt class="col-sm-6">Зав. №</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.serialNumber}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.serialNum}}</dd>
 
                     <dt class="col-sm-6">Дата поверки</dt>
                     <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.verificationDate | date:
@@ -63,8 +63,8 @@
                     <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.validDate | date:
                         "dd.MM.yyyy"}}</dd>
 
-                    <dt class="col-sm-6 ">Пригоден</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.applicable}}</dd>
+                    <dt class="col-sm-6 ">Пригодность</dt>
+                    <dd ng-model="type" class="col-sm-6">{{applicable.title}}</dd>
 
                     <p></p>
                     <h5>Файлы</h5>
@@ -124,7 +124,7 @@
         var app = angular.module("MI_CARD", []);
         let idAttr = new URL(document.URL).searchParams.get("id");
         app.controller("MI_CARD_CTRL", function ($scope, $http) {
-            $scope.reference = "/mis/form/" + idAttr + "?id=" + idAttr
+            $scope.reference = "/standard/form/" + idAttr + "?id=" + idAttr
 
             $scope.miStandard = {};
             $scope.getMiStandard = function () {
@@ -138,6 +138,16 @@
                     $scope.getMiStandardDocuments();
                 });
             }
+
+            $scope.applicables = [{'title' : 'Пригоден', 'value' : true},
+                                  {'title' : 'Непригоден', 'value' : false}];
+            
+            $scope.applicable = {'title' : 'Пригоден', 'value' : true};
+            $scope.setApplicableFromMiStandard = function(){
+                if($scope.miStandard.measurementInstrument.applicable == false){
+                    $scope.applicable = {'title' : 'Непригоден', 'value' : false};
+                }
+            } 
 
             $scope.formatDateFieldsFromMiStandard = function () {
                 if ($scope.miStandard.measurementInstrument.verificationDate != null) {

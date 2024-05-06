@@ -15,9 +15,9 @@ public class MiStandardDto {
     private MeasurementInstrument measurementInstrument;
     private String schemaType;
     private String schemaTitle;
+    private String schemaNotation;
     private String stateStandardNumber;
-    private String levelCode;
-    private String levelTitle;
+    private String level;
     private String creationDateTime;
     private String updatingDateTime;
 
@@ -30,8 +30,8 @@ public class MiStandardDto {
                 ", schemaType='" + schemaType + '\'' +
                 ", schemaTitle='" + schemaTitle + '\'' +
                 ", stateStandardNumber='" + stateStandardNumber + '\'' +
-                ", levelCode='" + levelCode + '\'' +
-                ", levelTitle='" + levelTitle + '\'' +
+                ", schemaNotation='" + schemaNotation + '\'' +
+                ", level='" + level + '\'' +
                 ", creationDateTime='" + creationDateTime + '\'' +
                 ", updatingDateTime='" + updatingDateTime + '\'' +
                 '}';

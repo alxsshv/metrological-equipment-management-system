@@ -42,13 +42,6 @@
             <div class="col-md-12">Поверочная схема
                 <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
                     <div class="row">
-                        <div class="col-md-12">
-                            <label for="inputText3" class="form-label">Наименование поверочной схемы</label>
-                            <textarea ng-model="miStandard.schemaTitle" placeholder="" class="form-control"
-                                id="inputText3" value=""></textarea>
-                        </div>
-                    </div>
-                    <div class="row">
                         <div class="col-md-3">
                             <label for="select2" class="form-label">Тип поверочной схемы</label>
                             <select ng-model="miStandard.schemaType" class="form-select" aria-label="Тип схемы"
@@ -58,14 +51,21 @@
                             </select>
                         </div>
                         <div class="col-md-6">
-                            <label for="inputText4" class="form-label">Обоначение разряда по поверочной схеме</label>
-                            <input type="text" ng-model="miStandard.levelTitle" placeholder="" class="form-control"
+                            <label for="inputText4" class="form-label">Краткое обозначение поверочной схемы</label>
+                            <input type="text" ng-model="miStandard.schemaNotation" placeholder="" class="form-control"
                                 id="inputText4" value="">
                         </div>
                         <div class="col-md-3">
                             <label for="inputText6" class="form-label">Код разряда по поверочной схеме</label>
-                            <input type="text" ng-model="miStandard.levelCode" placeholder="" class="form-control"
+                            <input type="text" ng-model="miStandard.level" placeholder="" class="form-control"
                                 id="inputText6" value="">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <label for="inputText3" class="form-label">Наименование поверочной схемы</label>
+                            <textarea ng-model="miStandard.schemaTitle" placeholder="" class="form-control"
+                                id="inputText3" value=""></textarea>
                         </div>
                     </div>
                 </div>
@@ -172,6 +172,7 @@
                             data: $scope.miStandard,
                         }).then(function successCallback(response) {
                             alert(response.data.message);
+                            window.location.href = '/standard/'+ $scope.miStandard.id +'?id=' + $scope.miStandard.id;
                         }, function errorCallback(response) {
                             alert(response.data.message)
                         });
