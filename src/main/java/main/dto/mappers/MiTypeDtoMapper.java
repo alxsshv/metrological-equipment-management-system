@@ -29,6 +29,7 @@ public class MiTypeDtoMapper {
         dto.setNumber(instruction.getMiType().getNumber());
         dto.setNotation(instruction.getMiType().getNotation());
         dto.setTitle(instruction.getMiType().getTitle());
+        dto.setMiTitleTemplate(instruction.getMiType().getMiTitleTemplate());
         dto.setModifications(instruction.getMiType().getModifications().stream().map(MiTypeModification::getNotation).toList());
         dto.setStartDate(instruction.getMiType().getStartDate());
         dto.setEndDate(instruction.getMiType().getEndDate());
@@ -68,6 +69,7 @@ public class MiTypeDtoMapper {
             type.setNotation(fullDto.getNotation());
         }
         type.setTitle(fullDto.getTitle());
+        type.setMiTitleTemplate(fullDto.getMiTitleTemplate());
         type.setModifications(getModifications(fullDto));
         type.setStartDate(fullDto.getStartDate());
         type.setEndDate(fullDto.getEndDate());

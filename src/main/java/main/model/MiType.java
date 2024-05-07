@@ -37,6 +37,8 @@ public class MiType {
     @Column(name = "modifications")
     @JsonIgnore
     private List<MiTypeModification> modifications = new ArrayList<>(); // Модификации
+    @Column(name = "mi_title_template")
+    private String miTitleTemplate; //Шаблон для наименования средства измерений, на основе данного типа СИ
 
 
 

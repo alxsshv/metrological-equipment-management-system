@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,6 +25,8 @@ public class MeasurementInstrument {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mi_type_id")
     private MiType miType; // Идентификатор типа СИ
+    @Column(name ="title")
+    private String title;
     @Column(name = "modification")
     private String modification; // Модификация
     @Column(name = "serial_number")
@@ -48,13 +52,16 @@ public class MeasurementInstrument {
     private Organization owner; // Владелец СИ
     @Column(name = "mi_user")
     private String user; // Ответственный за эксплуатацию
+    @CreationTimestamp
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
+    @UpdateTimestamp
     @Column(name = "updating_date_time")
     private LocalDateTime updatingDateTime;
 
     public void updateFrom(MeasurementInstrument updatingData){
         this.miType = updatingData.getMiType();
+        this.title = updatingData.getMiType().getMiTitleTemplate();
         this.modification = updatingData.getModification();
         this.serialNum = updatingData.getSerialNum();
         this.inventoryNum = updatingData.getInventoryNum();
@@ -65,6 +72,5 @@ public class MeasurementInstrument {
         this.startUseDate = updatingData.getStartUseDate();
         this.owner = updatingData.getOwner();
         this.user = updatingData.getUser();
-        this.updatingDateTime = LocalDateTime.now();
     }
 }

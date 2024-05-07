@@ -20,11 +20,12 @@ public class MiStandard {
     // Средства измерений, применяемые в качестве эталона
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "arshin_number")
     private String arshinNumber; // номер эталона, присвоенный организацией-владельцем
-    @OneToOne(fetch = FetchType.EAGER)
-    @MapsId
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "mi_id")
     private MeasurementInstrument measurementInstrument; // Средство измерения, являющееся эталоном
     @Column(name = "schema_type")
     private String schemaType; // локальная или государственная поверочная схема

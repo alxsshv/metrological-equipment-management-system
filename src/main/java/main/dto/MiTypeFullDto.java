@@ -21,6 +21,7 @@ public class MiTypeFullDto {
     private LocalDate startDate;
     private LocalDate endDate;
     private double verificationPeriod;
+    private String miTitleTemplate;
     private List<String> modifications = new ArrayList<>();
     private String instructionNotation;
     private String instructionTitle;

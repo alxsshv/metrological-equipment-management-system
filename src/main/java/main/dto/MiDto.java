@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @Getter
 public class MiDto {
     private long id;
-    private String miTypeTitle;
+    private String title;
     private String modification;
     private String serialNum;
     private LocalDate verificationDate;

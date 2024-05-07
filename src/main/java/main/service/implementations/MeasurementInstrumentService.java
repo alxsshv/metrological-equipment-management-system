@@ -59,7 +59,6 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
             return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
         }
         MeasurementInstrument instrument = MeasurementInstrumentMapper.mapToEntity(instrumentDto);
-        instrument.setCreationDateTime(LocalDateTime.now());
         MeasurementInstrument savedInstrument =  measurementInstrumentRepository.save(instrument);
         uploadFilesIfFilesExist(files, descriptions, savedInstrument.getId());
         String okMessage = "Запись о средстве измерений " + instrumentDto.getModification() + " зав. № " +

@@ -35,7 +35,7 @@
                     <dd ng-model="type" class="col-sm-6">{{miType.notation}}</dd>
 
 
-                    <dt class="col-sm-6">Перbод действия</dt>
+                    <dt class="col-sm-6">Период действия</dt>
                     <dd ng-model="type" class="col-sm-6"> c {{startDate | date:"dd.MM.yyyy"}} по {{endDate |
                         date:"dd.MM.yyyy"}}</dd>
 
@@ -50,6 +50,9 @@
 
                     <dt class="col-sm-6">Наименование методики поверки</dt>
                     <dd ng-model="type" class="col-sm-6">{{miType.instructionTitle}}</dd>
+
+                    <dt class="col-sm-6">Шаблон наименования средства измерений</dt>
+                    <dd class="col-sm-6" ng-model="type">{{miType.miTitleTemplate}}</dd>
 
 
                     <p></p>

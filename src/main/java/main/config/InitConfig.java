@@ -40,6 +40,7 @@ public class InitConfig {
         type1.setNumber("88363-23");
         type1.setTitle("Датчики давления");
         type1.setNotation("Вm 212А.4");
+        type1.setMiTitleTemplate("Датчик давления");
         type1.setStartDate(LocalDate.parse("2023-03-01"));
         type1.setEndDate(LocalDate.parse("2028-03-01"));
         type1.setVerificationPeriod(3);
@@ -50,12 +51,13 @@ public class InitConfig {
                         "СДАИ.406233.106-18","СДАИ.406233.106-19","СДАИ.406233.106-20","СДАИ.406233.106-21","СДАИ.406233.106-22",
                         "СДАИ.406233.106-23"));
         type1.setInstructionNotation("СДАИ.406233.106МП");
-        type1.setInstructionTitle("Датчики ддавления Вт 212А.4. Методика поверки");
+        type1.setInstructionTitle("Датчики давления Вт 212А.4. Методика поверки");
 
         MiTypeFullDto type2 = new MiTypeFullDto();
                type2.setNumber("76077-19");
                type2.setTitle("Датчики давления");
                type2.setNotation("ДХС 524");
+               type2.setMiTitleTemplate("Датчик давления");
                type2.setStartDate(LocalDate.parse("2019-11-08"));
                type2.setEndDate(LocalDate.parse("2024-11-08"));
                type2.setVerificationPeriod(2);

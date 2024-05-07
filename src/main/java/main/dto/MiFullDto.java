@@ -15,6 +15,7 @@ import java.time.LocalDate;
 public class MiFullDto {
     private long id;
     private MiType miType;
+    private String title;
     private String modification;
     private String serialNum;
     private String inventoryNum;

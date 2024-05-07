@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "mi_type_modification")
+@Table(name = "mi_type_modifications")
 public class MiTypeModification {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

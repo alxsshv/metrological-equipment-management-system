@@ -22,7 +22,6 @@
             <h5>Добавление сведений о типе средства измерений</h5>
         </div>
         <div class="row-center">Основные сведения о типе средства измерений</div>
-
         <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
             <div class="row g-2">
                 <div class="col-md-2">
@@ -39,6 +38,14 @@
                     <label for="inputText3" class="form-label">Обозначение типа СИ</label>
                     <input type="text" ng-model="miType.notation" placeholder="Пример: МС-33" class="form-control"
                         id="inputText3" value="" required>
+                </div>
+            </div>
+            <p></p>
+            <div class="row g-2">
+                <div class="col-md-9">
+                    <label class="form-label" for="inputText8">Шаблон наименования средства измерений, относящегося к данному типу СИ</label>
+                    <input class="form-control" id="inputText8" ng-model="miType.miTitleTemplate"
+                        placeholder="Пример: Микроскоп сканирующий электронный" required type="text" value="">
                 </div>
             </div>
         </div>
@@ -232,7 +239,6 @@
             // добавление модификаций
             $scope.miType.modifications = [];
             $scope.addModification = function (modification) {
-                console.log("добавляем " + modification);
                 if ($scope.miType.modifications.includes(modification)) {
                     alert("Эта модификация уже добавлена");
                 } else

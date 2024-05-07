@@ -8,7 +8,7 @@ public class MeasurementInstrumentMapper {
     public static MiDto mapToDto(MeasurementInstrument measurementInstrument){
         MiDto dto = new MiDto();
         dto.setId(measurementInstrument.getId());
-        dto.setMiTypeTitle(measurementInstrument.getMiType().getTitle());
+        dto.setTitle(measurementInstrument.getTitle());
         dto.setModification(measurementInstrument.getModification());
         dto.setSerialNum(measurementInstrument.getSerialNum());
         dto.setVerificationDate(measurementInstrument.getVerificationDate());
@@ -21,6 +21,7 @@ public class MeasurementInstrumentMapper {
         MiFullDto dto = new MiFullDto();
         dto.setId(measurementInstrument.getId());
         dto.setMiType(measurementInstrument.getMiType());
+        dto.setTitle(measurementInstrument.getTitle());
         dto.setModification(measurementInstrument.getModification());
         dto.setSerialNum(measurementInstrument.getSerialNum());
         dto.setInventoryNum(measurementInstrument.getInventoryNum());
@@ -41,6 +42,7 @@ public class MeasurementInstrumentMapper {
         MeasurementInstrument measurementInstrument = new MeasurementInstrument();
         measurementInstrument.setId(dto.getId());
         measurementInstrument.setMiType(dto.getMiType());
+        measurementInstrument.setTitle(dto.getMiType().getMiTitleTemplate());
         measurementInstrument.setModification(dto.getModification());
         measurementInstrument.setSerialNum(dto.getSerialNum());
         measurementInstrument.setInventoryNum(dto.getInventoryNum());
