@@ -198,8 +198,7 @@
 
 
             $scope.selectType = function (item) {
-                $scope.mi.miType = item;
-                $scope.getModifications();
+                $scope.getMiTypeFullData(item.id)
             }
 
             $scope.organizations = [];
@@ -212,6 +211,16 @@
                         $scope.organizations = response.data;
                     });
                 }
+            }
+
+            $scope.getMiTypeFullData = function (id) {
+                    $http({
+                        url: "/mit/" + id,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.mi.miType = response.data;
+                        $scope.getModifications();
+                    });
             }
 
             $scope.selectOrganization = function (item) {
@@ -234,7 +243,6 @@
                 for (let i = 0; i < file.files.length; i++) {
                     formData.append('files', file.files[i])
                 }
-                console.log(formData);
             }
 
             // сохранение в БД;

@@ -25,10 +25,13 @@
                     <h5>Основные сведения о средстве измерений</h5>
 
                     <dt class="col-sm-6">Наименование</dt>
-                    <dd class="col-sm-6" ng-model="type">{{mi.title}} {{mi.type.notation}}</dd>
+                    <dd class="col-sm-6" ng-model="type">{{mi.title}}</dd>
 
                     <dt class="col-sm-6">Модификация</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.modification}}</dd>
+
+                    <dt class="col-sm-6">Номер типа СИ в ФИФ ОЕИ</dt>
+                    <dd ng-model="type" class="col-sm-6"><a href="/mits/{{mi.miType.id}}?id={{mi.miType.id}}">{{mi.miType.number}}</a></dd>
 
                     <dt class="col-sm-6 ">Заводской номер</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.serialNum}}</dd>
@@ -47,13 +50,13 @@
                     <h5>Сведения о владельце</h5>
 
                     <dt class="col-sm-6">Наименование</dt>
-                    <dd ng-model="type" class="col-sm-6">{{mi.owner. title}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{mi.owner.title}}</dd>
 
                     <dt class="col-sm-6"></dt>
                     <dd ng-model="type" class="col-sm-6">({{mi.owner.notation}})</dd>
 
                     <dt class="col-sm-6">Адрес</dt>
-                    <dd ng-model="type" class="col-sm-6">{{mi.owner. address}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{mi.owner.address}}</dd>
 
                     <p></p>
                     <h5>Файлы</h5>

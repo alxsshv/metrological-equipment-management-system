@@ -42,6 +42,7 @@ public class MiTypeFullDto {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", verificationPeriod=" + verificationPeriod +
+                ", miTitleTemplate='" + miTitleTemplate + '\'' +
                 ", modifications=" + modifications +
                 ", instructionNotation='" + instructionNotation + '\'' +
                 ", instructionTitle='" + instructionTitle + '\'' +

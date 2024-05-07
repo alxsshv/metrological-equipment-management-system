@@ -66,6 +66,7 @@ public class MiType {
         this.startDate = newData.getStartDate();
         this.endDate = newData.getEndDate();
         this.verificationPeriod = newData.getVerificationPeriod();
+        this.miTitleTemplate = newData.getMiTitleTemplate();
         this.modifications.clear();
         this.modifications.addAll(newData.getModifications());
     }

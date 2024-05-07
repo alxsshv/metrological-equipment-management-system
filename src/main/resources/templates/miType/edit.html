@@ -57,12 +57,12 @@
                 <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
                     <div class="col-md-12">
                         <label for="inputDate1" class="form-label">Дата начала срока действия</label>
-                        <input type="date" ng-model="startDate " ng-model-options="{timezone: 'UTC'}"
+                        <input type="date" ng-model="miType.startDate " ng-model-options="{timezone: 'UTC'}"
                             class="form-control" id="inputDate1" value="${{startDate | date: dd:MM:yyyy}}">
                     </div>
                     <div class="col-md-12">
                         <label for="inputDate2" class="form-label">Дата окончания срока действия</label>
-                        <input type="date" ng-model="endDate" ng-model-options="{timezone: 'UTC'}" class="form-control"
+                        <input type="date" ng-model="miType.endDate" ng-model-options="{timezone: 'UTC'}" class="form-control"
                             id="inputDate2" value="${{endDate | date: dd:MM:yyyy}}">
                     </div>
                 </div>
@@ -174,46 +174,42 @@
         var app = angular.module("MI_TYPE_EDIT", []);
         var idAttr = new URL(document.URL).searchParams.get("id");
         app.controller("MI_TYPE_EDIT_CTRL", function ($scope, $http) {
-    
+            $scope.miType = {};
             $scope.getMiType = function () {
                 $http({
                     url: "/mit/" + idAttr,
                     method: "GET"
                 }).then(function (response) {
                     $scope.miType = response.data;
-                    $scope.startDate = new Date(response.data.startDate);
-                    $scope.endDate = new Date(response.data.endDate);
+                    console.log($scope.miType);
+                    $scope.formatDateFieldsFromMiType();
                     $scope.modifications = response.data.modifications;
                 });
             }
+
+                
+            $scope.formatDateFieldsFromMiType = function(){
+                    if ($scope.miType.startDate != null){
+                        $scope.miType.startDate = new Date($scope.miType.startDate);
+                    } 
+                    if ($scope.miType.endDate != null){
+                        $scope.miType.endDate = new Date ($scope.miType.endDate);
+                    }
+            }
     
-            $scope.getMiType();
     
     
             $scope.updateMiType = function () {
+                $scope.miType.id = idAttr;
+                $scope.miType.modifications = $scope.modifications;
+                console.log($scope.miType);
                 $http({
                     url: "/mit/" + idAttr,
                     method: "PUT",
-                    data: {
-                        id:idAttr,
-                        number: $scope.miType.number,
-                        title: $scope.miType.title,
-                        notation: $scope.miType.notation,
-                        startDate: new Date($scope.startDate),
-                        endDate: new Date($scope.endDate),
-                        modifications: $scope.modifications,
-                        verificationPeriod: $scope.miType.verificationPeriod,
-                        instructionNotation: $scope.miType.instructionNotation,
-                        instructionTitle: $scope.miType.instructionTitle,
-                        humidityLowLimit: $scope.miType.humidityLowLimit,
-                        humidityHiLimit: $scope.miType.humidityHiLimit,
-                        temperatureHiLimit: $scope.miType.temperatureHiLimit,
-                        temperatureLowLimit: $scope.miType.temperatureLowLimit,
-                        pressureHiLimit: $scope.miType.pressureHiLimit,
-                        pressureLowLimit: $scope.miType.pressureLowLimit
-                    }
+                    data:  $scope.miType
                 }).then(function successCallback(response) {
                     alert(response.data.message);
+                    window.location.href = '/mits/'+ $scope.miType.id +'?id=' + $scope.miType.id;
                 }, function errorCallback(response) {
                     alert(response.data.message)
                 });
@@ -236,6 +232,8 @@
             $scope.deleteLastModification = function () {
                 $scope.modifications.pop();
             }
+
+            $scope.getMiType();
     
         });
     </script>
