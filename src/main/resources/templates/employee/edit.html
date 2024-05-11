@@ -12,7 +12,7 @@
     <nav class="navbar bg-body-tertiary">
         <form class="container-fluid justify-content-start">
             <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/employees'">К списку пользователей</button>
+            <button class="btn btn-outline-success me-2" onclick="location.href='/employee'" type="button">К списку пользователей</button>
         </form>
     </nav>
 
@@ -46,7 +46,7 @@
 
             $scope.getEmployee = function(){
                 $http({
-                url: "/employee/"+idAttr,
+                url: "/employees/"+idAttr,
                 method: "GET"
             }).then(function(response){
                 $scope.employee = response.data;
@@ -57,7 +57,7 @@
 
             $scope.saveEmployee = function(){
             $http({
-                url: "/employee/"+idAttr,
+                url: "/employees/"+idAttr,
                 method: "PUT",
                 data: {
                     id:idAttr,

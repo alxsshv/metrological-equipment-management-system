@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Добавление СИ, применяемого в качестве эталона</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="MI_STANDARD_FORM" ng-controller="MI_STANDARD_FORM_CTRL">
+    <div class="container text-left">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" onclick="location.href='/'" type="button">Домой</button>
+                <button class="btn btn-outline-success me-2" onclick="location.href='/standard'" type="button">Перечень
+                    отчетов о поверке</button>
+            </form>
+        </nav>
+
+        <div class="row text-center">
+            <h5>Формирование отчета</h5>
+        </div>
+
+
+        <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="col-md-5">
+                <label class="form-label" for="inputText1">Наименование и модель</label>
+                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputText1" ng-change="searchMit()"
+                    ng-model="mitSearchString" placeholder="Пример: Вольтметры универсальные В7-78"
+                    type="text" value="">
+                <ul class="dropdown-menu">
+                    <li ng-repeat="item in mits" value="{{item}}"> <a class="dropdown-item"
+                            ng-click="selectMit(item)">{{item.title}} {{item.notation}}</a></li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label" for="inputText2">Модификация</label>
+                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputText2" ng-change="searchMi()"
+                    ng-model="miSearchString" placeholder="Пример: В7-78/2" type="text" value="">
+                <ul class="dropdown-menu">
+                    <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" href="#"
+                            ng-click="selectMi(item)">{{item.modification}} зав. № {{item.serialNum}} </a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="inputText2">Зав. №</label>
+                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputText2" ng-change="searchMi()"
+                    ng-model="miSNSearchString" type="text" value="">
+                <ul class="dropdown-menu" ng-model="mi">
+                    <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" href="#"
+                            ng-click="selectMi(item)">{{item.modification}} №{{item.serialNum}}</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="inputText2">Инв. №</label>
+                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputText2" ng-change="searchMi()"
+                    ng-model="inventoryNum" type="text" value="">
+                <ul class="dropdown-menu" ng-model="mi">
+                    <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" href="#"
+                            ng-click="selectMi(item)">{{item.modification}} №{{item.serialNum}}</a></li>
+                </ul>
+            </div>
+        </div>
+        <p></p>
+        <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="col-md-2">
+                <label class="form-label" for="inputText1">Тип поверки</label>
+                <input class="form-control" id="inputText1" ng-model="" required type="text" value="">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="inputDate1">Дата поверки</label>
+                <input class="form-control" id="inputDate1" ng-model="mi.verificationDate" required type="date"
+                    value="">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="inputDate2">Действительно до</label>
+                <input class="form-control" id="inputDate2" ng-model="mi.validDate" required type="date" value="">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="inputText1">Пригодность</label>
+                <select class="form-control" ng-model="applicable" ng-options="applicable as applicable.title for applicable in applicables track by applicable.value" required>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="inputText1">Поверитель</label>
+                <input class="form-control" id="inputText1" ng-model="" placeholder="Иванов" required type="text"
+                    value="">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="inputText1">Эталон</label>
+                <input class="form-control" id="inputText1" ng-model="" placeholder="12345.67.1Р.12345678" required
+                    type="text" value="">
+            </div>
+        </div>
+        <p></p>
+        <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
+            <div class="col-md-2">
+                <label class="form-label" for="inputText1">Давление,кПа</label>
+                <input class="form-control" id="inputText1" ng-model="" placeholder="99,3" required step="0.01"
+                    type="number" value="">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="inputText1">Температура, &degC</label>
+                <input class="form-control" id="inputText1" ng-model="" placeholder="21,5" required step="0.01"
+                    type="number" value="">
+            </div>
+            <div class="col-md-2">
+                <label class="form-label" for="inputText1">Влажность, %</label>
+                <input class="form-control" id="inputText1" ng-model="" placeholder="52,2" required step="0.01"
+                    type="number" value="">
+            </div>
+            <p></p>
+            <div class="row">
+                <div class="col-10">
+                </div>
+                <div class="col-2">
+                    <button class="btn btn-primary" ng-click="" type="button">Добавить</button>
+                </div>
+            </div>
+        </div>
+
+        <p></p>
+        <div class="row">
+            <div class="col-5"></div>
+            <div class="col-2">
+                <button class="btn btn-primary" ng-click="addMiStandard()" type="button">Сохранить</button>
+            </div>
+            <div class="col-5"></div>
+        </div>
+    </div>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/jquery-3.7.1.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("MI_STANDARD_FORM", []);
+        app.controller("MI_STANDARD_FORM_CTRL", function ($scope, $http) {
+            $scope.miStandard = {};
+
+
+            //Поиск типа СИ по подстроке
+            $scope.mits = [];
+            $scope.searchMit = function () {
+                if ($scope.mitSearchString.length > 3) {
+                    $http({
+                        url: "/mits/search?search=" + $scope.mitSearchString,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.mits = response.data;
+                        console.log($scope.mits);
+                    });
+                }
+            }
+
+            $scope.selectMit = function (item) {
+                $scope.mitSearchString = item.title + " " + item.notation;
+                //     $scope.getMiFullData(item.id);
+            }
+
+            //Поиск СИ по модификации
+            $scope.mis = [];
+            $scope.searchMi = function () {
+                if ($scope.miSearchString.length > 3) {
+                    $http({
+                        url: "/mis/search?search=" + $scope.miSearchString,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.mis = response.data;
+                        console.log($scope.mis);
+                    });
+                }
+            }
+
+            $scope.selectMi = function (item) {
+                $scope.miSearchString = item.modification;
+                $scope.miSNSearchString = item.serialNum;
+                getMiFullData(item.id);
+
+            }
+
+            //Получение полных сведений о выбранном средстве измерений
+            getMiFullData = function (id) {
+                $http({
+                    url: "/mis/" + id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.mi = response.data;
+                    formatDateFieldsFromMi();
+                    setApplicableFromMi();
+                    console.log($scope.mi);
+                });
+            }
+
+            formatDateFieldsFromMi = function () {
+                if ($scope.mi.verificationDate != null) {
+                    $scope.mi.verificationDate = new Date($scope.mi.verificationDate);
+                }
+                if ($scope.mi.validDate != null) {
+                    $scope.mi.validDate = new Date($scope.mi.validDate);
+                }
+            }
+
+            $scope.applicables = [{ 'title': 'Пригоден', 'value': true },
+                                { 'title': 'Не пригоден', 'value': false }];
+
+            
+            setApplicableFromMi = function () {
+                $scope.applicable = { 'title': 'Пригоден', 'value': true };
+                if ($scope.mi.applicable == false) {
+                    $scope.applicable = { 'title': 'Непригоден', 'value': false };
+                }
+            }
+
+
+            // сохранение в БД;
+            $scope.addMiStandard = function () {
+                if ($scope.miStandard.arshinNumber != null) {
+                    $scope.buildFormData();
+                    $http({
+                        url: "/standards/mis/",
+                        method: "POST",
+                        data: formData,
+                        headers: {
+                            'Accept': '*/*',
+                            'Content-Type': undefined
+                        }
+                    }).then(function successCallback(response) {
+                        alert(response.data.message);
+                        window.location.reload();
+                    }, function errorCallback(response) {
+                        alert(response.data.message)
+                    });
+                } else {
+                    alert('Регистрационный номер эталона не может быть пустым');
+                }
+            }
+
+
+            //Подготовка formData для отправки
+            let formData = new FormData();
+            $scope.buildFormData = function () {
+                formData.append('miStandard', JSON.stringify($scope.miStandard));
+                formData.append('descriptions', $scope.descriptions);
+                if (file.files.length == 0) {
+                    formData.append('files', []);
+                }
+                for (let i = 0; i < file.files.length; i++) {
+                    formData.append('files', file.files[i]);
+                }
+            }
+
+        });
+    </script>
+</body>
+
+</html>

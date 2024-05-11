@@ -163,6 +163,17 @@ public class MiTypeService implements IMiTypeService {
                 .map(MiTypeDtoMapper::mapToDto);
         return ResponseEntity.ok(page);
     }
+    public ResponseEntity<?> findBySearchString(String searchString) {
+        if (searchString == null || searchString.isEmpty()){
+            String errorMessage = "Поле для поиска не может быть пустым";
+            log.info(errorMessage);
+            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        }
+        List<MiTypeDto> miTypeDtos =  miTypeRepository
+                .findByNumberContainingOrTitleContainingOrNotationContaining(searchString.trim(),searchString.trim(),searchString.trim()).stream()
+                .map(MiTypeDtoMapper::mapToDto).toList();
+        return ResponseEntity.ok(miTypeDtos);
+    }
 
     @Override
     public ResponseEntity<?> findModifications(long miTypeId){

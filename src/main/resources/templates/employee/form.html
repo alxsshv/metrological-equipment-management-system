@@ -11,7 +11,7 @@
     <nav class="navbar bg-body-tertiary">
         <form class="container-fluid justify-content-start">
             <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/employees'">Cписок поверителей</button>
+            <button class="btn btn-outline-success me-2" onclick="location.href='/employee'" type="button">Cписок поверителей</button>
         </form>
 
     </nav>
@@ -43,7 +43,7 @@
             $scope.addEmployee = function(){
              if (/^([0-9]{11})$/.exec($scope.employee.snils)){
                 $http({
-                url: "/employee",
+                url: "/employees",
                 method: "POST",
                 data: {
                     surname:$scope.employee.surname,

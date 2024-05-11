@@ -13,7 +13,7 @@
         <nav class="navbar bg-body-tertiary">
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/mis'">Перечень
+                <button class="btn btn-outline-success me-2" onclick="location.href='/mi'" type="button">Перечень
                     средств измерений</button>
             </form>
         </nav>
@@ -161,7 +161,7 @@
                 if (/^[0-9]{5}-[0-9]{2}$/.exec($scope.mi.miType.number)) {
                     console.log("Поиск типа си")
                     $http({
-                        url: "/mit/search?search=" + $scope.mi.miType.number,
+                        url: "/mits/search?search=" + $scope.mi.miType.number,
                         method: "GET"
                     }).then(function (response) {
                         $scope.mi.miType = response.data.content[0];
@@ -175,7 +175,7 @@
             $scope.searchType = function () {
                 if ($scope.mi.miType.title.length > 3) {
                     $http({
-                        url: "/mit/search?search=" + $scope.mi.miType.title,
+                        url: "/mits/search?search=" + $scope.mi.miType.title,
                         method: "GET"
                     }).then(function (response) {
                         $scope.types = response.data.content;
@@ -188,7 +188,7 @@
             $scope.getModifications = function () {
                 if ($scope.mi.miType.id >= 0) {
                     $http({
-                        url: "/mit/modifications/" + $scope.mi.miType.id,
+                        url: "/mits/modifications/" + $scope.mi.miType.id,
                         method: "GET"
                     }).then(function (response) {
                         $scope.modifications = response.data;
@@ -205,7 +205,7 @@
             $scope.searchOrganization = function () {
                 if ($scope.organization.length >= 3) {
                     $http({
-                        url: "/organization/search?search=" + $scope.organization,
+                        url: "/organizations/search?search=" + $scope.organization,
                         method: "GET"
                     }).then(function (response) {
                         $scope.organizations = response.data;
@@ -215,7 +215,7 @@
 
             $scope.getMiTypeFullData = function (id) {
                     $http({
-                        url: "/mit/" + id,
+                        url: "/mits/" + id,
                         method: "GET"
                     }).then(function (response) {
                         $scope.mi.miType = response.data;
@@ -249,7 +249,7 @@
             $scope.addMi = function () {
                 $scope.buildFormData();
                 $http({
-                    url: "/mi",
+                    url: "/mis",
                     method: "POST",
                     data: formData,
                     headers: {

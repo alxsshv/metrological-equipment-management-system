@@ -14,60 +14,60 @@ public class WebController {
     }
 
     // Вывод шаблонов для поверителей
-    @GetMapping("/employees/form")
-    public String getEmployeeFormView(){
+    @GetMapping("/employee/form")
+    public String getEmployeeForm(){
         return "employee/form";
     }
-    @GetMapping("/employees")
+    @GetMapping("/employee")
     public String getEmployeeListView(){
         return "employee/list";
     }
-    @GetMapping("/employees/{id}")
+    @GetMapping("/employee/{id}")
     public String getEmployeeView(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
         return "employee/card";
     }
-    @GetMapping("/employees/form/{id}")
+    @GetMapping("/employee/form/{id}")
     public String getEditEmployeeForm(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
         return "employee/edit";
     }
 
     //Вывод шаблонов для типов средств измерений
-    @GetMapping("/mits/form")
-    public String getMiTypeFormView(){
+    @GetMapping("/mit/form")
+    public String getMiTypeForm(){
         return "miType/form";
     }
-    @GetMapping("/mits")
+    @GetMapping("/mit")
     public String getMiTypeListView(){
         return "miType/list";
     }
-    @GetMapping("/mits/{id}")
+    @GetMapping("/mit/{id}")
     public String getMiTypeView(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
         return "miType/card";
     }
-    @GetMapping("/mits/form/{id}")
+    @GetMapping("/mit/form/{id}")
     public String getEditMiTypeForm(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
         return "miType/edit";
     }
 
     //Вывод шаблонов для средств измерений
-    @GetMapping("/mis/form")
+    @GetMapping("/mi/form")
     public String getMeasurementInstrumentFormView(){
         return "measurementInstrument/form";
     }
-    @GetMapping("/mis")
+    @GetMapping("/mi")
     public String getMeasurementInstrumentListView(){
         return "measurementInstrument/list";
     }
-    @GetMapping("/mis/{id}")
+    @GetMapping("/mi/{id}")
     public String getMeasurementInstrumentView(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
         return "measurementInstrument/card";
     }
-    @GetMapping("/mis/form/{id}")
+    @GetMapping("/mi/form/{id}")
     public String getEditMeasurementInstrumentForm(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
         return "measurementInstrument/edit";
@@ -94,23 +94,29 @@ public class WebController {
     }
 
     //Вывод шаблонов для организаций
-    @GetMapping("/organizations/form")
-    public String getOrganizationFormView(){
+    @GetMapping("/organization/form")
+    public String getOrganizationForm(){
         return "organization/form";
     }
-    @GetMapping("/organizations")
+    @GetMapping("/organization")
     public String getOrganizationListView(){
         return "organization/list";
     }
-    @GetMapping("/organizations/{id}")
+    @GetMapping("/organization/{id}")
     public String getOrganizationView(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
         return "organization/card";
     }
-    @GetMapping("/organizations/form/{id}")
+    @GetMapping("/organization/form/{id}")
     public String getOrganizationEditForm(@RequestParam("id") String id, Model model){
         model.addAttribute("id",id);
         return "organization/edit";
+    }
+
+    //Вывод шаблонов для отчетов в АРШИН и ФСА
+    @GetMapping("/report/form")
+    public String getReportForm(){
+        return "report/form";
     }
 
 

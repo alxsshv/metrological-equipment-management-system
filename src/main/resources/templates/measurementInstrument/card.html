@@ -13,7 +13,7 @@
         <nav class="navbar bg-body-tertiary">
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/mis'">К перечню
+                <button class="btn btn-outline-success me-2" onclick="location.href='/mi'" type="button">К перечню
                     средств измерений</button>
                 <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
             </form>
@@ -31,7 +31,7 @@
                     <dd ng-model="type" class="col-sm-6">{{mi.modification}}</dd>
 
                     <dt class="col-sm-6">Номер типа СИ в ФИФ ОЕИ</dt>
-                    <dd ng-model="type" class="col-sm-6"><a href="/mits/{{mi.miType.id}}?id={{mi.miType.id}}">{{mi.miType.number}}</a></dd>
+                    <dd class="col-sm-6" ng-model="type"><a href="/mit/{{mi.miType.id}}?id={{mi.miType.id}}">{{mi.miType.number}}</a></dd>
 
                     <dt class="col-sm-6 ">Заводской номер</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.serialNum}}</dd>
@@ -127,7 +127,7 @@
         var app = angular.module("MI_CARD", []);
         var idAttr = new URL(document.URL).searchParams.get("id");
         app.controller("MI_CARD_CTRL", function ($scope, $http) {
-            $scope.reference = "/mis/form/" + idAttr + "?id=" + idAttr
+            $scope.reference = "/mi/form/" + idAttr + "?id=" + idAttr
 
 
 
@@ -135,7 +135,7 @@
             $scope.mi.miType = {};
             $scope.getMeasurementInstrument = function () {
                 $http({
-                    url: "/mi/" + idAttr,
+                    url: "/mis/" + idAttr,
                     method: "GET"
                 }).then(function (response) {
                     $scope.mi = response.data;

@@ -122,7 +122,7 @@
                 $scope.searchMi = function () {
                     if ($scope.searchString.length > 3) {
                         $http({
-                            url: "/mi/search?search=" + $scope.searchString,
+                            url: "/mis/search?search=" + $scope.searchString,
                             method: "GET"
                         }).then(function (response) {
                             $scope.mis = response.data;
@@ -138,7 +138,7 @@
                 //Получение полных сведений о выбранном средстве измерений
                 $scope.getMiFullData = function (id) {
                     $http({
-                        url: "/mi/" + id,
+                        url: "/mis/" + id,
                         method: "GET"
                     }).then(function (response) {
                         $scope.miStandard.measurementInstrument = response.data;

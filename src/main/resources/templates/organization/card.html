@@ -13,7 +13,7 @@
         <nav class="navbar bg-body-tertiary">
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/organizations'">К перечню
+                <button class="btn btn-outline-success me-2" onclick="location.href='/organization'" type="button">К перечню
                     организаций</button>
                 <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
             </form>
@@ -48,11 +48,11 @@
         var app = angular.module("ORGANIZATION_CARD", []);
         var idAttr = new URL(document.URL).searchParams.get("id");
         app.controller("ORGANIZATION_CARD_CTRL", function ($scope, $http) {
-            $scope.reference = "/organizations/form/" + idAttr + "?id=" + idAttr
+            $scope.reference = "/organization/form/" + idAttr + "?id=" + idAttr
     
             $scope.getOrganization = function () {
                 $http({
-                    url: "/organization/" + idAttr,
+                    url: "/organizations/" + idAttr,
                     method: "GET"
                 }).then(function (response) {
                     $scope.organization = response.data;
@@ -72,9 +72,7 @@
             $scope.getOrganization();
     
         });
-    
-    
-    </script>
+        </script>
 </body>
 
 </html>

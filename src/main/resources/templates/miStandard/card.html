@@ -49,7 +49,7 @@
 
                     <dt class="col-sm-6">Модификация</dt>
                     <dd ng-model="type" class="col-sm-6"><a
-                            href="/mis/{{miStandard.measurementInstrument.id}}?id={{miStandard.measurementInstrument.id}}">{{miStandard.measurementInstrument.modification}}</a>
+                            href="/mi/{{miStandard.measurementInstrument.id}}?id={{miStandard.measurementInstrument.id}}">{{miStandard.measurementInstrument.modification}}</a>
                     </dd>
 
                     <dt class="col-sm-6">Зав. №</dt>
@@ -142,8 +142,9 @@
             $scope.applicables = [{'title' : 'Пригоден', 'value' : true},
                                   {'title' : 'Непригоден', 'value' : false}];
             
-            $scope.applicable = {'title' : 'Пригоден', 'value' : true};
+
             $scope.setApplicableFromMiStandard = function(){
+                $scope.applicable = {'title' : 'Пригоден', 'value' : true};
                 if($scope.miStandard.measurementInstrument.applicable == false){
                     $scope.applicable = {'title' : 'Непригоден', 'value' : false};
                 }

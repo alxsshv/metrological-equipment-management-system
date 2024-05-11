@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/organization")
+@RequestMapping("/organizations")
 public class OrganizationController {
     @Autowired
     private OrganizationService organizationService;

@@ -14,7 +14,7 @@
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
                 <button class="btn btn-outline-success me-2" type="button"
-                    onclick="location.href='/organizations/form'">Добавить организацию</button>
+                    onclick="location.href='/organization/form'">Добавить организацию</button>
                 <div class="btn-group">
                     <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Сортировать
@@ -105,8 +105,8 @@
     <script type="text/javascript">
         var app = angular.module("ORGANIZATION_LIST", []);
         app.controller("ORGANIZATION_LIST_CTRL", function ($scope, $http) {
-            $scope.contentUrl = "/organization";
-            $scope.viewReference = "/organizations"
+            $scope.contentUrl = "/organizations";
+            $scope.viewReference = "/organization"
 
             $scope.getPagesContentlist = function (contentUrl) {
                 $scope.getPageAttributes();

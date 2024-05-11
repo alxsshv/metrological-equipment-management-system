@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/mit")
+@RequestMapping("/mits")
 public class MiTypeController {
     @Autowired
     private MiTypeService miTypeService;
@@ -37,11 +37,17 @@ public class MiTypeController {
         return miTypeService.findAll(pageable);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<?> searchMiType(
-            @RequestParam(value = "search", required = true) String searchString){
+    @GetMapping("/pages/search")
+    public ResponseEntity<?> searchMiTypeWithPages(
+            @RequestParam(value = "search") String searchString){
         Pageable pageable = PageRequest.of(0,10,Sort.by(Sort.Direction.ASC,"number"));
         return miTypeService.findBySearchString(searchString,pageable);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchMiType(
+            @RequestParam(value = "search") String searchString){
+        return miTypeService.findBySearchString(searchString);
     }
 
     @GetMapping

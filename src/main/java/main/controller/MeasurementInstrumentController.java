@@ -24,7 +24,7 @@ import java.util.Optional;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/mi")
+@RequestMapping("/mis")
 public class MeasurementInstrumentController {
     @Autowired
     private MeasurementInstrumentService measurementInstrumentService;

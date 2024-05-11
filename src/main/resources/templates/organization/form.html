@@ -13,7 +13,7 @@
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
                 <button class="btn btn-outline-success me-2" type="button"
-                    onclick="location.href='/organizations'">Перечень
+                    onclick="location.href='/organization'">Перечень
                     организаций</button>
             </form>
         </nav>
@@ -57,7 +57,7 @@
             // сохранение в БД;
             $scope.addOrganization = function () {
                 $http({
-                    url: "/organization",
+                    url: "/organizations",
                     method: "POST",
                     data: $scope.organization
                 }).then(function successCallback(response) {

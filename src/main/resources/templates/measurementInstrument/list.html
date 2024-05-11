@@ -14,7 +14,7 @@
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
                 <button class="btn btn-outline-success me-2" type="button"
-                    onclick="location.href='/mis/form'">Добавить средство измерений</button>
+                    onclick="location.href='/mi/form'">Добавить средство измерений</button>
                 <div class="btn-group">
                     <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Сортировать
@@ -116,8 +116,8 @@
     <script type="text/javascript">
         var app = angular.module("MI_LIST", []);
         app.controller("MI_LIST_CTRL", function ($scope, $http) {
-            $scope.contentUrl = "/mi";
-            $scope.viewReference = "/mis"
+            $scope.contentUrl = "/mis";
+            $scope.viewReference = "/mi"
     
             $scope.getPagesContentlist = function (contentUrl) {
                 $scope.getPageAttributes();

@@ -14,14 +14,14 @@
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
                 <button class="btn btn-outline-success me-2" type="button"
-                    onclick="location.href='/employees/form'">Добавить поверителя</button>
+                    onclick="location.href='/employee/form'">Добавить поверителя</button>
                 <div class="btn-group">
                     <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Сортировать
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/employees?page=0&dir=ASC&size={{pageSize}}">А-Я</a></li>
-                        <li><a class="dropdown-item" href="/employees?page=0&dir=DESC&size={{pageSize}}">Я-А</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}">А-Я</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}">Я-А</a></li>
                     </ul>
                 </div>
                 <div class="btn-group">
@@ -29,9 +29,9 @@
                         Выводить по
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/employees?page=0&dir={{sortDirection}}&size=10">10</a></li>
-                        <li><a class="dropdown-item" href="/employees?page=0&dir={{sortDirection}}&size=20">20</a></li>
-                        <li><a class="dropdown-item" href="/employees?page=0&dir={{sortDirection}}&size=50">50</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10">10</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}s?page=0&dir={{sortDirection}}&size=20">20</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50">50</a></li>
                     </ul>
                 </div>
                 <form class="d-flex" role="search">
@@ -53,7 +53,7 @@
                     <th></th>
                 </tr>
                 <tr ng-repeat="employee in contentlist">
-                    <td><a href="employees/{{employee.id}}?id={{employee.id}}">{{employee.surname}}</a></td>
+                    <td><a href="{{viewReference}}/{{employee.id}}?id={{employee.id}}">{{employee.surname}}</a></td>
                     <td>{{employee.name}}</td>
                     <td>{{employee.patronymic}}</td>
                     <td>{{employee.snils}}</td>
@@ -66,12 +66,12 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li class="page-item"><a class="page-link"
-                            href="/employees?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}">Предыдущая</a>
+                            href="{{viewReference}}?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}">Предыдущая</a>
                     </li>
                     <li ng-repeat="item in pageArray track by $index" class="page-item"><a class="page-link"
-                            href="/employees?page={{item}}&dir={{sortDirection}}&size={{pageSize}}">{{item+1}}</a></li>
+                            href="{{viewReference}}?page={{item}}&dir={{sortDirection}}&size={{pageSize}}">{{item+1}}</a></li>
                     <li class="page-item"><a class="page-link"
-                            href="/employees?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}">Следующая</a>
+                            href="{{viewReference}}?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}">Следующая</a>
                     </li>
                 </ul>
             </nav>
@@ -100,7 +100,8 @@
     <script type="text/javascript">
         var app = angular.module("EMPLOYEE_LIST", []);
         app.controller("EMPLOYEE_LIST_CTRL", function ($scope, $http) {
-            $scope.contentUrl = "/employee";
+            $scope.contentUrl = "/employees";
+            $scope.viewReference = "/employee"
 
             $scope.getPagesContentlist = function (contentUrl) {
                 $scope.getPageAttributes();

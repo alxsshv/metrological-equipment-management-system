@@ -20,9 +20,9 @@
                         Сортировать
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/standard?page=0&dir=ASC&size={{pageSize}}">По возрастанию</a>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}">По возрастанию</a>
                         </li>
-                        <li><a class="dropdown-item" href="/standard?page=0&dir=DESC&size={{pageSize}}">По убыванию</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}">По убыванию</a></li>
                     </ul>
                 </div>
                 <div class="btn-group">
@@ -30,10 +30,10 @@
                         Выводить по
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/standard?page=0&dir={{sortDirection}}&size=10">10</a></li>
-                        <li><a class="dropdown-item" href="/standard?page=0&dir={{sortDirection}}&size=20">20</a></li>
-                        <li><a class="dropdown-item" href="/standard?page=0&dir={{sortDirection}}&size=50">50</a></li>
-                        <li><a class="dropdown-item" href="/standard?page=0&dir={{sortDirection}}&size=100">100</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10">10</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=20">20</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50">50</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=100">100</a></li>
                     </ul>
                 </div>
                 <form class="d-flex" role="search">
@@ -60,7 +60,7 @@
                     <th></th>
                 </tr>
                 <tr ng-repeat="standard in contentlist">
-                    <td><a href="standard/{{standard.id}}?id={{standard.id}}">{{standard.arshinNumber}}</a></td>
+                    <td><a href="{{viewReference}}/{{standard.id}}?id={{standard.id}}">{{standard.arshinNumber}}</a></td>
                     <td>{{standard.schemaNotation}}</td>
                     <td>{{standard.level}}</td>
                     <td>{{standard.measurementInstrument.modification}}</td>
@@ -78,12 +78,12 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li class="page-item"><a class="page-link"
-                            href="//standard?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}">Предыдущая</a>
+                            href="/{{viewReference}}?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}">Предыдущая</a>
                     </li>
                     <li ng-repeat="item in pageArray track by $index" class="page-item"><a class="page-link"
-                            href="//standard?page={{item}}&dir={{sortDirection}}&size={{pageSize}}">{{item+1}}</a></li>
+                            href="/{{viewReference}}?page={{item}}&dir={{sortDirection}}&size={{pageSize}}">{{item+1}}</a></li>
                     <li class="page-item"><a class="page-link"
-                            href="//standard?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}">Следующая</a></li>
+                            href="/{{viewReference}}?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}">Следующая</a></li>
                 </ul>
             </nav>
         </div>
@@ -111,6 +111,7 @@
         var app = angular.module("MI_STANDARD_LIST", []);
         app.controller("MI_STANDARD_LIST_CTRL", function ($scope, $http) {
             $scope.contentUrl = "/standards/mis";
+            $scope.viewReference = "/standard"
 
             $scope.getPagesContentlist = function (contentUrl) {
                 $scope.getPageAttributes();

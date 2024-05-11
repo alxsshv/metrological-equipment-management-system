@@ -13,7 +13,7 @@
         <nav class="navbar bg-body-tertiary">
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/mits'">Перечень
+                <button class="btn btn-outline-success me-2" onclick="location.href='/mit'" type="button">Перечень
                     типов СИ</button>
             </form>
         </nav>
@@ -177,7 +177,7 @@
             $scope.miType = {};
             $scope.getMiType = function () {
                 $http({
-                    url: "/mit/" + idAttr,
+                    url: "/mits/" + idAttr,
                     method: "GET"
                 }).then(function (response) {
                     $scope.miType = response.data;
@@ -204,12 +204,12 @@
                 $scope.miType.modifications = $scope.modifications;
                 console.log($scope.miType);
                 $http({
-                    url: "/mit/" + idAttr,
+                    url: "/mits/" + idAttr,
                     method: "PUT",
                     data:  $scope.miType
                 }).then(function successCallback(response) {
                     alert(response.data.message);
-                    window.location.href = '/mits/'+ $scope.miType.id +'?id=' + $scope.miType.id;
+                    window.location.href = '/mit/'+ $scope.miType.id +'?id=' + $scope.miType.id;
                 }, function errorCallback(response) {
                     alert(response.data.message)
                 });

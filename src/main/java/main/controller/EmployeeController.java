@@ -16,7 +16,7 @@ import java.util.List;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/employee")
+@RequestMapping("/employees")
 public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;

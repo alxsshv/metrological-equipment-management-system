@@ -13,7 +13,7 @@
         <nav class="navbar bg-body-tertiary">
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/organizations'">Перечень
+                <button class="btn btn-outline-success me-2" onclick="location.href='/organization'" type="button">Перечень
                     организаций</button>
             </form>
         </nav>
@@ -59,7 +59,7 @@
     
             $scope.getOrganization = function () {
                 $http({
-                    url: "/organization/" + idAttr,
+                    url: "/organizations/" + idAttr,
                     method: "GET"
                 }).then(function (response) {
                     $scope.organization = response.data;
@@ -71,7 +71,7 @@
     
             $scope.updateOrganization = function () {
                 $http({
-                    url: "/organization/" + idAttr,
+                    url: "/organizations/" + idAttr,
                     method: "PUT",
                     data: $scope.organization
                 }).then(function successCallback(response) {
@@ -80,7 +80,6 @@
                     alert(response.data.message)
                 });
             }
-    
     
         });
     </script>

@@ -15,7 +15,7 @@
         <nav class="navbar bg-body-tertiary">
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/mits'">К перечню
+                <button class="btn btn-outline-success me-2" onclick="location.href='/mit'" type="button">К перечню
                     типов СИ</button>
                 <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
             </form>
@@ -124,12 +124,12 @@
         var app = angular.module("MI_TYPE_CARD", []);
         var idAttr = new URL(document.URL).searchParams.get("id");
         app.controller("MI_TYPE_CARD_CTRL", function ($scope, $http) {
-            $scope.reference = "/mits/form/" + idAttr + "?id=" + idAttr
+            $scope.reference = "/mit/form/" + idAttr + "?id=" + idAttr
             $scope.documents = [];
     
             $scope.getMiType = function () {
                 $http({
-                    url: "/mit/" + idAttr,
+                    url: "/mits/" + idAttr,
                     method: "GET"
                 }).then(function (response) {
                     $scope.miType = response.data;
@@ -161,9 +161,7 @@
             }
     
     
-    
-    
-    
+
     
             $scope.getMiType();
             $scope.getDocuments();
