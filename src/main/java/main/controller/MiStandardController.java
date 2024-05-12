@@ -39,11 +39,17 @@ public class MiStandardController {
     }
 
     @GetMapping("/pages/search")
-    public ResponseEntity<?> searchMiStandard(
+    public ResponseEntity<?> searchMiStandardWithoutPages(
             @RequestParam(value = "search") String searchString){
         Pageable pageable = PageRequest.of(0,10,
                 Sort.by(Sort.Direction.ASC,"arshinNumber"));
         return miStandardService.findBySearchString(searchString,pageable);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> searchMiStandard(
+            @RequestParam(value = "search") String searchString){
+        return miStandardService.findBySearchString(searchString);
     }
 
     @GetMapping

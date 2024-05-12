@@ -30,11 +30,17 @@ public class EmployeeController {
         return employeeService.findAll(pageable);
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<?>  searchEmployee(
+    @GetMapping("/pages/search")
+    public ResponseEntity<?>  searchEmployeeWithPages(
             @RequestParam(value = "search", required = true) String surname){
         Pageable pageable = PageRequest.of(0,10,Sort.by(Sort.Direction.ASC,"surname"));
         return employeeService.findBySurname(surname,pageable);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?>  searchEmployee(
+            @RequestParam(value = "search") String surname){
+        return employeeService.findBySurname(surname);
     }
 
     @GetMapping

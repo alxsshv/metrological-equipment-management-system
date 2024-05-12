@@ -167,7 +167,7 @@
             $scope.getSearchContentlist = function (contentUrl) {
                 $scope.getPageAttributes();
                 $http({
-                    url: contentUrl + "/search?search=" + $scope.searchString,
+                    url: contentUrl + "/pages/search?search=" + $scope.searchString,
                     method: "GET"
                 }).then(function (response) {
                     $scope.contentlist = response.data.content;

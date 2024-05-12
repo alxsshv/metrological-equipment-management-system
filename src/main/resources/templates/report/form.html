@@ -22,92 +22,127 @@
             <h5>Формирование отчета</h5>
         </div>
 
+        <table class="table table-info table-striped table-hover">
+            <thead>
+                <tr>
+                  <th>Модификация</th>
+                  <th>Зав.(инв.) №</th>
+                  <th>Тип поверки</th>
+                  <th>Дата поверки</th>
+                  <th>Дествительно до</th>
+                  <th>Пригодность</th>
+                  <th>Поверитель</th>
+                  <th>Эталон</th>
+                  <th>t, &degC</th>
+                  <th>h, %</th>
+                  <th>P, kPa</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr ng-repeat="item in tableContent" value="{{item}}">
+                <td>{{item.mi.modification}}</td>
+                <td>{{item.mi.serialNum}}</td>
+                <td>{{item.verificationType}}</td>
+                <td>{{item.mi.verificationDate | date: "dd.MM.yyyy"}}</td>
+                <td>{{item.mi.validDate | date: "dd.MM.yyyy"}}</td>
+                <td>{{item.mi.applicable}}</td>
+                <td>{{item.employee.surname}}</td>
+                <td>{{item.standard.arshinNumber}}</td>
+                <td>{{item.temperature}}</td>
+                <td>{{item.humidity}}</td>
+                <td>{{item.pressure}}</td>
+                </tr>
+              </tbody>
+            
+        </table>
 
         <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
-            <div class="col-md-5">
-                <label class="form-label" for="inputText1">Наименование и модель</label>
-                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputText1" ng-change="searchMit()"
-                    ng-model="mitSearchString" placeholder="Пример: Вольтметры универсальные В7-78"
-                    type="text" value="">
-                <ul class="dropdown-menu">
-                    <li ng-repeat="item in mits" value="{{item}}"> <a class="dropdown-item"
-                            ng-click="selectMit(item)">{{item.title}} {{item.notation}}</a></li>
-                </ul>
-            </div>
-            <div class="col-md-3">
-                <label class="form-label" for="inputText2">Модификация</label>
-                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputText2" ng-change="searchMi()"
+            <div class="col-md-6">
+                <label class="form-label" for="inputModification">Модификация*</label>
+                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputModification" ng-change="searchMi()"
                     ng-model="miSearchString" placeholder="Пример: В7-78/2" type="text" value="">
                 <ul class="dropdown-menu">
                     <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" href="#"
                             ng-click="selectMi(item)">{{item.modification}} зав. № {{item.serialNum}} </a></li>
                 </ul>
             </div>
-            <div class="col-md-2">
-                <label class="form-label" for="inputText2">Зав. №</label>
-                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputText2" ng-change="searchMi()"
+            <div class="col-md-3">
+                <label class="form-label" for="inputSN">Зав. №*</label>
+                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputSN" ng-change="searchMi()"
                     ng-model="miSNSearchString" type="text" value="">
                 <ul class="dropdown-menu" ng-model="mi">
                     <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" href="#"
                             ng-click="selectMi(item)">{{item.modification}} №{{item.serialNum}}</a></li>
                 </ul>
             </div>
-            <div class="col-md-2">
-                <label class="form-label" for="inputText2">Инв. №</label>
-                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputText2" ng-change="searchMi()"
+            <div class="col-md-3">
+                <label class="form-label" for="inputIN">Инв. №</label>
+                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputIN" ng-change="searchMi()"
                     ng-model="inventoryNum" type="text" value="">
                 <ul class="dropdown-menu" ng-model="mi">
                     <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" href="#"
-                            ng-click="selectMi(item)">{{item.modification}} №{{item.serialNum}}</a></li>
+                            ng-click="selectMi(item)">{{item.modification}} №{{item.inventoryNum}}</a></li>
                 </ul>
             </div>
         </div>
         <p></p>
         <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
             <div class="col-md-2">
-                <label class="form-label" for="inputText1">Тип поверки</label>
-                <input class="form-control" id="inputText1" ng-model="" required type="text" value="">
+                <label class="form-label" for="select2">Тип поверки*</label>
+                <select aria-label="Тип схемы" class="form-select" id="select2"
+                    ng-model="verificationType">
+                    <option default value="1">Первичная</option>
+                    <option value="2">Периодическая</option>
+                </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label" for="inputDate1">Дата поверки</label>
+                <label class="form-label" for="inputDate1">Дата поверки*</label>
                 <input class="form-control" id="inputDate1" ng-model="mi.verificationDate" required type="date"
                     value="">
             </div>
             <div class="col-md-2">
-                <label class="form-label" for="inputDate2">Действительно до</label>
+                <label class="form-label" for="inputDate2">Действительно до*</label>
                 <input class="form-control" id="inputDate2" ng-model="mi.validDate" required type="date" value="">
             </div>
             <div class="col-md-2">
-                <label class="form-label" for="inputText1">Пригодность</label>
-                <select class="form-control" ng-model="applicable" ng-options="applicable as applicable.title for applicable in applicables track by applicable.value" required>
+                <label class="form-label" for="inputApplicable">Пригодность*</label>
+                <select class="form-control" id="inputApplicable" ng-model="applicable" ng-options="applicable as applicable.title for applicable in applicables track by applicable.value" required>
                 </select>
             </div>
             <div class="col-md-2">
-                <label class="form-label" for="inputText1">Поверитель</label>
-                <input class="form-control" id="inputText1" ng-model="" placeholder="Иванов" required type="text"
-                    value="">
+                <label class="form-label" for="inputEmployee">Поверитель*</label>
+                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputEmployee" ng-change="searchEmployee()"
+                    ng-model="employeeSearchString" type="text" value="">
+                <ul class="dropdown-menu">
+                    <li ng-repeat="item in employees" value="{{item}}"> <a class="dropdown-item" href="#"
+                            ng-click="selectEmployee(item)">{{item.surname}} {{item.name}} {{item.patronymic}}</a></li>
+                </ul>
             </div>
             <div class="col-md-2">
-                <label class="form-label" for="inputText1">Эталон</label>
-                <input class="form-control" id="inputText1" ng-model="" placeholder="12345.67.1Р.12345678" required
-                    type="text" value="">
+                <label class="form-label" for="inputStandard">Эталон*</label>
+                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputStandard" ng-change="searchMiStandard()" ng-model="miStandardSearchString"
+                    placeholder="12345.67.1Р.12345678" type="text" value="">
+                <ul class="dropdown-menu">
+                    <li ng-repeat="item in standards" value="{{item}}"> <a class="dropdown-item" href="#"
+                            ng-click="selectMiStandard(item)"><b>{{item.arshinNumber}}</b> {{item.measurementInstrument.modification}} {{item.measurementInstrument.serialNum}}</a></li>
+                </ul>
             </div>
         </div>
         <p></p>
         <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
             <div class="col-md-2">
-                <label class="form-label" for="inputText1">Давление,кПа</label>
-                <input class="form-control" id="inputText1" ng-model="" placeholder="99,3" required step="0.01"
+                <label class="form-label" for="inputPress">Давление,кПа*</label>
+                <input class="form-control" id="inputPress" ng-model="pressure" placeholder="99,3" required step="0.01"
                     type="number" value="">
             </div>
             <div class="col-md-2">
-                <label class="form-label" for="inputText1">Температура, &degC</label>
-                <input class="form-control" id="inputText1" ng-model="" placeholder="21,5" required step="0.01"
+                <label class="form-label" for="inputTemp">Температура, &degC*</label>
+                <input class="form-control" id="inputTemp" ng-model="temperature" placeholder="21,5" required step="0.01"
                     type="number" value="">
             </div>
             <div class="col-md-2">
-                <label class="form-label" for="inputText1">Влажность, %</label>
-                <input class="form-control" id="inputText1" ng-model="" placeholder="52,2" required step="0.01"
+                <label class="form-label" for="inputHum">Влажность, %*</label>
+                <input class="form-control" id="inputHum" ng-model="humidity" placeholder="52,2" required step="0.01"
                     type="number" value="">
             </div>
             <p></p>
@@ -115,7 +150,7 @@
                 <div class="col-10">
                 </div>
                 <div class="col-2">
-                    <button class="btn btn-primary" ng-click="" type="button">Добавить</button>
+                    <button class="btn btn-primary" ng-click="putInTable()" type="button">Добавить</button>
                 </div>
             </div>
         </div>
@@ -137,25 +172,6 @@
         app.controller("MI_STANDARD_FORM_CTRL", function ($scope, $http) {
             $scope.miStandard = {};
 
-
-            //Поиск типа СИ по подстроке
-            $scope.mits = [];
-            $scope.searchMit = function () {
-                if ($scope.mitSearchString.length > 3) {
-                    $http({
-                        url: "/mits/search?search=" + $scope.mitSearchString,
-                        method: "GET"
-                    }).then(function (response) {
-                        $scope.mits = response.data;
-                        console.log($scope.mits);
-                    });
-                }
-            }
-
-            $scope.selectMit = function (item) {
-                $scope.mitSearchString = item.title + " " + item.notation;
-                //     $scope.getMiFullData(item.id);
-            }
 
             //Поиск СИ по модификации
             $scope.mis = [];
@@ -187,6 +203,7 @@
                     $scope.mi = response.data;
                     formatDateFieldsFromMi();
                     setApplicableFromMi();
+                    reportRow.mi = $scope.mi;
                     console.log($scope.mi);
                 });
             }
@@ -210,6 +227,60 @@
                     $scope.applicable = { 'title': 'Непригоден', 'value': false };
                 }
             }
+
+            $scope.employees = [];
+            $scope.searchEmployee = function () {
+                if ($scope.employeeSearchString.length > 3) {
+                    $http({
+                        url: "/employees/search?search=" + $scope.employeeSearchString,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.employees = response.data;
+                        console.log($scope.employees);
+                    });
+                }
+            }
+
+            $scope.selectEmployee = function (item) {
+                $scope.employeeSearchString = item.surname;
+                reportRow.employee = item
+            }
+
+
+            $scope.standards = [];
+            $scope.searchMiStandard = function () {
+                if ($scope.miStandardSearchString.length > 3) {
+                    $http({
+                        url: "/standards/mis/search?search=" + $scope.miStandardSearchString,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.standards = response.data;
+                        console.log($scope.standards);
+                    });
+                }
+            }
+
+            $scope.selectMiStandard = function (item) {
+                $scope.miStandardSearchString = item.arshinNumber;
+                reportRow.standard = item;
+            }
+
+            //добавление в таблицу
+            let reportRow = {};
+            buildReportRow = function(){
+                reportRow.temperature = $scope.temperature;
+                reportRow.humidity = $scope.humidity;
+                reportRow.pressure = $scope.pressure;
+                reportRow.verificationType = $scope.verificationType;
+               console.log(reportRow);    
+           }
+           
+           $scope.tableContent = [];
+           $scope.putInTable = function(){
+                buildReportRow ();
+                $scope.tableContent.push(reportRow);
+           }
+
 
 
             // сохранение в БД;

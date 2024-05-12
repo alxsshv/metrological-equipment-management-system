@@ -152,6 +152,20 @@ public class MiStandardService implements IMiStandardService {
         return ResponseEntity.ok(page);
     }
 
+
+    public ResponseEntity<?> findBySearchString(String searchString) {
+        if (searchString == null || searchString.isEmpty()){
+            String errorMessage = "Поле для поиска не может быть пустым";
+            log.info(errorMessage);
+            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        }
+        List<MiStandardDto> dtos =  miStandardRepository
+                .findByArshinNumberContainingOrSchemaTitleContaining(searchString.trim(),searchString.trim())
+                .stream().map(MiStandardDtoMapper::mapToDto).toList();
+        return ResponseEntity.ok(dtos);
+    }
+
+
     @Override
     public Page<MiStandardDto> findAll(Pageable pageable) {
         return miStandardRepository.findAll(pageable).map(MiStandardDtoMapper ::mapToDto);

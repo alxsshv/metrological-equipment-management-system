@@ -123,8 +123,19 @@ public class EmployeeService implements IEmployeeService {
             log.info(errorMessage);
             return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
         }
-        Page<EmployeeDto> page =  employeeRepository.findBySurname(surname.trim(),pageable)
+        Page<EmployeeDto> page =  employeeRepository.findBySurnameContaining(surname.trim(),pageable)
                 .map(EmployeeDtoMapper::mapToDto);
+        return ResponseEntity.ok(page);
+    }
+
+    public ResponseEntity<?> findBySurname(String surname) {
+        if (surname == null || surname.isEmpty()){
+            String errorMessage = "Поле для поиска не может быть пустым";
+            log.info(errorMessage);
+            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        }
+        List<EmployeeDto> page =  employeeRepository.findBySurnameContaining(surname.trim()).stream()
+                .map(EmployeeDtoMapper::mapToDto).toList();
         return ResponseEntity.ok(page);
     }
 

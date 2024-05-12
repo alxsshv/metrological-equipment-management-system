@@ -29,22 +29,22 @@
                         class="form-control" id="inputText1" value="" required>
                 </div>
                 <div class="col-md-5 ">
-                    <label for="inputText2" class="form-label">Наименование типа</label>
+                    <label class="form-label" for="inputText2">Наименование типа*</label>
                     <input type="text" ng-change="searchType()" ng-model="mi.miType.title" data-bs-toggle="dropdown"
                         class="form-control dropdown-toggle" id="inputText2" value="">
 
                     <ul class="dropdown-menu" ng-model="typeTitle">
                         <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
-                                ng-click="selectType(item)" href="#">{{item.number}} {{item.title}}
+                                ng-click="selectType(item)">{{item.number}} {{item.title}}
                                 {{item.notation}}</a></li>
                     </ul>
                 </div>
                 <div class="col-md-2">
-                    <label for="inputText3" class="form-label">Обозначение типа СИ</label>
+                    <label class="form-label" for="inputText3">Обозначение типа СИ*</label>
                     <input type="text" ng-model="mi.miType.notation" class="form-control" id="inputText3" value="">
                 </div>
                 <div class="col-md-3">
-                    <label for="select1" class="form-label">Модификация</label>
+                    <label class="form-label" for="select1">Модификация*</label>
                     <select ng-model="mi.modification" class="form-select mb-3" aria-label="Заводской номер" id="select1">
                         <option ng-repeat="modification in modifications" value="{{modification}}">
                             {{modification}}
@@ -58,7 +58,7 @@
         <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
             <div class="row g-2">
                 <div class="col-md-3">
-                    <label for="inputText4" class="form-label">Заводской №</label>
+                    <label class="form-label" for="inputText4">Заводской №*</label>
                     <input type="text" ng-model="mi.serialNum" class="form-control" id="inputText4" value="" required>
                 </div>
                 <div class="col-md-3">
@@ -67,7 +67,7 @@
                         required>
                 </div>
                 <div class="col-md-6 ">
-                    <label for="inputText6" class="form-label">Владелец</label>
+                    <label class="form-label" for="inputText6">Владелец*</label>
                     <input type="text" ng-change="searchOrganization()" ng-model="organization" data-bs-toggle="dropdown"
                         class="form-control dropdown-toggle" id="inputText6" value="">
 
@@ -100,17 +100,17 @@
         <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
             <div class="row g-2">
                 <div class="col-md-4">
-                    <label for="inputDate3" class="form-label">Дата поверки</label>
+                    <label class="form-label" for="inputDate3">Дата поверки*</label>
                     <input type="date" ng-model="mi.verificationDate" ng-model-options="{timezone: 'UTC'}"
                         class="form-control" id="inputDate3" value="" required>
                 </div>
                 <div class="col-md-4">
-                    <label for="inputDate4" class="form-label">Действительно до</label>
+                    <label class="form-label" for="inputDate4">Действительно до*</label>
                     <input type="date" ng-model="mi.validDate" ng-model-options="{timezone: 'UTC'}" class="form-control"
                         id="inputDate4" value="" required>
                 </div>
                 <div class="col-md-4">
-                    <label for="select2" class="form-label">Пригодность</label>
+                    <label class="form-label" for="select2">Пригодность*</label>
                     <select ng-model="mi.applicable" class="form-select" aria-label="Заводской номер"  id="select2">
                         <option value="true">Пригоден</option>
                         <option value="false">Непригоден</option>
@@ -164,7 +164,7 @@
                         url: "/mits/search?search=" + $scope.mi.miType.number,
                         method: "GET"
                     }).then(function (response) {
-                        $scope.mi.miType = response.data.content[0];
+                        $scope.mi.miType = response.data;
                         console.log($scope.miType)
                     });
                 }
@@ -178,9 +178,23 @@
                         url: "/mits/search?search=" + $scope.mi.miType.title,
                         method: "GET"
                     }).then(function (response) {
-                        $scope.types = response.data.content;
+                        $scope.types = response.data;
                     });
                 }
+            }
+
+            $scope.selectType = function (item) {
+                getMiTypeFullData(item.id)
+            }
+
+            getMiTypeFullData = function (id) {
+                    $http({
+                        url: "/mits/" + id,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.mi.miType = response.data;
+                        $scope.getModifications();
+                    });
             }
 
             //Получение модификаций для выбранного типа СИ
@@ -197,9 +211,6 @@
             }
 
 
-            $scope.selectType = function (item) {
-                $scope.getMiTypeFullData(item.id)
-            }
 
             $scope.organizations = [];
             $scope.searchOrganization = function () {
@@ -213,15 +224,7 @@
                 }
             }
 
-            $scope.getMiTypeFullData = function (id) {
-                    $http({
-                        url: "/mits/" + id,
-                        method: "GET"
-                    }).then(function (response) {
-                        $scope.mi.miType = response.data;
-                        $scope.getModifications();
-                    });
-            }
+
 
             $scope.selectOrganization = function (item) {
                 $scope.organization = item.notation;
