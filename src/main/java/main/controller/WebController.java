@@ -114,9 +114,13 @@ public class WebController {
     }
 
     //Вывод шаблонов для отчетов в АРШИН и ФСА
-    @GetMapping("/report/form")
+    @GetMapping("/report/verifications/form")
     public String getReportForm(){
         return "report/form";
+    }
+    @GetMapping("/report/verification")
+    public String getVerificaionsReportListView(){
+        return "report/list";
     }
 
 

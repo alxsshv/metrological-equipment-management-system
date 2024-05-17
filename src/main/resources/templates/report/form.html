@@ -4,16 +4,16 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1" name="viewport">
-    <title>Добавление СИ, применяемого в качестве эталона</title>
+    <title>Добавление отчета о поверке</title>
     <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
-<body ng-app="MI_STANDARD_FORM" ng-controller="MI_STANDARD_FORM_CTRL">
+<body ng-app="VRF_REPORT_FORM" ng-controller="VRF_REPORT_FORM_CTRL">
     <div class="container text-left">
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" onclick="location.href='/'" type="button">Домой</button>
-                <button class="btn btn-outline-success me-2" onclick="location.href='/standard'" type="button">Перечень
+                <button class="btn btn-outline-success me-2" onclick="location.href='/report/verification'" type="button">Перечень
                     отчетов о поверке</button>
             </div>
         </nav>
@@ -235,8 +235,8 @@
     <script src="/js/jquery-3.7.1.min.js"></script>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
-        var app = angular.module("MI_STANDARD_FORM", []);
-        app.controller("MI_STANDARD_FORM_CTRL", function ($scope, $http) {
+        var app = angular.module("VRF_REPORT_FORM", []);
+        app.controller("VRF_REPORT_FORM_CTRL", function ($scope, $http) {
             $scope.miStandard = {};
 
 

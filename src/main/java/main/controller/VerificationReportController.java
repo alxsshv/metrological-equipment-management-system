@@ -1,12 +1,15 @@
 package main.controller;
 
+import main.config.AppConstants;
 import main.dto.VerificationReportDto;
+import main.dto.VerificationReportFullDto;
 import main.service.implementations.VerificationReportService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.data.domain.Page;
 
 @RestController
 @RequestMapping("reports/verifications")
@@ -19,7 +22,17 @@ public class VerificationReportController {
     }
 
     @PostMapping
-    public ResponseEntity<?> saveReport(@RequestBody VerificationReportDto reportDto){
+    public ResponseEntity<?> saveReport(@RequestBody VerificationReportFullDto reportDto){
         return verificationReportService.save(reportDto);
+    }
+
+    @GetMapping("/pages")
+    public Page<VerificationReportDto> getAllWithPagination(
+            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNum,
+            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir){
+        Pageable pageable = PageRequest.of(pageNum, pageSize,
+                Sort.by(Sort.Direction.valueOf(pageDir.toUpperCase()), "creationDate"));
+        return verificationReportService.getAllWithPagination(pageable);
     }
 }

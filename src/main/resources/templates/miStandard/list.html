@@ -70,7 +70,7 @@
                     <td>{{standard.measurementInstrument.verificationDate | date:"dd.MM.yyyy"}}</td>
                     <td>{{standard.measurementInstrument.validDate | date:"dd.MM.yyyy"}}</td>
                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
-                            ng-click="getDeleteableId(miType.id)" type="button">Удалить</button></td>
+                            ng-click="getDeleteableId(standard.id)" type="button">Удалить</button></td>
                 </tr>
             </table>
         </div>
@@ -89,18 +89,17 @@
         </div>
     </div>
     <!-- Модальное окно -->
-    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаленя" aria-hidden="true">
+    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаления" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить запись о типе средства
-                        измерений?</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить запись об эталоне?</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" ng-click="deleteMiType(deleteableId)">Удалить</button>
+                    <button type="button" class="btn btn-primary" ng-click="deleteMiStandard(deleteableId)">Удалить</button>
                 </div>
             </div>
         </div>
@@ -192,7 +191,7 @@
                 $scope.deleteableId = id;
             }
 
-            $scope.deleteMiType = function (delId) {
+            $scope.deleteMiStandard = function (delId) {
                 var myModalEl = document.getElementById('modal')
                 var modal = bootstrap.Modal.getInstance(myModalEl);
                 modal.hide();

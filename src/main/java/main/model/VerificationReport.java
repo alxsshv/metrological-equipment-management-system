@@ -27,6 +27,8 @@ public class VerificationReport {
     @UpdateTimestamp
     @Column(name = "update_time")
     private LocalDateTime updateDate;
+    @Column(name = "comment")
+    private String comment;
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VerificationRecord> records = new ArrayList<>();
 
