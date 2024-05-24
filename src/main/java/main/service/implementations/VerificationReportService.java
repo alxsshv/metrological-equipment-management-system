@@ -60,4 +60,17 @@ public class VerificationReportService {
         return ResponseEntity.ok(reportFullDto);
     }
 
+    public ResponseEntity<?> deleteById(long id){
+        Optional<VerificationReport> reportOpt = reportRepository.findById(id);
+        if (reportOpt.isEmpty()){
+            String errorMessage = "Отчет № " + id + " не найден";
+            log.info(errorMessage);
+            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+        }
+        reportRepository.deleteById(id);
+        String okMessage = "Отчет № " + id + " успешно удален";
+        log.info(okMessage);
+        return ResponseEntity.ok().body(okMessage);
+    }
+
 }

@@ -40,4 +40,9 @@ public class VerificationReportController {
     public ResponseEntity<?> getVerificationReport(@PathVariable("id") String id){
         return verificationReportService.getById(Long.parseLong(id));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteVerificationReport(@PathVariable("id") String id){
+        return verificationReportService.deleteById(Long.parseLong(id));
+    }
 }
