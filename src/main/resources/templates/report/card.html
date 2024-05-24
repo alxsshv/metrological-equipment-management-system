@@ -45,6 +45,7 @@
                                 <th>t, &degC</th>
                                 <th>H, %</th>
                                 <th>P, кПа</th>
+                                <th></th>
                             </tr>
                             <tr ng-repeat="record in report.records">
                                 <td>{{record.arshinVerificationNumber}}</td>
@@ -61,6 +62,7 @@
                                 <td>{{record.temperature}}</td>
                                 <td>{{record.humidity}}</td>
                                 <td>{{record.pressure}}</td>
+                                <td><a href="record/form/{{record.id}}?id={{record.id}}">Редактировать</a></td>
                             </tr>
                         </table>
                     <dt><i>Последнее изменение отчета</i></dt>
