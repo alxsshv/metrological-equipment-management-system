@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class VerificationReportService {
     private static final Logger log = LoggerFactory.getLogger(VerificationReportService.class);
@@ -37,7 +39,7 @@ public class VerificationReportService {
     }
 
     private String checkVerificationReportDtoComposition(VerificationReportFullDto reportDto){
-        if (reportDto.getRecordDtos().isEmpty()){
+        if (reportDto.getRecords().isEmpty()){
             return "Отчет должен содержать хотябы одну запись о поверке средства измерений";
         }
         return "";
@@ -45,6 +47,17 @@ public class VerificationReportService {
 
     public Page<VerificationReportDto> getAllWithPagination(Pageable pageable){
         return reportRepository.findAll(pageable).map(VerificationReportDtoMapper::mapToDto);
+    }
+
+    public ResponseEntity<?> getById(long id){
+        Optional<VerificationReport> reportOpt = reportRepository.findById(id);
+        if (reportOpt.isEmpty()){
+            String errorMessage = "Отчет № " + id + "не найден";
+            log.info(errorMessage);
+            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+        }
+        VerificationReportFullDto reportFullDto = VerificationReportDtoMapper.mapToFullDto(reportOpt.get());
+        return ResponseEntity.ok(reportFullDto);
     }
 
 }

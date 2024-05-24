@@ -60,11 +60,13 @@
         </table>
 
         <div class="row">
-            <div class="col-5"></div>
+            <div class="col-1"></div>
+            <div class="col-8"><input class="form-control" id="comment" ng-model="comment" placeholder="Добавьте комментарий к отчету"
+                type="text" value=""></div>
             <div class="col-2">
                 <button class="btn btn-primary" ng-click="addReport()" type="button">Сохранить отчет</button>
             </div>
-            <div class="col-5"></div>
+            <div class="col-1"></div>
         </div>
 
         <p></p>
@@ -97,7 +99,7 @@
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label" for="inputIN">Инв. №</label>
-                                <input class="form-control dropdown-toggle" id="inputIN" ng-model="inventoryNum"
+                                <input class="form-control dropdown-toggle" id="inputIN" ng-model="mi.inventoryNum"
                                     type="text" value="">
 
                             </div>
@@ -377,7 +379,7 @@
                     reportRow.validDate = $scope.mi.validDate;
                 }
                 if ($scope.verificationStandards.length > 0) {
-                    reportRow.standards = $scope.verificationStandards;
+                    reportRow.miStandards = $scope.verificationStandards;
                     buildReportRowForTable();
                 }
             }
@@ -414,15 +416,17 @@
             }
 
             buildStandardsStringForReportRow = function () {
-                let standardsString = reportRow.standards.map(item => item.arshinNumber).join("; ");
+                let standardsString = reportRow.miStandards.map(item => item.arshinNumber).join("; ");
                 tableReportRow.standardsString = standardsString;
             }
 
             $scope.tableContent = [];
             let records = [];
             $scope.putInTable = function () {
-                buildReportRow();
-                if (reportRow.mi == null || reportRow.employee == null || reportRow.verificationType == 0 || reportRow.verificationDate == null || reportRow.applicable == null || reportRow.standards == undefined || reportRow.temperature == null ||
+                if (reportRow.employee != null){
+                    buildReportRow();
+                }
+                if (reportRow.mi == null || reportRow.employee == null || reportRow.verificationType == 0 || reportRow.verificationDate == null || reportRow.applicable == null || reportRow.miStandards == undefined || reportRow.temperature == null ||
                      reportRow.humidity == null || reportRow.pressure == null) {
                     alert('Пожалуйста заполните поля, отмеченные *');
                 } else {
@@ -461,16 +465,16 @@
             // сохранение в БД;
             $scope.report = {};
             $scope.addReport = function () {
-                $scope.report.recordDtos = records;
-                console.log($scope.report);
-                if ($scope.report.recordDtos.length > 0) {
+                $scope.report.records = records;
+                $scope.report.comment = $scope.comment;
+                if ($scope.report.records.length > 0) {
                     $http({
                         url: "/reports/verifications",
                         method: "POST",
                         data: $scope.report
                     }).then(function successCallback(response) {
                         alert(response.data.message);
-                     //   window.location.reload();
+                        window.location.reload();
                     }, function errorCallback(response) {
                         alert(response.data.message)
                     });

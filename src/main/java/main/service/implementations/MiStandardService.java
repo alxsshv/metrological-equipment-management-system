@@ -118,14 +118,13 @@ public class MiStandardService implements IMiStandardService {
     @Override
     public ResponseEntity<?> findById(long id) {
         Optional<MiStandard> miStandardOpt = miStandardRepository.findById(id);
-        if (miStandardOpt.isPresent()) {
-            MiStandardDto miStandardDto = MiStandardDtoMapper.mapToDto(miStandardOpt.get());
-            return ResponseEntity.ok(miStandardDto);
-        } else {
+        if (miStandardOpt.isEmpty()) {
             String okMessage ="Запись об эталоне № " + id + " не найдена";
             log.info(okMessage);
             return ResponseEntity.notFound().build();
         }
+        MiStandardDto miStandardDto = MiStandardDtoMapper.mapToDto(miStandardOpt.get());
+        return ResponseEntity.ok(miStandardDto);
     }
 
     @Override

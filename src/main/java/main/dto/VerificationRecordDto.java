@@ -8,6 +8,7 @@ import main.model.MeasurementInstrument;
 import main.model.MiStandard;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -25,7 +26,13 @@ public class VerificationRecordDto {
     private String arshinVerificationNumber;
     private MeasurementInstrument mi;
     private Employee employee;
-    private List<MiStandard> miStandards;
+    private List<MiStandard> miStandards = new ArrayList<>();
 
-
+    @Override
+    public String toString() {
+        return "VerificationRecordDto{" +
+                "id=" + id +
+                ", miStandards=" + miStandards +
+                '}';
+    }
 }

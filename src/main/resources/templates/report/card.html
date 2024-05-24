@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="ru">
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Информация об отчет о поверке</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="REPORT_CARD" ng-controller="REPORT_CARD_CTRL">
+    <div class="container-fluid text-center">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <button class="btn btn-outline-success me-2" onclick="location.href='/report/verification'"
+                    type="button">К перечню
+                    отчетов о поверке</button>
+                <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
+            </form>
+        </nav>
+        <div class="row">
+            <div class="col-sm-8">
+                <dl class="row text-start">
+                    <dt><h4>Отчет № {{report.id}} от {{report.creationDate | date:"dd.MM.yyyy"}}</h4></dt>
+
+                    <dt>Описание</dt>
+                    <dd>{{report.comment}}</dd>
+
+                    <dt class="col-sm-6 text-start">Записи о поверке средств измерений</dt>
+                        <table class="table table-striped">
+                            <tr>
+                                <th>№ записи о поверке в ФИФ ОЕИ</th>
+                                <th>Модель СИ</th>
+                                <th>Модификация</th>
+                                <th>Зав. №</th>
+                                <th>Инв. №</th>
+                                <th>Тип поверки</th>
+                                <th>Дата поверки</th>
+                                <th>Действительно до</th>
+                                <th>Пригодность</th>
+                                <th>Поверитель</th>
+                                <th>Эталоны</th>
+                                <th>t, &degC</th>
+                                <th>H, %</th>
+                                <th>P, кПа</th>
+                            </tr>
+                            <tr ng-repeat="record in report.records">
+                                <td>{{record.arshinVerificationNumber}}</td>
+                                <td>{{record.mi.miType.notation}}</td>
+                                <td>{{record.mi.modification}}</td>
+                                <td>{{record.mi.serialNum}}</td>
+                                <td>{{record.mi.inventoryNum}}</td>
+                                <td>{{record.verificationType}}</td>
+                                <td>{{record.verificationDate | date:"dd.MM.yyyy"}}</td>
+                                <td>{{record.validDate | date:"dd.MM.yyyy"}}</td>
+                                <td>{{record.applicable}}</td>
+                                <td>{{record.employee.surname}}</td>
+                                <td>{{record.standards}}</td>
+                                <td>{{record.temperature}}</td>
+                                <td>{{record.humidity}}</td>
+                                <td>{{record.pressure}}</td>
+                            </tr>
+                        </table>
+                    <dt><i>Последнее изменение отчета</i></dt>
+                    <dd>{{report.updateDate | date:"dd.MM.yyyy HH:mm"}}</dd>
+                </dl>
+            </div>
+
+        </div>
+    </div>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("REPORT_CARD", []);
+        var idAttr = new URL(document.URL).searchParams.get("id");
+        app.controller("REPORT_CARD_CTRL", function ($scope, $http) {
+            $scope.reference = "/report/verification/form/" + idAttr + "?id=" + idAttr
+
+            $scope.getReport = function () {
+                $http({
+                    url: "/reports/verifications/" + idAttr,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.report = response.data;
+                    formatReportFields();
+                });
+            }
+
+            let formatReportFields = function () {
+                formatReportDate();
+                $scope.report.records.forEach(element => {
+                    formatRecordDate(element);
+                    formatVerificationType(element);
+                    formatApplicable(element);
+                    convertStandardsToString(element);
+                });
+            }
+
+            function formatReportDate(){ 
+                if ($scope.report.creationDate != null) {
+                    $scope.report.creationDate = new Date($scope.report.creationDate);
+                }
+                if ($scope.report.updateDate != null) {
+                    $scope.report.updateDate = new Date($scope.report.updateDate);
+                }
+            }
+
+            let formatRecordDate = function(record){ 
+                if (record.verificationDate != null) {
+                    record.verificationDate = new Date(record.verificationDate);
+                }
+                if (record.validDate != null) {
+                    record.validDate = new Date(record.validDate);
+                }
+            }
+
+            
+            let formatVerificationType= function(record) {
+                if (record.verificationType == "1") {
+                    record.verificationType = "Первичная"
+                } else {
+                    record.verificationType = "Периодическая"
+                }
+            }
+
+            let formatApplicable = function(record) {
+                if (record.applicable == true) {
+                    record.applicable = "Пригодно"
+                } else {
+                    record.applicable = "Не пригодно"
+                }
+            }
+
+            let convertStandardsToString = function(record){
+                record.standards = record.miStandards.map(item => item.arshinNumber).join("; ");
+            }
+
+
+            $scope.getReport();
+        });
+
+
+
+
+    </script>
+</body>
+
+
+</html>

@@ -37,13 +37,13 @@ public class MiStandard {
     private String stateStandardNumber; // номер государственного поверочного
     @Column(name = "level")
     private String level; // код рязряда по поверочой схеме
-
     @CreationTimestamp
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
     @UpdateTimestamp
     @Column(name = "updating_date_time")
     private LocalDateTime updatingDateTime;
+
 
     public void updateFrom(MiStandard updateData){
         this.arshinNumber = updateData.getArshinNumber();
@@ -55,4 +55,18 @@ public class MiStandard {
         this.updatingDateTime = LocalDateTime.now();
     }
 
+    @Override
+    public String toString() {
+        return "MiStandard{" +
+                "id=" + id +
+                ", arshinNumber='" + arshinNumber + '\'' +
+                ", schemaType='" + schemaType + '\'' +
+                ", schemaTitle='" + schemaTitle + '\'' +
+                ", schemaNotation='" + schemaNotation + '\'' +
+                ", stateStandardNumber='" + stateStandardNumber + '\'' +
+                ", level='" + level + '\'' +
+                ", creationDateTime=" + creationDateTime +
+                ", updatingDateTime=" + updatingDateTime +
+                '}';
+    }
 }

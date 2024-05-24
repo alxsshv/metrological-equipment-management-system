@@ -1,7 +1,9 @@
 package main.dto.mappers;
 
+
 import main.dto.VerificationRecordDto;
 import main.model.VerificationRecord;
+
 
 public class VerificationRecordDtoMapper {
     public static VerificationRecord mapToEntity(VerificationRecordDto dto){
@@ -18,9 +20,11 @@ public class VerificationRecordDtoMapper {
         record.setArshinVerificationNumber(dto.getArshinVerificationNumber());
         record.setMi(dto.getMi());
         record.setEmployee(dto.getEmployee());
-        record.setMiStandards(dto.getMiStandards());
+        dto.getMiStandards().forEach(standard -> record.getMiStandards().add(standard));
         return record;
     }
+
+
 
     public static VerificationRecordDto mapToDto(VerificationRecord record){
         VerificationRecordDto dto = new VerificationRecordDto();
@@ -35,7 +39,7 @@ public class VerificationRecordDtoMapper {
         dto.setArshinVerificationNumber(record.getArshinVerificationNumber());
         dto.setMi(record.getMi());
         dto.setEmployee(record.getEmployee());
-        dto.setMiStandards(record.getMiStandards());
+        dto.setMiStandards(record.getMiStandards().stream().toList());
         return dto;
     }
 }

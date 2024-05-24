@@ -35,4 +35,9 @@ public class VerificationReportController {
                 Sort.by(Sort.Direction.valueOf(pageDir.toUpperCase()), "creationDate"));
         return verificationReportService.getAllWithPagination(pageable);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getVerificationReport(@PathVariable("id") String id){
+        return verificationReportService.getById(Long.parseLong(id));
+    }
 }

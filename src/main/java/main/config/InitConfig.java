@@ -2,16 +2,11 @@ package main.config;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import main.dto.EmployeeDto;
-import main.dto.MiFullDto;
-import main.dto.MiTypeFullDto;
-import main.dto.OrganizationDto;
+import main.dto.*;
+import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiTypeRepository;
 import main.repository.OrganizationRepository;
-import main.service.implementations.EmployeeService;
-import main.service.implementations.MeasurementInstrumentService;
-import main.service.implementations.MiTypeService;
-import main.service.implementations.OrganizationService;
+import main.service.implementations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -30,9 +25,13 @@ public class InitConfig {
     @Autowired
     private MeasurementInstrumentService miService;
     @Autowired
+    private MiStandardService standardService;
+    @Autowired
     private MiTypeRepository miTypeRepository;
     @Autowired
     private OrganizationRepository organizationRepository;
+    @Autowired
+    private MeasurementInstrumentRepository miRepository;
 
     public void initiate() throws IOException {
 
@@ -160,10 +159,50 @@ public class InitConfig {
         mi3.setVerificationDate(LocalDate.now());
         mi3.setInventoryNum("ИНВ3");
 
+        MiFullDto mi4 = new MiFullDto();
+        mi4.setMiType(miTypeRepository.findById(1L).get());
+        mi4.setSerialNum("SN004");
+        mi4.setModification("СДАИ.406233.106-04");
+        mi4.setOwner(organizationRepository.findById(1L).get());
+        mi4.setApplicable(true);
+        mi4.setUser("И.И. Иванов");
+        mi4.setVerificationDate(LocalDate.now());
+        mi4.setValidDate(LocalDate.now().plusYears(1));
+        mi4.setInventoryNum("ИНВ004");
+
+        MiFullDto mi5 = new MiFullDto();
+        mi5.setMiType(miTypeRepository.findById(1L).get());
+        mi5.setSerialNum("SN005");
+        mi5.setModification("СДАИ.406233.106-05");
+        mi5.setOwner(organizationRepository.findById(1L).get());
+        mi5.setApplicable(true);
+        mi5.setUser("И.И. Ииванов");
+        mi5.setVerificationDate(LocalDate.now());
+        mi5.setValidDate(LocalDate.now().plusYears(1));
+        mi5.setInventoryNum("ИНВ005");
 
         miService.save(mi1, files, descriptions);
         miService.save(mi2, files, descriptions);
         miService.save(mi3, files, descriptions);
+        miService.save(mi4, files, descriptions);
+        miService.save(mi5, files, descriptions);
+
+        MiStandardDto standard1 = new MiStandardDto();
+        standard1.setArshinNumber("1111.1Р.1111");
+        standard1.setMeasurementInstrument(miRepository.findById(1L).get());
+        standard1.setSchemaTitle("Государственная поверочная схема акустического давления");
+        standard1.setSchemaNotation("Государственная поверочная схема акустического давления");
+        standard1.setLevel("1P");
+
+        MiStandardDto standard2 = new MiStandardDto();
+        standard2.setArshinNumber("2222.2Р.2222");
+        standard2.setMeasurementInstrument(miRepository.findById(4L).get());
+        standard2.setSchemaTitle("Государственная поверочная схема избыточного давления");
+        standard2.setSchemaNotation("Государственная поверочная схема избыточного давления");
+        standard2.setLevel("2P");
+
+        standardService.save(standard1, files, descriptions);
+        standardService.save(standard2, files, descriptions);
 
 
     }
