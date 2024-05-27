@@ -64,19 +64,19 @@
                             <div class="col-md-2">
                                 <label class="form-label" for="select2">Тип поверки*</label>
                                 <select aria-label="Тип схемы" class="form-select" id="select2"
-                                    ng-model="verificationType">
-                                    <option default value="1">Первичная</option>
-                                    <option value="2">Периодическая</option>
-                                </select>
+                                    ng-model="verificationType"
+                                    ng-options="verificationType as verificationType.title for verificationType in verificationTypes track by verificationType.value"
+                                    required>
+                                                 </select>
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label" for="inputDate1">Дата поверки*</label>
-                                <input class="form-control" id="inputDate1" ng-model="mi.verificationDate" required
+                                <input class="form-control" id="inputDate1" ng-model="record.verificationDate" required
                                     type="date" value="">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label" for="inputDate2">Действительно до*</label>
-                                <input class="form-control" id="inputDate2" ng-model="mi.validDate" required type="date"
+                                <input class="form-control" id="inputDate2" ng-model="record.validDate" required type="date"
                                     value="">
                             </div>
                             <div class="col-md-2">
@@ -103,17 +103,17 @@
                         <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
                             <div class="col-md-3">
                                 <label class="form-label" for="inputPress">Давление,кПа*</label>
-                                <input class="form-control" id="inputPress" ng-model="pressure" placeholder="99,3"
+                                <input class="form-control" id="inputPress" ng-model="record.pressure" placeholder="99,3"
                                     required step="0.01" type="number" value="">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label" for="inputTemp">Температура, &degC*</label>
-                                <input class="form-control" id="inputTemp" ng-model="temperature" placeholder="21,5"
+                                <input class="form-control" id="inputTemp" ng-model="record.temperature" placeholder="21,5"
                                     required step="0.01" type="number" value="">
                             </div>
                             <div class="col-md-3">
                                 <label class="form-label" for="inputHum">Влажность, %*</label>
-                                <input class="form-control" id="inputHum" ng-model="humidity" placeholder="52,2"
+                                <input class="form-control" id="inputHum" ng-model="record.humidity" placeholder="52,2"
                                     required step="0.01" type="number" value="">
                             </div>
                         </div>
@@ -130,7 +130,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr ng-repeat="item in verificationStandards" value="{{item}}">
+                                        <tr ng-repeat="item in standardList" value="{{item}}">
                                             <td>{{item.arshinNumber}}</td>
                                         </tr>
                                     </tbody>
@@ -174,7 +174,7 @@
     <p></p>
     <div class="row">
         <div class="col-10 text-center">
-            <button class="btn btn-info" ng-click="putInTable()" type="button">Сохранить изменения</button>
+            <button class="btn btn-info" ng-click="updateRecord()" type="button">Сохранить изменения</button>
         </div>
         <div class="col-2">
         </div>
@@ -190,10 +190,24 @@
     <script src="/js/jquery-3.7.1.min.js"></script>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
-        var app = angular.module("VRF_RECORD_EDIT", []);
+        let app = angular.module("VRF_RECORD_EDIT", []);
         app.controller("VRF_RECORD_EDIT_CTRL", function ($scope, $http) {
+            
+            $scope.mis = [];
             $scope.miStandard = {};
+            $scope.standards = [];
+            $scope.standardList = [];
+            $scope.employees = [];
+
+            $scope.verificationTypes = [{ 'title': 'Первичная', 'value': 1 },
+            { 'title': 'Периодическая', 'value': 2 }];
+
+            $scope.applicables = [{ 'title': 'Пригодно', 'value': true },
+            { 'title': 'Не пригодно', 'value': false }];
+            
             let idAttr = new URL (document.URL).searchParams.get("id");
+            let selectedMistandard = {};
+            let updateData ={};
 
             function getVerificationRecord() {
                     $http({
@@ -210,14 +224,37 @@
                 $scope.miSearchString = $scope.record.mi.modification;
                 $scope.miSNSearchString = $scope.record.mi.serialNum;
                 $scope.mi = $scope.record.mi;
-                setApplicableFromMi();
+                $scope.verificationType = $scope.record.verificationType;
+                $scope.record.verificationDate = formatDateField($scope.record.verificationDate);
+                $scope.record.validDate = formatDateField($scope.record.validDate);
+                setApplicableFromRecord();
+                setVerificationTypeFromRecord();
                 $scope.selectEmployee($scope.record.employee);
-                $scope.verificationStandards = $scope.record.miStandards;
+                $scope.standardList = $scope.record.miStandards;
+
             }
 
+            function formatDateField(item) {
+                if (item != null) {
+                  return new Date(item);
+                }
+            }
+
+            setApplicableFromRecord = function () {
+                $scope.applicable = { 'title': 'Пригодно', 'value': true };
+                if ($scope.record.applicable == false) {
+                    $scope.applicable = { 'title': 'Не пригодно', 'value': false };
+                }
+            }
+
+            setVerificationTypeFromRecord = function () {
+                $scope.verificationType = { 'title': 'Первичная', 'value': 1 };
+                if ($scope.record.verificationType == 2) {
+                    $scope.verificationType = { 'title': 'Периодическая', 'value': 2 };
+                }
+            }
 
             //Поиск СИ по модификации
-            $scope.mis = [];
             $scope.searchMi = function () {
                 if ($scope.miSearchString.length > 3) {
                     $http({
@@ -249,39 +286,30 @@
             }
 
             //Получение полных сведений о выбранном средстве измерений
-            getMiFullData = function (id) {
+            function getMiFullData(id) {
                 $http({
                     url: "/mis/" + id,
                     method: "GET"
                 }).then(function (response) {
                     $scope.mi = response.data;
-                    formatDateFieldsFromMi();
+                    $scope.mi.verificationDate = formatDateField($scope.mi.verificationDate);
+                    $scope.mi.validDate  = formatDateField($scope.mi.validDate );
+                    $scope.record.verificationDate =  $scope.mi.verificationDate;
+                    $scope.record.validDate = $scope.mi.validDate;
                     setApplicableFromMi();
-                    record.mi = $scope.mi;
+                    $scope.record.mi = $scope.mi;
                 });
             }
 
-            formatDateFieldsFromMi = function () {
-                if ($scope.mi.verificationDate != null) {
-                    $scope.mi.verificationDate = new Date($scope.mi.verificationDate);
-                }
-                if ($scope.mi.validDate != null) {
-                    $scope.mi.validDate = new Date($scope.mi.validDate);
-                }
-            }
 
-            $scope.applicables = [{ 'title': 'Пригодно', 'value': true },
-            { 'title': 'Не пригодно', 'value': false }];
-
-
-            setApplicableFromMi = function () {
+            function setApplicableFromMi() {
                 $scope.applicable = { 'title': 'Пригодно', 'value': true };
                 if ($scope.mi.applicable == false) {
                     $scope.applicable = { 'title': 'Не пригодно', 'value': false };
                 }
             }
 
-            $scope.employees = [];
+ 
             $scope.searchEmployee = function () {
                 if ($scope.employeeSearchString.length > 3) {
                     $http({
@@ -298,8 +326,6 @@
                 $scope.record.employee = item;
             }
 
-
-            $scope.standards = [];
             $scope.searchMiStandard = function () {
                 if ($scope.miStandardSearchString.length > 3) {
                     $http({
@@ -311,24 +337,62 @@
                 }
             }
 
-            let selectedMistandard = {};
             $scope.selectMiStandard = function (item) {
                 $scope.miStandardSearchString = item.arshinNumber;
                 selectedMistandard = item;
             }
 
-            $scope.verificationStandards = [];
             $scope.putStandardInStandardList = function () {
-                if ($scope.verificationStandards.indexOf(selectedMistandard) == -1) {
-                    $scope.verificationStandards.push(selectedMistandard);
+                if ($scope.standardList.indexOf(selectedMistandard) == -1) {
+                    $scope.standardList.push(selectedMistandard);
                 } else {
                     alert('Этот эталон уже добавлен в список используемых при поверке');
                 }
             }
 
             $scope.deleteLastInStandardList = function () {
-                $scope.verificationStandards.pop();
+                $scope.standardList.pop();
             }
+
+            $scope.updateRecord = function () {
+                console.log(updateData);
+                if (isVerifiedData()) {
+                buildUpdatedData();
+                $http({
+                    url: "/verifications/records/" + $scope.record.id,
+                    method: "PUT",
+                    data: updateData
+                }).then(function successCallback(response) {
+                    alert(response.data.message);
+                   // window.location.reload();
+                }, function errorCallback(response) {
+                    alert(response.data.message)
+                });
+            } else {
+                alert('Пожалуйста заполните все поля отмеченные *');
+            }
+        }
+
+        function isVerifiedData(){
+            return (($scope.record.id != null) && ($scope.verificationType.value != null) && ($scope.record.verificationDate != null) 
+            && ($scope.record.temperature != null) && ($scope.record.pressure != null) 
+            && ($scope.record.humidity != null) && ($scope.record.mi != null) && ($scope.standardList.length != 0));
+        }
+
+        function buildUpdatedData(){
+            updateData.id = $scope.record.id;
+            updateData.verificationType = $scope.verificationType.value;
+            updateData.verificationDate = $scope.record.verificationDate;
+            updateData.validDate = $scope.record.validDate;
+            updateData.applicable = $scope.applicable.value;
+            updateData.temperature = $scope.record.temperature;
+            updateData.pressure = $scope.record.pressure;
+            updateData.humidity = $scope.record.humidity;
+            updateData.arshinVerificationNumber = $scope.record.arshinVerificationNumber;
+            updateData.mi = $scope.record.mi;
+            updateData.employee = $scope.record.employee;
+            updateData.miStandards = $scope.standardList;
+        }
 
             getVerificationRecord();
         });

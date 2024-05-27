@@ -50,6 +50,19 @@ public class VerificationRecord {
     private Set<MiStandard> miStandards = new HashSet<>();
 
 
+    public void updateFrom(VerificationRecord record){
+        this.verificationType = record.verificationType;
+        this.verificationDate = record.verificationDate;
+        this.validDate = record.validDate;
+        this.applicable = record.applicable;
+        this.temperature = record.temperature;
+        this.pressure = record.pressure;
+        this.humidity = record.humidity;
+        this.mi = record.mi;
+        this.employee = record.employee;
+        this.miStandards = record.miStandards;
+    }
+
     @Override
     public String toString() {
         return "VerificationRecord{" +
