@@ -364,7 +364,7 @@
                     data: updateData
                 }).then(function successCallback(response) {
                     alert(response.data.message);
-                   // window.location.reload();
+                    window.location.href = new URL(document.referrer);
                 }, function errorCallback(response) {
                     alert(response.data.message)
                 });

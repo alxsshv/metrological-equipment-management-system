@@ -17,7 +17,6 @@
                 <button class="btn btn-outline-success me-2" onclick="location.href='/report/verification'"
                     type="button">К перечню
                     отчетов о поверке</button>
-                <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
             </form>
         </nav>
         <div class="row">
@@ -46,6 +45,7 @@
                                 <th>H, %</th>
                                 <th>P, кПа</th>
                                 <th></th>
+                                <th></th>
                             </tr>
                             <tr ng-repeat="record in report.records">
                                 <td>{{record.arshinVerificationNumber}}</td>
@@ -62,7 +62,9 @@
                                 <td>{{record.temperature}}</td>
                                 <td>{{record.humidity}}</td>
                                 <td>{{record.pressure}}</td>
-                                <td><a href="record/form/{{record.id}}?id={{record.id}}">Редактировать</a></td>
+                                <td><a class="btn btn-link" href="record/form/{{record.id}}?id={{record.id}}" role="button">Редактировать</a></td>
+                                <td><button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#modal"
+                                    ng-click="getDeleteableId(record.id)" type="button">Удалить</button></td>
                             </tr>
                         </table>
                     <dt><i>Последнее изменение отчета</i></dt>
@@ -71,6 +73,22 @@
             </div>
 
         </div>
+        <!-- Модальное окно -->
+    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаления" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить запись о поверке?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary" ng-click="deleteReport(deleteableId)">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
     </div>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/angular.min.js"></script>
@@ -80,7 +98,7 @@
         app.controller("REPORT_CARD_CTRL", function ($scope, $http) {
             $scope.reference = "/report/verification/form/" + idAttr + "?id=" + idAttr
 
-            $scope.getReport = function () {
+            function getReport() {
                 $http({
                     url: "/reports/verifications/" + idAttr,
                     method: "GET"
@@ -90,7 +108,7 @@
                 });
             }
 
-            let formatReportFields = function () {
+            function formatReportFields() {
                 formatReportDate();
                 $scope.report.records.forEach(element => {
                     formatRecordDate(element);
@@ -109,7 +127,7 @@
                 }
             }
 
-            let formatRecordDate = function(record){ 
+            function formatRecordDate(record){ 
                 if (record.verificationDate != null) {
                     record.verificationDate = new Date(record.verificationDate);
                 }
@@ -119,7 +137,7 @@
             }
 
             
-            let formatVerificationType= function(record) {
+            function formatVerificationType(record) {
                 if (record.verificationType == "1") {
                     record.verificationType = "Первичная"
                 } else {
@@ -127,7 +145,7 @@
                 }
             }
 
-            let formatApplicable = function(record) {
+            function formatApplicable(record) {
                 if (record.applicable == true) {
                     record.applicable = "Пригодно"
                 } else {
@@ -135,12 +153,29 @@
                 }
             }
 
-            let convertStandardsToString = function(record){
+            function convertStandardsToString(record){
                 record.standards = record.miStandards.map(item => item.arshinNumber).join("; ");
             }
 
 
-            $scope.getReport();
+            $scope.getDeleteableId = function (id) {
+                $scope.deleteableId = id;
+            }
+
+            $scope.deleteReport = function (delId) {
+                var myModalEl = document.getElementById('modal')
+                var modal = bootstrap.Modal.getInstance(myModalEl);
+                modal.hide();
+                $http({
+                    url: "/verifications/records/" + delId,
+                    method: "DELETE"
+                }).then(function (response) {
+                    getReport();
+                });
+            }
+
+
+            getReport();
         });
 
 

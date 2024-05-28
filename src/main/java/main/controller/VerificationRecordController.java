@@ -24,4 +24,9 @@ public class VerificationRecordController {
     public ResponseEntity<?> updateVerificationRecord(@RequestBody VerificationRecordDto recordDto){
         return recordService.update(recordDto);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> deleteVerificationRecord(@PathVariable ("id") String id){
+        return recordService.delete(Long.parseLong(id));
+    }
 }

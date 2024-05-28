@@ -19,6 +19,7 @@ import java.util.Optional;
 public class VerificationRecordService implements IVerificationRecordService {
     private static final Logger logger = LoggerFactory.getLogger(VerificationRecordService.class);
     private VerificationRecordRepository recordRepository;
+    private VerificationReportService reportService;
 
     @Override
     public ResponseEntity<?> getById(long id) {
@@ -44,6 +45,13 @@ public class VerificationRecordService implements IVerificationRecordService {
         updateRecord.updateFrom(VerificationRecordDtoMapper.mapToEntity(recordDto));
         recordRepository.save(updateRecord);
         String okMessage = "Запись о поверке № " + updateRecord.getId() + " успешно обновлена";
+        logger.info(okMessage);
+        return ResponseEntity.ok().body(new ServiceMessage(okMessage));
+    }
+
+    public ResponseEntity<?> delete(long id) {
+        recordRepository.deleteById(id);
+        String okMessage = "Запись о поверке № " + id + " удалена";
         logger.info(okMessage);
         return ResponseEntity.ok().body(new ServiceMessage(okMessage));
     }
