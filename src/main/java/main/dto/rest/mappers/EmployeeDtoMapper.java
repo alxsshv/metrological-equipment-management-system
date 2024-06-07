@@ -1,6 +1,6 @@
-package main.dto.mappers;
+package main.dto.rest.mappers;
 
-import main.dto.EmployeeDto;
+import main.dto.rest.EmployeeDto;
 import main.model.Employee;
 
 

@@ -67,8 +67,8 @@
                     <td>{{standard.measurementInstrument.serialNum}}</td>
                     <td>{{standard.measurementInstrument.manufactureDate | date:"yyyy"}}</td>
                     <td>{{standard.measurementInstrument.miType.number}}</td>
-                    <td>{{standard.measurementInstrument.verificationDate | date:"dd.MM.yyyy"}}</td>
-                    <td>{{standard.measurementInstrument.validDate | date:"dd.MM.yyyy"}}</td>
+                    <td>{{standard.measurementInstrument.verificationDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
+                    <td>{{standard.measurementInstrument.validDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
                             ng-click="getDeleteableId(standard.id)" type="button">Удалить</button></td>
                 </tr>

@@ -1,7 +1,7 @@
 package main.service.implementations;
 
-import main.dto.ImageDto;
-import main.dto.mappers.ImageDtoMapper;
+import main.dto.rest.ImageDto;
+import main.dto.rest.mappers.ImageDtoMapper;
 import main.model.Image;
 import main.repository.ImageRepository;
 import main.service.Category;

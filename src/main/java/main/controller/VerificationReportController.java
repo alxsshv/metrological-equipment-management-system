@@ -1,8 +1,8 @@
 package main.controller;
 
 import main.config.AppConstants;
-import main.dto.VerificationReportDto;
-import main.dto.VerificationReportFullDto;
+import main.dto.rest.VerificationReportDto;
+import main.dto.rest.VerificationReportFullDto;
 import main.service.implementations.VerificationReportService;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -44,5 +44,10 @@ public class VerificationReportController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteVerificationReport(@PathVariable("id") String id){
         return verificationReportService.deleteById(Long.parseLong(id));
+    }
+
+    @PatchMapping()
+    public ResponseEntity<?> updateVerificationReport(@RequestBody VerificationReportFullDto reportDto){
+        return verificationReportService.update(reportDto);
     }
 }

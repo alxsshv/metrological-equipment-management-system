@@ -1,10 +1,8 @@
-package main.dto;
+package main.dto.rest;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 
 @NoArgsConstructor
@@ -15,8 +13,8 @@ public class MiDto {
     private String title;
     private String modification;
     private String serialNum;
-    private LocalDate verificationDate;
-    private LocalDate validDate;
+    private String verificationDate;
+    private String validDate;
     private boolean applicable;
     private String owner;
 }

@@ -1,8 +1,8 @@
 package main.service.implementations;
 
 import lombok.RequiredArgsConstructor;
-import main.dto.EmployeeDto;
-import main.dto.mappers.EmployeeDtoMapper;
+import main.dto.rest.EmployeeDto;
+import main.dto.rest.mappers.EmployeeDtoMapper;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
 import main.service.ServiceMessage;

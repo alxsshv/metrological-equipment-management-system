@@ -1,11 +1,10 @@
-package main.dto;
+package main.dto.rest;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,8 +17,8 @@ public class MiTypeFullDto {
     private String number;
     private String title;
     private String notation;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
     private double verificationPeriod;
     private String miTitleTemplate;
     private List<String> modifications = new ArrayList<>();

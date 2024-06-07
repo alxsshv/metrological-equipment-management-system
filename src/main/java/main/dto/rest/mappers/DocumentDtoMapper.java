@@ -1,7 +1,9 @@
-package main.dto.mappers;
+package main.dto.rest.mappers;
 
-import main.dto.DocumentDto;
+import main.dto.rest.DocumentDto;
 import main.model.Document;
+
+import static main.dto.rest.mappers.utils.DateStringConverter.getISOStringOrNull;
 
 public class DocumentDtoMapper {
     public static DocumentDto mapToDto(Document document){
@@ -13,8 +15,8 @@ public class DocumentDtoMapper {
         dto.setOriginalFilename(document.getOriginalFilename());
         dto.setCategoryName(document.getCategoryName());
         dto.setCategoryId(document.getCategoryId());
-        dto.setUploadingDate(document.getUploadingDate());
-        dto.setUpdatingDate(document.getUpdatingDate());
+        dto.setUploadingDate(getISOStringOrNull(document.getUploadingDate()));
+        dto.setUpdatingDate(getISOStringOrNull(document.getUpdatingDate()));
         return dto;
     }
 

@@ -35,10 +35,10 @@
         <div class="row text-start">
             <div class="col-sm-6">
                 <dt class="col-sm-6"><i>Запись создана<i></dt>
-                <dd class="col-sm-6"><i>{{organization.creationDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+                <dd class="col-sm-6"><i>{{organization.creationDateTime | date: "dd.MM.yyyy HH:mm" : 'UTC'}}</i></dd>
 
                 <dt class="col-sm-3"><i>Запись обновлена<i></dt>
-                <dd class="col-sm-3"><i>{{organization.updatingDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+                <dd class="col-sm-3"><i>{{organization.updatingDateTime | date: "dd.MM.yyyy HH:mm" : 'UTC'}}</i></dd>
             </div>
         </div>
     </div>

@@ -1,8 +1,8 @@
 package main.service.implementations;
 
-import main.dto.MiTypeDto;
-import main.dto.MiTypeFullDto;
-import main.dto.mappers.MiTypeDtoMapper;
+import main.dto.rest.MiTypeDto;
+import main.dto.rest.MiTypeFullDto;
+import main.dto.rest.mappers.MiTypeDtoMapper;
 import main.model.MiType;
 import main.model.MiTypeInstruction;
 import main.model.MiTypeModification;

@@ -1,8 +1,12 @@
-package main.dto.mappers;
+package main.dto.rest.mappers;
 
-import main.dto.MiDto;
-import main.dto.MiFullDto;
+import main.dto.rest.MiDto;
+import main.dto.rest.MiFullDto;
+import main.dto.rest.mappers.utils.DateStringConverter;
 import main.model.MeasurementInstrument;
+
+
+import java.time.format.DateTimeFormatter;
 
 public class MeasurementInstrumentMapper {
     public static MiDto mapToDto(MeasurementInstrument measurementInstrument){
@@ -11,8 +15,8 @@ public class MeasurementInstrumentMapper {
         dto.setTitle(measurementInstrument.getTitle());
         dto.setModification(measurementInstrument.getModification());
         dto.setSerialNum(measurementInstrument.getSerialNum());
-        dto.setVerificationDate(measurementInstrument.getVerificationDate());
-        dto.setValidDate(measurementInstrument.getValidDate());
+        dto.setVerificationDate(DateStringConverter.getStringOrNull(measurementInstrument.getVerificationDate()));
+        dto.setValidDate(DateStringConverter.getStringOrNull(measurementInstrument.getValidDate()));
         dto.setApplicable(measurementInstrument.isApplicable());
         dto.setOwner(measurementInstrument.getOwner().getNotation());
         return dto;
@@ -25,17 +29,15 @@ public class MeasurementInstrumentMapper {
         dto.setModification(measurementInstrument.getModification());
         dto.setSerialNum(measurementInstrument.getSerialNum());
         dto.setInventoryNum(measurementInstrument.getInventoryNum());
-        dto.setVerificationDate(measurementInstrument.getVerificationDate());
-        dto.setValidDate(measurementInstrument.getValidDate());
+        dto.setVerificationDate(measurementInstrument.getVerificationDate().toString());
+        dto.setValidDate(DateStringConverter.getStringOrNull(measurementInstrument.getValidDate()));
         dto.setApplicable(measurementInstrument.isApplicable());
-        dto.setManufactureDate(measurementInstrument.getManufactureDate());
-        dto.setStartUseDate(measurementInstrument.getStartUseDate());
+        dto.setManufactureDate(DateStringConverter.getStringOrNull(measurementInstrument.getManufactureDate()));
+        dto.setStartUseDate(DateStringConverter.getStringOrNull(measurementInstrument.getStartUseDate()));
         dto.setOwner(measurementInstrument.getOwner());
         dto.setUser(measurementInstrument.getUser());
-        dto.setCreationDateTime(measurementInstrument.getCreationDateTime().toString());
-        if (measurementInstrument.getUpdatingDateTime()!= null) {
-            dto.setUpdatingDateTime(measurementInstrument.getUpdatingDateTime().toString());
-        }
+        dto.setCreationDateTime(measurementInstrument.getCreationDateTime().format(DateTimeFormatter.ISO_DATE_TIME));
+        dto.setUpdatingDateTime(measurementInstrument.getUpdatingDateTime().format(DateTimeFormatter.ISO_DATE_TIME));
         return dto;
     }
     public static MeasurementInstrument mapToEntity (MiFullDto dto){
@@ -46,12 +48,12 @@ public class MeasurementInstrumentMapper {
         measurementInstrument.setModification(dto.getModification());
         measurementInstrument.setSerialNum(dto.getSerialNum());
         measurementInstrument.setInventoryNum(dto.getInventoryNum());
-        measurementInstrument.setVerificationDate(dto.getVerificationDate());
-        measurementInstrument.setValidDate(dto.getValidDate());
+        measurementInstrument.setVerificationDate(DateStringConverter.parseLocalDateOrGetNull(dto.getVerificationDate()));
+        measurementInstrument.setValidDate(DateStringConverter.parseLocalDateOrGetNull(dto.getValidDate()));
         measurementInstrument.setApplicable(dto.isApplicable());
         measurementInstrument.setOwner(dto.getOwner());
-        measurementInstrument.setStartUseDate(dto.getStartUseDate());
-        measurementInstrument.setManufactureDate(dto.getManufactureDate());
+        measurementInstrument.setStartUseDate(DateStringConverter.parseLocalDateOrGetNull(dto.getStartUseDate()));
+        measurementInstrument.setManufactureDate(DateStringConverter.parseLocalDateOrGetNull(dto.getManufactureDate()));
         measurementInstrument.setUser(dto.getUser());
         return measurementInstrument;
     }

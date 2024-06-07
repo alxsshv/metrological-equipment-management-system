@@ -1,10 +1,8 @@
-package main.dto;
+package main.dto.rest;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.time.LocalDate;
 
 
 @NoArgsConstructor
@@ -15,7 +13,7 @@ public class MiTypeDto {
     private String number;
     private String title;
     private String notation;
-    private LocalDate startDate;
-    private LocalDate endDate;
+    private String startDate;
+    private String endDate;
     private double verificationPeriod;
 }

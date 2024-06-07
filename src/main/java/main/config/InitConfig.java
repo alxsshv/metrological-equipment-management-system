@@ -2,7 +2,7 @@ package main.config;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import main.dto.*;
+import main.dto.rest.*;
 import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiTypeRepository;
 import main.repository.OrganizationRepository;
@@ -40,8 +40,8 @@ public class InitConfig {
         type1.setTitle("Датчики давления");
         type1.setNotation("Вm 212А.4");
         type1.setMiTitleTemplate("Датчик давления");
-        type1.setStartDate(LocalDate.parse("2023-03-01"));
-        type1.setEndDate(LocalDate.parse("2028-03-01"));
+        type1.setStartDate("2023-03-01");
+        type1.setEndDate("2028-03-01");
         type1.setVerificationPeriod(3);
         type1.setModifications(List.of("СДАИ.406233.106","СДАИ.406233.106-01","СДАИ.406233.106-02",
                         "СДАИ.406233.106-03","СДАИ.406233.106-04","СДАИ.406233.106-05","СДАИ.406233.106-06","СДАИ.406233.106-07",
@@ -57,8 +57,8 @@ public class InitConfig {
                type2.setTitle("Датчики давления");
                type2.setNotation("ДХС 524");
                type2.setMiTitleTemplate("Датчик давления");
-               type2.setStartDate(LocalDate.parse("2019-11-08"));
-               type2.setEndDate(LocalDate.parse("2024-11-08"));
+               type2.setStartDate("2019-11-08");
+               type2.setEndDate("2024-11-08");
                type2.setVerificationPeriod(2);
                type2.setModifications(List.of("ДХС 524","ДХС 524-01","ДХС 524-02","ДХС 524-03","ДХС 524-04","ДХС 524-05",
                        "ДХС 524-06","ДХС 524-07"));
@@ -69,8 +69,8 @@ public class InitConfig {
         type3.setNumber("57671-14");
         type3.setTitle("Датчики давления");
         type3.setNotation("Bm 206");
-        type3.setStartDate(LocalDate.parse("2019-07-04"));
-        type3.setEndDate(LocalDate.parse("2024-05-17"));
+        type3.setStartDate("2019-07-04");
+        type3.setEndDate("2024-05-17");
         type3.setVerificationPeriod(2);
         type3.setModifications(List.of("Bm 206","Bm 206.1A-31","Вт 206 I-14","Вт 206-03"));
         type3.setInstructionTitle("Датчики давления Вт 206. Методика поверки");
@@ -134,8 +134,8 @@ public class InitConfig {
         mi1.setOwner(organizationRepository.findById(2L).get());
         mi1.setApplicable(true);
         mi1.setUser("И.И. Иванов");
-        mi1.setVerificationDate(LocalDate.now());
-        mi1.setValidDate(LocalDate.now().plusYears(1));
+        mi1.setVerificationDate(LocalDate.now().toString());
+        mi1.setValidDate(LocalDate.now().plusYears(1).toString());
         mi1.setInventoryNum("ИНВ1");
 
         MiFullDto mi2 = new MiFullDto();
@@ -145,8 +145,8 @@ public class InitConfig {
         mi2.setOwner(organizationRepository.findById(2L).get());
         mi2.setApplicable(true);
         mi2.setUser("П.П. Перов");
-        mi2.setVerificationDate(LocalDate.now());
-        mi2.setValidDate(LocalDate.now().plusYears(1));
+        mi2.setVerificationDate(LocalDate.now().toString());
+        mi2.setValidDate(LocalDate.now().plusYears(1).toString());
         mi2.setInventoryNum("ИНВ2");
 
         MiFullDto mi3 = new MiFullDto();
@@ -156,7 +156,7 @@ public class InitConfig {
         mi3.setOwner(organizationRepository.findById(2L).get());
         mi3.setApplicable(false);
         mi3.setUser("С.С. Сидоров");
-        mi3.setVerificationDate(LocalDate.now());
+        mi3.setVerificationDate(LocalDate.now().toString());
         mi3.setInventoryNum("ИНВ3");
 
         MiFullDto mi4 = new MiFullDto();
@@ -166,8 +166,8 @@ public class InitConfig {
         mi4.setOwner(organizationRepository.findById(1L).get());
         mi4.setApplicable(true);
         mi4.setUser("И.И. Иванов");
-        mi4.setVerificationDate(LocalDate.now());
-        mi4.setValidDate(LocalDate.now().plusYears(1));
+        mi4.setVerificationDate(LocalDate.now().toString());
+        mi4.setValidDate(LocalDate.now().plusYears(1).toString());
         mi4.setInventoryNum("ИНВ004");
 
         MiFullDto mi5 = new MiFullDto();
@@ -177,8 +177,8 @@ public class InitConfig {
         mi5.setOwner(organizationRepository.findById(1L).get());
         mi5.setApplicable(true);
         mi5.setUser("И.И. Ииванов");
-        mi5.setVerificationDate(LocalDate.now());
-        mi5.setValidDate(LocalDate.now().plusYears(1));
+        mi5.setVerificationDate(LocalDate.now().toString());
+        mi5.setValidDate(LocalDate.now().plusYears(1).toString());
         mi5.setInventoryNum("ИНВ005");
 
         miService.save(mi1, files, descriptions);

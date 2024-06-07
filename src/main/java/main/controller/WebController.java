@@ -127,6 +127,10 @@ public class WebController {
     public String getVerificationReportView(){
         return "report/card";
     }
+    @GetMapping("/report/verification/form/{id}")
+    public String getVerificationReportEditForm(){
+        return "report/edit";
+    }
 
     //Вывод шаблонов записей о поверке
     @GetMapping("/report/verification/record/form/{id}")

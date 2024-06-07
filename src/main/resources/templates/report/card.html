@@ -10,6 +10,7 @@
 </head>
 
 <body ng-app="REPORT_CARD" ng-controller="REPORT_CARD_CTRL">
+
     <div class="container-fluid text-center">
         <nav class="navbar bg-body-tertiary">
             <form class="container-fluid justify-content-start">
@@ -19,10 +20,11 @@
                     отчетов о поверке</button>
             </form>
         </nav>
+
         <div class="row">
             <div class="col-sm-8">
                 <dl class="row text-start">
-                    <dt><h4>Отчет № {{report.id}} от {{report.creationDate | date:"dd.MM.yyyy"}}</h4></dt>
+                    <dt><h4>Отчет № {{report.id}} от {{report.creationDate | date:"dd.MM.yyyy" : 'UTC'}}</h4></dt>
 
                     <dt>Описание</dt>
                     <dd>{{report.comment}}</dd>
@@ -45,7 +47,7 @@
                                 <th>H, %</th>
                                 <th>P, кПа</th>
                                 <th></th>
-                                <th></th>
+                                <th><a class="btn btn-outline-primary" href="form/{{report.id}}?id={{report.id}}" role="button">Добавить запись</a></th>
                             </tr>
                             <tr ng-repeat="record in report.records">
                                 <td>{{record.arshinVerificationNumber}}</td>
@@ -54,8 +56,8 @@
                                 <td>{{record.mi.serialNum}}</td>
                                 <td>{{record.mi.inventoryNum}}</td>
                                 <td>{{record.verificationType}}</td>
-                                <td>{{record.verificationDate | date:"dd.MM.yyyy"}}</td>
-                                <td>{{record.validDate | date:"dd.MM.yyyy"}}</td>
+                                <td>{{record.verificationDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
+                                <td>{{record.validDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
                                 <td>{{record.applicable}}</td>
                                 <td>{{record.employee.surname}}</td>
                                 <td>{{record.standards}}</td>
@@ -93,8 +95,8 @@
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/angular.min.js"></script>
     <script type="text/javascript">
-        var app = angular.module("REPORT_CARD", []);
-        var idAttr = new URL(document.URL).searchParams.get("id");
+        let app = angular.module("REPORT_CARD", []);
+        let idAttr = new URL(document.URL).searchParams.get("id");
         app.controller("REPORT_CARD_CTRL", function ($scope, $http) {
             $scope.reference = "/report/verification/form/" + idAttr + "?id=" + idAttr
 

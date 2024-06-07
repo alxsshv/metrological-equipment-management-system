@@ -67,8 +67,8 @@
                     <td><a href="{{viewReference}}/{{item.id}}?id={{item.id}}">{{item.modification}}</a></td>
                     <td>{{item.title}}</td>
                     <td>{{item.serialNum}}</td>
-                    <td>{{item.verificationDate | date:"dd.MM.yyyy" }}</td>
-                    <td>{{item.validDate | date:"dd.MM.yyyy"}}</td>
+                    <td>{{item.verificationDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
+                    <td>{{item.validDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
                     <td>{{item.applicable}} </td>
                     <td>{{item.owner}}</td>
                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"

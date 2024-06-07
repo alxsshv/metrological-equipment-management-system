@@ -1,6 +1,6 @@
 package main.service.interfaces;
 
-import main.dto.OrganizationDto;
+import main.dto.rest.OrganizationDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

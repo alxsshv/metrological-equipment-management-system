@@ -1,8 +1,8 @@
 package main.service.implementations;
 
 import lombok.AllArgsConstructor;
-import main.dto.VerificationRecordDto;
-import main.dto.mappers.VerificationRecordDtoMapper;
+import main.dto.rest.VerificationRecordDto;
+import main.dto.rest.mappers.VerificationRecordDtoMapper;
 import main.model.VerificationRecord;
 import main.repository.VerificationRecordRepository;
 import main.service.ServiceMessage;
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class VerificationRecordService implements IVerificationRecordService {
     private static final Logger logger = LoggerFactory.getLogger(VerificationRecordService.class);
     private VerificationRecordRepository recordRepository;
-    private VerificationReportService reportService;
+
 
     @Override
     public ResponseEntity<?> getById(long id) {
@@ -55,4 +55,5 @@ public class VerificationRecordService implements IVerificationRecordService {
         logger.info(okMessage);
         return ResponseEntity.ok().body(new ServiceMessage(okMessage));
     }
+
 }

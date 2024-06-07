@@ -1,6 +1,7 @@
-package main.dto.mappers;
+package main.dto.rest.mappers;
 
-import main.dto.OrganizationDto;
+import main.dto.rest.OrganizationDto;
+import main.dto.rest.mappers.utils.DateStringConverter;
 import main.model.Organization;
 
 public class OrganizationDtoMapper {
@@ -18,10 +19,8 @@ public class OrganizationDtoMapper {
         dto.setTitle(organization.getTitle());
         dto.setNotation(organization.getNotation());
         dto.setAddress(organization.getAddress());
-        dto.setCreationDateTime(organization.getCreationDateTime().toString());
-        if (organization.getUpdatingDateTime() != null) {
-            dto.setUpdatingDateTime(organization.getUpdatingDateTime().toString());
-        }
+        dto.setCreationDateTime(DateStringConverter.getISOStringOrNull(organization.getCreationDateTime()));
+        dto.setUpdatingDateTime(DateStringConverter.getISOStringOrNull(organization.getUpdatingDateTime()));
         return dto;
     }
 }

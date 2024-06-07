@@ -56,9 +56,9 @@
                 </tr>
                 <tr ng-repeat="report in contentlist">
                     <td><a href="{{viewReference}}/{{report.id}}?id={{report.id}}">Отчет №{{report.id}}</a></td>
-                    <td>{{report.creationDate | date:"dd.MM.yyyy"}}</td>
+                    <td>{{report.creationDate | date:"dd.MM.yyyy": 'UTC'}}</td>
                     <td>{{report.comment}}</td>
-                    <td>{{report.updateDate | date:"dd.MM.yyyy HH:mm"}}</td>
+                    <td>{{report.updateDate | date:"dd.MM.yyyy HH:mm": 'UTC'}}</td>
                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
                             ng-click="getDeleteableId(report.id)" type="button">Удалить</button></td>
                 </tr>

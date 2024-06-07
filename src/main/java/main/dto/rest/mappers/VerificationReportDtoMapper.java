@@ -1,8 +1,9 @@
-package main.dto.mappers;
+package main.dto.rest.mappers;
 
-import main.dto.VerificationRecordDto;
-import main.dto.VerificationReportDto;
-import main.dto.VerificationReportFullDto;
+import main.dto.rest.VerificationRecordDto;
+import main.dto.rest.VerificationReportDto;
+import main.dto.rest.VerificationReportFullDto;
+import main.dto.rest.mappers.utils.DateStringConverter;
 import main.model.VerificationRecord;
 import main.model.VerificationReport;
 
@@ -27,8 +28,8 @@ public class VerificationReportDtoMapper {
         dto.setId(report.getId());
         dto.setComment(report.getComment());
         dto.setRecords((report.getRecords().stream().map(VerificationRecordDtoMapper::mapToDto)).toList());
-        dto.setCreationDate(report.getCreationDate().toString());
-        dto.setUpdateDate(report.getUpdateDate().toString());
+        dto.setCreationDate(DateStringConverter.getISOStringOrNull(report.getCreationDate()));
+        dto.setUpdateDate(DateStringConverter.getISOStringOrNull(report.getUpdateDate()));
         return dto;
     }
 
@@ -36,8 +37,8 @@ public class VerificationReportDtoMapper {
         VerificationReportDto dto = new VerificationReportDto();
         dto.setId(report.getId());
         dto.setComment(report.getComment());
-        dto.setCreationDate(report.getCreationDate().toString());
-        dto.setUpdateDate(report.getUpdateDate().toString());
+        dto.setCreationDate(DateStringConverter.getISOStringOrNull(report.getCreationDate()));
+        dto.setUpdateDate(DateStringConverter.getISOStringOrNull(report.getUpdateDate()));
         return dto;
     }
 }

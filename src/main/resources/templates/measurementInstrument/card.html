@@ -40,10 +40,10 @@
                     <dd ng-model="type" class="col-sm-6">{{mi.inventoryNum}}</dd>
 
                     <dt class="col-sm-6 ">Дата изготовления</dt>
-                    <dd ng-model="type" class="col-sm-6">{{mi.manufactureDate | date: "dd.MM.yyyy"}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{mi.manufactureDate | date: "dd.MM.yyyy" : 'UTC'}}</dd>
 
                     <dt class="col-sm-6 ">Дата ввода в эксплуатацию</dt>
-                    <dd ng-model="type" class="col-sm-6">{{mi.startUseDate | date: "dd.MM.yyyy"}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{mi.startUseDate | date: "dd.MM.yyyy" : 'UTC'}}</dd>
 
                     <p></p>
 
@@ -72,10 +72,10 @@
                     <h5>Результаты поверки</h5>
 
                     <dt class="col-sm-6">Дата поверки</dt>
-                    <dd ng-model="type" class="col-sm-6">{{mi.verificationDate | date: "dd.MM.yyyy"}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{mi.verificationDate | date: "dd.MM.yyyy" : 'UTC'}}</dd>
 
                     <dt class="col-sm-6">Действительно до</dt>
-                    <dd ng-model="type" class="col-sm-6">{{mi.validDate | date: "dd.MM.yyyy"}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{mi.validDate | date: "dd.MM.yyyy" : 'UTC'}}</dd>
 
                     <dt class="col-sm-6 ">Пригоден</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.applicable}}</dd>
@@ -114,10 +114,10 @@
         <div class="row text-start">
             <div class="col-sm-6">
                 <dt class="col-sm-6"><i>Запись создана</i></dt>
-                <dd class="col-sm-6"><i>{{mi.creationDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+                <dd class="col-sm-6"><i>{{mi.creationDateTime | date: "dd.MM.yyyy HH:mm" : 'UTC'}}</i></dd>
 
                 <dt class="col-sm-3"><i>Запись обновлена</i></dt>
-                <dd class="col-sm-3"><i>{{mi.updatingDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+                <dd class="col-sm-3"><i>{{mi.updatingDateTime | date: "dd.MM.yyyy HH:mm" : 'UTC'}}</i></dd>
             </div>
         </div>
     </div>

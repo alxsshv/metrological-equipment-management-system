@@ -1,8 +1,8 @@
 package main.service.implementations;
 
-import main.dto.MiDto;
-import main.dto.MiFullDto;
-import main.dto.mappers.MeasurementInstrumentMapper;
+import main.dto.rest.MiDto;
+import main.dto.rest.MiFullDto;
+import main.dto.rest.mappers.MeasurementInstrumentMapper;
 import main.model.MeasurementInstrument;
 import main.model.MiType;
 import main.model.Organization;
@@ -21,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 

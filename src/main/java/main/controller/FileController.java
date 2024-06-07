@@ -1,8 +1,8 @@
 package main.controller;
 
 import lombok.AllArgsConstructor;
-import main.dto.DocumentDto;
-import main.dto.ImageDto;
+import main.dto.rest.DocumentDto;
+import main.dto.rest.ImageDto;
 import main.service.Category;
 import main.service.implementations.DocumentService;
 import main.service.implementations.FileService;

@@ -1,7 +1,7 @@
 package main.service.implementations;
 
-import main.dto.MiStandardDto;
-import main.dto.mappers.MiStandardDtoMapper;
+import main.dto.rest.MiStandardDto;
+import main.dto.rest.mappers.MiStandardDtoMapper;
 import main.model.MeasurementInstrument;
 import main.model.MiStandard;
 import main.repository.MeasurementInstrumentRepository;

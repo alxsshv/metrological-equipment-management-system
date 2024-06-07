@@ -1,83 +1,63 @@
 <!doctype html>
 <html lang="ru">
+
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Главная страница</title>
-    <link href="/css/bootstrap.min.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Система метрологического обеспечения</title>
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body data-bs-theme="light">
-<script src="/js/bootstrap.bundle.min.js"></script>
-<div class="container text-center">
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <div class="container text-center">
     <div class="row">
-      <div class="col">
-        <h1>База данных средств измерений</h1>
+      <div class="col-md-7"></div>
+      <div class="col-md-3">
+    <nav class="navbar navbar-expand-lg">
+
+        <div class="collapse  navbar-collapse" id="navbarSupportedContent">
+
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+      
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Администрирование системы
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="/employee?page=0">Список поверителей</a></li>
+                <li><a class="dropdown-item" href="/organization?page=0">Перечень организаций</a></li>
+                <li><a class="dropdown-item" href="/standard?page=0">Перечень эталонов</a></li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Настройки</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+        </div>
+    </nav>
+
+    <div class="row text-primary-emphasis">
+      <div class="text-primary-emphasis">
+        <h4>Система метрологического обеспечения</h4>
       </div>
     </div>
+
     <div class="row">
-        <div class="col">
-          <div class="card" style="width: 18rem;">
-            <img src="/images/gradient.png" class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Список поверителей</h5>
-              <p class="card-text">Сведения о поверке СИ, поверенных организацией</p>
-              <a class="btn btn-primary" href="/employee?page=0">Открыть</a>
-            </div>
-          </div>
+      <div class="col-md-3 text-start">
+        <div class="btn-group-vertical" role="group" aria-label="vertical_menu">
+          <a class="btn btn-primary btn-lg" href="/mit" role="button">Типы средств измерений</a>
+          <a class="btn btn-primary btn-lg" href="/mi" role="button">Средства измерений</a>
+          <a class="btn btn-primary btn-lg" href="/report/verification" role="button">Отчеты о поверке</a>
         </div>
-        <div class="col">
-          <div class="card" style="width: 18rem;">
-            <img src="/images/gradient.png" class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">Перечень утвержденных типов средств измерений</h5>
-              <p class="card-text"></p>
-              <a class="btn btn-primary" href="/mit">Открыть</a>
-            </div>
-          </div>
-        </div>
-        <div class="col">
-            <div class="card" style="width: 18rem;">
-                <img src="/images/gradient.png" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Перечень средств измерений</h5>
-                    <p class="card-text">Средства измерений</p>
-                    <a class="btn btn-primary" href="/mi">Открыть</a>
-                </div>
-            </div>
-        </div>
-        <div class="col">
-          <div class="card" style="width: 18rem;">
-              <img src="/images/gradient.png" class="card-img-top" alt="...">
-              <div class="card-body">
-                  <h5 class="card-title">Перечень организаций</h5>
-                  <p class="card-text">Информация о сторонних организациях</p>
-                  <a class="btn btn-primary" href="/organization">Открыть</a>
-              </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col">
-            <div class="card" style="width: 18rem;">
-                <img src="/images/gradient.png" class="card-img-top" alt="...">
-                <div class="card-body">
-                    <h5 class="card-title">Эталоны</h5>
-                    <p class="card-text">Перечень СИ, применяемых в качестве эталонов</p>
-                    <a href="/standard" class="btn btn-primary">Открыть</a>
-                </div>
-            </div>
-          </div>
-          <div class="col">
-            <div class="card" style="width: 18rem;">
-                <img alt="..." class="card-img-top" src="/images/gradient.png">
-                <div class="card-body">
-                    <h5 class="card-title">Отчеты</h5>
-                    <p class="card-text">Отчеты о поверке средств измерений</p>
-                    <a class="btn btn-primary" href="/report/verification">Открыть</a>
-                </div>
-            </div>
-          </div>
-        </div>
+      </div>
+
+
     </div>
   </div>
 </body>
+
 </html>

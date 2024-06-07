@@ -1,8 +1,8 @@
 package main.service.implementations;
 
 
-import main.dto.OrganizationDto;
-import main.dto.mappers.OrganizationDtoMapper;
+import main.dto.rest.OrganizationDto;
+import main.dto.rest.mappers.OrganizationDtoMapper;
 import main.model.Organization;
 import main.repository.OrganizationRepository;
 import main.service.ServiceMessage;

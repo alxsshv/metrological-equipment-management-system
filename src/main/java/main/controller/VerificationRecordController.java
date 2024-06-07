@@ -1,6 +1,6 @@
 package main.controller;
 
-import main.dto.VerificationRecordDto;
+import main.dto.rest.VerificationRecordDto;
 import main.service.implementations.VerificationRecordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

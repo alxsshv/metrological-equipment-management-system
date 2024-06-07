@@ -2,7 +2,7 @@ package main.controller;
 
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
-import main.dto.EmployeeDto;
+import main.dto.rest.EmployeeDto;
 import main.service.implementations.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;

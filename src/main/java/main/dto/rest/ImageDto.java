@@ -1,22 +1,19 @@
-package main.dto;
+package main.dto.rest;
+
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import java.time.LocalDateTime;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class DocumentDto {
-
+public class ImageDto {
     private long id;
-    private String originalFilename;
     private String storageFileName;
     private String description;
     private String extension;
     private String categoryName;
     private long categoryId;
-    private LocalDateTime uploadingDate;
-    private LocalDateTime updatingDate;
+    private String uploadingDate;
 }

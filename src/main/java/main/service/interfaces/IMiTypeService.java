@@ -1,7 +1,7 @@
 package main.service.interfaces;
 
-import main.dto.MiTypeDto;
-import main.dto.MiTypeFullDto;
+import main.dto.rest.MiTypeDto;
+import main.dto.rest.MiTypeFullDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;

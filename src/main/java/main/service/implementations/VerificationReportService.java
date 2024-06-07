@@ -1,8 +1,10 @@
 package main.service.implementations;
 
-import main.dto.VerificationReportDto;
-import main.dto.VerificationReportFullDto;
-import main.dto.mappers.VerificationReportDtoMapper;
+import main.dto.rest.VerificationReportDto;
+import main.dto.rest.VerificationReportFullDto;
+import main.dto.rest.mappers.VerificationRecordDtoMapper;
+import main.dto.rest.mappers.VerificationReportDtoMapper;
+import main.model.VerificationRecord;
 import main.model.VerificationReport;
 import main.repository.VerificationReportRepository;
 import main.service.ServiceMessage;
@@ -33,6 +35,33 @@ public class VerificationReportService {
         }
         VerificationReport report = VerificationReportDtoMapper.mapToEntity(reportDto);
         reportRepository.save(report);
+        String okMessage = "Отчет о поверке сохранен";
+        log.info(okMessage);
+        return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
+    }
+
+    public ResponseEntity<?> update(VerificationReportFullDto reportDto){
+        String errorMessage = checkVerificationReportDtoComposition(reportDto);
+        if (!errorMessage.isEmpty()) {
+            log.info(errorMessage);
+            return ResponseEntity.status(422).body(
+                    new ServiceMessage(errorMessage));
+        }
+        Optional<VerificationReport> reportFromDBOpt = reportRepository.findById(reportDto.getId());
+        if(reportFromDBOpt.isEmpty()){
+            errorMessage = "Отчет для обновления не найден";
+            log.info(errorMessage + " id = " + reportDto.getId());
+            return ResponseEntity.status(404).body(
+                    new ServiceMessage(errorMessage));
+        }
+        VerificationReport reportFromDb = reportFromDBOpt.get();
+        reportDto.getRecords().forEach(recordDto -> {
+            VerificationRecord record = VerificationRecordDtoMapper.mapToEntity(recordDto);
+            if (!reportFromDb.getRecords().contains(record)){
+                reportFromDb.addRecord(record);
+            }
+        });
+        reportRepository.save(reportFromDb);
         String okMessage = "Отчет о поверке сохранен";
         log.info(okMessage);
         return ResponseEntity.ok().body(new ServiceMessage(okMessage));

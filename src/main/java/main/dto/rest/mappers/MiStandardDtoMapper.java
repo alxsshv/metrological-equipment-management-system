@@ -1,7 +1,9 @@
-package main.dto.mappers;
+package main.dto.rest.mappers;
 
-import main.dto.MiStandardDto;
+import main.dto.rest.MiStandardDto;
 import main.model.MiStandard;
+
+import static main.dto.rest.mappers.utils.DateStringConverter.getISOStringOrNull;
 
 public class MiStandardDtoMapper {
     public static MiStandardDto mapToDto(MiStandard standard){
@@ -14,10 +16,12 @@ public class MiStandardDtoMapper {
         dto.setSchemaNotation(standard.getSchemaNotation());
         dto.setLevel(standard.getLevel());
         dto.setStateStandardNumber(standard.getStateStandardNumber());
-        dto.setCreationDateTime(standard.getCreationDateTime().toString());
-        dto.setUpdatingDateTime(standard.getUpdatingDateTime().toString());
+        dto.setCreationDateTime(getISOStringOrNull(standard.getCreationDateTime()));
+        dto.setUpdatingDateTime(getISOStringOrNull(standard.getUpdatingDateTime()));
         return dto;
     }
+
+
 
     public static MiStandard mapToEntity(MiStandardDto dto){
         MiStandard standard = new MiStandard();

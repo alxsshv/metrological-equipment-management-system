@@ -1,6 +1,6 @@
 package main.service.interfaces;
 
-import main.dto.DocumentDto;
+import main.dto.rest.DocumentDto;
 import main.service.Category;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;

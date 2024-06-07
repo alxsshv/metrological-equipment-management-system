@@ -1,4 +1,4 @@
-package main.dto;
+package main.dto.rest;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -7,7 +7,6 @@ import main.model.Employee;
 import main.model.MeasurementInstrument;
 import main.model.MiStandard;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,8 +16,8 @@ import java.util.List;
 public class VerificationRecordDto {
     private long id;
     private int verificationType; // 1 - первичная, 2 - периодическая
-    private LocalDate verificationDate;
-    private LocalDate validDate;
+    private String verificationDate;
+    private String validDate;
     private boolean applicable;
     private double temperature; //deg. Celseus
     private double pressure; //kPa

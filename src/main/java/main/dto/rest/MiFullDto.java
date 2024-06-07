@@ -1,12 +1,10 @@
-package main.dto;
+package main.dto.rest;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main.model.MiType;
 import main.model.Organization;
-
-import java.time.LocalDate;
 
 
 @NoArgsConstructor
@@ -19,10 +17,10 @@ public class MiFullDto {
     private String modification;
     private String serialNum;
     private String inventoryNum;
-    private LocalDate manufactureDate;
-    private LocalDate startUseDate;
-    private LocalDate verificationDate;
-    private LocalDate validDate;
+    private String manufactureDate;
+    private String startUseDate;
+    private String verificationDate;
+    private String validDate;
     private boolean applicable;
     private Organization owner;
     private String user;

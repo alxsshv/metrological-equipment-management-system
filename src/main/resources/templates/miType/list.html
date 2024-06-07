@@ -60,8 +60,8 @@
                     <td>{{miType.title}}</td>
                     <td>{{miType.notation}}</td>
                     <td>{{miType.verificationPeriod}}</td>
-                    <td>{{miType.startDate | date:"dd.MM.yyyy"}}</td>
-                    <td>{{miType.endDate | date:"dd.MM.yyyy"}}</td>
+                    <td>{{miType.startDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
+                    <td>{{miType.endDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
                             ng-click="getDeleteableId(miType.id)" type="button">Удалить</button></td>
                 </tr>

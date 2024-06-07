@@ -1,7 +1,8 @@
-package main.dto.mappers;
+package main.dto.rest.mappers;
 
-import main.dto.MiTypeDto;
-import main.dto.MiTypeFullDto;
+import main.dto.rest.MiTypeDto;
+import main.dto.rest.MiTypeFullDto;
+import main.dto.rest.mappers.utils.DateStringConverter;
 import main.model.MiType;
 import main.model.MiTypeInstruction;
 import main.model.MiTypeModification;
@@ -17,8 +18,8 @@ public class MiTypeDtoMapper {
         dto.setNumber(type.getNumber());
         dto.setNotation(type.getNotation());
         dto.setTitle(type.getTitle());
-        dto.setStartDate(type.getStartDate());
-        dto.setEndDate(type.getEndDate());
+        dto.setStartDate(DateStringConverter.getStringOrNull(type.getStartDate()));
+        dto.setEndDate(DateStringConverter.getStringOrNull(type.getEndDate()));
         dto.setVerificationPeriod(type.getVerificationPeriod());
         return dto;
     }
@@ -31,8 +32,8 @@ public class MiTypeDtoMapper {
         dto.setTitle(instruction.getMiType().getTitle());
         dto.setMiTitleTemplate(instruction.getMiType().getMiTitleTemplate());
         dto.setModifications(instruction.getMiType().getModifications().stream().map(MiTypeModification::getNotation).toList());
-        dto.setStartDate(instruction.getMiType().getStartDate());
-        dto.setEndDate(instruction.getMiType().getEndDate());
+        dto.setStartDate(DateStringConverter.getStringOrNull(instruction.getMiType().getStartDate()));
+        dto.setEndDate(DateStringConverter.getStringOrNull(instruction.getMiType().getEndDate()));
         dto.setVerificationPeriod(instruction.getMiType().getVerificationPeriod());
         dto.setInstructionTitle(instruction.getInstructionTitle());
         dto.setInstructionNotation(instruction.getInstructionNotation());
@@ -71,8 +72,8 @@ public class MiTypeDtoMapper {
         type.setTitle(fullDto.getTitle());
         type.setMiTitleTemplate(fullDto.getMiTitleTemplate());
         type.setModifications(getModifications(fullDto));
-        type.setStartDate(fullDto.getStartDate());
-        type.setEndDate(fullDto.getEndDate());
+        type.setStartDate(DateStringConverter.parseLocalDateOrGetNull(fullDto.getStartDate()));
+        type.setEndDate(DateStringConverter.parseLocalDateOrGetNull(fullDto.getEndDate()));
         type.setVerificationPeriod(fullDto.getVerificationPeriod());
         return type;
     }

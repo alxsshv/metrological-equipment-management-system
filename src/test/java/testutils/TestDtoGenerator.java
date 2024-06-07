@@ -1,9 +1,9 @@
 package testutils;
 
-import main.dto.EmployeeDto;
-import main.dto.MiFullDto;
-import main.dto.MiTypeFullDto;
-import main.dto.OrganizationDto;
+import main.dto.rest.EmployeeDto;
+import main.dto.rest.MiFullDto;
+import main.dto.rest.MiTypeFullDto;
+import main.dto.rest.OrganizationDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

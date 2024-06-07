@@ -58,12 +58,12 @@
                     <div class="col-md-12">
                         <label for="inputDate1" class="form-label">Дата начала срока действия</label>
                         <input type="date" ng-model="miType.startDate " ng-model-options="{timezone: 'UTC'}"
-                            class="form-control" id="inputDate1" value="${{startDate | date: dd:MM:yyyy}}">
+                            class="form-control" id="inputDate1" value="${{startDate | date: dd:MM:yyyy : 'UTC'}}">
                     </div>
                     <div class="col-md-12">
                         <label for="inputDate2" class="form-label">Дата окончания срока действия</label>
                         <input type="date" ng-model="miType.endDate" ng-model-options="{timezone: 'UTC'}" class="form-control"
-                            id="inputDate2" value="${{endDate | date: dd:MM:yyyy}}">
+                            id="inputDate2" value="${{endDate | date: dd:MM:yyyy : 'UTC'}}">
                     </div>
                 </div>
             </div>

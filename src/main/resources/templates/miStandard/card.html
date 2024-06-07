@@ -57,11 +57,11 @@
 
                     <dt class="col-sm-6">Дата поверки</dt>
                     <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.verificationDate | date:
-                        "dd.MM.yyyy"}}</dd>
+                        "dd.MM.yyyy" : 'UTC'}}</dd>
 
                     <dt class="col-sm-6">Действительно до</dt>
                     <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.validDate | date:
-                        "dd.MM.yyyy"}}</dd>
+                        "dd.MM.yyyy" : 'UTC'}}</dd>
 
                     <dt class="col-sm-6 ">Пригодность</dt>
                     <dd ng-model="type" class="col-sm-6">{{applicable.title}}</dd>
@@ -111,10 +111,10 @@
         <div class="row text-start">
             <div class="col-sm-6">
                 <dt class="col-sm-6"><i>Запись создана</i></dt>
-                <dd class="col-sm-6"><i>{{miStandard.creationDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+                <dd class="col-sm-6"><i>{{miStandard.creationDateTime | date: "dd.MM.yyyy HH:mm" : 'UTC'}}</i></dd>
 
                 <dt class="col-sm-3"><i>Запись обновлена</i></dt>
-                <dd class="col-sm-3"><i>{{miStandard.updatingDateTime | date: "dd.MM.yyyy HH:mm"}}</i></dd>
+                <dd class="col-sm-3"><i>{{miStandard.updatingDateTime | date: "dd.MM.yyyy HH:mm" : 'UTC'}}</i></dd>
             </div>
         </div>
     </div>

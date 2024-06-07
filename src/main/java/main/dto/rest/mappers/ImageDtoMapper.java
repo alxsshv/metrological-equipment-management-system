@@ -1,7 +1,8 @@
-package main.dto.mappers;
+package main.dto.rest.mappers;
 
 
-import main.dto.ImageDto;
+import main.dto.rest.ImageDto;
+import main.dto.rest.mappers.utils.DateStringConverter;
 import main.model.Image;
 
 public class ImageDtoMapper {
@@ -13,7 +14,7 @@ public class ImageDtoMapper {
         dto.setStorageFileName(image.getStorageFileName());
         dto.setCategoryName(image.getCategoryName());
         dto.setCategoryId(image.getCategoryId());
-        dto.setUploadingDate(image.getUploadingDate());
+        dto.setUploadingDate(DateStringConverter.getISOStringOrNull(image.getUploadingDate()));
         return dto;
     }
 

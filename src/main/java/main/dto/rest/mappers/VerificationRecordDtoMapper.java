@@ -1,7 +1,8 @@
-package main.dto.mappers;
+package main.dto.rest.mappers;
 
 
-import main.dto.VerificationRecordDto;
+import main.dto.rest.VerificationRecordDto;
+import main.dto.rest.mappers.utils.DateStringConverter;
 import main.model.VerificationRecord;
 
 
@@ -11,8 +12,8 @@ public class VerificationRecordDtoMapper {
         record.setId(dto.getId());
         record.setMi(dto.getMi());
         record.setVerificationType(dto.getVerificationType());
-        record.setVerificationDate(dto.getVerificationDate());
-        record.setValidDate(dto.getValidDate());
+        record.setVerificationDate(DateStringConverter.parseLocalDateOrGetNull(dto.getVerificationDate()));
+        record.setValidDate(DateStringConverter.parseLocalDateOrGetNull(dto.getValidDate()));
         record.setApplicable(dto.isApplicable());
         record.setTemperature(dto.getTemperature());
         record.setHumidity(dto.getHumidity());
@@ -30,8 +31,8 @@ public class VerificationRecordDtoMapper {
         VerificationRecordDto dto = new VerificationRecordDto();
         dto.setId(record.getId());
         dto.setVerificationType(record.getVerificationType());
-        dto.setVerificationDate(record.getVerificationDate());
-        dto.setValidDate(record.getValidDate());
+        dto.setVerificationDate(DateStringConverter.getStringOrNull(record.getVerificationDate()));
+        dto.setValidDate(DateStringConverter.getStringOrNull(record.getValidDate()));
         dto.setApplicable(record.isApplicable());
         dto.setTemperature(record.getTemperature());
         dto.setHumidity(record.getHumidity());

@@ -1,6 +1,6 @@
 package main.service.interfaces;
 
-import main.dto.VerificationRecordDto;
+import main.dto.rest.VerificationRecordDto;
 import org.springframework.http.ResponseEntity;
 
 public interface IVerificationRecordService {

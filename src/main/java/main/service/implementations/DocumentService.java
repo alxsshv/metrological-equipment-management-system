@@ -1,7 +1,7 @@
 package main.service.implementations;
 
-import main.dto.DocumentDto;
-import main.dto.mappers.DocumentDtoMapper;
+import main.dto.rest.DocumentDto;
+import main.dto.rest.mappers.DocumentDtoMapper;
 import main.model.Document;
 import main.repository.DocumentRepository;
 import main.service.Category;
