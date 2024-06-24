@@ -1,5 +1,6 @@
 package main.service.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
 import main.dto.rest.ImageDto;
 import main.dto.rest.mappers.ImageDtoMapper;
 import main.model.Image;
@@ -21,45 +22,64 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
 @Service
 public class ImageService implements IImageService {
     private final static Logger log = LoggerFactory.getLogger(ImageService.class);
-    @Value("${upload.images.path}")
     private String imageUploadPath;
     private final ImageRepository imageRepository;
+
 
     public ImageService(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
     }
+
+    @Value("${upload.images.path}")
+    public void setImageUploadPath(String imageUploadPath) {
+        this.imageUploadPath = imageUploadPath;
+    }
+
     @Override
     public void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
         for (int i = 0; i < files.length; i++) {
             addImage(files[i], descriptions[i], category, categoryId);
         }
     }
+
     private void createFolderIfNotExist(){
         File uploadFolder = new File(imageUploadPath);
         if (!uploadFolder.exists()){
             uploadFolder.mkdir();
         }
     }
-@Override
+
+    @Override
     public ResponseEntity<?> delete(long id) throws IOException {
+        try {
+            Image image = getImageById(id);
+            Files.deleteIfExists(Path.of(imageUploadPath + "/" + image.getStorageFileName()));
+            imageRepository.delete(image);
+            String okMessage = "Файл " + image.getStorageFileName() + " успешно удален";
+            log.info(okMessage);
+            return ResponseEntity.ok(new ServiceMessage(okMessage));
+        } catch (EntityNotFoundException ex){
+            log.info(ex.getMessage());
+            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
+        } catch (IOException ex) {
+            log.error(ex.getMessage());
+            return ResponseEntity.status(500).body(new ServiceMessage("Ошибка удаления файла "));
+        }
+    }
+
+    @Override
+    public Image getImageById(long id) {
         Optional<Image> imageOpt = imageRepository.findById(id);
         if (imageOpt.isEmpty()){
-            String errorMessage = "Удаляемый файл не найден";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+            throw new EntityNotFoundException("Изображение  № "+ id +" не найдено");
         }
-        Image image = imageOpt.get();
-        Files.deleteIfExists(Path.of(imageUploadPath + "/" + image.getStorageFileName()));
-        imageRepository.delete(imageOpt.get());
-        String okMessage ="Файл " + image.getStorageFileName() + " успешно удален";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
+        return imageOpt.get();
     }
-@Override
+
+    @Override
     public void deleteAll(Category category, long categoryId) throws IOException {
         List<Image> images = imageRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
         for (Image image : images){
@@ -88,7 +108,6 @@ public class ImageService implements IImageService {
                 imageRepository.save(image);
                 log.info("Файл " + filename + " успешно загружен на сервер");
         }
-
     }
 
     @Override

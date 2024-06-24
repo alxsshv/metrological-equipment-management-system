@@ -17,6 +17,7 @@ public class VerificationRecordDtoMapper {
         record.setApplicable(dto.isApplicable());
         record.setTemperature(dto.getTemperature());
         record.setHumidity(dto.getHumidity());
+        record.setInapplicableReason(dto.getInapplicableReason());
         record.setPressure(dto.getPressure());
         record.setArshinVerificationNumber(dto.getArshinVerificationNumber());
         record.setMi(dto.getMi());
@@ -34,6 +35,7 @@ public class VerificationRecordDtoMapper {
         dto.setVerificationDate(DateStringConverter.getStringOrNull(record.getVerificationDate()));
         dto.setValidDate(DateStringConverter.getStringOrNull(record.getValidDate()));
         dto.setApplicable(record.isApplicable());
+        dto.setInapplicableReason(record.getInapplicableReason());
         dto.setTemperature(record.getTemperature());
         dto.setHumidity(record.getHumidity());
         dto.setPressure(record.getPressure());

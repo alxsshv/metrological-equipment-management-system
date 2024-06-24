@@ -1,13 +1,20 @@
 package main.service.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
 import main.dto.rest.MiStandardDto;
 import main.dto.rest.mappers.MiStandardDtoMapper;
+import main.exception.DtoCompositionException;
+import main.exception.EntityAlreadyExistException;
+import main.exception.ParameterNotValidException;
 import main.model.MeasurementInstrument;
 import main.model.MiStandard;
-import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiStandardRepository;
 import main.service.Category;
 import main.service.ServiceMessage;
+import main.service.interfaces.IMeasurementInstrumentService;
 import main.service.interfaces.IMiStandardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,57 +27,59 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+@AllArgsConstructor
+@Getter
+@Setter
 @Service
 public class MiStandardService implements IMiStandardService {
     private final static Logger log = LoggerFactory.getLogger(MiStandardService.class);
     private final MiStandardRepository miStandardRepository;
-    private final MeasurementInstrumentRepository miRepository;
+    private final IMeasurementInstrumentService measurementInstrumentService;
     private final FileService fileService;
 
-    public MiStandardService(MiStandardRepository miStandardRepository, MeasurementInstrumentRepository miRepository, FileService fileService) {
-        this.miStandardRepository = miStandardRepository;
-        this.miRepository = miRepository;
-        this.fileService = fileService;
-    }
 
     @Override
     public ResponseEntity<?> save(MiStandardDto miStandardDto, MultipartFile[] files, String[] descriptions) throws IOException {
-        String errorMessage = checkMiStandardDtoComposition(miStandardDto);
-        if (!errorMessage.isEmpty()) {
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
+        try {
+            checkMiStandardDtoComposition(miStandardDto);
+            checkIfEntityAlreadyExist(miStandardDto.getArshinNumber());
+            MeasurementInstrument parentMi = getParentMi(miStandardDto.getMeasurementInstrument().getId());
+            MiStandard standard = MiStandardDtoMapper.mapToEntity(miStandardDto);
+            standard.setMeasurementInstrument(parentMi);
+            MiStandard savedMiStandard = miStandardRepository.save(standard);
+            uploadFilesIfFilesExist(files, descriptions, savedMiStandard.getId());
+            String okMessage = "Запись об эталоне № " + miStandardDto.getArshinNumber() + " успешно добавлена";
+            log.info(okMessage);
+            return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
+        } catch(EntityAlreadyExistException | EntityNotFoundException | DtoCompositionException ex) {
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(
+                    new ServiceMessage(ex.getMessage()));
         }
-        MiStandard miStandardFromDb = miStandardRepository.findByArshinNumber(miStandardDto.getArshinNumber());
-        if (miStandardFromDb != null){
-            errorMessage = "Запись об эталоне с номером " + miStandardDto.getArshinNumber() + " уже существует";
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
-        }
-        MiStandard standard = MiStandardDtoMapper.mapToEntity(miStandardDto);
-        Optional<MeasurementInstrument> parentMiOpt = miRepository.findById(standard.getMeasurementInstrument().getId());
-        if (parentMiOpt.isEmpty()){
-            errorMessage = "Выбранное в качестве эталона средство измерений не найдено";
-            log.info(errorMessage);
-            return ResponseEntity.status(500).body(new ServiceMessage(errorMessage));
-        }
-        standard.setMeasurementInstrument(parentMiOpt.get());
-        MiStandard savedMiStandard = miStandardRepository.save(standard);
-        uploadFilesIfFilesExist(files, descriptions, savedMiStandard.getId());
-        String okMessage = "Запись об эталоне № " + miStandardDto.getArshinNumber() + " успешно добавлена";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
-    private String checkMiStandardDtoComposition(MiStandardDto dto){
+    private void checkMiStandardDtoComposition(MiStandardDto dto) throws DtoCompositionException {
         if (dto.getMeasurementInstrument() == null) {
-            return "Некорректно указано средство измерений, применяемой в качестве эталона";
+            throw new DtoCompositionException("Некорректно указано средство измерений, применяемое в качестве эталона");
         }
         if (dto.getArshinNumber() == null || dto.getArshinNumber().isEmpty()){
-            return "Пожалуйста укажите регистрационный номер эталона в ФГИС\"Аршин\"";
+            throw new DtoCompositionException("Пожалуйста укажите регистрационный номер эталона в ФГИС\"Аршин\"");
         }
-        return "";
+    }
+
+    private void checkIfEntityAlreadyExist(String arshinNumber) throws EntityAlreadyExistException {
+        MiStandard miStandardFromDb = miStandardRepository.findByArshinNumber(arshinNumber);
+        if (miStandardFromDb != null){
+            throw new EntityAlreadyExistException("Запись об эталоне с номером " + arshinNumber + " уже существует");
+        }
+    }
+
+    private MeasurementInstrument getParentMi(long parentMiId){
+        try {
+            return measurementInstrumentService.getMiById(parentMiId);
+        } catch (EntityNotFoundException ex){
+            throw new EntityNotFoundException("Выбранное в качестве эталона средство измерений не найдено");
+        }
     }
 
     private void uploadFilesIfFilesExist(MultipartFile[] files, String[] descriptions, Long categoryId) throws IOException {
@@ -79,52 +88,25 @@ public class MiStandardService implements IMiStandardService {
         }
     }
 
-    @Override
-    public ResponseEntity<?> update(MiStandardDto miStandardDto){
-        String errorMessage = checkMiStandardDtoComposition(miStandardDto);
-        if (!errorMessage.isEmpty()) {
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
-        }
-        Optional<MiStandard> miStandardOpt = miStandardRepository.findById(miStandardDto.getId());
-        if (miStandardOpt.isEmpty()){
-            errorMessage = "Запись об эталоне № " + miStandardDto.getArshinNumber() + " не найдена";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
-        }
-        MiStandard updateData = MiStandardDtoMapper.mapToEntity(miStandardDto);
-        MiStandard standardFromDB = miStandardOpt.get();
-        standardFromDB.updateFrom(updateData);
-        miStandardRepository.save(standardFromDB);
-        String okMessage ="Cведения об эталоне № " + miStandardDto.getArshinNumber() +  " обновлены";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
-    }
-
-    @Override
-    public ResponseEntity<?>delete(long id){
-        Optional<MiStandard> miStandardOpt = miStandardRepository.findById(id);
-        if (miStandardOpt.isEmpty()){
-            String errorMessage = "Данные для удаления не найдены";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
-        }
-        miStandardRepository.delete(miStandardOpt.get());
-        String okMessage ="Запись об эталоне № " + miStandardOpt.get().getArshinNumber() + " успешно удалена";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
-    }
 
     @Override
     public ResponseEntity<?> findById(long id) {
-        Optional<MiStandard> miStandardOpt = miStandardRepository.findById(id);
-        if (miStandardOpt.isEmpty()) {
-            String okMessage ="Запись об эталоне № " + id + " не найдена";
-            log.info(okMessage);
-            return ResponseEntity.notFound().build();
+        try {
+            MiStandard miStandard = getMiStandardById(id);
+            MiStandardDto miStandardDto = MiStandardDtoMapper.mapToDto(miStandard);
+            return ResponseEntity.ok(miStandardDto);
+        } catch (EntityNotFoundException ex){
+            log.info(ex.getMessage());
+            return ResponseEntity.status(404).body(ex.getMessage());
         }
-        MiStandardDto miStandardDto = MiStandardDtoMapper.mapToDto(miStandardOpt.get());
-        return ResponseEntity.ok(miStandardDto);
+    }
+
+    public MiStandard getMiStandardById(long id){
+        Optional<MiStandard> miStandardOpt = miStandardRepository.findById(id);
+        if (miStandardOpt.isEmpty()){
+            throw new EntityNotFoundException("Запись об эталоне № " + id + " не найдена");
+        }
+        return miStandardOpt.get();
     }
 
     @Override
@@ -140,28 +122,37 @@ public class MiStandardService implements IMiStandardService {
 
     @Override
     public ResponseEntity<?> findBySearchString(String searchString, Pageable pageable) {
-        if (searchString == null || searchString.isEmpty()){
-            String errorMessage = "Поле для поиска не может быть пустым";
-            log.info(errorMessage);
-            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        try {
+            validateSearchString(searchString);
+            Page<MiStandardDto> page = miStandardRepository
+                    .findByArshinNumberContainingOrSchemaTitleContaining(searchString.trim(), searchString.trim(), pageable)
+                    .map(MiStandardDtoMapper::mapToDto);
+            return ResponseEntity.ok(page);
+        } catch (ParameterNotValidException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
         }
-        Page<MiStandardDto> page =  miStandardRepository
-                .findByArshinNumberContainingOrSchemaTitleContaining(searchString.trim(),searchString.trim(), pageable)
-                .map(MiStandardDtoMapper::mapToDto);
-        return ResponseEntity.ok(page);
     }
 
-
+@Override
     public ResponseEntity<?> findBySearchString(String searchString) {
-        if (searchString == null || searchString.isEmpty()){
-            String errorMessage = "Поле для поиска не может быть пустым";
-            log.info(errorMessage);
-            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        try {
+            validateSearchString(searchString);
+            List<MiStandardDto> dtos = miStandardRepository
+                    .findByArshinNumberContainingOrSchemaTitleContaining(searchString.trim(), searchString.trim())
+                    .stream().map(MiStandardDtoMapper::mapToDto).toList();
+            return ResponseEntity.ok(dtos);
+        } catch (ParameterNotValidException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
         }
-        List<MiStandardDto> dtos =  miStandardRepository
-                .findByArshinNumberContainingOrSchemaTitleContaining(searchString.trim(),searchString.trim())
-                .stream().map(MiStandardDtoMapper::mapToDto).toList();
-        return ResponseEntity.ok(dtos);
+
+    }
+
+    private void validateSearchString(String searchString) throws ParameterNotValidException {
+        if (searchString == null || searchString.isEmpty()) {
+            throw new ParameterNotValidException("Поле для поиска не может быть пустым");
+        }
     }
 
 
@@ -173,6 +164,31 @@ public class MiStandardService implements IMiStandardService {
     @Override
     public List<MiStandardDto> findAll() {
         return miStandardRepository.findAll().stream().map(MiStandardDtoMapper ::mapToDto).toList();
+    }
+
+    @Override
+    public ResponseEntity<?> update(MiStandardDto miStandardDto){
+        try {
+            checkMiStandardDtoComposition(miStandardDto);
+            MiStandard standardFromDB = getMiStandardById(miStandardDto.getId());
+            MiStandard updateData = MiStandardDtoMapper.mapToEntity(miStandardDto);
+            standardFromDB.updateFrom(updateData);
+            miStandardRepository.save(standardFromDB);
+            String okMessage = "Cведения об эталоне № " + miStandardDto.getArshinNumber() + " обновлены";
+            log.info(okMessage);
+            return ResponseEntity.ok(new ServiceMessage(okMessage));
+        } catch (EntityNotFoundException | DtoCompositionException ex){
+            log.info(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?>delete(long id){
+        miStandardRepository.deleteById(id);
+        String okMessage ="Запись об эталоне № " + id + " успешно удалена";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
 }

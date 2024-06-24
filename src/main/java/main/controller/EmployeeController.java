@@ -3,7 +3,7 @@ package main.controller;
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.EmployeeDto;
-import main.service.implementations.EmployeeService;
+import main.service.interfaces.IEmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
     @Autowired
-    private EmployeeService employeeService;
+    private IEmployeeService employeeService;
 
     @GetMapping("/pages")
     public Page<EmployeeDto> getEmployeePageableList(
@@ -32,7 +32,7 @@ public class EmployeeController {
 
     @GetMapping("/pages/search")
     public ResponseEntity<?>  searchEmployeeWithPages(
-            @RequestParam(value = "search", required = true) String surname){
+            @RequestParam(value = "search") String surname){
         Pageable pageable = PageRequest.of(0,10,Sort.by(Sort.Direction.ASC,"surname"));
         return employeeService.findBySurname(surname,pageable);
     }

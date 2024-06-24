@@ -1,8 +1,9 @@
 package main.service.implementations;
 
-import main.dto.MiDto;
-import main.dto.MiFullDto;
-import main.dto.mappers.MeasurementInstrumentMapper;
+import jakarta.persistence.EntityNotFoundException;
+import main.dto.rest.MiDto;
+import main.dto.rest.MiFullDto;
+import main.dto.rest.mappers.MeasurementInstrumentMapper;
 import main.model.MeasurementInstrument;
 import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiTypeRepository;
@@ -13,16 +14,16 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
-import testutils.TestDtoGenerator;
-import testutils.TestEntityGenerator;
+
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static testutils.TestEntityGenerator.*;
 
 public class MeasurementInstrumentServiceTest {
     private final MeasurementInstrumentRepository miRepository = Mockito.mock(MeasurementInstrumentRepository.class);
@@ -31,6 +32,8 @@ public class MeasurementInstrumentServiceTest {
     private final FileService fileService = Mockito.mock(FileService.class);
     private final Pageable pageable = PageRequest.of(1, 10,
             Sort.by(Sort.Direction.ASC, "modification","serialNum"));
+    private final MultipartFile[] files = {};
+    private final String[] descriptions = {};
 
     public MeasurementInstrumentService measurementInstrumentService =
             new MeasurementInstrumentService(miRepository, organizationRepository, miTypeRepository, fileService);
@@ -39,18 +42,15 @@ public class MeasurementInstrumentServiceTest {
     @Test
     @DisplayName("Test save if created new measurement instrument")
     public void testSaveIfCreatedNewMeasurementInstrument() throws IOException {
-        long miId = 1L;
-        MiFullDto miFullDto = TestDtoGenerator.generateMeasurementInstrumentFullDto(miId);
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(1L);
         when(miTypeRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getMiType()));
         when(organizationRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getOwner()));
         when(miRepository.findByModificationAndSerialNum(miFullDto.getModification(), miFullDto.getSerialNum()))
                 .thenReturn(null);
         MeasurementInstrument mi = MeasurementInstrumentMapper.mapToEntity(miFullDto);
         when(miRepository.save(any(MeasurementInstrument.class))).thenReturn(mi);
-        MultipartFile[] files = {};
-        String[] descriptions = {};
         ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
-        assertEquals("200 OK", responseEntity.getStatusCode().toString());
+        assertEquals("201 CREATED", responseEntity.getStatusCode().toString());
         verify(miRepository, times(1))
                 .findByModificationAndSerialNum(miFullDto.getModification(), miFullDto.getSerialNum());
         verify(miRepository, times(1)).save(any(MeasurementInstrument.class));
@@ -59,34 +59,24 @@ public class MeasurementInstrumentServiceTest {
     @Test
     @DisplayName("Test save if measurement instrument already exist")
     public void testSaveIfMeasurementInstrumentAlreadyExist() throws IOException {
-        long miId = 1L;
-        MiFullDto miFullDto = TestDtoGenerator.generateMeasurementInstrumentFullDto(miId);
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(1L);
         when(miTypeRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getMiType()));
         when(organizationRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getOwner()));
         MeasurementInstrument mi = MeasurementInstrumentMapper.mapToEntity(miFullDto);
         when(miRepository.findByModificationAndSerialNum(miFullDto.getModification(), miFullDto.getSerialNum()))
                 .thenReturn(mi);
-        MultipartFile[] files = {};
-        String[] descriptions = {};
         ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test save if modification is empty")
     public void testSaveIfModificationIsEmpty() throws IOException {
-        long miId = 1L;
-        MiFullDto miFullDto = new MiFullDto();
-        miFullDto.setId(miId);
-        miFullDto.setSerialNum("SN1");
-        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
-        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
-        miFullDto.setUser("User");
-        MultipartFile[] files = {};
-        String[] descriptions = {};
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(1L);
+        miFullDto.setModification(null);
         ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
@@ -94,50 +84,30 @@ public class MeasurementInstrumentServiceTest {
     @DisplayName("Test save if serial number is empty")
     public void testSaveIfSerialNumberIsEmpty() throws IOException {
         long miId = 1L;
-        MiFullDto miFullDto = new MiFullDto();
-        miFullDto.setId(miId);
-        miFullDto.setModification("В7-78/1");
-        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
-        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
-        miFullDto.setUser("User");
-        MultipartFile[] files = {};
-        String[] descriptions = {};
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(miId);
+        miFullDto.setSerialNum("");
         ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test save if miType is empty")
     public void testSaveIfMiTypeIsEmpty() throws IOException {
-        long miId = 1L;
-        MiFullDto miFullDto = new MiFullDto();
-        miFullDto.setId(miId);
-        miFullDto.setModification("В7-78/1");
-        miFullDto.setSerialNum("SN1");
-        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
-        miFullDto.setUser("User");
-        MultipartFile[] files = {};
-        String[] descriptions = {};
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(1L);
+        miFullDto.setMiType(null);
         ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test save if owner is empty")
     public void testSaveIfOwnerIsEmpty() throws IOException {
-        long miId = 1L;
-        MiFullDto miFullDto = new MiFullDto();
-        miFullDto.setId(miId);
-        miFullDto.setModification("В7-78/1");
-        miFullDto.setSerialNum("SN1");
-        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
-        miFullDto.setUser("User");
-        MultipartFile[] files = {};
-        String[] descriptions = {};
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(1L);
+        miFullDto.setOwner(null);
         ResponseEntity<?> responseEntity = measurementInstrumentService.save(miFullDto,files,descriptions);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
@@ -145,12 +115,12 @@ public class MeasurementInstrumentServiceTest {
     @DisplayName("Test update if updated measurement instrument not found")
     public void testUpdateIfUpdatedMeasurementInstrumentNotFound(){
         long miId = 1L;
-        MiFullDto miFullDto = TestDtoGenerator.generateMeasurementInstrumentFullDto(miId);
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(miId);
         when(miTypeRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getMiType()));
         when(organizationRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getOwner()));
         when(miRepository.findById(miId)).thenReturn(Optional.empty());
         ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
-        assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, times(1)).findById(miId);
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
@@ -159,7 +129,7 @@ public class MeasurementInstrumentServiceTest {
     @DisplayName("Test update if updated measurement instrument found")
     public void testUpdateIfUpdatedMeasurementInstrumentFound(){
         long miId = 1L;
-        MiFullDto miFullDto = TestDtoGenerator.generateMeasurementInstrumentFullDto(miId);
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(miId);
         when(miTypeRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getMiType()));
         when(organizationRepository.findById(anyLong())).thenReturn(Optional.of(miFullDto.getOwner()));
         MeasurementInstrument measurementInstrument = MeasurementInstrumentMapper.mapToEntity(miFullDto);
@@ -173,85 +143,63 @@ public class MeasurementInstrumentServiceTest {
     @Test
     @DisplayName("Test update if modification is empty")
     public void testUpdateIfModificationIsEmpty(){
-        long miId = 1L;
-        MiFullDto miFullDto = new MiFullDto();
-        miFullDto.setId(miId);
-        miFullDto.setSerialNum("SN1");
-        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
-        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
-        miFullDto.setUser("User");
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(1L);
+        miFullDto.setModification(null);
         ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test update if serial number is empty")
     public void testUpdateIfSerialNumberIsEmpty(){
-        long miId = 1L;
-        MiFullDto miFullDto = new MiFullDto();
-        miFullDto.setId(miId);
-        miFullDto.setModification("В7-78/1");
-        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
-        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
-        miFullDto.setUser("User");
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(1L);
+        miFullDto.setSerialNum(null);
         ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test update if miType is empty")
     public void testUpdateIfMiTypeIsEmpty(){
-        long miId = 1L;
-        MiFullDto miFullDto = new MiFullDto();
-        miFullDto.setId(miId);
-        miFullDto.setModification("В7-78/1");
-        miFullDto.setSerialNum("SN1");
-        miFullDto.setOwner(TestEntityGenerator.generateOrganizationWithId(1L));
-        miFullDto.setUser("User");
+        MiFullDto miFullDto = generateMeasurementInstrumentFullDto(1L);
+        miFullDto.setMiType(null);
         ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
     @Test
     @DisplayName("Test update if owner is empty")
     public void testUpdateIfOwnerIsEmpty(){
-        long miId = 1L;
-        MiFullDto miFullDto = new MiFullDto();
-        miFullDto.setId(miId);
-        miFullDto.setModification("В7-78/1");
-        miFullDto.setSerialNum("SN1");
-        miFullDto.setMiType(TestEntityGenerator.generateMiTypeWithId(1L));
-        miFullDto.setUser("User");
+        MiFullDto miFullDto =generateMeasurementInstrumentFullDto(1L);
+        miFullDto.setOwner(null);
         ResponseEntity<?> responseEntity = measurementInstrumentService.update(miFullDto);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never()).save(any(MeasurementInstrument.class));
     }
 
 
-
+    @Test
+    @DisplayName("Test delete if Mi found")
+    public void testDeleteIfMeasurementInstrumentIsFound(){
+        long miId = 1L;
+        MeasurementInstrument mi = generateMeasurementInstrument(miId);
+        when(miRepository.findById(miId)).thenReturn(Optional.of(mi));
+        ResponseEntity<?> responseEntity = measurementInstrumentService.delete(miId);
+        assertEquals("200 OK", responseEntity.getStatusCode().toString());
+        verify(miRepository, times(1)).deleteById(miId);
+    }
 
     @Test
-    @DisplayName("Test delete if measurement instrument not found")
-    public void testDeleteIfMeasurementInstrumentNotFound(){
+    @DisplayName("Test delete if Mi not found")
+    public void testDeleteIfMeasurementInstrumentIsNotFound(){
         long miId = 1L;
         when(miRepository.findById(miId)).thenReturn(Optional.empty());
         ResponseEntity<?> responseEntity = measurementInstrumentService.delete(miId);
         assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
-        verify(miRepository, never()).delete(any(MeasurementInstrument.class));
-    }
-
-    @Test
-    @DisplayName("Test delete if measurement instrument is found")
-    public void testDeleteIfMeasurementInstrumentIsFound(){
-        long miId = 1L;
-        MeasurementInstrument mi = TestEntityGenerator.generateMeasurementInstrumentWithId(miId);
-        when(miRepository.findById(miId)).thenReturn(Optional.of(mi));
-        ResponseEntity<?> responseEntity = measurementInstrumentService.delete(miId);
-        assertEquals("200 OK", responseEntity.getStatusCode().toString());
-        verify(miRepository, times(1)).delete(mi);
+        verify(miRepository, never()).deleteById(miId);
     }
 
 
@@ -268,11 +216,34 @@ public class MeasurementInstrumentServiceTest {
     @DisplayName("Test findById if measurement instrument is found")
     public void testFindByIdIfMeasurementInstrumentIsFound(){
         long miId = 1L;
-        MeasurementInstrument mi = TestEntityGenerator.generateMeasurementInstrumentWithId(miId);
+        MeasurementInstrument mi = generateMeasurementInstrument(miId);
         when(miRepository.findById(miId)).thenReturn(Optional.of(mi));
         ResponseEntity<?> responseEntity = measurementInstrumentService.findById(miId);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
     }
+
+    @Test
+    @DisplayName("test getMiById if entity not found")
+    public void testGetMiByIdIfEntityNotFound() throws EntityNotFoundException {
+        long miStandardId = 1L;
+        when(miRepository.findById(miStandardId)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(EntityNotFoundException.class,
+                ()-> measurementInstrumentService.getMiById(miStandardId)) ;
+        assertEquals("Средство измерений № 1 не найдено",exception.getMessage());
+        verify(miRepository,times(1)).findById(miStandardId);
+    }
+
+    @Test
+    @DisplayName("test getMiById if entity found")
+    public void testGetMiByIdIfEntityFound() throws EntityNotFoundException {
+        long miStandardId = 1L;
+        MeasurementInstrument mi = generateMeasurementInstrument(miStandardId);
+        when(miRepository.findById(miStandardId)).thenReturn(Optional.of(mi));
+        MeasurementInstrument measurementInstrument = measurementInstrumentService.getMiById(miStandardId);
+        assertEquals(measurementInstrument, mi);
+        verify(miRepository,times(1)).findById(miStandardId);
+    }
+
 
     @Test
     @DisplayName("Test findBySearchString if searchString is empty")
@@ -289,9 +260,8 @@ public class MeasurementInstrumentServiceTest {
     @DisplayName("Test findBySearchString if searchString is not empty")
     public void testFindBySearchStringIfSearchStringIsNotEmpty(){
         String searchString = "В7-78";
-        MeasurementInstrument mi = TestEntityGenerator.generateMeasurementInstrumentWithId(1L);
-        List<MeasurementInstrument> mis = new ArrayList<>();
-        mis.add(mi);
+        MeasurementInstrument mi = generateMeasurementInstrument(1L);
+        List<MeasurementInstrument> mis = List.of(mi);
         long totalPages = 1L;
         Page<MeasurementInstrument> page = new PageImpl<>(mis,pageable,totalPages);
         when(miRepository
@@ -307,9 +277,8 @@ public class MeasurementInstrumentServiceTest {
     @Test
     @DisplayName("Test findAll without pages")
     public void testFindAllWithoutPages() {
-        MeasurementInstrument mi = TestEntityGenerator.generateMeasurementInstrumentWithId(1L);
-        List<MeasurementInstrument> mis = new ArrayList<>();
-        mis.add(mi);
+        MeasurementInstrument mi = generateMeasurementInstrument(1L);
+        List<MeasurementInstrument> mis = List.of(mi);
         when(miRepository.findAll()).thenReturn(mis);
         List<MiDto> misDto = measurementInstrumentService.findAll();
         assertEquals(mis.size(),misDto.size());
@@ -320,16 +289,12 @@ public class MeasurementInstrumentServiceTest {
     @DisplayName("Test findAll with pages")
     public void testFindAllWithPages() {
         long totalPages = 1L;
-        MeasurementInstrument mi = TestEntityGenerator.generateMeasurementInstrumentWithId(1L);
-        List<MeasurementInstrument> mis = new ArrayList<>();
-        mis.add(mi);
+        MeasurementInstrument mi = generateMeasurementInstrument(1L);
+        List<MeasurementInstrument> mis = List.of(mi);
         Page<MeasurementInstrument> page = new PageImpl<>(mis,pageable,totalPages);
         when(miRepository.findAll(pageable)).thenReturn(page);
         Page<MiDto> miPage = measurementInstrumentService.findAll(pageable);
         assertEquals(mis.size(),miPage.getContent().size());
         verify(miRepository,times(1)).findAll(pageable);
     }
-
-
-
 }

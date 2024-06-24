@@ -1,105 +1,157 @@
 package main.service.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+import main.arshin.ArshinHttpClient;
+import main.arshin.VerificationRequestBuilder;
+import main.arshin.entities.VriItem;
 import main.dto.rest.VerificationReportDto;
 import main.dto.rest.VerificationReportFullDto;
 import main.dto.rest.mappers.VerificationRecordDtoMapper;
 import main.dto.rest.mappers.VerificationReportDtoMapper;
+import main.exception.ArshinResponseException;
+import main.exception.DtoCompositionException;
 import main.model.VerificationRecord;
 import main.model.VerificationReport;
 import main.repository.VerificationReportRepository;
 import main.service.ServiceMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import main.service.interfaces.IVerificationReportService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-
+@Getter
+@Setter
 @Service
-public class VerificationReportService {
-    private static final Logger log = LoggerFactory.getLogger(VerificationReportService.class);
+@Slf4j
+public class VerificationReportService implements IVerificationReportService {
+    private final String arshinVerificationUri;
+    @Autowired
     private final VerificationReportRepository reportRepository;
+    @Autowired
+    private final VerificationRecordService verificationRecordService;
+    @Autowired
+    private final SettingsService settingsService;
 
-    public VerificationReportService(VerificationReportRepository reportRepository) {
+    public VerificationReportService(@Value("${arshin.verification.uri}") String arshinVerificationUri, VerificationReportRepository reportRepository, VerificationRecordService verificationRecordService, SettingsService settingsService) {
+        this.arshinVerificationUri = arshinVerificationUri;
         this.reportRepository = reportRepository;
+        this.verificationRecordService = verificationRecordService;
+        this.settingsService = settingsService;
     }
 
+    @Override
     public ResponseEntity<?> save(VerificationReportFullDto reportDto){
-        String errorMessage = checkVerificationReportDtoComposition(reportDto);
-        if (!errorMessage.isEmpty()) {
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
+        try {
+            checkVerificationReportDtoComposition(reportDto);
+            VerificationReport report = VerificationReportDtoMapper.mapToEntity(reportDto);
+            reportRepository.save(report);
+            String okMessage = "Отчет о поверке сохранен";
+            log.info(okMessage);
+            return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
+        } catch (DtoCompositionException ex){
+            return ResponseEntity.status(400).body(
+                    new ServiceMessage(ex.getMessage()));
         }
-        VerificationReport report = VerificationReportDtoMapper.mapToEntity(reportDto);
-        reportRepository.save(report);
-        String okMessage = "Отчет о поверке сохранен";
-        log.info(okMessage);
-        return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
     }
 
-    public ResponseEntity<?> update(VerificationReportFullDto reportDto){
-        String errorMessage = checkVerificationReportDtoComposition(reportDto);
-        if (!errorMessage.isEmpty()) {
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
+    @Override
+    public ResponseEntity<?> findById(long id){
+        try {
+            VerificationReport report = getReportById(id);
+            VerificationReportFullDto reportFullDto = VerificationReportDtoMapper.mapToFullDto(report);
+            return ResponseEntity.ok(reportFullDto);
+        } catch (EntityNotFoundException ex){
+            log.info(ex.getMessage());
+            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
         }
-        Optional<VerificationReport> reportFromDBOpt = reportRepository.findById(reportDto.getId());
-        if(reportFromDBOpt.isEmpty()){
-            errorMessage = "Отчет для обновления не найден";
-            log.info(errorMessage + " id = " + reportDto.getId());
-            return ResponseEntity.status(404).body(
-                    new ServiceMessage(errorMessage));
-        }
-        VerificationReport reportFromDb = reportFromDBOpt.get();
-        reportDto.getRecords().forEach(recordDto -> {
-            VerificationRecord record = VerificationRecordDtoMapper.mapToEntity(recordDto);
-            if (!reportFromDb.getRecords().contains(record)){
-                reportFromDb.addRecord(record);
-            }
-        });
-        reportRepository.save(reportFromDb);
-        String okMessage = "Отчет о поверке сохранен";
-        log.info(okMessage);
-        return ResponseEntity.ok().body(new ServiceMessage(okMessage));
     }
 
-    private String checkVerificationReportDtoComposition(VerificationReportFullDto reportDto){
-        if (reportDto.getRecords().isEmpty()){
-            return "Отчет должен содержать хотябы одну запись о поверке средства измерений";
+    @Override
+    public VerificationReport getReportById(long id){
+        Optional<VerificationReport> reportOpt = reportRepository.findById(id);
+        if (reportOpt.isEmpty()){
+            throw new EntityNotFoundException("Отчет № " + id + " не найден");
         }
-        return "";
+        return reportOpt.get();
     }
 
-    public Page<VerificationReportDto> getAllWithPagination(Pageable pageable){
+    @Override
+    public Page<VerificationReportDto> findAll(Pageable pageable){
         return reportRepository.findAll(pageable).map(VerificationReportDtoMapper::mapToDto);
     }
 
-    public ResponseEntity<?> getById(long id){
-        Optional<VerificationReport> reportOpt = reportRepository.findById(id);
-        if (reportOpt.isEmpty()){
-            String errorMessage = "Отчет № " + id + "не найден";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+    @Override
+    public ResponseEntity<?> update(VerificationReportFullDto reportDto){
+        try {
+            checkVerificationReportDtoComposition(reportDto);
+            VerificationReport reportFromDB = getReportById(reportDto.getId());
+            reportDto.getRecords().forEach(recordDto -> {
+                VerificationRecord record = VerificationRecordDtoMapper.mapToEntity(recordDto);
+                if (!reportFromDB.getRecords().contains(record)) {
+                    reportFromDB.addRecord(record);
+                }
+            });
+            reportRepository.save(reportFromDB);
+            String okMessage = "Отчет о поверке обновлен";
+            log.info(okMessage);
+            return ResponseEntity.ok().body(new ServiceMessage(okMessage));
+        } catch (EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(404).body(
+                    new ServiceMessage(ex.getMessage()));
+        } catch (DtoCompositionException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(
+                    new ServiceMessage(ex.getMessage()));
         }
-        VerificationReportFullDto reportFullDto = VerificationReportDtoMapper.mapToFullDto(reportOpt.get());
-        return ResponseEntity.ok(reportFullDto);
+    }
+    @Override
+    public ResponseEntity<?> updateReportFromArshin(long id) {
+        try {
+            VerificationReport report = getReportById(id);
+            String verificationOrganization = settingsService.getSettings().getOrganizationNotation();
+            for (VerificationRecord record : report.getRecords()) {
+                String verificationRequest = new VerificationRequestBuilder()
+                        .uri("https://fgis.gost.ru/fundmetrology/eapi/vri?")
+                        .miModification(record.getMi().getModification())
+                        .miNumber(record.getMi().getSerialNum())
+                        .orgTitle(verificationOrganization)
+                        .verificationDate(record.getVerificationDate())
+                        .build();
+                VriItem item = ArshinHttpClient.getVerificationResults(verificationRequest);
+                verificationRecordService.updateArshinVerificationNumber(record.getId(), item.getResultDocnum());
+            }
+            String okMessage = "Номера записей о поверке в ФГИС Аршин успешно получены";
+            log.info(okMessage);
+            return ResponseEntity.ok().body(new ServiceMessage(okMessage));
+        } catch (ArshinResponseException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.ok().body(new ServiceMessage(ex.getMessage()));
+        }
+
     }
 
-    public ResponseEntity<?> deleteById(long id){
-        Optional<VerificationReport> reportOpt = reportRepository.findById(id);
-        if (reportOpt.isEmpty()){
-            String errorMessage = "Отчет № " + id + " не найден";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+    private void checkVerificationReportDtoComposition(VerificationReportFullDto reportDto) throws DtoCompositionException {
+        if (reportDto.getRecords().isEmpty()){
+            throw new DtoCompositionException("Отчет должен содержать хотябы одну запись о поверке средства измерений");
         }
+    }
+
+    @Override
+    public ResponseEntity<?> delete(long id){
         reportRepository.deleteById(id);
         String okMessage = "Отчет № " + id + " успешно удален";
         log.info(okMessage);
         return ResponseEntity.ok().body(okMessage);
     }
+
+
 
 }

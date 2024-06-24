@@ -37,6 +37,8 @@ public class VerificationRecord {
     private double humidity; // percents
     @Column(name = "arshin_verification_number")
     private String arshinVerificationNumber;
+    @Column(name = "inapplicable_reason")
+    private String inapplicableReason;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mi_id")
     private MeasurementInstrument mi;

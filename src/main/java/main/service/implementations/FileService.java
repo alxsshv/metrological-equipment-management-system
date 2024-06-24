@@ -54,9 +54,6 @@ public class FileService implements IFileService {
         documentService.addDocument(file, description, category, categoryId);
     }
 
-
-
-
     private boolean isImage(MultipartFile file){
         boolean result = false;
         for (String imageExtension : AppConstants.IMAGE_EXTENSIONS){

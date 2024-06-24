@@ -1,8 +1,9 @@
 package main.service.implementations;
 
-import main.dto.MiTypeDto;
-import main.dto.MiTypeFullDto;
-import main.dto.mappers.MiTypeDtoMapper;
+import jakarta.persistence.EntityNotFoundException;
+import main.dto.rest.MiTypeDto;
+import main.dto.rest.MiTypeFullDto;
+import main.dto.rest.mappers.MiTypeDtoMapper;
 import main.model.MiType;
 import main.model.MiTypeInstruction;
 import main.repository.MiTypeInstructionRepository;
@@ -14,8 +15,6 @@ import org.mockito.Mockito;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
-import testutils.TestDtoGenerator;
-import testutils.TestEntityGenerator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +22,9 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
+import static testutils.TestEntityGenerator.*;
 
 public class MiTypeServiceTest {
     private final MiTypeRepository miTypeRepository =
@@ -37,19 +38,16 @@ public class MiTypeServiceTest {
     private final MiTypeService miTypeService =
             new MiTypeService(miTypeRepository, miTypeInstructionRepository,
                     miTypeModificationRepository, fileService);
+    private final MultipartFile[] files = {};
+    private final String[] descriptions = {};
 
     @Test
     @DisplayName("Test save if miType already exists")
     public void testSaveIfMiTypeAlreadyExists() throws IOException {
-        long miTypeId = 5L;
-        MiTypeFullDto miTypeFullDto = TestDtoGenerator.generateMiTypeFullDtoWithId(miTypeId);
-        MiType miType = new MiType();
-        miType.setId(miTypeId);
-        when(miTypeRepository.findByNumber(miTypeFullDto.getNumber())).thenReturn(miType);
-        MultipartFile[] files = {};
-        String[] descriptions = {};
+        MiTypeFullDto miTypeFullDto = generateMiTypeFullDto(5L);
+        when(miTypeRepository.findByNumber(miTypeFullDto.getNumber())).thenReturn(new MiType());
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeFullDto, files, descriptions);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miTypeRepository,times(1)).findByNumber(miTypeFullDto.getNumber());
         verify(miTypeInstructionRepository,never()).save(any(MiTypeInstruction.class));
     }
@@ -57,23 +55,11 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test save if number is not corrected")
     public void testSaveIfMiTypeNumberIsNotCorrected() throws IOException {
-        long miTypeId = 5L;
-        MiTypeFullDto miTypeFullDto = new MiTypeFullDto();
-        miTypeFullDto.setId(miTypeId);
-        miTypeFullDto.setNumber("12345678");
-        miTypeFullDto.setTitle("Вольтметры");
-        miTypeFullDto.setNotation("В7-78");
-        List<String> modifications = new ArrayList<>();
-        modifications.add("В7-78/1");
-        modifications.add("В7-78/2");
-        miTypeFullDto.setModifications(modifications);
-        MultipartFile[] files = {};
-        String[] descriptions = {};
-        MiType miType = new MiType();
-        miType.setId(miTypeId);
-        when(miTypeRepository.findByNumber(miTypeFullDto.getNumber())).thenReturn(miType);
+        MiTypeFullDto miTypeFullDto = generateMiTypeFullDto(5L);
+        miTypeFullDto.setNumber("");
+        when(miTypeRepository.findByNumber(miTypeFullDto.getNumber())).thenReturn(new MiType());
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeFullDto, files, descriptions);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miTypeRepository, never()).findByNumber(miTypeFullDto.getNumber());
         verify(miTypeInstructionRepository, never()).save(any(MiTypeInstruction.class));
     }
@@ -81,42 +67,23 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test save if title is null")
     public void testSaveIfMiTypeTitleIsNull() throws IOException {
-        long miTypeId = 5L;
-        MiTypeFullDto miTypeDto = new MiTypeFullDto();
-        miTypeDto.setId(miTypeId);
-        miTypeDto.setNumber("12345-78");
-        miTypeDto.setNotation("В7-78");
-        List<String> modifications = new ArrayList<>();
-        modifications.add("В7-78/1");
-        modifications.add("В7-78/2");
-        miTypeDto.setModifications(modifications);
-        MultipartFile[] files = {};
-        String[] descriptions = {};
-        MiType miType = new MiType();
-        miType.setId(miTypeId);
-        when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(miType);
+        MiTypeFullDto miTypeDto = generateMiTypeFullDto(5L);
+        miTypeDto.setTitle(null);
+        when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(new MiType());
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto, files,descriptions);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miTypeRepository, never()).findByNumber(miTypeDto.getNumber());
         verify(miTypeInstructionRepository, never()).save(any(MiTypeInstruction.class));
     }
 
     @Test
-    @DisplayName("Test save if modification is null")
-    public void testSaveIfMiTypeModificationIsNull() throws IOException {
-        long miTypeId = 5L;
-        MiTypeFullDto miTypeDto = new MiTypeFullDto();
-        miTypeDto.setId(miTypeId);
-        miTypeDto.setNumber("12345-78");
-        miTypeDto.setTitle("Вольтметры");
-        miTypeDto.setNotation("В7-78");
-        MultipartFile[] files = {};
-        String[] descriptions = {};
-        MiType miType = new MiType();
-        miType.setId(miTypeId);
-        when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(miType);
+    @DisplayName("Test save if modifications is null")
+    public void testSaveIfMiTypeModificationsIsNull() throws IOException {
+        MiTypeFullDto miTypeDto = generateMiTypeFullDto(5L);
+        miTypeDto.setModifications(new ArrayList<>());
+        when(miTypeRepository.findByNumber(miTypeDto.getNumber())).thenReturn(new MiType());
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeDto, files, descriptions);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miTypeRepository, never()).findByNumber(miTypeDto.getNumber());
         verify(miTypeInstructionRepository, never()).save(any(MiTypeInstruction.class));
     }
@@ -124,16 +91,13 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test save if created new MiType")
     public void testSaveIfCreatedNewMiType() throws IOException {
-        long miTypeId = 5L;
-        MiTypeFullDto miTypeFullDto = TestDtoGenerator.generateMiTypeFullDtoWithId(miTypeId);
-        MultipartFile[] files = {};
-        String[] descriptions = {};
+        MiTypeFullDto miTypeFullDto = generateMiTypeFullDto(5L);
         when(miTypeRepository.findByNumber(miTypeFullDto.getNumber())).thenReturn(null);
         MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeFullDto);
         miTypeInstruction.setId(miTypeFullDto.getId());
         when(miTypeInstructionRepository.save(any(MiTypeInstruction.class))).thenReturn(miTypeInstruction);
         ResponseEntity<?> responseEntity = miTypeService.save(miTypeFullDto, files, descriptions);
-        assertEquals("200 OK", responseEntity.getStatusCode().toString());
+        assertEquals("201 CREATED", responseEntity.getStatusCode().toString());
         verify(miTypeRepository,times(1)).findByNumber(miTypeFullDto.getNumber());
         verify(miTypeInstructionRepository,times(1)).save(any(MiTypeInstruction.class));
     }
@@ -142,10 +106,10 @@ public class MiTypeServiceTest {
     @DisplayName("Test update if miType not found")
     public void testUpdateIfMiTypeNotFound(){
         long miTypeId = 5L;
-        MiTypeFullDto miTypeDto = TestDtoGenerator.generateMiTypeFullDtoWithId(miTypeId);
+        MiTypeFullDto miTypeDto = generateMiTypeFullDto(miTypeId);
         when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.empty());
         ResponseEntity<?> responseEntity = miTypeService.update(miTypeDto);
-        assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miTypeInstructionRepository,times(1)).findById(miTypeId);
         verify(miTypeInstructionRepository,never()).save(any(MiTypeInstruction.class));
     }
@@ -154,47 +118,43 @@ public class MiTypeServiceTest {
     @DisplayName("Test update if modification is null")
     public void testUpdateIfMiTypeModificationIsNull() {
         long miTypeId = 5L;
-        MiTypeFullDto miTypeDto = new MiTypeFullDto();
-        miTypeDto.setId(miTypeId);
-        miTypeDto.setNumber("12345-78");
-        miTypeDto.setTitle("Вольтметры");
-        miTypeDto.setNotation("В7-78");
+        MiTypeFullDto miTypeDto = generateMiTypeFullDto(miTypeId);
+        miTypeDto.setModifications(new ArrayList<>());
         MiTypeInstruction instruction = MiTypeDtoMapper.mapToEntity(miTypeDto);
         when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.of(instruction));
         ResponseEntity<?> responseEntity = miTypeService.update(miTypeDto);
-        assertEquals("422 UNPROCESSABLE_ENTITY", responseEntity.getStatusCode().toString());
+        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miTypeInstructionRepository, never()).findById(miTypeId);
         verify(miTypeInstructionRepository, never()).save(any(MiTypeInstruction.class));
-    }
-
-    @Test
-    @DisplayName("Test delete if miType not found")
-    public void testDeleteIfMiTypeNotFound() throws IOException {
-        long miTypeId = 5L;
-        when(miTypeRepository.findById(miTypeId)).thenReturn(Optional.empty());
-        ResponseEntity<?> responseEntity = miTypeService.delete(miTypeId);
-        assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
-        verify(miTypeRepository,times(1)).findById(miTypeId);
-        verify(miTypeRepository,never()).delete(any(MiType.class));
     }
 
     @Test
     @DisplayName("Test delete if miType found")
     public void testDeleteIfMiTypeFound() throws IOException {
         long miTypeId = 5L;
-        MiType miType = TestEntityGenerator.generateMiTypeWithId(miTypeId);
-        when(miTypeRepository.findById(miTypeId)).thenReturn(Optional.of(miType));
+        MiTypeFullDto miTypeDto = generateMiTypeFullDto(miTypeId);
+        MiTypeInstruction instruction = MiTypeDtoMapper.mapToEntity(miTypeDto);
+        when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.of(instruction));
         ResponseEntity<?> responseEntity = miTypeService.delete(miTypeId);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
-        verify(miTypeRepository,times(1)).findById(miTypeId);
-        verify(miTypeRepository,times(1)).delete(miType);
+        verify(miTypeRepository,times(1)).deleteById(miTypeId);
+    }
+
+    @Test
+    @DisplayName("Test delete if miType not found")
+    public void testDeleteIfMiTypeNotFound() throws IOException {
+        long miTypeId = 5L;
+        when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.empty());
+        ResponseEntity<?> responseEntity = miTypeService.delete(miTypeId);
+        assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
+        verify(miTypeRepository,never()).deleteById(miTypeId);
     }
 
     @Test
     @DisplayName("Test findById if miType found")
     public void testFindByIDIfMiTypeFound() {
         long miTypeId = 5L;
-        MiTypeInstruction instruction = TestEntityGenerator.generateMiTypeInstructionWithId(miTypeId);
+        MiTypeInstruction instruction = generateMiTypeInstruction(miTypeId);
         when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.of(instruction));
         ResponseEntity<?> responseEntity = miTypeService.findById(miTypeId);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
@@ -203,12 +163,35 @@ public class MiTypeServiceTest {
 
     @Test
     @DisplayName("Test findById if miType not found")
-    public void testFindByIDIfMiTypeNotFound() {
+    public void testFindByIdIfMiTypeNotFound() {
         long miTypeId = 5L;
         when(miTypeRepository.findById(miTypeId)).thenReturn(Optional.empty());
         ResponseEntity<?> responseEntity = miTypeService.findById(miTypeId);
         assertEquals("404 NOT_FOUND", responseEntity.getStatusCode().toString());
     }
+
+    @Test
+    @DisplayName("test getInstructionById if entity not found")
+    public void testGetInstructionByIdIfEntityNotFound() throws EntityNotFoundException {
+        long miTypeId = 1L;
+        when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.empty());
+        Exception exception = assertThrows(EntityNotFoundException.class,
+                ()-> miTypeService.getInstructionById(miTypeId)) ;
+        assertEquals("Запись о типе СИ № 1 не найдена",exception.getMessage());
+        verify(miTypeInstructionRepository,times(1)).findById(miTypeId);
+    }
+
+    @Test
+    @DisplayName("test getInstructionById if entity found")
+    public void testGetInstructionByIdIfEntityFound() throws EntityNotFoundException {
+        long miTypeId = 1L;
+        MiTypeInstruction expectedInstruction = generateMiTypeInstruction(miTypeId);
+        when(miTypeInstructionRepository.findById(miTypeId)).thenReturn(Optional.of(expectedInstruction));
+        MiTypeInstruction actualInstruction = miTypeService.getInstructionById(miTypeId);
+        assertEquals(expectedInstruction, actualInstruction);
+        verify(miTypeInstructionRepository,times(1)).findById(miTypeId);
+    }
+
 
     @Test
     @DisplayName("Test findBySearchString if searchString is empty")
@@ -226,9 +209,8 @@ public class MiTypeServiceTest {
     public void testFindBySearchStringIfMiTypeNotFound() {
         long totalPages = 1L;
         String searchString = "В7-78";
-        List <MiType> findedMiTypes = new ArrayList<>();
-        MiType miType = TestEntityGenerator.generateMiTypeWithId(1L);
-        findedMiTypes.add(miType);
+        MiType miType = generateMiTypeInstruction(1L).getMiType();
+        List <MiType> findedMiTypes = List.of(miType);
         Page<MiType> page = new PageImpl<>(findedMiTypes,pageable,totalPages);
         when(miTypeRepository
                 .findByNumberContainingOrTitleContainingOrNotationContaining(searchString,searchString,searchString, pageable))
@@ -243,9 +225,8 @@ public class MiTypeServiceTest {
     @DisplayName("Test find All with pageable")
     public void testPageableFindAll(){
         int totalPages = 1;
-        List <MiType> miTypes = new ArrayList<>();
-        MiType miType = TestEntityGenerator.generateMiTypeWithId(1L);
-        miTypes.add(miType);
+        MiType miType = generateMiTypeInstruction(1L).getMiType();
+        List <MiType> miTypes = List.of(miType);
         Page<MiType> page = new PageImpl<>(miTypes,pageable,totalPages);
         when(miTypeRepository.findAll(pageable)).thenReturn(page);
         Page<MiTypeDto> miTypeDtos = miTypeService.findAll(pageable);
@@ -256,19 +237,9 @@ public class MiTypeServiceTest {
     @Test
     @DisplayName("Test find All without pageable")
     public void testFindAllWithoutPageable(){
-        List <MiType> miTypes = new ArrayList<>();
-        MiType miType1 = new MiType();
-        miType1.setId(1L);
-        miType1.setNumber("12345-78");
-        miType1.setTitle("Вольтметры");
-        miType1.setNotation("В7-78");
-        miTypes.add(miType1);
-        MiType miType2 = new MiType();
-        miType2.setId(2);
-        miType2.setNumber("12345-12");
-        miType2.setTitle("Штангенциркуль");
-        miType2.setNotation("ШЦ");
-        miTypes.add(miType2);
+        MiType miType1 = generateMiTypeInstruction(1L).getMiType();
+        MiType miType2 = generateMiTypeInstruction(2L).getMiType();
+        List <MiType> miTypes = List.of(miType1, miType2);
         when(miTypeRepository.findAll()).thenReturn(miTypes);
         List<MiTypeDto> miTypeDtos = miTypeService.findAll();
         assertEquals(miTypes.size(),miTypeDtos.size());

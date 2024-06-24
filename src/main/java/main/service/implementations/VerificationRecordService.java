@@ -1,5 +1,6 @@
 package main.service.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import main.dto.rest.VerificationRecordDto;
 import main.dto.rest.mappers.VerificationRecordDtoMapper;
@@ -23,32 +24,54 @@ public class VerificationRecordService implements IVerificationRecordService {
 
     @Override
     public ResponseEntity<?> getById(long id) {
+        try {
+            VerificationRecord record = getRecordById(id);
+            VerificationRecordDto recordDto = VerificationRecordDtoMapper.mapToDto(record);
+            return ResponseEntity.ok(recordDto);
+        } catch (EntityNotFoundException ex){
+            logger.info(ex.getMessage());
+            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
+        }
+
+    }
+
+    @Override
+    public VerificationRecord getRecordById(long id){
         Optional<VerificationRecord> recordOpt = recordRepository.findById(id);
         if (recordOpt.isEmpty()) {
-            String errorMessage = "Запись о поверке № " + id + " не найдена";
-            logger.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+            throw new EntityNotFoundException("Запись о поверке № " + id + " не найдена");
         }
-        VerificationRecordDto recordDto = VerificationRecordDtoMapper.mapToDto(recordOpt.get());
-        return ResponseEntity.ok(recordDto);
+        return recordOpt.get();
     }
 
     @Override
     public ResponseEntity<?> update(VerificationRecordDto recordDto) {
-        Optional<VerificationRecord> recordOpt = recordRepository.findById(recordDto.getId());
-        if (recordOpt.isEmpty()) {
-            String errorMessage = "Запись о поверке № " + recordDto.getId() + " не найдена";
-            logger.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+        try {
+            VerificationRecord updateRecord = getRecordById(recordDto.getId());
+            updateRecord.updateFrom(VerificationRecordDtoMapper.mapToEntity(recordDto));
+            recordRepository.save(updateRecord);
+            String okMessage = "Запись о поверке № " + updateRecord.getId() + " успешно обновлена";
+            logger.info(okMessage);
+            return ResponseEntity.ok().body(new ServiceMessage(okMessage));
+        } catch (EntityNotFoundException ex){
+            logger.error(ex.getMessage());
+            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
         }
-        VerificationRecord updateRecord = recordOpt.get();
-        updateRecord.updateFrom(VerificationRecordDtoMapper.mapToEntity(recordDto));
-        recordRepository.save(updateRecord);
-        String okMessage = "Запись о поверке № " + updateRecord.getId() + " успешно обновлена";
-        logger.info(okMessage);
-        return ResponseEntity.ok().body(new ServiceMessage(okMessage));
     }
 
+    public void updateArshinVerificationNumber(long recordId, String arshinVerificationNumber) {
+        try {
+            VerificationRecord updateRecord = getRecordById(recordId);
+            updateRecord.setArshinVerificationNumber(arshinVerificationNumber);
+            recordRepository.save(updateRecord);
+            logger.info("Номер в ФГИС Аршин записи о поверке  № {} успешно обновлен", recordId);
+           } catch (EntityNotFoundException ex){
+            logger.error(ex.getMessage());
+           }
+    }
+
+
+    @Override
     public ResponseEntity<?> delete(long id) {
         recordRepository.deleteById(id);
         String okMessage = "Запись о поверке № " + id + " удалена";

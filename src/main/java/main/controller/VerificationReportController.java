@@ -1,25 +1,24 @@
 package main.controller;
 
+import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.VerificationReportDto;
 import main.dto.rest.VerificationReportFullDto;
-import main.service.implementations.VerificationReportService;
+import main.service.interfaces.IVerificationReportService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.data.domain.Page;
-
+@AllArgsConstructor
 @RestController
 @RequestMapping("reports/verifications")
 public class VerificationReportController {
+    @Autowired
+    private IVerificationReportService verificationReportService;
 
-    VerificationReportService verificationReportService;
-
-    public VerificationReportController(VerificationReportService verificationReportService) {
-        this.verificationReportService = verificationReportService;
-    }
 
     @PostMapping
     public ResponseEntity<?> saveReport(@RequestBody VerificationReportFullDto reportDto){
@@ -33,17 +32,22 @@ public class VerificationReportController {
             @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir){
         Pageable pageable = PageRequest.of(pageNum, pageSize,
                 Sort.by(Sort.Direction.valueOf(pageDir.toUpperCase()), "creationDate"));
-        return verificationReportService.getAllWithPagination(pageable);
+        return verificationReportService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getVerificationReport(@PathVariable("id") String id){
-        return verificationReportService.getById(Long.parseLong(id));
+        return verificationReportService.findById(Long.parseLong(id));
+    }
+
+    @GetMapping("/update/{id}")
+    public ResponseEntity<?> updateReportFromArshin(@PathVariable("id") String id){
+        return verificationReportService.updateReportFromArshin(Long.parseLong(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteVerificationReport(@PathVariable("id") String id){
-        return verificationReportService.deleteById(Long.parseLong(id));
+        return verificationReportService.delete(Long.parseLong(id));
     }
 
     @PatchMapping()

@@ -1,8 +1,12 @@
 package main.service.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import main.dto.rest.EmployeeDto;
 import main.dto.rest.mappers.EmployeeDtoMapper;
+import main.exception.DtoCompositionException;
+import main.exception.EntityAlreadyExistException;
+import main.exception.ParameterNotValidException;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
 import main.service.ServiceMessage;
@@ -27,116 +31,95 @@ public class EmployeeService implements IEmployeeService {
 
     @Override
     public ResponseEntity<?> save(EmployeeDto employeeDto) {
-        String errorMessage = checkEmployeeDtoComposition(employeeDto);
-        if (!errorMessage.isEmpty()) {
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
+        try {
+            checkEmployeeDtoComposition(employeeDto);
+            validateIfEntityAlreadyExist(employeeDto.getSnils());
+            employeeRepository.save(EmployeeDtoMapper.mapToEntity(employeeDto));
+            String okMessage = "Поверитель " + employeeDto.getName() + " " + employeeDto.getSurname() + " успешно добавлен";
+            log.info(okMessage);
+            return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
+        } catch (EntityAlreadyExistException | DtoCompositionException ex) {
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(
+                    new ServiceMessage(ex.getMessage()));
         }
-        Employee employeeFromDb = employeeRepository.findBySnils(employeeDto.getSnils());
-        if (employeeFromDb != null){
-            errorMessage = "Поверитель с СНИЛС " + employeeDto.getSnils() + " уже существует";
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
-        }
-        employeeRepository.save(EmployeeDtoMapper.mapToEntity(employeeDto));
-        String okMessage = "Поверитель " + employeeDto.getName() + " " + employeeDto.getSurname() + " успешно добавлен";
-        log.info(okMessage);
-        return ResponseEntity.ok(
-                new ServiceMessage(okMessage));
     }
-    private String checkEmployeeDtoComposition(EmployeeDto dto){
+    private void checkEmployeeDtoComposition(EmployeeDto dto) throws DtoCompositionException {
         if (dto.getSurname() == null || dto.getSurname().isEmpty()){
-            return "Пожалуйста заполните фамилию поверителя";
+            throw new DtoCompositionException("Пожалуйста заполните фамилию поверителя");
         }
         if (dto.getName() == null || dto.getName().isEmpty()){
-            return "Пожалуйста заполните имя поверителя";
+            throw new DtoCompositionException("Пожалуйста заполните имя поверителя");
         }
         if (dto.getPatronymic() == null || dto.getPatronymic().isEmpty()){
-            return "Пожалуйста заполните отчество поверителя";
+            throw new DtoCompositionException("Пожалуйста заполните отчество поверителя");
         }
         String snilsTemplate = "[0-9]{11}";
         Pattern pattern = Pattern.compile(snilsTemplate);
         Matcher matcher = pattern.matcher(dto.getSnils());
         if (!matcher.find()){
-            return "Неверный формат СНИЛС";
+            throw new DtoCompositionException("Неверный формат СНИЛС");
         }
-        return "";
-    }
-
-@Override
-    public ResponseEntity<?> update(EmployeeDto employeeDto){
-        String errorMessage = checkEmployeeDtoComposition(employeeDto);
-        if (!errorMessage.isEmpty()) {
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
-        }
-
-        Optional<Employee> userOpt = employeeRepository.findById(employeeDto.getId());
-        if (userOpt.isEmpty()){
-            errorMessage = "Поверитель " + employeeDto.getSurname() +
-                    " " + employeeDto.getName() +  " не найден";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
-        }
-
-        Employee updatingEmployeeData = EmployeeDtoMapper.mapToEntity(employeeDto);
-        Employee employee = userOpt.get();
-        employee. updateFrom(updatingEmployeeData);
-        employeeRepository.save(employee);
-        String okMessage ="Cведения о поверителе " + employee.getName() + " "
-            + employee.getSurname() + " обновлены";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
-    }
-
-@Override
-    public ResponseEntity<?>delete(long id){
-        Optional<Employee> userOpt = employeeRepository.findById(id);
-        if (userOpt.isEmpty()){
-            String errorMessage = "Данные по id = "+ id +" не найдены";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
-        }
-        employeeRepository.delete(userOpt.get());
-        String okMessage ="Запись о поверителе " + userOpt.get().getSurname() + " успешно удалена";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
     @Override
     public ResponseEntity<?> findById(long id) {
-        Optional<Employee> employeeOpt = employeeRepository.findById(id);
-        if (employeeOpt.isPresent()) {
-            EmployeeDto employeeDto = EmployeeDtoMapper.mapToDto(employeeOpt.get());
+        try {
+            Employee employee = getEmployeeById(id);
+            EmployeeDto employeeDto = EmployeeDtoMapper.mapToDto(employee);
             return ResponseEntity.ok(employeeDto);
-        } else {
-            return ResponseEntity.notFound().build();
+        } catch (EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(ex.getMessage());
+        }
+    }
+
+    public Employee getEmployeeById(long id) {
+        Optional<Employee> employeeOpt = employeeRepository.findById(id);
+        if (employeeOpt.isEmpty()) {
+            throw new EntityNotFoundException("Поверитель № " + id + " не найден");
+        }
+        return employeeOpt.get();
+    }
+
+
+    private void validateIfEntityAlreadyExist(String snils) throws EntityAlreadyExistException {
+        Employee employeeFromDb = employeeRepository.findBySnils(snils);
+        if (employeeFromDb != null){
+            throw new EntityAlreadyExistException("Поверитель с СНИЛС " + snils + " уже существует");
         }
     }
 
     @Override
     public ResponseEntity<?> findBySurname(String surname, Pageable pageable) {
-        if (surname == null || surname.isEmpty()){
-            String errorMessage = "Поле для поиска не может быть пустым";
-            log.info(errorMessage);
-            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        try {
+            validateSearchString(surname);
+            Page<EmployeeDto> page = employeeRepository.findBySurnameContaining(surname.trim(), pageable)
+                    .map(EmployeeDtoMapper::mapToDto);
+            return ResponseEntity.ok(page);
+        } catch (ParameterNotValidException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
         }
-        Page<EmployeeDto> page =  employeeRepository.findBySurnameContaining(surname.trim(),pageable)
-                .map(EmployeeDtoMapper::mapToDto);
-        return ResponseEntity.ok(page);
+    }
+    @Override
+    public ResponseEntity<?> findBySurname(String surname) {
+        try {
+            validateSearchString(surname);
+            List<EmployeeDto> list = employeeRepository.findBySurnameContaining(surname.trim()).stream()
+                    .map(EmployeeDtoMapper::mapToDto).toList();
+            return ResponseEntity.ok(list);
+        } catch (ParameterNotValidException ex){
+            log.info(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
+
+        }
     }
 
-    public ResponseEntity<?> findBySurname(String surname) {
-        if (surname == null || surname.isEmpty()){
-            String errorMessage = "Поле для поиска не может быть пустым";
-            log.info(errorMessage);
-            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+    private void validateSearchString(String searchString) throws ParameterNotValidException {
+        if (searchString == null || searchString.isEmpty()){
+            throw  new ParameterNotValidException("Поле для поиска не может быть пустым");
         }
-        List<EmployeeDto> page =  employeeRepository.findBySurnameContaining(surname.trim()).stream()
-                .map(EmployeeDtoMapper::mapToDto).toList();
-        return ResponseEntity.ok(page);
     }
 
     @Override
@@ -149,6 +132,30 @@ public class EmployeeService implements IEmployeeService {
         return employeeRepository.findAll().stream().map(EmployeeDtoMapper ::mapToDto).toList();
     }
 
+    @Override
+    public ResponseEntity<?> update(EmployeeDto employeeDto){
+        try {
+            checkEmployeeDtoComposition(employeeDto);
+            Employee employee = getEmployeeById(employeeDto.getId());
+            Employee updatingEmployeeData = EmployeeDtoMapper.mapToEntity(employeeDto);
+            employee.updateFrom(updatingEmployeeData);
+            employeeRepository.save(employee);
+            String okMessage = "Сведения о поверителе " + employee.getName() + " "
+                    + employee.getSurname() + " обновлены";
+            log.info(okMessage);
+            return ResponseEntity.ok(new ServiceMessage(okMessage));
+        } catch (DtoCompositionException | EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
+        }
+    }
 
+    @Override
+    public ResponseEntity<?>delete(long id){
+        employeeRepository.deleteById(id);
+        String okMessage ="Запись о поверителе № " + id + " успешно удалена";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
+    }
 
 }

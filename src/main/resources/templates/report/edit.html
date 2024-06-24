@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <title>Добавление отчета о поверке</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="VRF_REPORT_EDIT" ng-controller="VRF_REPORT_EDIT_CTRL">
+<div class="container-fluid text-left">
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid justify-content-start">
+            <button class="btn btn-outline-success me-2" onclick="location.href='/'" type="button">Домой</button>
+            <button class="btn btn-outline-success me-2" onclick="location.href='/report/verification'" type="button">Перечень
+                отчетов о поверке</button>
+        </div>
+    </nav>
+
+    <div class="row text-center">
+        <h5>Добавление записей о поверке в отчет</h5>
+    </div>
+    <table class="table table-info table-striped table-hover">
+        <thead>
+        <tr>
+            <th>Модификация</th>
+            <th>Зав.(инв.) №</th>
+            <th>Тип поверки</th>
+            <th>Дата поверки</th>
+            <th>Действительно до</th>
+            <th>Пригодность</th>
+            <th>Поверитель</th>
+            <th>Эталон</th>
+            <th>t, &degC</th>
+            <th>h, %</th>
+            <th>P, kPa</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr ng-repeat="item in savedReportRecords" value="{{item}}">
+            <td>{{item.modification}}</td>
+            <td>{{item.serialNum}}</td>
+            <td>{{item.verificationType}}</td>
+            <td>{{item.verificationDate | date: "dd.MM.yyyy" :'UTC'}}</td>
+            <td>{{item.validDate | date: "dd.MM.yyyy" :'UTC'}}</td>
+            <td>{{item.applicable}}</td>
+            <td>{{item.employeeSurname}}</td>
+            <td>{{item.standardsString}}</td>
+            <td>{{item.temperature}}</td>
+            <td>{{item.humidity}}</td>
+            <td>{{item.pressure}}</td>
+            <td></td>
+            <tr ng-repeat="item in tableContent" ng-model-options="{timezone: 'UTC'}" value="{{item}}">
+                <td>{{item.modification}}</td>
+                <td>{{item.serialNum}}</td>
+                <td>{{item.verificationType}}</td>
+                <td>{{item.verificationDate | date: "dd.MM.yyyy" :'UTC'}}</td>
+                <td>{{item.validDate | date: "dd.MM.yyyy" :'UTC'}}</td>
+                <td>{{item.applicable}}</td>
+                <td>{{item.employeeSurname}}</td>
+                <td>{{item.standardsString}}</td>
+                <td>{{item.temperature}}</td>
+                <td>{{item.humidity}}</td>
+                <td>{{item.pressure}}</td>
+                <td> <button class="btn btn-outline-info" ng-click="deleteFromTable(item)"
+                             type="button">Удалить</button></td>
+            </tr>
+        </tr>
+        </tbody>
+    </table>
+   
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-8"><input class="form-control" id="comment" ng-model="comment" placeholder="Добавьте комментарий к отчету"
+                                  type="text" value=""></div>
+        <div class="col-2">
+            <button class="btn btn-primary" ng-click="addReport()" type="button">Обновить отчет</button>
+        </div>
+        <div class="col-1"></div>
+    </div>
+
+    <p></p>
+    <form>
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
+                        <div class="col-md-6">
+                            <label class="form-label" for="inputModification">Модификация*</label>
+                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
+                                   id="inputModification" ng-change="searchMi()" ng-model="miSearchString"
+                                   placeholder="Пример: В7-78/2" type="text" value="">
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" href="#"
+                                                                                 ng-click="selectMi(item)">{{item.modification}} зав. № {{item.serialNum}}
+                                </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="inputSN">Зав. №*</label>
+                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputSN"
+                                   ng-change="searchMiBySerialNumber()" ng-model="miSNSearchString" type="text"
+                                   value="">
+                            <ul class="dropdown-menu" ng-model="mi">
+                                <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item" href="#"
+                                                                                 ng-click="selectMi(item)">{{item.modification}} №{{item.serialNum}}</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="inputIN">Инв. №</label>
+                            <input class="form-control dropdown-toggle" id="inputIN" ng-model="mi.inventoryNum"
+                                   type="text" value="">
+
+                        </div>
+                    </div>
+                </div>
+                <p></p>
+                <div class="row">
+                    <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
+                        <div class="col-md-2">
+                            <label class="form-label" for="select2">Тип поверки*</label>
+                            <select aria-label="Тип схемы" class="form-select" id="select2"
+                                    ng-model="verificationType">
+                                <option default value="1">Первичная</option>
+                                <option value="2">Периодическая</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="inputDate1">Дата поверки*</label>
+                            <input class="form-control" id="inputDate1" ng-model="mi.verificationDate" ng-model-options="{timezone: 'UTC'}" required
+                                   type="date" value="">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="inputDate2">Действительно до*</label>
+                            <input class="form-control" id="inputDate2" ng-model="mi.validDate" ng-model-options="{timezone: 'UTC'}" required type="date"
+                                   value="">
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" for="inputApplicable">Пригодность*</label>
+                            <select class="form-control" id="inputApplicable" ng-model="applicable"
+                                    ng-options="applicable as applicable.title for applicable in applicables track by applicable.value"
+                                    required>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <label class="form-label" for="inputEmployee">Поверитель*</label>
+                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputEmployee"
+                                   ng-change="searchEmployee()" ng-model="employeeSearchString" type="text" value="">
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="item in employees" value="{{item}}"> <a class="dropdown-item"
+                                                                                       href="#" ng-click="selectEmployee(item)">{{item.surname}} {{item.name}}
+                                    {{item.patronymic}}</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <p></p>
+                    <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
+                        <div class="col-md-3">
+                            <label class="form-label" for="inputPress">Давление,кПа*</label>
+                            <input class="form-control" id="inputPress" ng-model="pressure" placeholder="99,3"
+                                   required step="0.01" type="number" value="">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="inputTemp">Температура, &degC*</label>
+                            <input class="form-control" id="inputTemp" ng-model="temperature" placeholder="21,5"
+                                   required step="0.01" type="number" value="">
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label" for="inputHum">Влажность, %*</label>
+                            <input class="form-control" id="inputHum" ng-model="humidity" placeholder="52,2"
+                                   required step="0.01" type="number" value="">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
+                    <div class="row">
+                        <div class="table-responsive" style="max-height: 170px; height: 170px;">
+                            <table class="table table-info table-striped table-hover">
+                                <thead>
+                                <tr>
+                                    <td>Применяемые эталоны*</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr ng-repeat="item in verificationStandards" value="{{item}}">
+                                    <td>{{item.arshinNumber}}</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <p></p>
+                    <div class="row">
+                        <div class="col">
+                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputStandard"
+                                   ng-change="searchMiStandard()" ng-model="miStandardSearchString"
+                                   placeholder="12345.67.1Р.12345678" type="text" value="">
+                            <ul class="dropdown-menu">
+                                <li ng-repeat="item in standards" value="{{item}}"> <a class="dropdown-item"
+                                                                                       href="#" ng-click="selectMiStandard(item)"><b>{{item.arshinNumber}}</b>
+                                    {{item.measurementInstrument.modification}}
+                                    {{item.measurementInstrument.serialNum}}</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p></p>
+                    <div class="row">
+                        <div class="col-6">
+                            <button class="btn btn-outline-info" ng-click="putStandardInStandardList()"
+                                    type="button">Добавить</button>
+                        </div>
+                        <div class="col-6">
+                            <button class="btn btn-outline-info" ng-click="deleteLastInStandardList()"
+                                    type="button">Удалить</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+<p></p>
+<div class="row">
+    <div class="col-10 text-center">
+        <button class="btn btn-outline-info" ng-click="putInTable()" type="button">Добавить в таблицу</button>
+    </div>
+    <div class="col-2">
+    </div>
+</div>
+</div>
+
+<p></p>
+<p></p>
+<p></p>
+
+</div>
+<script src="/js/angular.min.js"></script>
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+    let app = angular.module("VRF_REPORT_EDIT", []);
+    app.controller("VRF_REPORT_EDIT_CTRL", function ($scope, $http) {
+        let idAttr = new URL(document.URL).searchParams.get("id");
+        $scope.miStandard = {};
+        $scope.tableContent = [];
+        $scope.savedReportRecords = [];
+        let records = [];
+
+        //Получение сведений об отчете
+        function getReport() {
+                $http({
+                    url: "/reports/verifications/" + idAttr,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.report = response.data;
+                    $scope.report.records.forEach(element => {
+                        reportRow = element;
+                        buildReportRowForTable();
+                        $scope.savedReportRecords.push(tableReportRow);
+                        records.push(reportRow);
+                    });
+                    reportRow = {};
+                    tableReportRow = {};
+                });
+            }
+
+
+        //Поиск СИ по модификации
+        $scope.mis = [];
+        $scope.searchMi = function () {
+            if ($scope.miSearchString.length > 3) {
+                $http({
+                    url: "/mis/search?search=" + $scope.miSearchString,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.mis = response.data;
+                });
+            }
+        }
+
+
+        $scope.searchMiBySerialNumber = function () {
+            if ($scope.miSNSearchString.length > 2) {
+                $http({
+                    url: "/mis/search?search=" + $scope.miSNSearchString,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.mis = response.data;
+                });
+            }
+        }
+
+        $scope.selectMi = function (item) {
+            $scope.miSearchString = item.modification;
+            $scope.miSNSearchString = item.serialNum;
+            getMiFullData(item.id);
+
+        }
+
+        //Получение полных сведений о выбранном средстве измерений
+        getMiFullData = function (id) {
+            $http({
+                url: "/mis/" + id,
+                method: "GET"
+            }).then(function (response) {
+                $scope.mi = response.data;
+                formatDateFieldsFromMi();
+                setApplicableFromMi();
+                reportRow.mi = $scope.mi;
+            });
+        }
+
+        formatDateFieldsFromMi = function () {
+            if ($scope.mi.verificationDate != null) {
+                $scope.mi.verificationDate = new Date($scope.mi.verificationDate);
+            }
+            if ($scope.mi.validDate != null) {
+                $scope.mi.validDate = new Date($scope.mi.validDate);
+            }
+        }
+
+        $scope.applicables = [{ 'title': 'Пригодно', 'value': true },
+        { 'title': 'Не пригодно', 'value': false }];
+
+
+        setApplicableFromMi = function () {
+            $scope.applicable = { 'title': 'Пригодно', 'value': true };
+            if ($scope.mi.applicable == false) {
+                $scope.applicable = { 'title': 'Не пригодно', 'value': false };
+            }
+        }
+
+        $scope.employees = [];
+        $scope.searchEmployee = function () {
+            if ($scope.employeeSearchString.length > 3) {
+                $http({
+                    url: "/employees/search?search=" + $scope.employeeSearchString,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.employees = response.data;
+                });
+            }
+        }
+
+        $scope.selectEmployee = function (item) {
+            $scope.employeeSearchString = item.surname;
+            reportRow.employee = item;
+        }
+
+
+        $scope.standards = [];
+        $scope.searchMiStandard = function () {
+            if ($scope.miStandardSearchString.length > 3) {
+                $http({
+                    url: "/standards/mis/search?search=" + $scope.miStandardSearchString,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.standards = response.data;
+                });
+            }
+        }
+
+        let selectedMistandard = {};
+        $scope.selectMiStandard = function (item) {
+            $scope.miStandardSearchString = item.arshinNumber;
+            selectedMistandard = item;
+        }
+
+        $scope.verificationStandards = [];
+        $scope.putStandardInStandardList = function () {
+            if ($scope.verificationStandards.indexOf(selectedMistandard) == -1) {
+                $scope.verificationStandards.push(selectedMistandard);
+            } else {
+                alert('Этот эталон уже добавлен в список используемых при поверке');
+            }
+        }
+
+        $scope.deleteLastInStandardList = function () {
+            $scope.verificationStandards.pop();
+        }
+
+        //добавление в таблицу
+        let reportRow = {};
+        buildReportRow = function () {
+            if ($scope.verificationType != null) {
+                reportRow.verificationType = $scope.verificationType;
+            }
+            if ($scope.temperature != null) {
+                reportRow.temperature = $scope.temperature;
+            }
+            if ($scope.humidity != null) {
+                reportRow.humidity = $scope.humidity;
+            }
+            if ($scope.pressure != null) {
+                reportRow.pressure = $scope.pressure;
+            }
+
+            if ($scope.applicable != null){
+            reportRow.applicable = $scope.applicable.value;
+            }
+            if ($scope.mi != null) {
+                reportRow.verificationDate = new Date($scope.mi.verificationDate);
+            }
+            if ($scope.mi.validDate != null){
+                reportRow.validDate = new Date($scope.mi.validDate);
+            }
+            if ($scope.verificationStandards.length > 0) {
+                reportRow.miStandards = $scope.verificationStandards;
+                buildReportRowForTable();
+            }
+        }
+
+        tableReportRow = {};
+        buildReportRowForTable = function () {
+            tableReportRow = {};
+            tableReportRow.temperature = reportRow.temperature;
+            tableReportRow.humidity = reportRow.humidity;
+            tableReportRow.pressure = reportRow.pressure;
+            tableReportRow.modification = reportRow.mi.modification;
+            tableReportRow.serialNum = reportRow.mi.serialNum;
+            if (reportRow.verificationDate != null){
+            tableReportRow.verificationDate = new Date (reportRow.verificationDate);
+            }
+            if (reportRow.validDate != null){ 
+            tableReportRow.validDate = new Date (reportRow.validDate);
+            }
+            tableReportRow.employeeSurname = reportRow.employee.surname;
+            convertVerificationTypeForTable();
+            convertApplicableForTable();
+            buildStandardsStringForReportRow();
+        }
+
+        convertVerificationTypeForTable = function () {
+            if (reportRow.verificationType == 1) {
+                tableReportRow.verificationType = "Первичная"
+            } else {
+                tableReportRow.verificationType = "Периодическая"
+            }
+        }
+
+        convertApplicableForTable = function () {
+            if (reportRow.applicable == true) {
+                tableReportRow.applicable = "Пригодно"
+            } else {
+                tableReportRow.applicable = "Не пригодно"
+            }
+        }
+
+        buildStandardsStringForReportRow = function () {
+            let standardsString = reportRow.miStandards.map(item => item.arshinNumber).join("; ");
+            tableReportRow.standardsString = standardsString;
+        }
+
+
+
+        $scope.putInTable = function () {
+            console.log($scope.verificationType);
+            if (reportRow.employee != null){
+                buildReportRow();
+            }
+            if (reportRow.mi == null || reportRow.employee == null || reportRow.verificationType == 0 || reportRow.verificationDate == null || reportRow.applicable == null || reportRow.miStandards == undefined || reportRow.temperature == null ||
+                 reportRow.humidity == null || reportRow.pressure == null) {
+                alert('Пожалуйста заполните поля, отмеченные *');
+            } else {
+                $scope.tableContent.push(tableReportRow);
+                records.push(reportRow);
+                clearFields();
+                reportRow = {};
+                tableReportRow = {}
+                console.log(records);
+            }
+        }
+
+
+
+        $scope.deleteFromTable = function (tableRow) {
+            deleteableIndex = $scope.tableContent.indexOf(tableRow);
+            $scope.tableContent.splice(deleteableIndex, 1);
+            $scope.report.records.splice(deleteableIndex, 1);
+        }
+
+        clearFields = function () {
+            reportRow = {};
+            tableReportRow = {};
+            $scope.temperature = "";
+            $scope.humidity = "";
+            $scope.pressure = "";
+            $scope.verificationType = "";
+            $scope.verificationStandards = [];
+            $scope.miStandardSearchString = "";
+            $scope.employeeSearchString = "";
+            $scope.miSearchString = "";
+            $scope.miSNSearchString = "";
+            $scope.standards = [];
+            $scope.applicable = "";
+            $scope.mi = {};
+
+        }
+
+        // сохранение в БД;
+        $scope.report = {};
+        $scope.addReport = function () {
+            $scope.report.records = records;
+            $scope.report.comment = $scope.comment;
+            console.log($scope.report);
+            if ($scope.report.records.length > 0) {
+                $http({
+                    url: "/reports/verifications",
+                    method: "PATCH",
+                    data: $scope.report
+                }).then(function successCallback(response) {
+                    alert(response.data.message);
+                    window.location.reload();
+                }, function errorCallback(response) {
+                    alert(response.data.message)
+                });
+            } else {
+                alert('Добавьте в отчет хотябы одну запись о поверке');
+            }
+        }
+
+    getReport();
+        
+    });
+
+</script>
+</body>
+
+</html>

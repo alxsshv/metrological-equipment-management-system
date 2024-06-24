@@ -1,8 +1,13 @@
 package main.service.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import main.dto.rest.MiDto;
 import main.dto.rest.MiFullDto;
 import main.dto.rest.mappers.MeasurementInstrumentMapper;
+import main.exception.DtoCompositionException;
+import main.exception.EntityAlreadyExistException;
+import main.exception.ParameterNotValidException;
 import main.model.MeasurementInstrument;
 import main.model.MiType;
 import main.model.Organization;
@@ -23,7 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-
+@AllArgsConstructor
 @Service
 public class MeasurementInstrumentService implements IMeasurementInstrumentService {
     public static final Logger log = LoggerFactory.getLogger(MeasurementInstrumentService.class);
@@ -32,66 +37,58 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
     private final MiTypeRepository miTypeRepository;
     private final FileService fileService;
 
-    public MeasurementInstrumentService(MeasurementInstrumentRepository measurementInstrumentRepository,
-                                        OrganizationRepository organizationRepository,
-                                        MiTypeRepository miTypeRepository,
-                                        FileService fileService) {
-        this.measurementInstrumentRepository = measurementInstrumentRepository;
-        this.organizationRepository = organizationRepository;
-        this.miTypeRepository = miTypeRepository;
-        this.fileService = fileService;
-    }
 
     @Override
     public ResponseEntity<?> save(MiFullDto instrumentDto, MultipartFile[] files, String[] descriptions) throws IOException {
-        String errorMessage = checkMeasurementInstrumentDtoComposition(instrumentDto);
-        if (!errorMessage.isEmpty()) {
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(
-                    new ServiceMessage(errorMessage));
+        try {
+            checkMeasurementInstrumentDtoComposition(instrumentDto);
+            validateIfEntityAlreadyExist(instrumentDto);
+            MeasurementInstrument instrument = MeasurementInstrumentMapper.mapToEntity(instrumentDto);
+            MeasurementInstrument savedInstrument = measurementInstrumentRepository.save(instrument);
+            uploadFilesIfFilesExist(files, descriptions, savedInstrument.getId());
+            String okMessage = "Запись о средстве измерений " + instrumentDto.getModification() + " зав. № " +
+                    instrumentDto.getSerialNum() + " успешно добавлена";
+            log.info(okMessage);
+            return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
+        } catch (DtoCompositionException | EntityAlreadyExistException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(
+                    new ServiceMessage(ex.getMessage()));
         }
-        MeasurementInstrument instrumentFromDb = measurementInstrumentRepository
-                .findByModificationAndSerialNum(instrumentDto.getModification(), instrumentDto.getSerialNum());
-        if (instrumentFromDb != null){
-            errorMessage = "Данная модификация средства измерений с заводским номером " + instrumentDto.getSerialNum() + " уже существует";
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
-        }
-        MeasurementInstrument instrument = MeasurementInstrumentMapper.mapToEntity(instrumentDto);
-        MeasurementInstrument savedInstrument =  measurementInstrumentRepository.save(instrument);
-        uploadFilesIfFilesExist(files, descriptions, savedInstrument.getId());
-        String okMessage = "Запись о средстве измерений " + instrumentDto.getModification() + " зав. № " +
-                instrumentDto.getSerialNum() + " успешно добавлена";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
-
     }
 
-    private String checkMeasurementInstrumentDtoComposition(MiFullDto dto){
+    private void checkMeasurementInstrumentDtoComposition(MiFullDto dto) throws DtoCompositionException {
         if (dto.getModification() == null || dto.getModification().isEmpty()) {
-            return "Некорректно указана мдификация средства измерений";
+            throw new DtoCompositionException("Некорректно указана мдификация средства измерений");
         }
         if (dto.getSerialNum() == null || dto.getSerialNum().isEmpty()){
-            return "Пожалуйста заполните заводской номер средства измерений";
+            throw new DtoCompositionException("Пожалуйста заполните заводской номер средства измерений");
         }
-
         if (dto.getMiType() == null){
-            return "Пожалуйста укажите тип средства измерений";
+            throw new DtoCompositionException("Пожалуйста укажите тип средства измерений");
         }
         if (dto.getOwner() == null){
-            return "Пожалуйста укажите владельца средства измерений";
+            throw new DtoCompositionException ("Пожалуйста укажите владельца средства измерений");
         }
         Optional<MiType> miTypeFromDb = miTypeRepository.findById(dto.getMiType().getId());
         if (miTypeFromDb.isEmpty()){
-            return "Выбранный тип средства измерений отсутствует в базе данных пожалуйста выберите имеющийся тип" +
-                    " средства измерений  или добавьте требуемый тип средства измерений в базу";
+            throw new DtoCompositionException("Выбранный тип средства измерений отсутствует в базе данных пожалуйста выберите имеющийся тип" +
+                    " средства измерений  или добавьте требуемый тип средства измерений в базу");
         }
         Optional<Organization> ownerFromDb = organizationRepository.findById(dto.getOwner().getId());
         if (ownerFromDb.isEmpty()){
-            return "Указанная организация отсутствует в базе данных, пожалуйста проверьте правильность выбора " +
-                    "организации или добавьте требуемую организацию в базу данных";
+            throw new DtoCompositionException("Указанная организация отсутствует в базе данных, пожалуйста проверьте правильность выбора " +
+                    "организации или добавьте требуемую организацию в базу данных");
         }
-        return "";
+    }
+
+    private void validateIfEntityAlreadyExist(MiFullDto miFullDto) throws EntityAlreadyExistException {
+        MeasurementInstrument instrumentFromDb = measurementInstrumentRepository
+                .findByModificationAndSerialNum(miFullDto.getModification(), miFullDto.getSerialNum());
+        if (instrumentFromDb != null){
+            throw new EntityAlreadyExistException("Данная модификация средства измерений с заводским номером "
+                    + miFullDto.getSerialNum() + " уже существует");
+        }
     }
 
     private void uploadFilesIfFilesExist(MultipartFile[] files, String[] descriptions, Long categoryId) throws IOException {
@@ -101,82 +98,59 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
     }
 
     @Override
-    public ResponseEntity<?> update(MiFullDto instrumentDto) {
-        String errorMessage = checkMeasurementInstrumentDtoComposition(instrumentDto);
-        if (!errorMessage.isEmpty()) {
-            log.info(errorMessage);
-            return ResponseEntity.status(422).body(new ServiceMessage(errorMessage));
+    public ResponseEntity<?> findById(long id) {
+        try{
+        MeasurementInstrument instrument = getMiById(id);
+        MiFullDto dto = MeasurementInstrumentMapper.mapToFullDto(instrument);
+        return ResponseEntity.ok(dto);
+        } catch (EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(404).body(ex.getMessage());
         }
-
-        Optional<MeasurementInstrument> userOpt = measurementInstrumentRepository.findById(instrumentDto.getId());
-        if (userOpt.isEmpty()){
-            errorMessage = "Запись о средстве измерений не найдена";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
-        }
-        MeasurementInstrument updatingMeasurementInstrumentData = MeasurementInstrumentMapper
-                .mapToEntity(instrumentDto);
-        MeasurementInstrument instrument = userOpt.get();
-        instrument.updateFrom(updatingMeasurementInstrumentData);
-        measurementInstrumentRepository.save(instrument);
-        String okMessage ="Cведения о средстве измерений успешно обновлены";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
-
     }
 
-    @Override
-    public ResponseEntity<?> delete(long id) {
+    public MeasurementInstrument getMiById(long id){
         Optional<MeasurementInstrument> instrumentOpt = measurementInstrumentRepository.findById(id);
         if (instrumentOpt.isEmpty()){
-            String errorMessage = "Данные для удаления не найдены";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+            throw new EntityNotFoundException("Средство измерений № "+ id +" не найдено");
         }
-        measurementInstrumentRepository.delete(instrumentOpt.get());
-        String okMessage ="Запись о средстве измерений " + instrumentOpt.get().getModification() +" зав. № "
-                + instrumentOpt.get().getSerialNum() + " успешно удалена";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
-    }
-
-    @Override
-    public ResponseEntity<?> findById(long id) {
-        Optional<MeasurementInstrument> instrumentOpt = measurementInstrumentRepository.findById(id);
-        if (instrumentOpt.isPresent()) {
-            MiFullDto dto = MeasurementInstrumentMapper.mapToFullDto(instrumentOpt.get());
-            return ResponseEntity.ok(dto);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return instrumentOpt.get();
     }
 
     @Override
     public ResponseEntity<?> findBySearchString(String searchString, Pageable pageable) {
-        if (searchString == null || searchString.isEmpty()){
-            String errorMessage = "Поле для поиска не может быть пустым";
-            log.info(errorMessage);
-            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        try {
+            validateSearchString(searchString);
+            Page<MiDto> page = measurementInstrumentRepository
+                    .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
+                            searchString.trim(), searchString.trim(), searchString.trim(), pageable)
+                    .map(MeasurementInstrumentMapper::mapToDto);
+            return ResponseEntity.ok(page);
+        } catch (ParameterNotValidException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
         }
-        Page<MiDto> page =  measurementInstrumentRepository
-                .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
-                        searchString.trim(),searchString.trim(),searchString.trim(), pageable)
-                .map(MeasurementInstrumentMapper::mapToDto);
-        return ResponseEntity.ok(page);
     }
 
     @Override
     public ResponseEntity<?> findBySearchString(String searchString) {
-        if (searchString == null || searchString.isEmpty()){
-            String errorMessage = "Поле для поиска не может быть пустым";
-            log.info(errorMessage);
-            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
+        try {
+            validateSearchString(searchString);
+            List<MiDto> instruments = measurementInstrumentRepository
+                    .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
+                            searchString.trim(), searchString.trim(), searchString.trim())
+                    .stream().map(MeasurementInstrumentMapper::mapToDto).toList();
+            return ResponseEntity.ok(instruments);
+        } catch (ParameterNotValidException ex){
+            log.info(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
         }
-        List<MiDto> instruments =  measurementInstrumentRepository
-                .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
-                        searchString.trim(),searchString.trim(),searchString.trim())
-                .stream().map(MeasurementInstrumentMapper::mapToDto).toList();
-        return ResponseEntity.ok(instruments);
+    }
+
+    private void validateSearchString(String searchString) throws ParameterNotValidException {
+        if (searchString == null || searchString.isEmpty()) {
+            throw new ParameterNotValidException("Поле для поиска не может быть пустым");
+        }
     }
 
     @Override
@@ -188,4 +162,43 @@ public class MeasurementInstrumentService implements IMeasurementInstrumentServi
     public List<MiDto> findAll() {
         return measurementInstrumentRepository.findAll().stream().map(MeasurementInstrumentMapper::mapToDto).toList();
     }
+
+    @Override
+    public ResponseEntity<?> update(MiFullDto instrumentDto) {
+        try {
+            checkMeasurementInstrumentDtoComposition(instrumentDto);
+            MeasurementInstrument instrumentFromDb = getMiById(instrumentDto.getId());
+            MeasurementInstrument updatingMeasurementInstrumentData = MeasurementInstrumentMapper
+                    .mapToEntity(instrumentDto);
+            instrumentFromDb.updateFrom(updatingMeasurementInstrumentData);
+            measurementInstrumentRepository.save(instrumentFromDb);
+            String okMessage = "Cведения о средстве измерений успешно обновлены";
+            log.info(okMessage);
+            return ResponseEntity.ok(new ServiceMessage(okMessage));
+        } catch (DtoCompositionException | EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> delete(long id) {
+        try {
+            MeasurementInstrument instrument = getMiById(id);
+            fileService.deleteAllFiles(Category.MEASUREMENT_INSTRUMENT, id);
+            measurementInstrumentRepository.deleteById(id);
+            String okMessage = "Запись о средстве измерений " + instrument.getModification() + " "
+                    + instrument.getSerialNum() + " успешно удалена";
+            log.info(okMessage);
+            return ResponseEntity.ok(new ServiceMessage(okMessage));
+        } catch (IOException ex) {
+            String errorMessage = "Ошибка доступа к файлу";
+            log.error("{}:{}", errorMessage, ex.getMessage());
+            return ResponseEntity.ok(new ServiceMessage(errorMessage));
+        } catch (EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(404).body(ex.getMessage());
+        }
+
+        }
 }

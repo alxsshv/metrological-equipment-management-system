@@ -143,6 +143,11 @@
                                     {{item.patronymic}}</a></li>
                             </ul>
                         </div>
+                        <div class="col-md-12">
+                            <label class="form-label" for="inputInapplicableReason">Причина непригодности</label>
+                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown" id="inputInapplicableReason"
+                                    ng-model="inapplicableReason" type="text" value="">
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -245,7 +250,7 @@
         //Поиск СИ по модификации
         $scope.mis = [];
         $scope.searchMi = function () {
-            if ($scope.miSearchString.length > 3) {
+            if ($scope.miSearchString.length > 1) {
                 $http({
                     url: "/mis/search?search=" + $scope.miSearchString,
                     method: "GET"
@@ -373,6 +378,7 @@
             }
             if ($scope.applicable != null){
             reportRow.applicable = $scope.applicable.value;
+            reportRow.inapplicableReason = $scope.inapplicableReason;
             }
             if ($scope.mi != null) {
                 reportRow.verificationDate = $scope.mi.verificationDate;
@@ -474,7 +480,7 @@
                     data: $scope.report
                 }).then(function successCallback(response) {
                     alert(response.data.message);
-                    window.location.reload();
+                    window.location.href = "/report/verification";
                 }, function errorCallback(response) {
                     alert(response.data.message)
                 });

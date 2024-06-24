@@ -3,7 +3,7 @@ package main.controller;
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.OrganizationDto;
-import main.service.implementations.OrganizationService;
+import main.service.interfaces.IOrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/organizations")
 public class OrganizationController {
     @Autowired
-    private OrganizationService organizationService;
+    private IOrganizationService organizationService;
 
     @GetMapping("/pages")
     public Page<OrganizationDto> getOrganisationPageableList(
@@ -40,7 +40,7 @@ public class OrganizationController {
     public ResponseEntity<?> searchOrganisationWithPages(
             @RequestParam(value = "search") String searchString){
         Pageable pageable = PageRequest.of(0,20,Sort.by(Sort.Direction.ASC,"notation"));
-        return organizationService.findBySearchStringWithPages(searchString, pageable);
+        return organizationService.findBySearchString(searchString, pageable);
     }
 
     @GetMapping

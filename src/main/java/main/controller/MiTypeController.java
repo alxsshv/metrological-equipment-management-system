@@ -7,7 +7,7 @@ import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.MiTypeDto;
 import main.dto.rest.MiTypeFullDto;
-import main.service.implementations.MiTypeService;
+import main.service.interfaces.IMiTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequestMapping("/mits")
 public class MiTypeController {
     @Autowired
-    private MiTypeService miTypeService;
+    private IMiTypeService miTypeService;
 
     @GetMapping("/pages")
     public Page<MiTypeDto> getMiTypePageableList(

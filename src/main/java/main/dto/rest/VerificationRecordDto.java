@@ -19,6 +19,7 @@ public class VerificationRecordDto {
     private String verificationDate;
     private String validDate;
     private boolean applicable;
+    private String inapplicableReason;
     private double temperature; //deg. Celseus
     private double pressure; //kPa
     private double humidity; // percents

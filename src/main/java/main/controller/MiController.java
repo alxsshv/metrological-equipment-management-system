@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.MiDto;
 import main.dto.rest.MiFullDto;
-import main.service.implementations.MeasurementInstrumentService;
+import main.service.interfaces.IMeasurementInstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,9 +25,9 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/mis")
-public class MeasurementInstrumentController {
+public class MiController {
     @Autowired
-    private MeasurementInstrumentService measurementInstrumentService;
+    private IMeasurementInstrumentService measurementInstrumentService;
 
     @GetMapping("/pages")
     public Page<MiDto> getMeasurementInstrumentPageableList(
@@ -41,7 +41,7 @@ public class MeasurementInstrumentController {
 
     @GetMapping("/pages/search")
     public ResponseEntity<?> searchMeasurementInstrumentWithPages(
-            @RequestParam(value = "search", required = true) String searchString){
+            @RequestParam(value = "search") String searchString){
         Pageable pageable = PageRequest.of(0,10,
                 Sort.by(Sort.Direction.ASC,"modification","serialNum"));
         return measurementInstrumentService.findBySearchString(searchString,pageable);

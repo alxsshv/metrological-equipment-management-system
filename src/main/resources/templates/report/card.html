@@ -24,51 +24,55 @@
         <div class="row">
             <div class="col-sm-8">
                 <dl class="row text-start">
-                    <dt><h4>Отчет № {{report.id}} от {{report.creationDate | date:"dd.MM.yyyy" : 'UTC'}}</h4></dt>
+                    <dt>
+                        <h4>Отчет № {{report.id}} от {{report.creationDate | date:"dd.MM.yyyy" : 'UTC'}}</h4>
+                    </dt>
 
                     <dt>Описание</dt>
                     <dd>{{report.comment}}</dd>
 
                     <dt class="col-sm-6 text-start">Записи о поверке средств измерений</dt>
-                        <table class="table table-striped">
-                            <tr>
-                                <th>№ записи о поверке в ФИФ ОЕИ</th>
-                                <th>Модель СИ</th>
-                                <th>Модификация</th>
-                                <th>Зав. №</th>
-                                <th>Инв. №</th>
-                                <th>Тип поверки</th>
-                                <th>Дата поверки</th>
-                                <th>Действительно до</th>
-                                <th>Пригодность</th>
-                                <th>Поверитель</th>
-                                <th>Эталоны</th>
-                                <th>t, &degC</th>
-                                <th>H, %</th>
-                                <th>P, кПа</th>
-                                <th></th>
-                                <th><a class="btn btn-outline-primary" href="form/{{report.id}}?id={{report.id}}" role="button">Добавить запись</a></th>
-                            </tr>
-                            <tr ng-repeat="record in report.records">
-                                <td>{{record.arshinVerificationNumber}}</td>
-                                <td>{{record.mi.miType.notation}}</td>
-                                <td>{{record.mi.modification}}</td>
-                                <td>{{record.mi.serialNum}}</td>
-                                <td>{{record.mi.inventoryNum}}</td>
-                                <td>{{record.verificationType}}</td>
-                                <td>{{record.verificationDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
-                                <td>{{record.validDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
-                                <td>{{record.applicable}}</td>
-                                <td>{{record.employee.surname}}</td>
-                                <td>{{record.standards}}</td>
-                                <td>{{record.temperature}}</td>
-                                <td>{{record.humidity}}</td>
-                                <td>{{record.pressure}}</td>
-                                <td><a class="btn btn-link" href="record/form/{{record.id}}?id={{record.id}}" role="button">Редактировать</a></td>
-                                <td><button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#modal"
+                    <table class="table table-striped">
+                        <tr>
+                            <th>№ записи о поверке в ФИФ ОЕИ</th>
+                            <th>Модель СИ</th>
+                            <th>Модификация</th>
+                            <th>Зав. №</th>
+                            <th>Инв. №</th>
+                            <th>Тип поверки</th>
+                            <th>Дата поверки</th>
+                            <th>Действительно до</th>
+                            <th>Пригодность</th>
+                            <th>Поверитель</th>
+                            <th>Эталоны</th>
+                            <th>t, &degC</th>
+                            <th>H, %</th>
+                            <th>P, кПа</th>
+                            <th></th>
+                            <th><a class="btn btn-outline-primary" href="form/{{report.id}}?id={{report.id}}"
+                                    role="button">Добавить запись</a></th>
+                        </tr>
+                        <tr ng-repeat="record in report.records">
+                            <td>{{record.arshinVerificationNumber}}</td>
+                            <td>{{record.mi.miType.notation}}</td>
+                            <td>{{record.mi.modification}}</td>
+                            <td>{{record.mi.serialNum}}</td>
+                            <td>{{record.mi.inventoryNum}}</td>
+                            <td>{{record.verificationType}}</td>
+                            <td>{{record.verificationDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
+                            <td>{{record.validDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
+                            <td>{{record.applicable}}</td>
+                            <td>{{record.employee.surname}}</td>
+                            <td>{{record.standards}}</td>
+                            <td>{{record.temperature}}</td>
+                            <td>{{record.humidity}}</td>
+                            <td>{{record.pressure}}</td>
+                            <td><a class="btn btn-link" href="record/form/{{record.id}}?id={{record.id}}"
+                                    role="button">Редактировать</a></td>
+                            <td><button class="btn btn-link" data-bs-toggle="modal" data-bs-target="#modal"
                                     ng-click="getDeleteableId(record.id)" type="button">Удалить</button></td>
-                            </tr>
-                        </table>
+                        </tr>
+                    </table>
                     <dt><i>Последнее изменение отчета</i></dt>
                     <dd>{{report.updateDate | date:"dd.MM.yyyy HH:mm"}}</dd>
                 </dl>
@@ -76,21 +80,35 @@
 
         </div>
         <!-- Модальное окно -->
-    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаления" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить запись о поверке?</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                </div>
+        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаления" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить запись о поверке?
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary" ng-click="deleteReport(deleteableId)">Удалить</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary"
+                            ng-click="deleteReport(deleteableId)">Удалить</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="row justify-content-center">
+            <div class="col-3">
+                <button class="btn btn-primary" ng-click="updateArshinNumbers()" type="button">Обновить номера из ФГИС "Аршин"</button>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-primary" ng-click="printXMLForArshin()" type="button">Получить отчет для ФГИС
+                    Аршин</button>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-primary" ng-click="printXMLForFSA()" type="button">Получить отчет для ФСА</button>
+            </div>
+        </div>
     </div>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/angular.min.js"></script>
@@ -120,7 +138,7 @@
                 });
             }
 
-            function formatReportDate(){ 
+            function formatReportDate() {
                 if ($scope.report.creationDate != null) {
                     $scope.report.creationDate = new Date($scope.report.creationDate);
                 }
@@ -129,7 +147,7 @@
                 }
             }
 
-            function formatRecordDate(record){ 
+            function formatRecordDate(record) {
                 if (record.verificationDate != null) {
                     record.verificationDate = new Date(record.verificationDate);
                 }
@@ -138,7 +156,7 @@
                 }
             }
 
-            
+
             function formatVerificationType(record) {
                 if (record.verificationType == "1") {
                     record.verificationType = "Первичная"
@@ -155,7 +173,7 @@
                 }
             }
 
-            function convertStandardsToString(record){
+            function convertStandardsToString(record) {
                 record.standards = record.miStandards.map(item => item.arshinNumber).join("; ");
             }
 
@@ -173,6 +191,26 @@
                     method: "DELETE"
                 }).then(function (response) {
                     getReport();
+                });
+            }
+
+            $scope.printXMLForArshin = function() {
+                window.location.href = "/xml/arshin/" + idAttr;
+            }
+
+            $scope.printXMLForFSA = function() {
+                window.location.href = "/xml/fsa/" + idAttr;
+            }
+
+            $scope.updateArshinNumbers = function() {
+                $http({
+                    url: "/reports/verifications/update/" + idAttr,
+                    method: "GET"
+                }).then(function successCallback(response) {
+                    alert(response.data.message);
+                    window.location.reload();
+                }, function errorCallback(response) {
+                    alert(response.data.message)
                 });
             }
 

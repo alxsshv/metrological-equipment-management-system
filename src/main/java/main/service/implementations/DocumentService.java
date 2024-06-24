@@ -1,5 +1,8 @@
 package main.service.implementations;
 
+import jakarta.persistence.EntityNotFoundException;
+import lombok.Getter;
+import lombok.Setter;
 import main.dto.rest.DocumentDto;
 import main.dto.rest.mappers.DocumentDtoMapper;
 import main.model.Document;
@@ -10,6 +13,7 @@ import main.service.interfaces.IDocumentService;
 import main.service.utils.FileContentTypeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
@@ -26,17 +30,22 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-
-
+@Getter
+@Setter
 @Service
 public class DocumentService implements IDocumentService {
     private final static Logger log = LoggerFactory.getLogger(DocumentService.class);
-    @Value("${upload.documents.path}")
-    private String documentUploadPath;
+    @Autowired
     private final DocumentRepository documentRepository;
+    private  String documentUploadPath;
 
     public DocumentService(DocumentRepository documentRepository) {
         this.documentRepository = documentRepository;
+    }
+
+    @Value("${upload.documents.path}")
+    public void setDocumentUploadPath(String documentUploadPath){
+        this.documentUploadPath = documentUploadPath;
     }
 
     @Override
@@ -45,34 +54,11 @@ public class DocumentService implements IDocumentService {
             addDocument(files[i], descriptions[i], category, categoryId);
         }
     }
+
     private void createFolderIfNotExist(){
         File uploadFolder = new File(documentUploadPath);
         if (!uploadFolder.exists()){
             uploadFolder.mkdir();
-        }
-    }
-
-    @Override
-    public ResponseEntity<?> delete(long id) throws IOException {
-        Optional<Document> documentOpt = documentRepository.findById(id);
-        if (documentOpt.isEmpty()){
-            String errorMessage = "Удаляемый файл не найден";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
-        }
-        Document document = documentOpt.get();
-        Files.deleteIfExists(Path.of(documentUploadPath + "/" + document.getStorageFileName()));
-        documentRepository.delete(documentOpt.get());
-        String okMessage ="Файл " + document.getStorageFileName() + " успешно удален";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
-    }
-
-    @Override
-    public void deleteAll(Category category, long categoryId) throws IOException {
-        List<Document> documents = documentRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
-        for (Document document : documents){
-            delete(document.getId());
         }
     }
 
@@ -102,18 +88,17 @@ public class DocumentService implements IDocumentService {
 
     @Override
     public ResponseEntity<?> descriptionUpdate(long id, String description){
-        Optional<Document> documentOpt = documentRepository.findById(id);
-        if (documentOpt.isEmpty()){
-            String errorMessage = "Файл с id " + id + " не найден";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+        try {
+            Document document = getDocumentById(id);
+            document.setDescription(description);
+            documentRepository.save(document);
+            String okMessage = "Описание файла " + id + " успешно обновлено";
+            log.info(okMessage);
+            return ResponseEntity.ok(new ServiceMessage(okMessage));
+        } catch (EntityNotFoundException ex) {
+            log.error(ex.getMessage());
+            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
         }
-        Document document = documentOpt.get();
-        document.setDescription(description);
-        documentRepository.save(document);
-        String okMessage = "Описание файла " + id + " успешно обновлено";
-        log.info(okMessage);
-        return  ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
     @Override
@@ -124,23 +109,29 @@ public class DocumentService implements IDocumentService {
 
     @Override
     public ResponseEntity<?> getDocumentFile(Long id) {
-        Optional<Document> documentOpt = documentRepository.findById(id);
-        if(documentOpt.isEmpty()){
-            String errorMessage = "Документ № "+ id +" не найден";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
-        }
-        Document document = documentOpt.get();
         try {
+            Document document = getDocumentById(id);
             ResponseEntity<?> responseEntity = buildResponseEntityFrom(document);
             String okMessage = "Файл " + document.getStorageFileName() + " передан";
             log.info(okMessage);
             return responseEntity;
         } catch (IOException ex) {
-            String errorMessage = "Файл " + document.getStorageFileName() + " не найден или поврежден";
-            log.info(errorMessage);
-            return ResponseEntity.status(404).body(new ServiceMessage(errorMessage));
+            String errorMessage = "Файл не найден или поврежден. ";
+            log.error(errorMessage + ex.getMessage());
+            return ResponseEntity.status(500).body(new ServiceMessage(errorMessage));
+        } catch (EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
         }
+    }
+
+    @Override
+    public Document getDocumentById(long id){
+        Optional<Document> documentOpt = documentRepository.findById(id);
+        if(documentOpt.isEmpty()){
+            throw new EntityNotFoundException("Документ № "+ id +" не найден");
+        }
+        return documentOpt.get();
     }
 
     private ResponseEntity<?> buildResponseEntityFrom(Document document) throws IOException {
@@ -152,6 +143,29 @@ public class DocumentService implements IDocumentService {
         return ResponseEntity.ok()
                 .headers(headers)
                 .body(new ByteArrayResource(Files.readAllBytes(Path.of(documentUploadPath + document.getStorageFileName()))));
+    }
+
+    @Override
+    public ResponseEntity<?> delete(long id) throws IOException {
+        try {
+            Document document = getDocumentById(id);
+            Files.deleteIfExists(Path.of(documentUploadPath + "/" + document.getStorageFileName()));
+            documentRepository.delete(document);
+            String okMessage = "Файл " + document.getStorageFileName() + " успешно удален";
+            log.info(okMessage);
+            return ResponseEntity.ok(new ServiceMessage(okMessage));
+        } catch (EntityNotFoundException ex){
+            log.info(ex.getMessage());
+            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
+        }
+    }
+
+    @Override
+    public void deleteAll(Category category, long categoryId) throws IOException {
+        List<Document> documents = documentRepository.findByCategoryNameAndCategoryId(category.name(), categoryId);
+        for (Document document : documents){
+            delete(document.getId());
+        }
     }
 
 }
