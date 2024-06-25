@@ -52,25 +52,25 @@
             <td>{{item.humidity}}</td>
             <td>{{item.pressure}}</td>
             <td></td>
-            <tr ng-repeat="item in tableContent" ng-model-options="{timezone: 'UTC'}" value="{{item}}">
-                <td>{{item.modification}}</td>
-                <td>{{item.serialNum}}</td>
-                <td>{{item.verificationType}}</td>
-                <td>{{item.verificationDate | date: "dd.MM.yyyy" :'UTC'}}</td>
-                <td>{{item.validDate | date: "dd.MM.yyyy" :'UTC'}}</td>
-                <td>{{item.applicable}}</td>
-                <td>{{item.employeeSurname}}</td>
-                <td>{{item.standardsString}}</td>
-                <td>{{item.temperature}}</td>
-                <td>{{item.humidity}}</td>
-                <td>{{item.pressure}}</td>
-                <td> <button class="btn btn-outline-info" ng-click="deleteFromTable(item)"
-                             type="button">Удалить</button></td>
-            </tr>
+        <tr ng-repeat="item in tableContent" ng-model-options="{timezone: 'UTC'}" value="{{item}}">
+            <td>{{item.modification}}</td>
+            <td>{{item.serialNum}}</td>
+            <td>{{item.verificationType}}</td>
+            <td>{{item.verificationDate | date: "dd.MM.yyyy" :'UTC'}}</td>
+            <td>{{item.validDate | date: "dd.MM.yyyy" :'UTC'}}</td>
+            <td>{{item.applicable}}</td>
+            <td>{{item.employeeSurname}}</td>
+            <td>{{item.standardsString}}</td>
+            <td>{{item.temperature}}</td>
+            <td>{{item.humidity}}</td>
+            <td>{{item.pressure}}</td>
+            <td> <button class="btn btn-outline-info" ng-click="deleteFromTable(item)"
+                         type="button">Удалить</button></td>
+        </tr>
         </tr>
         </tbody>
     </table>
-   
+
     <div class="row">
         <div class="col-1"></div>
         <div class="col-8"><input class="form-control" id="comment" ng-model="comment" placeholder="Добавьте комментарий к отчету"
@@ -432,7 +432,7 @@
             if (reportRow.verificationDate != null){
             tableReportRow.verificationDate = new Date (reportRow.verificationDate);
             }
-            if (reportRow.validDate != null){ 
+            if (reportRow.validDate != null){
             tableReportRow.validDate = new Date (reportRow.validDate);
             }
             tableReportRow.employeeSurname = reportRow.employee.surname;
@@ -531,7 +531,7 @@
         }
 
     getReport();
-        
+
     });
 
 </script>

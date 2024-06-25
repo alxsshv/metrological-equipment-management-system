@@ -208,8 +208,8 @@
                             'Content-Type': undefined
                         }
                     }).then(function successCallback(response) {
-                        console.log($scope.miType);
                         alert(response.data.message);
+                        formData = new FormData();
                         window.location.reload();
                     }, function errorCallback(response) {
                         alert(response.data.message)

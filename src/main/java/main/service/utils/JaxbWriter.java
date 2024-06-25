@@ -40,7 +40,7 @@ public class JaxbWriter {
             log.error("Ошибка создания файла: " + ex);
             throw new FileNotFoundException("Ошибка создания XML файла");
         }
-        log.info("Файл создан");
+        log.info("Файл {} создан", fileName);
     }
 
     public void writeXMLForFSA(FsaVerificationMessage fsaVerificationMessage, String fileName) throws FileNotFoundException {
@@ -57,7 +57,7 @@ public class JaxbWriter {
             log.error("Ошибка создания файла: " + ex);
             throw new FileNotFoundException("Ошибка создания XML файла");
         }
-        log.info("Файл создан");
+        log.info("Файл {} создан", fileName);
     }
 
     private void createFolderIfNotExist(){
