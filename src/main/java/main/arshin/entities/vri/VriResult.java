@@ -1,4 +1,4 @@
-package main.arshin.entities;
+package main.arshin.entities.vri;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -14,7 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @JsonSerialize
 @JsonDeserialize
-public class Result {
+public class VriResult {
     private int count;
     private int start;
     private int rows;

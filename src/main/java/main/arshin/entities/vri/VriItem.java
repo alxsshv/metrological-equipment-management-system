@@ -1,4 +1,4 @@
-package main.arshin.entities;
+package main.arshin.entities.vri;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @ToString
-public class VriItem extends Item {
+public class VriItem {
     @JsonProperty("vri_id")
     private String vriId;
     @JsonProperty("org_title")

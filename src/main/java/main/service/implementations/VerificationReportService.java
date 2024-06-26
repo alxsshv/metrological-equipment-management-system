@@ -6,7 +6,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import main.arshin.ArshinHttpClient;
 import main.arshin.VerificationRequestBuilder;
-import main.arshin.entities.VriItem;
+import main.arshin.entities.vri.VriItem;
 import main.dto.rest.VerificationReportDto;
 import main.dto.rest.VerificationReportFullDto;
 import main.dto.rest.mappers.VerificationRecordDtoMapper;
@@ -125,7 +125,7 @@ public class VerificationReportService implements IVerificationReportService {
                         .orgTitle(verificationOrganization)
                         .verificationDate(record.getVerificationDate())
                         .build();
-                VriItem item = ArshinHttpClient.getVerificationResults(verificationRequest);
+                VriItem item = ArshinHttpClient.getVerificationItemIfOnlyMatches(verificationRequest);
                 verificationRecordService.updateArshinVerificationNumber(record.getId(), item.getResultDocnum());
             }
             String okMessage = "Номера записей о поверке в ФГИС Аршин успешно получены";

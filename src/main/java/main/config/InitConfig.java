@@ -2,8 +2,6 @@ package main.config;
 
 import jakarta.annotation.PostConstruct;
 import lombok.*;
-import main.arshin.ArshinHttpClient;
-import main.arshin.VerificationRequestBuilder;
 import main.dto.rest.*;
 import main.exception.ArshinResponseException;
 import main.repository.MeasurementInstrumentRepository;
@@ -16,7 +14,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 @Configuration
 @NoArgsConstructor
@@ -46,20 +43,22 @@ public class InitConfig {
 
 
     @PostConstruct
-    public void initiate() throws IOException, ArshinResponseException {
+    public void initiate() throws IOException {
+        OrganizationDto organization1 = new OrganizationDto();
+        organization1.setTitle("Не указано");
+        organization1.setNotation("-");
+        organization1.setAddress("-");
+        organizationService.save(organization1);
+        generateDemoEntities();
+    }
+
+
+     public void generateDemoEntities() throws IOException {
+        createMiTypes();
         createEmployee();
         createOrganization();
-        createMiTypes();
         createMi();
         createStandards();
-
-        String verificationRequest = new VerificationRequestBuilder()
-                .uri(uriBase)
-                .orgTitle("АО «Протон-ПМ»")
-                .verificationDate(LocalDate.parse("2024-05-20", DateTimeFormatter.ofPattern("yyyy-MM-dd")))
-                .miModification("МТ").miNumber("ꓲꓦ-79")
-                .build();
-        ArshinHttpClient.getVerificationResults(verificationRequest);
     }
 
     private void createMiTypes() throws IOException {
@@ -163,17 +162,19 @@ public class InitConfig {
 
     private void createOrganization(){
         OrganizationDto organization1 = new OrganizationDto();
+        organization1.setId(2L);
         organization1.setTitle("ООО \"Центр метрологии и стандартизации\"");
         organization1.setNotation("ООО \"ЦСМ\"");
         organization1.setAddress("г. Старый Оскол");
 
         OrganizationDto organization2 = new OrganizationDto();
-        organization2.setId(2L);
+        organization2.setId(3L);
         organization2.setTitle("АНО \"Лаборатория испытаний\"");
         organization2.setNotation("АНО \"ЛабИ\"");
         organization2.setAddress("г. Нижний Новгород");
 
         OrganizationDto organization3 = new OrganizationDto();
+        organization3.setId(4L);
         organization3.setTitle("ИП \"Степанов Степан Иванович\"");
         organization3.setNotation("ИП \"Степанов\"");
         organization3.setAddress("г. Ростов");
