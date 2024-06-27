@@ -8,7 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
 
-public interface IVerificationReportService {
+public interface VerificationReportService {
     ResponseEntity<?> save(VerificationReportFullDto reportFullDto);
     ResponseEntity<?> findById (long id);
     VerificationReport getReportById(long id);

@@ -10,7 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-public interface IMiStandardService {
+public interface MiStandardService {
     ResponseEntity<?> save(MiStandardDto miStandardDto, MultipartFile[] files, String[] descriptions) throws IOException;
     ResponseEntity<?> findById(long id);
     MiStandard getMiStandardById(long id);

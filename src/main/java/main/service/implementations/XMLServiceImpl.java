@@ -10,7 +10,7 @@ import main.dto.xml.fsa.factory.VerificationMessageFactory;
 import main.model.VerificationReport;
 import main.repository.VerificationReportRepository;
 import main.service.ServiceMessage;
-import main.service.interfaces.IXMLService;
+import main.service.interfaces.XMLService;
 import main.service.utils.FileReader;
 import main.service.utils.JaxbWriter;
 import org.slf4j.Logger;
@@ -29,8 +29,8 @@ import java.util.Optional;
 @Setter
 @Service
 
-public class XMLService implements IXMLService {
-    public static final Logger log = LoggerFactory.getLogger(XMLService.class);
+public class XMLServiceImpl implements XMLService {
+    public static final Logger log = LoggerFactory.getLogger(XMLServiceImpl.class);
     private final String tempFileUploadPath;
     @Autowired
     private final VerificationReportRepository reportRepository;
@@ -40,7 +40,7 @@ public class XMLService implements IXMLService {
     private final JaxbWriter jaxbWriter;
 
 
-    public XMLService(@Value("${upload.temp.path}") String tempFileUploadPath,VerificationReportRepository reportRepository, VerificationApplicationFactory applicationFactory, JaxbWriter jaxbWriter) {
+    public XMLServiceImpl(@Value("${upload.temp.path}") String tempFileUploadPath, VerificationReportRepository reportRepository, VerificationApplicationFactory applicationFactory, JaxbWriter jaxbWriter) {
         this.tempFileUploadPath = tempFileUploadPath;
         this.reportRepository = reportRepository;
         this.applicationFactory = applicationFactory;

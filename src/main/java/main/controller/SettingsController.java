@@ -2,7 +2,7 @@ package main.controller;
 
 import lombok.AllArgsConstructor;
 import main.dto.rest.SettingsDto;
-import main.service.interfaces.ISettingsService;
+import main.service.interfaces.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/settings")
 public class SettingsController {
     @Autowired
-    private ISettingsService settingsService;
+    private SettingsService settingsService;
 
     @GetMapping
     public ResponseEntity<?> getSettings() {

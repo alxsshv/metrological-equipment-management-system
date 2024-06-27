@@ -2,17 +2,17 @@ package main.service.implementations;
 
 import main.config.AppConstants;
 import main.service.Category;
-import main.service.interfaces.IFileService;
+import main.service.interfaces.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Service
-public class FileService implements IFileService {
-    private final DocumentService documentService;
-    private final ImageService imageService;
+public class FileServiceImpl implements FileService {
+    private final DocumentServiceImpl documentService;
+    private final ImageServiceImpl imageService;
 
-    public FileService(DocumentService documentService, ImageService imageService) {
+    public FileServiceImpl(DocumentServiceImpl documentService, ImageServiceImpl imageService) {
         this.documentService = documentService;
         this.imageService = imageService;
     }

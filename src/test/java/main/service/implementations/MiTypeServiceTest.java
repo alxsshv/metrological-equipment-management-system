@@ -33,10 +33,10 @@ public class MiTypeServiceTest {
             Mockito.mock(MiTypeInstructionRepository.class);
     private final MiTypeModificationRepository miTypeModificationRepository =
             Mockito.mock(MiTypeModificationRepository.class);
-    private final FileService fileService = Mockito.mock(FileService.class);
+    private final FileServiceImpl fileService = Mockito.mock(FileServiceImpl.class);
     private final Pageable pageable = PageRequest.of(0,10, Sort.by(Sort.Direction.ASC,"number"));
-    private final MiTypeService miTypeService =
-            new MiTypeService(miTypeRepository, miTypeInstructionRepository,
+    private final MiTypeServiceImpl miTypeService =
+            new MiTypeServiceImpl(miTypeRepository, miTypeInstructionRepository,
                     miTypeModificationRepository, fileService);
     private final MultipartFile[] files = {};
     private final String[] descriptions = {};

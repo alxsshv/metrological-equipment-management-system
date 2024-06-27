@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.VerificationReportDto;
 import main.dto.rest.VerificationReportFullDto;
-import main.service.interfaces.IVerificationReportService;
+import main.service.interfaces.VerificationReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +17,7 @@ import org.springframework.data.domain.Page;
 @RequestMapping("reports/verifications")
 public class VerificationReportController {
     @Autowired
-    private IVerificationReportService verificationReportService;
+    private VerificationReportService verificationReportService;
 
 
     @PostMapping

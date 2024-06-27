@@ -9,7 +9,7 @@ import main.exception.DtoCompositionException;
 import main.model.Settings;
 import main.repository.SettingsRepository;
 import main.service.ServiceMessage;
-import main.service.interfaces.ISettingsService;
+import main.service.interfaces.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +20,8 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class SettingsService implements ISettingsService {
-    public static final Logger log = LoggerFactory.getLogger(SettingsService.class);
+public class SettingsServiceImpl implements SettingsService {
+    public static final Logger log = LoggerFactory.getLogger(SettingsServiceImpl.class);
     private final SettingsRepository settingsRepository;
 
 

@@ -17,7 +17,7 @@ import main.model.VerificationRecord;
 import main.model.VerificationReport;
 import main.repository.VerificationReportRepository;
 import main.service.ServiceMessage;
-import main.service.interfaces.IVerificationReportService;
+import main.service.interfaces.VerificationReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -30,16 +30,16 @@ import java.util.Optional;
 @Setter
 @Service
 @Slf4j
-public class VerificationReportService implements IVerificationReportService {
+public class VerificationReportServiceImpl implements VerificationReportService {
     private final String arshinVerificationUri;
     @Autowired
     private final VerificationReportRepository reportRepository;
     @Autowired
-    private final VerificationRecordService verificationRecordService;
+    private final VerificationRecordServiceImpl verificationRecordService;
     @Autowired
-    private final SettingsService settingsService;
+    private final SettingsServiceImpl settingsService;
 
-    public VerificationReportService(@Value("${arshin.verification.uri}") String arshinVerificationUri, VerificationReportRepository reportRepository, VerificationRecordService verificationRecordService, SettingsService settingsService) {
+    public VerificationReportServiceImpl(@Value("${arshin.verification.uri}") String arshinVerificationUri, VerificationReportRepository reportRepository, VerificationRecordServiceImpl verificationRecordService, SettingsServiceImpl settingsService) {
         this.arshinVerificationUri = arshinVerificationUri;
         this.reportRepository = reportRepository;
         this.verificationRecordService = verificationRecordService;

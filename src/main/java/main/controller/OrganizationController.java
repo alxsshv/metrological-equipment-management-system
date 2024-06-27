@@ -3,7 +3,7 @@ package main.controller;
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.OrganizationDto;
-import main.service.interfaces.IOrganizationService;
+import main.service.interfaces.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/organizations")
 public class OrganizationController {
     @Autowired
-    private IOrganizationService organizationService;
+    private OrganizationService organizationService;
 
     @GetMapping("/pages")
     public Page<OrganizationDto> getOrganisationPageableList(

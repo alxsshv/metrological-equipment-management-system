@@ -9,7 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-public interface IImageService {
+public interface ImageService {
     void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException;
     void addImage(MultipartFile file, String description, Category category, Long CategoryId) throws IOException;
     List<ImageDto> getImages(Category category, long categoryId);

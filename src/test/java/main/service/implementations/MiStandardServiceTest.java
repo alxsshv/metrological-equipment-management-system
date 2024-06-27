@@ -30,9 +30,9 @@ import static testutils.TestEntityGenerator.*;
 
 public class MiStandardServiceTest {
     private final MiStandardRepository miStandardRepository = Mockito.mock(MiStandardRepository.class);
-    private final MeasurementInstrumentService miService = Mockito.mock(MeasurementInstrumentService.class);
-    private final FileService fileService = Mockito.mock(FileService.class);
-    private final MiStandardService miStandardService = new MiStandardService(miStandardRepository,miService,fileService);
+    private final MiServiceImpl miService = Mockito.mock(MiServiceImpl.class);
+    private final FileServiceImpl fileService = Mockito.mock(FileServiceImpl.class);
+    private final MiStandardServiceImpl miStandardService = new MiStandardServiceImpl(miStandardRepository,miService,fileService);
     private final Pageable pageable = PageRequest.of(1,10, Sort.by(Sort.Direction.ASC, "arshinNumber"));
     private final MultipartFile[] files = {};
     private final String[] descriptions = {};

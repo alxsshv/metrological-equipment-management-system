@@ -3,7 +3,7 @@ package main.controller;
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.EmployeeDto;
-import main.service.interfaces.IEmployeeService;
+import main.service.interfaces.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/employees")
 public class EmployeeController {
     @Autowired
-    private IEmployeeService employeeService;
+    private EmployeeService employeeService;
 
     @GetMapping("/pages")
     public Page<EmployeeDto> getEmployeePageableList(

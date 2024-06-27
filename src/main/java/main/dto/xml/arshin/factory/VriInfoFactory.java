@@ -9,8 +9,8 @@ import main.dto.xml.arshin.VriInfo;
 import main.model.MiTypeInstruction;
 import main.model.Settings;
 import main.model.VerificationRecord;
-import main.service.implementations.MiTypeService;
-import main.service.implementations.SettingsService;
+import main.service.implementations.MiTypeServiceImpl;
+import main.service.implementations.SettingsServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,9 +23,9 @@ import java.time.format.DateTimeFormatter;
 @NoArgsConstructor
 public class VriInfoFactory {
     @Autowired
-    private MiTypeService miTypeService;
+    private MiTypeServiceImpl miTypeService;
     @Autowired
-    private SettingsService settingsService;
+    private SettingsServiceImpl settingsService;
     @Autowired
     private ApplicabilityFactory applicabilityFactory;
 

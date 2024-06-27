@@ -29,14 +29,14 @@ public class MeasurementInstrumentServiceTest {
     private final MeasurementInstrumentRepository miRepository = Mockito.mock(MeasurementInstrumentRepository.class);
     private final OrganizationRepository organizationRepository = Mockito.mock(OrganizationRepository.class);
     private final MiTypeRepository miTypeRepository = Mockito.mock(MiTypeRepository.class);
-    private final FileService fileService = Mockito.mock(FileService.class);
+    private final FileServiceImpl fileService = Mockito.mock(FileServiceImpl.class);
     private final Pageable pageable = PageRequest.of(1, 10,
             Sort.by(Sort.Direction.ASC, "modification","serialNum"));
     private final MultipartFile[] files = {};
     private final String[] descriptions = {};
 
-    public MeasurementInstrumentService measurementInstrumentService =
-            new MeasurementInstrumentService(miRepository, organizationRepository, miTypeRepository, fileService);
+    public MiServiceImpl measurementInstrumentService =
+            new MiServiceImpl(miRepository, organizationRepository, miTypeRepository, fileService);
 
 
     @Test

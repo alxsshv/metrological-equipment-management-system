@@ -23,8 +23,8 @@ import static testutils.TestEntityGenerator.*;
 public class EmployeeServiceTest {
     private final EmployeeRepository employeeRepository =
             Mockito.mock(EmployeeRepository.class);
-    private final EmployeeService employeeService =
-            new EmployeeService(employeeRepository);
+    private final EmployeeServiceImpl employeeService =
+            new EmployeeServiceImpl(employeeRepository);
     private final Pageable pageable = PageRequest.of(1,10, Sort.by(Sort.Direction.ASC, "surname"));
 
     @Test

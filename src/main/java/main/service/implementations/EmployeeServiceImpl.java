@@ -10,7 +10,7 @@ import main.exception.ParameterNotValidException;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
 import main.service.ServiceMessage;
-import main.service.interfaces.IEmployeeService;
+import main.service.interfaces.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -25,8 +25,8 @@ import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
-public class EmployeeService implements IEmployeeService {
-    public static final Logger log = LoggerFactory.getLogger(EmployeeService.class);
+public class EmployeeServiceImpl implements EmployeeService {
+    public static final Logger log = LoggerFactory.getLogger(EmployeeServiceImpl.class);
     private final EmployeeRepository employeeRepository;
 
     @Override

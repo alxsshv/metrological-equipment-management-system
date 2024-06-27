@@ -1,19 +1,16 @@
 package main.arshin;
 
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 public class MiTypeRequestBuilder {
-    @Value("${arshin.verification.uri}")
     private String uriBase;
     private String number;
     private String title;
     private String notation;
     private String manufacturer;
-
 
 
     public MiTypeRequestBuilder() {

@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.MiDto;
 import main.dto.rest.MiFullDto;
-import main.service.interfaces.IMeasurementInstrumentService;
+import main.service.interfaces.MeasurementInstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +27,7 @@ import java.util.Optional;
 @RequestMapping("/mis")
 public class MiController {
     @Autowired
-    private IMeasurementInstrumentService measurementInstrumentService;
+    private MeasurementInstrumentService measurementInstrumentService;
 
     @GetMapping("/pages")
     public Page<MiDto> getMeasurementInstrumentPageableList(

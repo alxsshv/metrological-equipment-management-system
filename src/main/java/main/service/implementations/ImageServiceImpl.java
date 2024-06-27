@@ -7,7 +7,7 @@ import main.model.Image;
 import main.repository.ImageRepository;
 import main.service.Category;
 import main.service.ServiceMessage;
-import main.service.interfaces.IImageService;
+import main.service.interfaces.ImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,13 +23,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Service
-public class ImageService implements IImageService {
-    private final static Logger log = LoggerFactory.getLogger(ImageService.class);
+public class ImageServiceImpl implements ImageService {
+    private final static Logger log = LoggerFactory.getLogger(ImageServiceImpl.class);
     private String imageUploadPath;
     private final ImageRepository imageRepository;
 
 
-    public ImageService(ImageRepository imageRepository) {
+    public ImageServiceImpl(ImageRepository imageRepository) {
         this.imageRepository = imageRepository;
     }
 

@@ -16,7 +16,7 @@ import main.repository.MiTypeRepository;
 import main.repository.OrganizationRepository;
 import main.service.Category;
 import main.service.ServiceMessage;
-import main.service.interfaces.IMeasurementInstrumentService;
+import main.service.interfaces.MeasurementInstrumentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -30,12 +30,12 @@ import java.util.List;
 import java.util.Optional;
 @AllArgsConstructor
 @Service
-public class MeasurementInstrumentService implements IMeasurementInstrumentService {
-    public static final Logger log = LoggerFactory.getLogger(MeasurementInstrumentService.class);
+public class MiServiceImpl implements MeasurementInstrumentService {
+    public static final Logger log = LoggerFactory.getLogger(MiServiceImpl.class);
     private final MeasurementInstrumentRepository measurementInstrumentRepository;
     private final OrganizationRepository organizationRepository;
     private final MiTypeRepository miTypeRepository;
-    private final FileService fileService;
+    private final FileServiceImpl fileService;
 
 
     @Override

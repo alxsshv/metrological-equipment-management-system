@@ -24,7 +24,7 @@ import static testutils.TestEntityGenerator.*;
 
 public class OrganizationServiceTest {
     private final OrganizationRepository organizationRepository = Mockito.mock(OrganizationRepository.class);
-    private final OrganizationService organizationService = new OrganizationService(organizationRepository);
+    private final OrganizationServiceImpl organizationService = new OrganizationServiceImpl(organizationRepository);
     private final Pageable pageable = PageRequest.of(0,10, Sort.by(Sort.Direction.ASC,"notation"));
 
     @Test

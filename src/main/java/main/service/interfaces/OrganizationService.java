@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface IOrganizationService {
+public interface OrganizationService {
     ResponseEntity<?> save(OrganizationDto organizationDto);
     ResponseEntity<?> findById(long id);
     Organization getOrganizationById(long id);

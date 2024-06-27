@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import main.config.AppConstants;
 import main.dto.rest.MiStandardDto;
-import main.service.interfaces.IMiStandardService;
+import main.service.interfaces.MiStandardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequestMapping("/standards/mis/")
 public class MiStandardController {
     @Autowired
-    private IMiStandardService miStandardService;
+    private MiStandardService miStandardService;
 
     @GetMapping("/pages")
     public Page<MiStandardDto> getMiStandardPageableList(

@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-public interface IEmployeeService {
+public interface EmployeeService {
     ResponseEntity<?> save(EmployeeDto employeeDto);
     ResponseEntity<?> findById(long id);
     Employee getEmployeeById(long id);

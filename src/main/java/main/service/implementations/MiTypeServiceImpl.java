@@ -15,7 +15,7 @@ import main.repository.MiTypeModificationRepository;
 import main.repository.MiTypeRepository;
 import main.service.Category;
 import main.service.ServiceMessage;
-import main.service.interfaces.IMiTypeService;
+import main.service.interfaces.MiTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -31,17 +31,17 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
-public class MiTypeService implements IMiTypeService {
-    public static final Logger log = LoggerFactory.getLogger(MiTypeService.class);
+public class MiTypeServiceImpl implements MiTypeService {
+    public static final Logger log = LoggerFactory.getLogger(MiTypeServiceImpl.class);
     private final MiTypeRepository miTypeRepository;
     private final MiTypeInstructionRepository miTypeInstructionRepository;
     private final MiTypeModificationRepository miTypeModificationRepository;
-    private final FileService fileService;
+    private final FileServiceImpl fileService;
 
-    public MiTypeService(MiTypeRepository miTypeRepository,
-                         MiTypeInstructionRepository miTypeInstructionRepository,
-                         MiTypeModificationRepository miTypeModificationRepository,
-                         FileService fileService) {
+    public MiTypeServiceImpl(MiTypeRepository miTypeRepository,
+                             MiTypeInstructionRepository miTypeInstructionRepository,
+                             MiTypeModificationRepository miTypeModificationRepository,
+                             FileServiceImpl fileService) {
         this.miTypeRepository = miTypeRepository;
         this.miTypeInstructionRepository = miTypeInstructionRepository;
         this.miTypeModificationRepository = miTypeModificationRepository;

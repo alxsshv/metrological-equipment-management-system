@@ -4,9 +4,9 @@ import lombok.AllArgsConstructor;
 import main.dto.rest.DocumentDto;
 import main.dto.rest.ImageDto;
 import main.service.Category;
-import main.service.interfaces.IDocumentService;
-import main.service.interfaces.IFileService;
-import main.service.interfaces.IImageService;
+import main.service.interfaces.DocumentService;
+import main.service.interfaces.FileService;
+import main.service.interfaces.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +20,11 @@ import java.util.List;
 @RequestMapping("files")
 public class FileController {
     @Autowired
-    private  final IDocumentService documentService;
+    private  final DocumentService documentService;
     @Autowired
-    private final IImageService imageService;
+    private final ImageService imageService;
     @Autowired
-    private final IFileService fileService;
+    private final FileService fileService;
 
     @GetMapping("/documents")
     public List<DocumentDto> getDocumentsList(@RequestParam (value ="category") String categoryName,

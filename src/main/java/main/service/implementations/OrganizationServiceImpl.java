@@ -10,7 +10,7 @@ import main.exception.ParameterNotValidException;
 import main.model.Organization;
 import main.repository.OrganizationRepository;
 import main.service.ServiceMessage;
-import main.service.interfaces.IOrganizationService;
+import main.service.interfaces.OrganizationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -23,11 +23,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class OrganizationService implements IOrganizationService {
-    public static final Logger log = LoggerFactory.getLogger(OrganizationService.class);
+public class OrganizationServiceImpl implements OrganizationService {
+    public static final Logger log = LoggerFactory.getLogger(OrganizationServiceImpl.class);
     private final OrganizationRepository organizationRepository;
 
-    public OrganizationService(OrganizationRepository organizationRepository) {
+    public OrganizationServiceImpl(OrganizationRepository organizationRepository) {
         this.organizationRepository = organizationRepository;
     }
 

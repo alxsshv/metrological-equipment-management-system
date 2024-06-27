@@ -31,7 +31,7 @@
                 <div class="col-md-5 ">
                     <label class="form-label" for="inputText2">Наименование типа*</label>
                     <input type="text" ng-change="searchType()" ng-model="mi.miType.title" data-bs-toggle="dropdown"
-                        class="form-control dropdown-toggle" id="inputText2" value="">
+                        class="form-control dropdown-toggle border-success" id="inputText2" value="">
 
                     <ul class="dropdown-menu" ng-model="typeTitle">
                         <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
@@ -41,11 +41,11 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label" for="inputText3">Обозначение типа СИ*</label>
-                    <input type="text" ng-model="mi.miType.notation" class="form-control" id="inputText3" value="">
+                    <input type="text" ng-model="mi.miType.notation" class="form-control border-success" id="inputText3" value="">
                 </div>
                 <div class="col-md-3">
                     <label class="form-label" for="select1">Модификация*</label>
-                    <select ng-model="mi.modification" class="form-select mb-3" aria-label="Заводской номер" id="select1">
+                    <select ng-model="mi.modification" class="form-select mb-3 border-success" aria-label="Заводской номер" id="select1">
                         <option ng-repeat="modification in modifications" value="{{modification}}">
                             {{modification}}
                         </option>
@@ -59,7 +59,7 @@
             <div class="row g-2">
                 <div class="col-md-3">
                     <label class="form-label" for="inputText4">Заводской №*</label>
-                    <input type="text" ng-model="mi.serialNum" class="form-control" id="inputText4" value="" required>
+                    <input type="text" ng-model="mi.serialNum" class="form-control border-success" id="inputText4" value="" required>
                 </div>
                 <div class="col-md-3">
                     <label for="inputText5" class="form-label">Инвентарный №</label>
@@ -69,7 +69,7 @@
                 <div class="col-md-6 ">
                     <label class="form-label" for="inputText6">Владелец*</label>
                     <input type="text" ng-change="searchOrganization()" ng-model="organization" data-bs-toggle="dropdown"
-                        class="form-control dropdown-toggle" id="inputText6" value="">
+                        class="form-control dropdown-toggle border-success" id="inputText6" value="">
 
                     <ul class="dropdown-menu" ng-model="mi.owner">
                         <li ng-repeat="item in organizations" value="{{item}}"> <a class="dropdown-item"
@@ -104,18 +104,18 @@
         <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
             <div class="row g-2">
                 <div class="col-md-4">
-                    <label class="form-label" for="inputDate3">Дата поверки*</label>
+                    <label class="form-label" for="inputDate3">Дата поверки</label>
                     <input type="date" ng-model="mi.verificationDate" ng-model-options="{timezone: 'UTC'}"
                         class="form-control" id="inputDate3" value="" required>
                 </div>
                 <div class="col-md-4">
-                    <label class="form-label" for="inputDate4">Действительно до*</label>
+                    <label class="form-label" for="inputDate4">Действительно до</label>
                     <input type="date" ng-model="mi.validDate" ng-model-options="{timezone: 'UTC'}" class="form-control"
                         id="inputDate4" value="" required>
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" for="select2">Пригодность*</label>
-                    <select ng-model="mi.applicable" class="form-select" aria-label="Заводской номер"  id="select2">
+                    <select ng-model="mi.applicable" class="form-select border-success" aria-label="Заводской номер"  id="select2">
                         <option value="true">Пригоден</option>
                         <option value="false">Непригоден</option>
                     </select>

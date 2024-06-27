@@ -14,8 +14,8 @@ import main.model.MiStandard;
 import main.repository.MiStandardRepository;
 import main.service.Category;
 import main.service.ServiceMessage;
-import main.service.interfaces.IMeasurementInstrumentService;
-import main.service.interfaces.IMiStandardService;
+import main.service.interfaces.MeasurementInstrumentService;
+import main.service.interfaces.MiStandardService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -31,11 +31,11 @@ import java.util.Optional;
 @Getter
 @Setter
 @Service
-public class MiStandardService implements IMiStandardService {
-    private final static Logger log = LoggerFactory.getLogger(MiStandardService.class);
+public class MiStandardServiceImpl implements MiStandardService {
+    private final static Logger log = LoggerFactory.getLogger(MiStandardServiceImpl.class);
     private final MiStandardRepository miStandardRepository;
-    private final IMeasurementInstrumentService measurementInstrumentService;
-    private final FileService fileService;
+    private final MeasurementInstrumentService measurementInstrumentService;
+    private final FileServiceImpl fileService;
 
 
     @Override

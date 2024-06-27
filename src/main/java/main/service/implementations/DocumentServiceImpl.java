@@ -9,7 +9,7 @@ import main.model.Document;
 import main.repository.DocumentRepository;
 import main.service.Category;
 import main.service.ServiceMessage;
-import main.service.interfaces.IDocumentService;
+import main.service.interfaces.DocumentService;
 import main.service.utils.FileContentTypeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,13 +33,13 @@ import java.util.UUID;
 @Getter
 @Setter
 @Service
-public class DocumentService implements IDocumentService {
-    private final static Logger log = LoggerFactory.getLogger(DocumentService.class);
+public class DocumentServiceImpl implements DocumentService {
+    private final static Logger log = LoggerFactory.getLogger(DocumentServiceImpl.class);
     @Autowired
     private final DocumentRepository documentRepository;
     private  String documentUploadPath;
 
-    public DocumentService(DocumentRepository documentRepository) {
+    public DocumentServiceImpl(DocumentRepository documentRepository) {
         this.documentRepository = documentRepository;
     }
 

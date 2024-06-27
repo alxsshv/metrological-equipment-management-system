@@ -7,7 +7,7 @@ import main.dto.rest.mappers.VerificationRecordDtoMapper;
 import main.model.VerificationRecord;
 import main.repository.VerificationRecordRepository;
 import main.service.ServiceMessage;
-import main.service.interfaces.IVerificationRecordService;
+import main.service.interfaces.VerificationRecordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +17,8 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class VerificationRecordService implements IVerificationRecordService {
-    private static final Logger logger = LoggerFactory.getLogger(VerificationRecordService.class);
+public class VerificationRecordServiceImpl implements VerificationRecordService {
+    private static final Logger logger = LoggerFactory.getLogger(VerificationRecordServiceImpl.class);
     private VerificationRecordRepository recordRepository;
 
 

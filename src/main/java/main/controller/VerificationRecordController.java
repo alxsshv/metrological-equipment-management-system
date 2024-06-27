@@ -1,8 +1,8 @@
 package main.controller;
 
 import main.dto.rest.VerificationRecordDto;
-import main.service.implementations.VerificationRecordService;
-import main.service.interfaces.IVerificationRecordService;
+import main.service.implementations.VerificationRecordServiceImpl;
+import main.service.interfaces.VerificationRecordService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/verifications/records")
 public class VerificationRecordController {
 
-    private final IVerificationRecordService recordService;
+    private final VerificationRecordService recordService;
 
-    public VerificationRecordController(VerificationRecordService recordService) {
+    public VerificationRecordController(VerificationRecordServiceImpl recordService) {
         this.recordService = recordService;
     }
 

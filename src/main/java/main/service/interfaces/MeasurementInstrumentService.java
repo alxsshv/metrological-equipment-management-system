@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
-public interface IMeasurementInstrumentService {
+public interface MeasurementInstrumentService {
     ResponseEntity<?> save(MiFullDto instrumentDto, MultipartFile[] files, String[] descriptions) throws IOException;
     ResponseEntity<?> findById(long id);
     MeasurementInstrument getMiById(long id);

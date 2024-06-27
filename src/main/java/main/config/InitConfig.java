@@ -3,7 +3,6 @@ package main.config;
 import jakarta.annotation.PostConstruct;
 import lombok.*;
 import main.dto.rest.*;
-import main.exception.ArshinResponseException;
 import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiTypeRepository;
 import main.service.implementations.*;
@@ -22,15 +21,15 @@ import java.util.List;
 @Setter
 public class InitConfig {
     @Autowired
-    private MiTypeService miTypeService;
+    private MiTypeServiceImpl miTypeService;
     @Autowired
-    private EmployeeService employeeService;
+    private EmployeeServiceImpl employeeService;
     @Autowired
-    private OrganizationService organizationService;
+    private OrganizationServiceImpl organizationService;
     @Autowired
-    private MeasurementInstrumentService miService;
+    private MiServiceImpl miService;
     @Autowired
-    private MiStandardService standardService;
+    private MiStandardServiceImpl standardService;
     @Autowired
     private MiTypeRepository miTypeRepository;
     @Autowired
@@ -45,7 +44,7 @@ public class InitConfig {
     @PostConstruct
     public void initiate() throws IOException {
         OrganizationDto organization1 = new OrganizationDto();
-        organization1.setTitle("Не указано");
+        organization1.setTitle("нет");
         organization1.setNotation("-");
         organization1.setAddress("-");
         organizationService.save(organization1);
