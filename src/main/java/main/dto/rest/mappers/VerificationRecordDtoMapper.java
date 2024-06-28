@@ -23,6 +23,7 @@ public class VerificationRecordDtoMapper {
         record.setMi(dto.getMi());
         record.setEmployee(dto.getEmployee());
         dto.getMiStandards().forEach(standard -> record.getMiStandards().add(standard));
+        dto.getVerificationMis().forEach(mi -> record.getVerificationMis().add(mi));
         return record;
     }
 
@@ -43,6 +44,7 @@ public class VerificationRecordDtoMapper {
         dto.setMi(record.getMi());
         dto.setEmployee(record.getEmployee());
         dto.setMiStandards(record.getMiStandards().stream().toList());
+        dto.setVerificationMis(record.getVerificationMis().stream().toList());
         return dto;
     }
 }

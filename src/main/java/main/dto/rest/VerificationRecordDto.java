@@ -27,6 +27,7 @@ public class VerificationRecordDto {
     private MeasurementInstrument mi;
     private Employee employee;
     private List<MiStandard> miStandards = new ArrayList<>();
+    private List<MeasurementInstrument> verificationMis = new ArrayList<>();
 
     @Override
     public String toString() {

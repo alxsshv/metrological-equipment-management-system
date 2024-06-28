@@ -50,6 +50,11 @@ public class VerificationRecord {
             joinColumns = @JoinColumn(name = "verification_record_id"),
             inverseJoinColumns = @JoinColumn(name = "mi_standard_id"))
     private Set<MiStandard> miStandards = new HashSet<>();
+    @ManyToMany(cascade = {CascadeType.MERGE})
+    @JoinTable(name = "verification_records_mis",
+            joinColumns = @JoinColumn(name = "verification_record_id"),
+            inverseJoinColumns = @JoinColumn(name = "mi_id"))
+    private Set<MeasurementInstrument> verificationMis = new HashSet<>(); // средства измерений применяемые при поверке
 
 
     public void updateFrom(VerificationRecord record){
