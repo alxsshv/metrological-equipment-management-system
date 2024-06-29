@@ -44,9 +44,9 @@ public class InitConfig {
     @PostConstruct
     public void initiate() throws IOException {
         OrganizationDto organization1 = new OrganizationDto();
-        organization1.setTitle("нет");
-        organization1.setNotation("-");
-        organization1.setAddress("-");
+        organization1.setTitle("Не указан");
+        organization1.setNotation("Не указан");
+        organization1.setAddress("Не указан");
         organizationService.save(organization1);
         generateDemoEntities();
     }

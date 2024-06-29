@@ -179,11 +179,6 @@
                                     <p></p>
                                     <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
                                         <div class="col-md-3">
-                                            <label class="form-label" for="inputPress">Давление,кПа*</label>
-                                            <input class="form-control" id="inputPress" ng-model="pressure"
-                                                placeholder="99,3" required step="0.01" type="number" value="">
-                                        </div>
-                                        <div class="col-md-3">
                                             <label class="form-label" for="inputTemp">Температура, &degC*</label>
                                             <input class="form-control" id="inputTemp" ng-model="temperature"
                                                 placeholder="21,5" required step="0.01" type="number" value="">
@@ -192,6 +187,16 @@
                                             <label class="form-label" for="inputHum">Влажность, %*</label>
                                             <input class="form-control" id="inputHum" ng-model="humidity"
                                                 placeholder="52,2" required step="0.01" type="number" value="">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label" for="inputPress">Давление,кПа*</label>
+                                            <input class="form-control" id="inputPress" ng-model="pressure"
+                                                placeholder="99,3" required step="0.01" type="number" value="">
+                                        </div> 
+                                        <div class="col-md-3">
+                                            <label class="form-label" for="inputPress">Давление, мм рт. ст.</label>
+                                            <input class="form-control" id="inputPressTorr" ng-model="pressureInTorr" ng-change="convertPressure()"
+                                                placeholder="99,3" required step="0.01" type="number" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -217,7 +222,8 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3 justify-content-center">
+                                <div
+                                    class="row p-2 bg-info bg-opacity-10 border border-info rounded-3 justify-content-center">
                                     <div class="row">
                                         <div class="table-responsive" style="max-height: 165px; height: 165px;">
                                             <table class="table table-info table-striped table-hover">
@@ -237,69 +243,70 @@
 
                                     <p></p>
 
-                                <p></p>
+                                    <p></p>
 
-                                <div
-                                    class="row p-2 bg-info bg-opacity-10 border border-success rounded-3 justify-content-center">
-                                    СИ, применяемое в качестве эталона
-                                    <div class="row">
-                                        <div class="col">
-                                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
-                                                id="inputStandard" ng-change="searchMiStandard()"
-                                                ng-model="miStandardSearchString" placeholder="12345.67.1Р.12345678"
-                                                type="text" value="">
-                                            <ul class="dropdown-menu">
-                                                <li ng-repeat="item in miStandards" value="{{item}}"> <a
-                                                        class="dropdown-item" href="#"
-                                                        ng-click="selectMiStandard(item)"><b>{{item.arshinNumber}}</b>
-                                                        {{item.measurementInstrument.modification}}
-                                                        {{item.measurementInstrument.serialNum}}</a>
-                                                </li>
-                                            </ul>
+                                    <div class="row p-2 border border-info rounded-3 justify-content-center">
+                                        СИ, применяемое в качестве эталона
+                                        <div class="row">
+                                            <div class="col">
+                                                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
+                                                    id="inputStandard" ng-change="searchMiStandard()"
+                                                    ng-model="miStandardSearchString" placeholder="12345.67.1Р.12345678"
+                                                    type="text" value="">
+                                                <ul class="dropdown-menu">
+                                                    <li ng-repeat="item in miStandards" value="{{item}}"> <a
+                                                            class="dropdown-item" href="#"
+                                                            ng-click="selectMiStandard(item)"><b>{{item.arshinNumber}}</b>
+                                                            {{item.measurementInstrument.modification}}
+                                                            {{item.measurementInstrument.serialNum}}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <p></p>
+                                        <div class="col-6">
+                                            <button class="btn btn-outline-success"
+                                                ng-click="putStandardInStandardList()" type="button">Добавить</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="btn btn-outline-success"
+                                                ng-click="deleteLastInStandardList()" type="button">Удалить</button>
                                         </div>
                                     </div>
+
                                     <p></p>
-                                    <div class="col-6">
-                                        <button class="btn btn-outline-success" ng-click="putStandardInStandardList()"
-                                            type="button">Добавить</button>
-                                    </div>
-                                    <div class="col-6">
-                                        <button class="btn btn-outline-success" ng-click="deleteLastInStandardList()"
-                                            type="button">Удалить</button>
-                                    </div>
-                                </div>
 
-                                <p></p>
-
-                                <div
-                                class="row p-2 bg-info bg-opacity-10 border border-success rounded-3 justify-content-center">
-                                CИ, применяемое при поверке
-                                <div class="row">
-                                    <div class="col">
-                                        <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
-                                            id="inputStandard" ng-change="searchVerificationMi()"
-                                            ng-model="verificationMiSearchString" placeholder="Пример: В7-78"
-                                            type="text" value="">
-                                        <ul class="dropdown-menu">
-                                            <li ng-repeat="item in searchVrfMis" value="{{item}}"> <a
-                                                    class="dropdown-item" href="#"
-                                                    ng-click="selectVerificationMi(item)"><b>{{item.modification}}</b>
-                                                    {{item.serialNum}}</a>
-                                            </li>
-                                        </ul>
+                                    <div
+                                        class="row p-2 bg-opacity-10 border border-info rounded-3 justify-content-center">
+                                        CИ, применяемое при поверке
+                                        <div class="row">
+                                            <div class="col">
+                                                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
+                                                    id="inputStandard" ng-change="searchVerificationMi()"
+                                                    ng-model="verificationMiSearchString" placeholder="Пример: В7-78"
+                                                    type="text" value="">
+                                                <ul class="dropdown-menu">
+                                                    <li ng-repeat="item in searchVrfMis" value="{{item}}"> <a
+                                                            class="dropdown-item" href="#"
+                                                            ng-click="selectVerificationMi(item)"><b>{{item.modification}}</b>
+                                                            {{item.serialNum}}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <p></p>
+                                        <div class="col-6">
+                                            <button class="btn btn-outline-success"
+                                                ng-click="putVerificationMiInVerificationMis()"
+                                                type="button">Добавить</button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button class="btn btn-outline-success"
+                                                ng-click="deleteLastVerificationMiInVerificationMis()"
+                                                type="button">Удалить</button>
+                                        </div>
                                     </div>
                                 </div>
-                                <p></p>
-                                <div class="col-6">
-                                    <button class="btn btn-outline-success" ng-click="putVerificationMiInVerificationMis()"
-                                        type="button">Добавить</button>
-                                </div>
-                                <div class="col-6">
-                                    <button class="btn btn-outline-success" ng-click="deleteVerificationMiInVerificationMis()"
-                                        type="button">Удалить</button>
-                                </div>
-                            </div>
-                        </div>
                             </div>
                         </div>
                     </form>
@@ -369,31 +376,32 @@
             }
 
             $scope.selectMi = function (item) {
+                getMiFullData(item.id);
                 $scope.miSearchString = item.modification;
                 $scope.miSNSearchString = item.serialNum;
-                getMiFullData(item.id);
-
+        
             }
 
             //Получение полных сведений о выбранном средстве измерений
-            getMiFullData = function (id) {
+            function getMiFullData(id) {
                 $http({
                     url: "/mis/" + id,
                     method: "GET"
                 }).then(function (response) {
                     $scope.mi = response.data;
-                    formatDateFieldsFromMi();
-                    setApplicableFromMi();
+                    formatDateFieldsFromMi($scope.mi);
+                    $scope.applicable = setApplicableFromMi($scope.mi);
                     reportRow.mi = $scope.mi;
+
                 });
             }
 
-            formatDateFieldsFromMi = function () {
-                if ($scope.mi.verificationDate != null) {
-                    $scope.mi.verificationDate = new Date($scope.mi.verificationDate);
+            function formatDateFieldsFromMi(mi) {
+                if (mi.verificationDate != null) {
+                    mi.verificationDate = new Date(mi.verificationDate);
                 }
-                if ($scope.mi.validDate != null) {
-                    $scope.mi.validDate = new Date($scope.mi.validDate);
+                if (mi.validDate != null) {
+                    mi.validDate = new Date(mi.validDate);
                 }
             }
 
@@ -401,11 +409,12 @@
             { 'title': 'Не пригодно', 'value': false }];
 
 
-            setApplicableFromMi = function () {
-                $scope.applicable = { 'title': 'Пригодно', 'value': true };
-                if ($scope.mi.applicable == false) {
-                    $scope.applicable = { 'title': 'Не пригодно', 'value': false };
+            setApplicableFromMi = function(mi) {
+                let applicable = { 'title': 'Пригодно', 'value': true };
+                if (mi.applicable == false) {
+                    applicable = { 'title': 'Не пригодно', 'value': false };
                 }
+                return applicable;
             }
 
             $scope.employees = [];
@@ -427,7 +436,7 @@
 
             //Эталоны
             $scope.standards = [];
-            function updateStandards(){
+            function updateStandards() {
                 $scope.standards = [];
                 $scope.standards = verificationMiStandardsForView.concat(verificationMisForView);
                 console.log($scope.standards);
@@ -485,12 +494,23 @@
 
             let selectedVerificationMi = {};
             $scope.selectVerificationMi = function (item) {
-                $scope.verificationMiSearchString = item.modification + " " + item.serialNum;
-                selectedVerificationMi = item;
+                getVerificationMiFullData(item.id);
+                $scope.verificationMiSearchString = item.modification + " зав. №" + item.serialNum;
             }
 
-           let verificationMis = [];
-           let verificationMisForView = [];
+            function getVerificationMiFullData(id) {
+                $http({
+                    url: "/mis/" + id,
+                    method: "GET"
+                }).then(function (response) {
+                    selectedVerificationMi = response.data;
+                    formatDateFieldsFromMi(selectedVerificationMi);
+                
+                });
+            }
+
+            let verificationMis = [];
+            let verificationMisForView = [];
             $scope.putVerificationMiInVerificationMis = function () {
                 if (verificationMis.indexOf(selectedVerificationMi) == -1) {
                     verificationMis.push(selectedVerificationMi);
@@ -501,7 +521,7 @@
                 }
             }
 
-            $scope.deleteLastInVerificationMis = function () {
+            $scope.deleteLastVerificationMiInVerificationMis = function () {
                 verificationMis.pop();
                 verificationMisForView.pop();
                 updateStandards();
@@ -530,10 +550,13 @@
                     reportRow.verificationDate = $scope.mi.verificationDate;
                     reportRow.validDate = $scope.mi.validDate;
                 }
-                if ($scope.verificationStandards.length > 0) {
-                    reportRow.miStandards = $scope.verificationStandards;
-                    buildReportRowForTable();
+                if (verificationMiStandards.length > 0) {
+                    reportRow.miStandards = verificationMiStandards;
                 }
+                if (verificationMis.length > 0) {
+                    reportRow.verificationMis = verificationMis;
+                }
+                buildReportRowForTable();
             }
 
             tableReportRow = {};
@@ -568,7 +591,7 @@
             }
 
             buildStandardsStringForReportRow = function () {
-                let standardsString = reportRow.miStandards.map(item => item.arshinNumber).join("; ");
+                let standardsString = verificationMiStandardsForView.join("; ").concat(verificationMisForView.join("; "));
                 tableReportRow.standardsString = standardsString;
             }
 
@@ -610,7 +633,7 @@
                 $scope.humidity = "";
                 $scope.pressure = "";
                 $scope.verificationType = "";
-                $scope.verificationStandards = [];
+                $scope.verificationMiStandards = [];
                 $scope.miStandardSearchString = "";
                 $scope.employeeSearchString = "";
                 $scope.miSearchString = "";
@@ -627,6 +650,7 @@
                 $scope.report.records = records;
                 $scope.report.comment = $scope.comment;
                 if ($scope.report.records.length > 0) {
+                    console.log($scope.report);
                     $http({
                         url: "/reports/verifications",
                         method: "POST",
@@ -640,6 +664,11 @@
                 } else {
                     alert('Добавьте в отчет хотябы одну запись о поверке');
                 }
+            }
+
+            $scope.convertPressure = function(){
+                let decimalPressure = $scope.pressureInTorr * 0.1333223684210526;
+                $scope.pressure = Math.round(decimalPressure * 100) / 100;
             }
 
         });

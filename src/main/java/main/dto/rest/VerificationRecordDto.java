@@ -1,5 +1,6 @@
 package main.dto.rest;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -13,6 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class VerificationRecordDto {
     private long id;
     private int verificationType; // 1 - первичная, 2 - периодическая

@@ -13,9 +13,6 @@ import lombok.Setter;
 public class SingleMi extends VerificationObject{
     @XmlElement(name = "mitypeNumber")
     private String miTypeNumber;
-    private String miTypeUrl;
-    private String miTypeType;
-    private String miTypeTitle;
     @XmlElement(name = "manufactureNum")
     private String manufactureNum;
     @XmlTransient

@@ -124,6 +124,7 @@
                     method: "GET"
                 }).then(function (response) {
                     $scope.report = response.data;
+                    console.log($scope.report);
                     formatReportFields();
                 });
             }
@@ -175,6 +176,7 @@
 
             function convertStandardsToString(record) {
                 record.standards = record.miStandards.map(item => item.arshinNumber).join("; ");
+                record.standards = record.standards.concat("; ").concat(record.verificationMis.map(item => item.modification + " зав. №" + item.serialNum).join("; "))
             }
 
 
