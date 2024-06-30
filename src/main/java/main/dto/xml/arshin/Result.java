@@ -16,12 +16,30 @@ import lombok.Setter;
 public class Result {
     @XmlElement(name = "miInfo")
     private MiInfo miInfo;
-    @XmlElement(name = "vriInfo")
-    private VriInfo vriInfo;
+    @XmlElement(name = "signCipher")
+    private String signCipher;
+    @XmlElement(name = "miOwner")
+    private String miOwner;
+    @XmlElement(name = "vrfDate")
+    private String vrfDate;
+    @XmlElement(name = "validDate")
+    private String validDate;
+    @XmlElement(name = "type")
+    private int vriType;
+    @XmlElement(name = "calibration")
+    private boolean calibration;
+    @XmlElement(name = "applicable")
+    private Applicable applicable;
+    @XmlElement(name = "inapplicable")
+    private Inapplicable inapplicable;
+    @XmlElement(name = "docTitle")
+    private String docTitle;
+    @XmlElement(name = "metrologist")
+    private String metrologist;
     @XmlElement(name = "means")
     private Mean means;
     @XmlElement(name = "conditions")
     private Conditions conditions;
-    private Info info;
-    private Publication publication;
+    @XmlElement(name = "brief_procedure")
+    private BriefProcedure briefProcedure;
 }

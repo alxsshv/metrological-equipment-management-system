@@ -4,22 +4,20 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
 import jakarta.xml.bind.annotation.XmlRootElement;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
-@XmlRootElement(name = "conditions")
+@XmlRootElement(name = "mi")
 @XmlAccessorType(XmlAccessType.FIELD)
-public class Conditions {
-    @XmlElement(name = "temperature")
-    private String temperature;
-    @XmlElement(name = "humidity")
-    private String humidity;
-    @XmlElement(name = "pressure")
-    private String pressure;
-    @XmlElement(name = "other")
-    private String other;
+public class Mi {
+    @XmlElement(name = "typeNum")
+    private String typeNum;
+    @XmlElement(name = "manufactureNum")
+    private String manufactureNum;
 }

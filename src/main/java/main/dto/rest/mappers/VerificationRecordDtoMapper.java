@@ -24,6 +24,8 @@ public class VerificationRecordDtoMapper {
         record.setEmployee(dto.getEmployee());
         dto.getMiStandards().forEach(standard -> record.getMiStandards().add(standard));
         dto.getVerificationMis().forEach(mi -> record.getVerificationMis().add(mi));
+        record.setShortVerification(dto.isShortVerification());
+        record.setShortVerificationCharacteristic(dto.getShortVerificationCharacteristic());
         return record;
     }
 
@@ -45,6 +47,8 @@ public class VerificationRecordDtoMapper {
         dto.setEmployee(record.getEmployee());
         dto.setMiStandards(record.getMiStandards().stream().toList());
         dto.setVerificationMis(record.getVerificationMis().stream().toList());
+        dto.setShortVerification(record.isShortVerification());
+        dto.setShortVerificationCharacteristic(record.getShortVerificationCharacteristic());
         return dto;
     }
 }

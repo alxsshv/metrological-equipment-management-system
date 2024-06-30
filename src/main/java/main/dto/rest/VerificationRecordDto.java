@@ -30,6 +30,12 @@ public class VerificationRecordDto {
     private Employee employee;
     private List<MiStandard> miStandards = new ArrayList<>();
     private List<MeasurementInstrument> verificationMis = new ArrayList<>();
+    private boolean  calibration;
+    private String stickerNum;
+    private boolean signPass;
+    private boolean signMi;
+    private boolean shortVerification;
+    private String shortVerificationCharacteristic;
 
     @Override
     public String toString() {

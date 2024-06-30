@@ -19,6 +19,7 @@ public class MeanFactory {
     public Mean createMeans(VerificationRecord record){
         Mean mean = new Mean();
         mean.getMiEtaList().addAll(buildMietaList(record));
+        mean.setMis(MisFactory.createMis(record));
         return mean;
     }
 
@@ -26,10 +27,7 @@ public class MeanFactory {
         List<MiEta> miEtaList = new ArrayList<>();
         for (MiStandard standard : record.getMiStandards()){
             MiEta miEta = new MiEta();
-            miEta.setRegNum(standard.getArshinNumber());
-            miEta.setMiTypeNumber(standard.getMeasurementInstrument().getMiType().getNumber());
-            miEta.setModification(standard.getMeasurementInstrument().getModification());
-            miEta.setManufactureNum(standard.getMeasurementInstrument().getSerialNum());
+            miEta.setNumber(standard.getArshinNumber());
             miEtaList.add(miEta);
         }
         return miEtaList;

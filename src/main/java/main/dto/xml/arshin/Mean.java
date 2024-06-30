@@ -13,14 +13,14 @@ import java.util.List;
 @XmlRootElement(name = "means")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Mean {
-    private List<Npe> npeList = new ArrayList<>();
     private List<Uve> uveList = new ArrayList<>();
     private List <Ses> sesList = new ArrayList<>();
     @XmlElements({
             @XmlElement(name = "mieta", type = MiEta.class)
     })
     private List<MiEta> miEtaList = new ArrayList<>();
-    private List <Mis> misList = new ArrayList<>();
+    @XmlElement(name = "mis")
+    private Mis mis;
     private List <Reagent> reagentList = new ArrayList<>();
     private String oMethod;
 }

@@ -12,10 +12,12 @@ import org.springframework.stereotype.Component;
 @Getter
 @Setter
 public class ApplicabilityFactory {
-    public Applicable createApplicable(){
+    public Applicable createApplicable(VerificationRecord record){
             Applicable applicable = new Applicable();
-            applicable.setSignPass(false);
-            applicable.setSignMi(false);
+            String stickerNum = record.getStickerNum() != null ? record.getStickerNum() : "отсутствует";
+            applicable.setStickerNum(stickerNum);
+            applicable.setSignPass(record.isSignPass());
+            applicable.setSignMi(record.isSignMi());
             return applicable;
     }
     public Inapplicable createInapplicable(VerificationRecord record){

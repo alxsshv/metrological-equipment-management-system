@@ -9,7 +9,6 @@
 </head>
 
 <body ng-app="VRF_REPORT_FORM" ng-controller="VRF_REPORT_FORM_CTRL">
-    <div class="container text-left">
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" onclick="location.href='/'" type="button">Домой</button>
@@ -31,6 +30,8 @@
                     <th>Тип поверки</th>
                     <th>Дата поверки</th>
                     <th>Действительно до</th>
+                    <th>Сокр. поверка</th>
+                    <th>Объем поверки</th>
                     <th>Пригодность</th>
                     <th>Поверитель</th>
                     <th>Эталон</th>
@@ -47,6 +48,8 @@
                     <td>{{item.verificationType}}</td>
                     <td>{{item.verificationDate | date: "dd.MM.yyyy" : 'UTC'}}</td>
                     <td>{{item.validDate | date: "dd.MM.yyyy" : 'UTC'}}</td>
+                    <td>{{item.shortVerification}}</td>
+                    <td>{{item.shortVerificationCharacteristic}}</td>
                     <td>{{item.applicable}}</td>
                     <td>{{item.employeeSurname}}</td>
                     <td>{{item.standardsString}}</td>
@@ -76,14 +79,7 @@
                 <!-- Кнопка-триггер модального окна -->
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal"
                     data-bs-target="#defaultVerificationForm">
-                    Стандартная поверка СИ
-                </button>
-            </div>
-            <div class="col-md-3 justify-content-center">
-                <!-- Кнопка-триггер модального окна -->
-                <button type="button" class="btn btn-success" data-bs-toggle="modal"
-                    data-bs-target="#shortVerificationForm">
-                    Поверка в сокращенном объеме
+                    Добавить сведения о поверке
                 </button>
             </div>
         </div>
@@ -196,7 +192,7 @@
                                         <div class="col-md-3">
                                             <label class="form-label" for="inputPress">Давление, мм рт. ст.</label>
                                             <input class="form-control" id="inputPressTorr" ng-model="pressureInTorr" ng-change="convertPressure()"
-                                                placeholder="99,3" required step="0.01" type="number" value="">
+                                                placeholder="744,8" required step="0.01" type="number" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -218,6 +214,25 @@
                                                 </ul>
                                             </div>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" data-bs-toggle="collapse" href="#shortVerification" ng-model="shortVerification" value="false" ng-click="setShortVerification()" type="checkbox" id="flexCheckDefault">
+                                    <label class="form-check-label" for="flexCheckDefault">
+                                      Сокращенная поверка
+                                    </label>
+                                  </div>
+                                <div class="collapse" id="shortVerification">
+                                <div class="row">
+                                    <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
+                                        <div class="row">
+                                            <div class="col-md">
+                                                <label class="form-label" for="inputEmployee">Объем поверки</label>
+                                                <textarea class="form-control dropdown-toggle" data-bs-toggle="dropdown"
+                                                    id="inputShortVrfCharacteristic" ng-model="shortVerificationCharacteristic" type="text" value=""></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -282,7 +297,7 @@
                                         <div class="row">
                                             <div class="col">
                                                 <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
-                                                    id="inputStandard" ng-change="searchVerificationMi()"
+                                                    id="inputVrificationMis" ng-change="searchVerificationMi()"
                                                     ng-model="verificationMiSearchString" placeholder="Пример: В7-78"
                                                     type="text" value="">
                                                 <ul class="dropdown-menu">
@@ -340,7 +355,6 @@
     </div>
 
 
-    </div>
     <script src="/js/angular.min.js"></script>
     <script src="/js/jquery-3.7.1.min.js"></script>
     <script src="/js/bootstrap.bundle.min.js"></script>
@@ -348,7 +362,9 @@
         var app = angular.module("VRF_REPORT_FORM", []);
         app.controller("VRF_REPORT_FORM_CTRL", function ($scope, $http) {
             $scope.miStandard = {};
-
+            $scope.shortVerification = false;
+            $scope.shortVerificationCharacteristic = "";  
+             
 
             //Поиск СИ по модификации
             $scope.mis = [];
@@ -526,6 +542,11 @@
                 verificationMisForView.pop();
                 updateStandards();
             }
+            // Сокращенная поверка
+            $scope.setShortVerification = function(){
+                console.log($scope.shortVerification);
+                console.log($scope.shortVerificationCharacteristic);
+            }
 
             //добавление в таблицу
             let reportRow = {};
@@ -556,7 +577,10 @@
                 if (verificationMis.length > 0) {
                     reportRow.verificationMis = verificationMis;
                 }
+                reportRow.shortVerification = $scope.shortVerification;
+                reportRow.shortVerificationCharacteristic = $scope.shortVerificationCharacteristic;
                 buildReportRowForTable();
+                console.log(reportRow);
             }
 
             tableReportRow = {};
@@ -569,9 +593,12 @@
                 tableReportRow.verificationDate = reportRow.verificationDate;
                 tableReportRow.validDate = reportRow.validDate;
                 tableReportRow.employeeSurname = reportRow.employee.surname;
+                tableReportRow.shortVerification = reportRow.shortVerification;
+                tableReportRow.shortVerificationCharacteristic = reportRow.shortVerificationCharacteristic;
                 buildStandardsStringForReportRow();
                 convertVerificationTypeForTable();
                 convertApplicableForTable();
+                console.log(tableReportRow);
             }
 
             convertVerificationTypeForTable = function () {
@@ -601,7 +628,7 @@
                 if (reportRow.employee != null) {
                     buildReportRow();
                 }
-                if (reportRow.mi == null || reportRow.employee == null || reportRow.verificationType == 0 || reportRow.verificationDate == null || reportRow.applicable == null || reportRow.miStandards == undefined || reportRow.temperature == null ||
+                if (reportRow.mi == null || reportRow.employee == null || reportRow.verificationType == 0 || reportRow.verificationDate == null || reportRow.applicable == null || (reportRow.miStandards == undefined && reportRow.verificationMis== null) || reportRow.temperature == null ||
                     reportRow.humidity == null || reportRow.pressure == null) {
                     alert('Пожалуйста заполните поля, отмеченные *');
                 } else {
@@ -641,6 +668,11 @@
                 $scope.standards = [];
                 $scope.applicable = "";
                 $scope.mi = {};
+                verificationMis = [];
+                verificationMiStandards=[];
+                verificationMiStandardsForView = [];
+                verificationMisForView = [];
+
 
             }
 

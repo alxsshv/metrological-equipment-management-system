@@ -42,6 +42,7 @@ public class MiServiceImpl implements MeasurementInstrumentService {
     public ResponseEntity<?> save(MiFullDto instrumentDto, MultipartFile[] files, String[] descriptions) throws IOException {
         try {
             checkMeasurementInstrumentDtoComposition(instrumentDto);
+            validateDtoMiOwnerAndReturnDefaultIfNull(instrumentDto);
             validateIfEntityAlreadyExist(instrumentDto);
             MeasurementInstrument instrument = MeasurementInstrumentMapper.mapToEntity(instrumentDto);
             MeasurementInstrument savedInstrument = measurementInstrumentRepository.save(instrument);
@@ -67,20 +68,26 @@ public class MiServiceImpl implements MeasurementInstrumentService {
         if (dto.getMiType() == null){
             throw new DtoCompositionException("Пожалуйста укажите тип средства измерений");
         }
-        if (dto.getOwner() == null){
-            throw new DtoCompositionException ("Пожалуйста укажите владельца средства измерений");
-        }
+
         Optional<MiType> miTypeFromDb = miTypeRepository.findById(dto.getMiType().getId());
         if (miTypeFromDb.isEmpty()){
             throw new DtoCompositionException("Выбранный тип средства измерений отсутствует в базе данных пожалуйста выберите имеющийся тип" +
                     " средства измерений  или добавьте требуемый тип средства измерений в базу");
         }
-        Optional<Organization> ownerFromDb = organizationRepository.findById(dto.getOwner().getId());
-        if (ownerFromDb.isEmpty()){
-            throw new DtoCompositionException("Указанная организация отсутствует в базе данных, пожалуйста проверьте правильность выбора " +
-                    "организации или добавьте требуемую организацию в базу данных");
-        }
     }
+
+     private void validateDtoMiOwnerAndReturnDefaultIfNull(MiFullDto dto) throws DtoCompositionException {
+         if (dto.getOwner() == null){
+             Optional<Organization> defaultOwnerOpt = organizationRepository.findById(1L);
+             defaultOwnerOpt.ifPresent(dto::setOwner);
+             return;
+         }
+         Optional<Organization> ownerFromDb = organizationRepository.findById(dto.getOwner().getId());
+         if (ownerFromDb.isEmpty()){
+             throw new DtoCompositionException("Указанная организация отсутствует в базе данных, пожалуйста проверьте правильность выбора " +
+                     "организации или добавьте требуемую организацию в базу данных");
+         }
+     }
 
     private void validateIfEntityAlreadyExist(MiFullDto miFullDto) throws EntityAlreadyExistException {
         MeasurementInstrument instrumentFromDb = measurementInstrumentRepository

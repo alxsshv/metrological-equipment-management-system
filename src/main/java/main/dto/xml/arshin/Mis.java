@@ -1,16 +1,22 @@
 package main.dto.xml.arshin;
 
+import jakarta.xml.bind.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @NoArgsConstructor
+@XmlRootElement(name = "mis")
+@XmlAccessorType(XmlAccessType.FIELD)
 //Средства измерений, применяемые при поверке
 public class Mis {
-private String mitypeNumber;
-private String mitypeUrl;
-private String mitypeTitle;
-private String number;
+    @XmlElements({
+            @XmlElement(name = "mi", type = Mi.class)
+    })
+    private List<Mi> miLIst = new ArrayList<>();
 }

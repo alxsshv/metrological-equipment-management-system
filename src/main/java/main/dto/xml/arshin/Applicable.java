@@ -14,8 +14,6 @@ import lombok.Setter;
 @XmlRootElement(name = "applicable")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class Applicable extends Applicability {
-    @XmlElement(name = "certNum")
-    private String certNum;
     @XmlElement(name = "stickerNum")
     private String stickerNum;
     @XmlElement(name = "signPass")

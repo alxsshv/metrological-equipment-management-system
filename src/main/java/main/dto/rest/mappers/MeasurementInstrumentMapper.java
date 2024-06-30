@@ -29,7 +29,7 @@ public class MeasurementInstrumentMapper {
         dto.setModification(measurementInstrument.getModification());
         dto.setSerialNum(measurementInstrument.getSerialNum());
         dto.setInventoryNum(measurementInstrument.getInventoryNum());
-        dto.setVerificationDate(measurementInstrument.getVerificationDate().toString());
+        dto.setVerificationDate(DateStringConverter.getStringOrNull(measurementInstrument.getVerificationDate()));
         dto.setValidDate(DateStringConverter.getStringOrNull(measurementInstrument.getValidDate()));
         dto.setApplicable(measurementInstrument.isApplicable());
         dto.setManufactureDate(DateStringConverter.getStringOrNull(measurementInstrument.getManufactureDate()));

@@ -1,8 +1,6 @@
 package main.dto.xml.arshin;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlTransient;
+import jakarta.xml.bind.annotation.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,20 +8,10 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@XmlRootElement(name ="mieta")
 @XmlAccessorType(XmlAccessType.FIELD)
 //Средства измерений, применяемые в качестве эталона
 public class MiEta {
-    private String regNum;
-    private String miEtaUrl;
-    private String miTypeNumber;
-    private String miTypeUrl;
-    private String miTypeTitle;
-    private String notation;
-    private String modification;
-    private String manufactureNum;
-    @XmlTransient
-    private int manufactureYear;
-    private String rankCode;
-    private String rankTitle;
-    private String schemaTitle;
+    @XmlElement(name ="number")
+    private String number;
 }

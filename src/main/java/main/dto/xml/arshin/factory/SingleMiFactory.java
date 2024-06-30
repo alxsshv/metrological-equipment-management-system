@@ -19,7 +19,6 @@ public class SingleMiFactory {
     public SingleMi createSingleMi(VerificationRecord record) {
         SingleMi singleMi = new SingleMi();
         singleMi.setMiTypeNumber(record.getMi().getMiType().getNumber());
-        singleMi.setMiTypeTitle(record.getMi().getMiType().getTitle());
         singleMi.setManufactureNum(getNullIfSerialNumContentMaskSymbol(record));
         singleMi.setInventoryNum(record.getMi().getInventoryNum());
         singleMi.setModification(record.getMi().getModification());

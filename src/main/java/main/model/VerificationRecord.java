@@ -55,7 +55,18 @@ public class VerificationRecord {
             joinColumns = @JoinColumn(name = "verification_record_id"),
             inverseJoinColumns = @JoinColumn(name = "mi_id"))
     private Set<MeasurementInstrument> verificationMis = new HashSet<>(); // средства измерений применяемые при поверке
-
+    @Column(name = "calibration")
+    private boolean  calibration;
+    @Column(name = "sticker_num")
+    private String stickerNum;
+    @Column(name = "sign_pass")
+    private boolean signPass;
+    @Column(name = "sign_mi")
+    private boolean signMi;
+    @Column(name = "short_verification")
+    private boolean shortVerification;
+    @Column(name = "short_verification_characteristic")
+    private String shortVerificationCharacteristic;
 
     public void updateFrom(VerificationRecord record){
         this.verificationType = record.verificationType;
