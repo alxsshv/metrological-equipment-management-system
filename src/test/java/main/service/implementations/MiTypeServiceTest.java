@@ -198,7 +198,7 @@ public class MiTypeServiceTest {
     public void testFindBySearchStringIfSearcStringIsEmpty() {
         String searchString = "";
         when(miTypeRepository
-                .findByNumberContainingOrTitleContainingOrNotationContaining(searchString,searchString,searchString, pageable))
+                .findByNumberContainingOrTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString,searchString,searchString, pageable))
                 .thenReturn(null);
         ResponseEntity<?> responseEntity = miTypeService.findBySearchString(searchString, pageable);
         assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
@@ -213,12 +213,12 @@ public class MiTypeServiceTest {
         List <MiType> findedMiTypes = List.of(miType);
         Page<MiType> page = new PageImpl<>(findedMiTypes,pageable,totalPages);
         when(miTypeRepository
-                .findByNumberContainingOrTitleContainingOrNotationContaining(searchString,searchString,searchString, pageable))
+                .findByNumberContainingOrTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString,searchString,searchString, pageable))
                 .thenReturn(page);
         ResponseEntity<?> responseEntity = miTypeService.findBySearchString(searchString, pageable);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
         verify(miTypeRepository,times(1))
-                .findByNumberContainingOrTitleContainingOrNotationContaining(searchString,searchString,searchString, pageable);
+                .findByNumberContainingOrTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString,searchString,searchString, pageable);
     }
 
     @Test

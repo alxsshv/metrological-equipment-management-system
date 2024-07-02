@@ -156,48 +156,48 @@ public class MiStandardServiceTest {
     @Test
     @DisplayName("Test findBySearchString if search string is empty")
     public void testFindBySearchStringIfSearchStringEmpty() {
-        String saerchString = "";
-        ResponseEntity<?> responseEntity = miStandardService.findBySearchString(saerchString);
+        String searchString = "";
+        ResponseEntity<?> responseEntity = miStandardService.findBySearchString(searchString);
         assertEquals(HttpStatusCode.valueOf(400), responseEntity.getStatusCode());
-        verify(miStandardRepository,never()).findByArshinNumberContainingOrSchemaTitleContaining(saerchString, saerchString);
+        verify(miStandardRepository,never()).findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(searchString, searchString, searchString);
     }
 
     @Test
     @DisplayName("Test findBySearchString if search string is not empty")
     public void testFindBySearchStringIfSearchStringNotEmpty() {
-        String saerchString = "abcd";
-        when(miStandardRepository.findByArshinNumberContainingOrSchemaTitleContaining(saerchString, saerchString))
+        String searchString = "abcd";
+        when(miStandardRepository.findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(searchString, searchString, searchString))
                 .thenReturn(List.of(new MiStandard()));
-        ResponseEntity<?> responseEntity = miStandardService.findBySearchString(saerchString);
+        ResponseEntity<?> responseEntity = miStandardService.findBySearchString(searchString);
         assertEquals(HttpStatusCode.valueOf(200), responseEntity.getStatusCode());
         verify(miStandardRepository,times(1))
-                .findByArshinNumberContainingOrSchemaTitleContaining(saerchString, saerchString);
+                .findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(searchString, searchString, searchString);
     }
 
     @Test
     @DisplayName("Test findBySearchString with pagination if search string is empty")
     public void testFindBySearchStringWithPaginationIfSearchStringEmpty() {
-        String saerchString = "";
-        ResponseEntity<?> responseEntity = miStandardService.findBySearchString(saerchString,pageable);
+        String searchString = "";
+        ResponseEntity<?> responseEntity = miStandardService.findBySearchString(searchString,pageable);
         assertEquals(HttpStatusCode.valueOf(400), responseEntity.getStatusCode());
         verify(miStandardRepository,never())
-                .findByArshinNumberContainingOrSchemaTitleContaining(saerchString, saerchString,pageable);
+                .findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(searchString, searchString, searchString, pageable);
     }
 
     @Test
     @DisplayName("Test findBySearchString with pagination if search string is not empty")
     public void testFindBySearchStringWithPaginationIfSearchStringNotEmpty() {
-        String saerchString = "abcd";
+        String searchString = "abcd";
         List<MiStandard> standards = List.of(new MiStandard(), new MiStandard());
         long totalPages = 1L;
         Page<MiStandard> page = new PageImpl<>(standards,pageable,totalPages);
         when(miStandardRepository
-                .findByArshinNumberContainingOrSchemaTitleContaining(saerchString, saerchString,pageable))
+                .findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(searchString, searchString, searchString, pageable))
                 .thenReturn(page);
-        ResponseEntity<?> responseEntity = miStandardService.findBySearchString(saerchString,pageable);
+        ResponseEntity<?> responseEntity = miStandardService.findBySearchString(searchString,pageable);
         assertEquals(HttpStatusCode.valueOf(200), responseEntity.getStatusCode());
         verify(miStandardRepository,times(1))
-                .findByArshinNumberContainingOrSchemaTitleContaining(saerchString, saerchString,pageable);
+                .findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(searchString, searchString, searchString, pageable);
     }
 
     @Test

@@ -67,9 +67,9 @@
                         required>
                 </div>
                 <div class="col-md-6 ">
-                    <label class="form-label" for="inputText6">Владелец*</label>
+                    <label class="form-label" for="inputText6">Владелец</label>
                     <input type="text" ng-change="searchOrganization()" ng-model="organization" data-bs-toggle="dropdown"
-                        class="form-control dropdown-toggle border-success" id="inputText6" value="">
+                        class="form-control dropdown-toggle" id="inputText6" value="">
 
                     <ul class="dropdown-menu" ng-model="mi.owner">
                         <li ng-repeat="item in organizations" value="{{item}}"> <a class="dropdown-item"

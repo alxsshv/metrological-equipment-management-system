@@ -252,7 +252,7 @@ public class MeasurementInstrumentServiceTest {
         ResponseEntity<?> responseEntity = measurementInstrumentService.findBySearchString(searchString, pageable);
         assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
         verify(miRepository, never())
-                .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(searchString,
+                .findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContainingOrInventoryNumIgnoreCaseContaining(searchString,
                         searchString,searchString,pageable);
     }
 
@@ -265,12 +265,12 @@ public class MeasurementInstrumentServiceTest {
         long totalPages = 1L;
         Page<MeasurementInstrument> page = new PageImpl<>(mis,pageable,totalPages);
         when(miRepository
-                .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(searchString,
+                .findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContainingOrInventoryNumIgnoreCaseContaining(searchString,
                         searchString,searchString,pageable)).thenReturn(page);
         ResponseEntity<?> responseEntity = measurementInstrumentService.findBySearchString(searchString, pageable);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
         verify(miRepository, times(1))
-                .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(searchString,
+                .findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContainingOrInventoryNumIgnoreCaseContaining(searchString,
                         searchString,searchString,pageable);
     }
 

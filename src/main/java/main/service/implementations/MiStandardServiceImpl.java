@@ -125,7 +125,7 @@ public class MiStandardServiceImpl implements MiStandardService {
         try {
             validateSearchString(searchString);
             Page<MiStandardDto> page = miStandardRepository
-                    .findByArshinNumberContainingOrSchemaTitleContaining(searchString.trim(), searchString.trim(), pageable)
+                    .findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(searchString.trim(), searchString.trim(), searchString.trim(), pageable)
                     .map(MiStandardDtoMapper::mapToDto);
             return ResponseEntity.ok(page);
         } catch (ParameterNotValidException ex){
@@ -139,7 +139,7 @@ public class MiStandardServiceImpl implements MiStandardService {
         try {
             validateSearchString(searchString);
             List<MiStandardDto> dtos = miStandardRepository
-                    .findByArshinNumberContainingOrSchemaTitleContaining(searchString.trim(), searchString.trim())
+                    .findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(searchString.trim(), searchString.trim(), searchString.trim())
                     .stream().map(MiStandardDtoMapper::mapToDto).toList();
             return ResponseEntity.ok(dtos);
         } catch (ParameterNotValidException ex){

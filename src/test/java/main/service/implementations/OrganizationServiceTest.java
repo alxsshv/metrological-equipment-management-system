@@ -192,7 +192,7 @@ public class OrganizationServiceTest {
         String searchString = "";
         ResponseEntity<?> responseEntity = organizationService.findBySearchString(searchString);
         assertEquals("400 BAD_REQUEST",responseEntity.getStatusCode().toString());
-        verify(organizationRepository,never()).findByTitleContainingOrNotationContaining(searchString,searchString);
+        verify(organizationRepository,never()).findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString,searchString);
     }
 
     @Test
@@ -200,12 +200,12 @@ public class OrganizationServiceTest {
     public void testFindBySearchStringIfSearchStringIsNotEmpty(){
         String searchString = "АО\"Организация\"";
         List<Organization> organizations = new ArrayList<>();
-        when(organizationRepository.findByTitleContainingOrNotationContaining(searchString, searchString))
+        when(organizationRepository.findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString, searchString))
                 .thenReturn(organizations);
         ResponseEntity<?> responseEntity = organizationService.findBySearchString(searchString);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
         verify(organizationRepository,times(1))
-                .findByTitleContainingOrNotationContaining(searchString,searchString);
+                .findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString,searchString);
     }
 
     @Test
@@ -214,7 +214,7 @@ public class OrganizationServiceTest {
         String searchString = "";
         ResponseEntity<?> responseEntity = organizationService.findBySearchString(searchString, pageable);
         assertEquals("400 BAD_REQUEST",responseEntity.getStatusCode().toString());
-        verify(organizationRepository,never()).findByTitleContainingOrNotationContaining(searchString,searchString,pageable);
+        verify(organizationRepository,never()).findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString,searchString,pageable);
     }
 
     @Test
@@ -222,12 +222,12 @@ public class OrganizationServiceTest {
     public void testFindBySearchStringWithPagesIfSearchStringIsNotEmpty(){
         String searchString = "АО\"Организация\"";
         Page<Organization> organizationsPage = Page.empty();
-        when(organizationRepository.findByTitleContainingOrNotationContaining(searchString, searchString, pageable))
+        when(organizationRepository.findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString, searchString, pageable))
                 .thenReturn(organizationsPage);
         ResponseEntity<?> responseEntity = organizationService.findBySearchString(searchString,pageable);
         assertEquals("200 OK", responseEntity.getStatusCode().toString());
         verify(organizationRepository,times(1))
-                .findByTitleContainingOrNotationContaining(searchString,searchString, pageable);
+                .findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString,searchString, pageable);
     }
 
     @Test

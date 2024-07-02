@@ -11,8 +11,8 @@ import java.util.List;
 
 @Repository
 public interface MiTypeRepository extends JpaRepository<MiType, Long> {
-    Page<MiType> findByNumberContainingOrTitleContainingOrNotationContaining(String number,String title, String notation, Pageable pageable);
-    List<MiType> findByNumberContainingOrTitleContainingOrNotationContaining(String number, String title, String notation);
+    Page<MiType> findByNumberContainingOrTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(String number,String title, String notation, Pageable pageable);
+    List<MiType> findByNumberContainingOrTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(String number, String title, String notation);
     MiType findByNumber(String number);
     @Override
     @NonNull

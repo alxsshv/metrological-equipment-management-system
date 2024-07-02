@@ -129,7 +129,7 @@ public class MiServiceImpl implements MeasurementInstrumentService {
         try {
             validateSearchString(searchString);
             Page<MiDto> page = measurementInstrumentRepository
-                    .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
+                    .findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContainingOrInventoryNumIgnoreCaseContaining(
                             searchString.trim(), searchString.trim(), searchString.trim(), pageable)
                     .map(MeasurementInstrumentMapper::mapToDto);
             return ResponseEntity.ok(page);
@@ -144,7 +144,7 @@ public class MiServiceImpl implements MeasurementInstrumentService {
         try {
             validateSearchString(searchString);
             List<MiDto> instruments = measurementInstrumentRepository
-                    .findByModificationContainingOrSerialNumContainingOrInventoryNumContaining(
+                    .findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContainingOrInventoryNumIgnoreCaseContaining(
                             searchString.trim(), searchString.trim(), searchString.trim())
                     .stream().map(MeasurementInstrumentMapper::mapToDto).toList();
             return ResponseEntity.ok(instruments);

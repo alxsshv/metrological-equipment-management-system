@@ -11,6 +11,6 @@ import java.util.List;
 @Repository
 public interface MiStandardRepository extends JpaRepository<MiStandard, Long> {
     MiStandard findByArshinNumber(String arshinNumber);
-    Page<MiStandard> findByArshinNumberContainingOrSchemaTitleContaining(String arshinNumber, String schemaTitle, Pageable pageable);
-    List<MiStandard> findByArshinNumberContainingOrSchemaTitleContaining(String arshinNumber, String schemaTitle);
+    Page<MiStandard> findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(String arshinNumber, String schemaTitle, String schemaNotation, Pageable pageable);
+    List<MiStandard> findByArshinNumberContainingOrSchemaTitleIgnoreCaseContainingOrSchemaNotationIgnoreCaseContaining(String arshinNumber, String schemaTitle, String schemaNotation);
 }

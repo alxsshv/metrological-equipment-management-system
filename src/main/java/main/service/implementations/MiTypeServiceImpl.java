@@ -133,7 +133,7 @@ public class MiTypeServiceImpl implements MiTypeService {
         try{
             validateSearchString(searchString);
             Page<MiTypeDto> page =  miTypeRepository
-                    .findByNumberContainingOrTitleContainingOrNotationContaining(searchString.trim(),searchString.trim(),searchString.trim(), pageable)
+                    .findByNumberContainingOrTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(),searchString.trim(),searchString.trim(), pageable)
                     .map(MiTypeDtoMapper::mapToDto);
             return ResponseEntity.ok(page);
         } catch (ParameterNotValidException ex){
@@ -147,7 +147,7 @@ public class MiTypeServiceImpl implements MiTypeService {
         try {
             validateSearchString(searchString);
             List<MiTypeDto> miTypeDtos = miTypeRepository
-                    .findByNumberContainingOrTitleContainingOrNotationContaining(searchString.trim(), searchString.trim(), searchString.trim()).stream()
+                    .findByNumberContainingOrTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(), searchString.trim(), searchString.trim()).stream()
                     .map(MiTypeDtoMapper::mapToDto).toList();
             return ResponseEntity.ok(miTypeDtos);
         } catch (ParameterNotValidException ex){

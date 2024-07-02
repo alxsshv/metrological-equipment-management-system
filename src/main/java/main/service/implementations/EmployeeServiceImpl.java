@@ -94,7 +94,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public ResponseEntity<?> findBySurname(String surname, Pageable pageable) {
         try {
             validateSearchString(surname);
-            Page<EmployeeDto> page = employeeRepository.findBySurnameContaining(surname.trim(), pageable)
+            Page<EmployeeDto> page = employeeRepository.findBySurnameIgnoreCaseContaining(surname.trim(), pageable)
                     .map(EmployeeDtoMapper::mapToDto);
             return ResponseEntity.ok(page);
         } catch (ParameterNotValidException ex){
@@ -106,7 +106,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public ResponseEntity<?> findBySurname(String surname) {
         try {
             validateSearchString(surname);
-            List<EmployeeDto> list = employeeRepository.findBySurnameContaining(surname.trim()).stream()
+            List<EmployeeDto> list = employeeRepository.findBySurnameIgnoreCaseContaining(surname.trim()).stream()
                     .map(EmployeeDtoMapper::mapToDto).toList();
             return ResponseEntity.ok(list);
         } catch (ParameterNotValidException ex){

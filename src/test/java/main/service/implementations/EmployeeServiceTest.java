@@ -231,10 +231,10 @@ public class EmployeeServiceTest {
         List<Employee> employees = List.of(employee);
         long totalEmployees = 10L;
         Page<Employee> page = new PageImpl<>(employees,pageable,totalEmployees);
-        when(employeeRepository.findBySurnameContaining(employee.getSurname(), pageable)).thenReturn(page);
+        when(employeeRepository.findBySurnameIgnoreCaseContaining(employee.getSurname(), pageable)).thenReturn(page);
         ResponseEntity<?> responseEntity = employeeService.findBySurname(employee.getSurname(), pageable);
         assertEquals("200 OK",responseEntity.getStatusCode().toString());
-        verify(employeeRepository,times(1)).findBySurnameContaining(employee.getSurname(), pageable);
+        verify(employeeRepository,times(1)).findBySurnameIgnoreCaseContaining(employee.getSurname(), pageable);
     }
 
     @Test

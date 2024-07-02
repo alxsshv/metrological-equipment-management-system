@@ -11,9 +11,9 @@ import java.util.List;
 
 @Repository
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
-    List<Organization> findByTitleContainingOrNotationContaining(String title, String notation);
+    List<Organization> findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(String title, String notation);
 
-    Page<Organization> findByTitleContainingOrNotationContaining(String title, String notation, Pageable pageable);
+    Page<Organization> findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(String title, String notation, Pageable pageable);
 
     Organization findByNotation(String notation);
 }

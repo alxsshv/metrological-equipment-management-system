@@ -14,8 +14,8 @@ import java.util.List;
 public interface EmployeeRepository extends JpaRepository<Employee,Long> {
 
     Employee findBySnils(String snils);
-    Page<Employee> findBySurnameContaining(String surname, Pageable pageable);
-    List<Employee> findBySurnameContaining(String surname);
+    Page<Employee> findBySurnameIgnoreCaseContaining(String surname, Pageable pageable);
+    List<Employee> findBySurnameIgnoreCaseContaining(String surname);
     @Override
     @NonNull
     Page<Employee> findAll(@NonNull Pageable pageable);

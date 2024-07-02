@@ -95,7 +95,7 @@ public class OrganizationServiceImpl implements OrganizationService {
             return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
         }
         List<OrganizationDto> organizationDtos =  organizationRepository
-                .findByTitleContainingOrNotationContaining(searchString.trim(),searchString.trim())
+                .findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(),searchString.trim())
                 .stream().map(OrganizationDtoMapper::mapToDto).toList();
         return ResponseEntity.ok(organizationDtos);
     }
@@ -105,7 +105,7 @@ public class OrganizationServiceImpl implements OrganizationService {
         try {
             validateSearchString(searchString);
             Page<OrganizationDto> organizationDtos = organizationRepository
-                    .findByTitleContainingOrNotationContaining(searchString.trim(), searchString.trim(), pageable)
+                    .findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(), searchString.trim(), pageable)
                     .map(OrganizationDtoMapper::mapToDto);
             return ResponseEntity.ok(organizationDtos);
         } catch (ParameterNotValidException ex){
