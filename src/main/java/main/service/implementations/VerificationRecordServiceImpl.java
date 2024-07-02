@@ -23,7 +23,7 @@ public class VerificationRecordServiceImpl implements VerificationRecordService 
 
 
     @Override
-    public ResponseEntity<?> getById(long id) {
+    public ResponseEntity<?> findById(long id) {
         try {
             VerificationRecord record = getRecordById(id);
             VerificationRecordDto recordDto = VerificationRecordDtoMapper.mapToDto(record);

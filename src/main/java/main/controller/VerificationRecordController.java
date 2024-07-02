@@ -18,7 +18,7 @@ public class VerificationRecordController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getVerificationRecord(@PathVariable ("id") String id){
-        return recordService.getById(Long.parseLong(id));
+        return recordService.findById(Long.parseLong(id));
     }
 
     @PutMapping("/{id}")

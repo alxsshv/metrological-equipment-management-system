@@ -88,5 +88,29 @@ public class TestEntityGenerator {
         return MiStandardDtoMapper.mapToEntity(generateMiStandardDto(id));
     }
 
+    public static VerificationRecordDto generateVerificationRecordDto(long id){
+        VerificationRecordDto recordDto = new VerificationRecordDto();
+        recordDto.setMi(generateMeasurementInstrument(1L));
+        recordDto.setVerificationMis(List.of(generateMeasurementInstrument(2L), generateMeasurementInstrument(3L)));
+        recordDto.setId(id);
+        recordDto.setArshinVerificationNumber("1111111");
+        recordDto.setEmployee(generateEmployee(1L));
+        recordDto.setApplicable(true);
+        recordDto.setVerificationDate(String.valueOf(LocalDate.now()));
+        recordDto.setValidDate(String.valueOf(LocalDate.now().plusYears(2)));
+        recordDto.setMiStandards(List.of(generateMiStandard(1L)));
+        recordDto.setHumidity(45);
+        recordDto.setPressure(100);
+        recordDto.setTemperature(25);
+        recordDto.setShortVerification(false);
+        recordDto.setCalibration(false);
+        recordDto.setStickerNum("отсутствует");
+        return recordDto;
+    }
+
+    public static VerificationRecord genereteVerificationRecord(long id){
+        return VerificationRecordDtoMapper.mapToEntity(generateVerificationRecordDto(id));
+    }
+
 
 }
