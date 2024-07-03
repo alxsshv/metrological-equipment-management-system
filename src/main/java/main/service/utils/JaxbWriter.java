@@ -30,7 +30,6 @@ public class JaxbWriter {
         try{
             JAXBContext context = JAXBContext.newInstance(VerificationApplication.class);
             Marshaller marshaller = context.createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, xmlSchemaLocation);
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             createFolderIfNotExist();
             marshaller.marshal(application,new FileOutputStream(tempFileUploadPath + fileName));

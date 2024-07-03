@@ -69,7 +69,7 @@ public class ResultFactory {
         if (date == null){
             return null;
         }
-        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+"+03:00";
     }
 
     private String buildMetrologist(VerificationRecord record){

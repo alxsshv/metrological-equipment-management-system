@@ -12,6 +12,6 @@ public class AppConstants {
     public static final String[] IMAGE_EXTENSIONS = {"jpg", "jpeg","png","gif","bmp","svg"};
     public static final String HUMIDITY_UNIT = "%";
     public static final String PRESSURE_UNIT = "кПа";
-    public static final String TEMPERATURE_UNIT = (char)186+"C";
+    public static final String TEMPERATURE_UNIT = "°C";
 
 }

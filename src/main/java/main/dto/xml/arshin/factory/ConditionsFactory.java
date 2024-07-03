@@ -16,9 +16,9 @@ public class ConditionsFactory {
 
     public Conditions createConditions(VerificationRecord record){
         Conditions conditions = new Conditions();
-        conditions.setHumidity(record.getHumidity() +" "+ AppConstants.HUMIDITY_UNIT);
-        conditions.setPressure(record.getPressure() +" "+ AppConstants.PRESSURE_UNIT);
-        conditions.setTemperature(record.getTemperature() +" "+ AppConstants.TEMPERATURE_UNIT);
+        conditions.setHumidity(String.valueOf(record.getHumidity()).replace(".",",") +" "+ AppConstants.HUMIDITY_UNIT);
+        conditions.setPressure(String.valueOf(record.getPressure()).replace(".",",") +" "+ AppConstants.PRESSURE_UNIT);
+        conditions.setTemperature(String.valueOf(record.getTemperature()).replace(".",",") +" "+ AppConstants.TEMPERATURE_UNIT);
         return conditions;
     }
 }

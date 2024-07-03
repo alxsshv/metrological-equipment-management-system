@@ -43,12 +43,12 @@ public class InitConfig {
 
     @PostConstruct
     public void initiate() throws IOException {
-        OrganizationDto organization1 = new OrganizationDto();
-        organization1.setTitle("Не указан");
-        organization1.setNotation("Не указан");
-        organization1.setAddress("Не указан");
-        organizationService.save(organization1);
-        generateDemoEntities();
+        OrganizationDto defaultOrganization = new OrganizationDto();
+        defaultOrganization.setTitle("Не указан");
+        defaultOrganization.setNotation("Не указан");
+        defaultOrganization.setAddress("Не указан");
+        organizationService.save(defaultOrganization);
+        //generateDemoEntities(); //генерация сущностей для примера использования
     }
 
 

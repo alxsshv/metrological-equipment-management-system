@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@XmlRootElement(name = "singleMi")
+@XmlRootElement(name = "singleMI")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class SingleMi extends VerificationObject{
     @XmlElement(name = "mitypeNumber")

@@ -16,10 +16,10 @@ import lombok.Setter;
 public class Conditions {
     @XmlElement(name = "temperature")
     private String temperature;
-    @XmlElement(name = "humidity")
-    private String humidity;
     @XmlElement(name = "pressure")
     private String pressure;
+    @XmlElement(name = "hymidity")
+    private String humidity;
     @XmlElement(name = "other")
     private String other;
 }

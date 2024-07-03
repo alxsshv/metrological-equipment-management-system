@@ -207,7 +207,7 @@ public class MiTypeServiceImpl implements MiTypeService {
         try {
             MiTypeInstruction instruction = getInstructionById(id);
             fileService.deleteAllFiles(Category.MI_TYPE, id);
-            miTypeRepository.deleteById(id);
+            miTypeInstructionRepository.deleteById(id);
             String okMessage = "Запись о типе СИ №" + instruction.getMiType().getNumber() + " успешно удалена";
             log.info(okMessage);
             return ResponseEntity.ok(new ServiceMessage(okMessage));

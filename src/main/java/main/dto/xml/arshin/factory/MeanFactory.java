@@ -19,7 +19,9 @@ public class MeanFactory {
     public Mean createMeans(VerificationRecord record){
         Mean mean = new Mean();
         mean.getMiEtaList().addAll(buildMietaList(record));
-        mean.setMis(MisFactory.createMis(record));
+        if (!record.getVerificationMis().isEmpty()) {
+            mean.setMis(MisFactory.createMis(record));
+        }
         return mean;
     }
 
