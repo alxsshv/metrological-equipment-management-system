@@ -18,6 +18,7 @@ import main.service.ServiceMessage;
 import main.service.interfaces.MiTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -205,15 +206,18 @@ public class MiTypeServiceImpl implements MiTypeService {
     @Override
     public ResponseEntity<?>delete(long id) throws IOException {
         try {
-            MiTypeInstruction instruction = getInstructionById(id);
+            //  MiTypeInstruction instruction = getInstructionById(id);
             fileService.deleteAllFiles(Category.MI_TYPE, id);
             miTypeInstructionRepository.deleteById(id);
-            String okMessage = "Запись о типе СИ №" + instruction.getMiType().getNumber() + " успешно удалена";
+            miTypeRepository.deleteById(id);
+            String okMessage = "Запись о типе СИ № " + id + " успешно удалена";
             log.info(okMessage);
             return ResponseEntity.ok(new ServiceMessage(okMessage));
-        } catch (EntityNotFoundException ex){
-            log.error(ex.getMessage());
-            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
+        } catch (DataIntegrityViolationException ex){
+            String errorMessage = "Удаление типа СИ не возможно, т.к. в базе пристуствуют средства измерений, относящиеся к данному типу СИ";
+            log.warn(errorMessage);
+            log.warn(ex.getMessage());
+            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
         }
     }
 
