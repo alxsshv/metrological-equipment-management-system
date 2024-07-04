@@ -24,16 +24,21 @@
         <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
             <div class="row g-2">
                 <div class="col-md-2">
-                    <label for="inputText1" class="form-label">№ типа СИ</label>
-                    <input type="text" ng-change="searchTypeOnNumber()" ng-model="mi.miType.number" placeholder="XXXXX-XX"
-                        class="form-control" id="inputText1" value="" required>
+                    <label for="inputMiType" class="form-label">№ типа СИ</label>
+                    <input type="text" ng-change="searchTypeOnNumber()" ng-model="mi.miType.number" data-bs-toggle="dropdown" placeholder="XXXXX-XX"
+                        class="form-control dropdown-toggle" id="inputMiType" value="" required>
+                        <ul class="dropdown-menu" ng-model="typeTitle" id="numberDropdown" >
+                            <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
+                                    ng-click="selectType(item)">{{item.number}} {{item.title}}
+                                    {{item.notation}}</a></li>
+                        </ul>
                 </div>
                 <div class="col-md-5 ">
-                    <label class="form-label" for="inputText2">Наименование типа*</label>
+                    <label class="form-label" for="inputMiTitle">Наименование типа*</label>
                     <input type="text" ng-change="searchType()" ng-model="mi.miType.title" data-bs-toggle="dropdown"
-                        class="form-control dropdown-toggle border-success" id="inputText2" value="">
+                        class="form-control dropdown-toggle border-success" id="inputMiTitle" value="">
 
-                    <ul class="dropdown-menu" ng-model="typeTitle">
+                    <ul class="dropdown-menu" ng-model="typeTitle" id="titleDropdown" >
                         <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
                                 ng-click="selectType(item)">{{item.number}} {{item.title}}
                                 {{item.notation}}</a></li>
@@ -67,9 +72,9 @@
                         required>
                 </div>
                 <div class="col-md-6 ">
-                    <label class="form-label" for="inputText6">Владелец</label>
+                    <label class="form-label" for="inputOwner">Владелец</label>
                     <input type="text" ng-change="searchOrganization()" ng-model="organization" data-bs-toggle="dropdown"
-                        class="form-control dropdown-toggle" id="inputText6" value="">
+                        class="form-control dropdown-toggle" id="inputOwner" value="">
 
                     <ul class="dropdown-menu" ng-model="mi.owner">
                         <li ng-repeat="item in organizations" value="{{item}}"> <a class="dropdown-item"
@@ -162,14 +167,13 @@
 
             // Поиск типа СИ по номеру в ФИФ ОЕИ
             $scope.searchTypeOnNumber = function () {
+                showDropdownMenuById('inputMiType');
                 if (/^[0-9]{3,5}-[0-9]{2}$/.exec($scope.mi.miType.number)) {
-                    console.log("Поиск типа си")
                     $http({
                         url: "/mits/search?search=" + $scope.mi.miType.number,
                         method: "GET"
                     }).then(function (response) {
-                        $scope.mi.miType = response.data;
-                        console.log($scope.miType)
+                        $scope.types = response.data;
                     });
                 }
             }
@@ -177,6 +181,7 @@
             //Поиск типа СИ по подстроке
             $scope.types = [];
             $scope.searchType = function () {
+                showDropdownMenuById('inputMiTitle');
                 if ($scope.mi.miType.title.length > 3) {
                     $http({
                         url: "/mits/search?search=" + $scope.mi.miType.title,
@@ -185,6 +190,11 @@
                         $scope.types = response.data;
                     });
                 }
+            }
+
+            function showDropdownMenuById(id){
+                let elem = document.getElementById(id);
+                bootstrap.Dropdown.getOrCreateInstance(elem).show();
             }
 
             $scope.selectType = function (item) {
@@ -218,6 +228,7 @@
 
             $scope.organizations = [];
             $scope.searchOrganization = function () {
+                showDropdownMenuById('inputOwner');
                 if ($scope.organization.length >= 3) {
                     $http({
                         url: "/organizations/search?search=" + $scope.organization,

@@ -187,10 +187,12 @@
                 $http({
                     url: "/mits/" + delId,
                     method: "DELETE"
-                }).then(function (response) {
-                    alert(response.data.message);
-                    $scope.getPagesContentlist($scope.contentUrl);
-                });
+                }).then(function successCallback(response) {
+                            alert(response.data.message);
+                            window.location.reload();
+                        }, function errorCallback(response) {
+                            alert(response.data.message)
+                        });
             }
 
             $scope.getPagesContentlist($scope.contentUrl);

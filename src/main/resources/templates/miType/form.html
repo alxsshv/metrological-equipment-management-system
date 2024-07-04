@@ -25,9 +25,9 @@
         <div class="p-3 bg-info bg-opacity-10 border border-info rounded-3">
             <div class="row g-2">
                 <div class="col-md-2">
-                    <label for="inputText1" class="form-label">№ типа СИ*</label>
+                    <label for="inputMiType" class="form-label">№ типа СИ*</label>
                     <input type="text" ng-change="getMiTypeDataFromArshin()" ng-model="miType.number" placeholder="XXXXX-XX" class="form-control border-success"
-                        id="inputText1" value="" required>
+                        id="inputMiType" value="" required>
                 </div>
                 <div class="col-md-7">
                     <label for="inputText2" class="form-label">Наименование типа средства измерений*</label>
@@ -200,6 +200,7 @@
             $scope.descriptions = [];
             $scope.miType = {};
 
+
             $scope.getMiTypeDataFromArshin = function(){
                 if (/^[0-9]{3,5}-[0-9]{2}$/.exec($scope.miType.number)) {
                     $http({
@@ -212,7 +213,7 @@
                 });
                 }
             }
-    
+
             // сохранение в БД;
             $scope.addMiType = function () {
                 if (/^[0-9]{3,5}-[0-9]{2}$/.exec($scope.miType.number)) {
