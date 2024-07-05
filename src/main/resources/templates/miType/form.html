@@ -86,7 +86,7 @@
                                         placeholder="Пример: МС-33-01" aria-label="Модификация"
                                         aria-describedby="basic-addon11">
                                     <button ng-click="addModification(modification)" type="button"
-                                        class="btn btn-outline-success">Добавить модификацию</button>
+                                        class="btn btn-outline-success">Добавить</button>
                                 </div>
                             </div>
                             <div class="row">
@@ -112,14 +112,16 @@
                     <input type="number" step="0.01" ng-model="miType.verificationPeriod" class="form-control"
                         id="inputNumber1" value="">
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-10">
                     <label for="inputText4" class="form-label">Обозначение методики поверки*</label>
                     <input type="text" ng-model="miType.instructionNotation" class="form-control border-success" id="inputText4"
                         value="">
                 </div>
-                <div class="col-md-7">
+            </div>
+            <div class="row g-3">
+                <div class="col-md-12">
                     <label for="inputText5" class="form-label">Наименование методики поверки</label>
-                    <input type="text" ng-model="miType.instructionTitle" class="form-control" id="inputText5" value="">
+                    <textarea type="text" ng-model="miType.instructionTitle" class="form-control" id="inputText5" value=""></textarea>
                 </div>
             </div>
         </div>
