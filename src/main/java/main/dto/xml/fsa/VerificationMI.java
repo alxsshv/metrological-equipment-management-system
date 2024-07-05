@@ -16,7 +16,7 @@ public class VerificationMI {
     private String numberVerification;
     @XmlElement(name = "DateVerification")
     private String dateVerification;
-    @XmlElement(name = "DateEndVerification", nillable = true)
+    @XmlElement(name = "DateEndVerification")
     private String dateEndVerification;
     @XmlElement(name = "TypeMeasuringInstrument")
     private String typeMeasuringInstrument;

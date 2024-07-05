@@ -37,8 +37,7 @@ public class VerificationRecord {
     private double humidity; // percents
     @Column(name = "arshin_verification_number")
     private String arshinVerificationNumber;
-    @Lob
-    @Column(name = "inapplicable_reason")
+    @Column(name = "inapplicable_reason", length = 2000)
     private String inapplicableReason;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mi_id")
