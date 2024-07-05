@@ -29,6 +29,7 @@ public class MiStandard {
     private MeasurementInstrument measurementInstrument; // Средство измерения, являющееся эталоном
     @Column(name = "schema_type")
     private String schemaType; // локальная или государственная поверочная схема
+    @Lob
     @Column(name = "schema_title")
     private String schemaTitle; //полное наименование поверочной схемы
     @Column(name= "schema_notation")

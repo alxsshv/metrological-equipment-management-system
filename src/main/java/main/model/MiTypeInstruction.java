@@ -17,6 +17,7 @@ public class MiTypeInstruction {
     private long id;
     @Column(name = "instruction_notation")
     private String instructionNotation; //Обозначение методики поверки
+    @Lob
     @Column(name = "instruction_title")
     private String instructionTitle; // Наименование методики поверки
     @Column(name = "humidity_low_limit" )
