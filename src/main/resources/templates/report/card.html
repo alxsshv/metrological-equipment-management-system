@@ -99,16 +99,31 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-3">
-                <button class="btn btn-primary" ng-click="updateArshinNumbers()" type="button">Обновить номера из ФГИС "Аршин"</button>
+                <button class="btn btn-primary" id="updateNumBtn" ng-click="updateArshinNumbers()" type="button">Обновить номера из ФГИС
+                    "Аршин"</button>
             </div>
             <div class="col-3">
                 <button class="btn btn-primary" ng-click="printXMLForArshin()" type="button">Получить отчет для ФГИС
                     Аршин</button>
             </div>
             <div class="col-3">
-                <button class="btn btn-primary" ng-click="printXMLForFSA()" type="button">Получить отчет для ФСА</button>
+                <button class="btn btn-primary" ng-click="printXMLForFSA()" type="button">Получить отчет для
+                    ФСА</button>
             </div>
         </div>
+
+        <div class="toast-container position-fixed bottom-0 end-0 p-3">
+            <div id="pleaseWaitMessage" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="toast-header">
+                    <img src="..." class="rounded me-2">
+                    <strong class="me-auto text-primary">Поиск информации в ФГИС "Аршин"</strong>
+                </div>
+                <div class="toast-body">
+                    Пожалуйста ожидайте
+                </div>
+            </div>
+        </div>
+
     </div>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/angular.min.js"></script>
@@ -196,25 +211,41 @@
                 });
             }
 
-            $scope.printXMLForArshin = function() {
+            $scope.printXMLForArshin = function () {
                 window.location.href = "/xml/arshin/" + idAttr;
             }
 
-            $scope.printXMLForFSA = function() {
+            $scope.printXMLForFSA = function () {
                 window.location.href = "/xml/fsa/" + idAttr;
             }
 
-            $scope.updateArshinNumbers = function() {
+            $scope.updateArshinNumbers = function () {
+                showMessage('pleaseWaitMessage');
                 $http({
                     url: "/reports/verifications/update/" + idAttr,
                     method: "GET"
                 }).then(function successCallback(response) {
+                    hideMessage('pleaseWaitMessage');
                     alert(response.data.message);
                     window.location.reload();
                 }, function errorCallback(response) {
+                    hideMessage('pleaseWaitMessage');
                     alert(response.data.message)
                 });
             }
+
+            function showMessage(id){
+                const message = document.getElementById(id);
+                const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
+                messageBootstrap.show();
+            }
+
+            function hideMessage(id){
+                const message = document.getElementById(id);
+                const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
+                messageBootstrap.hide();
+            }
+
 
 
             getReport();

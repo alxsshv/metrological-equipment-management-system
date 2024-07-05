@@ -133,7 +133,7 @@ public class VerificationReportServiceImpl implements VerificationReportService 
             return ResponseEntity.ok().body(new ServiceMessage(okMessage));
         } catch (ArshinResponseException ex){
             log.error(ex.getMessage());
-            return ResponseEntity.ok().body(new ServiceMessage(ex.getMessage()));
+            return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
         }
 
     }
