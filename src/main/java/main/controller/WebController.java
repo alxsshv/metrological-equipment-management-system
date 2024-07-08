@@ -138,6 +138,12 @@ public class WebController {
         return "report/record/edit";
     }
 
+    @GetMapping("/report/verification/record/counter/date/employee")
+    public String getAmountVerificationForEveryDateByEmployeeView(@RequestParam("employeeId") String employeeId, Model model){
+        model.addAttribute("employeeId",Long.parseLong(employeeId));
+        return "report/record/reportByEmployee";
+    }
+
     //Вывод шаблонов для настроек
     @GetMapping("/settings/form")
     public String getSettingsForm(){

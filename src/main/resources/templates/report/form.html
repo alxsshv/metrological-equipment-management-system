@@ -126,7 +126,7 @@
                                             <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
                                                 id="inputSN" ng-change="searchMiBySerialNumber()"
                                                 ng-model="miSNSearchString" type="text" value="">
-                                            <ul class="dropdown-menu" ng-model="mi">
+                                            <ul class="dropdown-menu" id="serialDropDown" ng-model="mi">
                                                 <li ng-repeat="item in mis" value="{{item}}"> <a class="dropdown-item"
                                                         href="#" ng-click="selectMi(item)">{{item.modification}}
                                                         №{{item.serialNum}}</a></li>
@@ -382,6 +382,8 @@
 
             $scope.searchMiBySerialNumber = function () {
                 if ($scope.miSNSearchString.length > 2) {
+                    const myDropdown = document.getElementById('serialDropDown');
+                    myDropdown.click;
                     $http({
                         url: "/mis/search?search=" + $scope.miSNSearchString,
                         method: "GET"

@@ -1,5 +1,6 @@
 package main.service.implementations;
 
+
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import main.dto.rest.VerificationRecordDto;
@@ -10,9 +11,12 @@ import main.service.ServiceMessage;
 import main.service.interfaces.VerificationRecordService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -78,5 +82,12 @@ public class VerificationRecordServiceImpl implements VerificationRecordService 
         logger.info(okMessage);
         return ResponseEntity.ok().body(new ServiceMessage(okMessage));
     }
+
+    @Override
+    public ResponseEntity<?> findVerificationAmountForEveryDateByEmployeeId(long employeeId, Pageable pageable){
+        Page<Map<String,Integer>> counters = recordRepository.findVerificationAmountForEveryDateByEmployeeId(employeeId, pageable);
+        return ResponseEntity.ok().body(counters);
+    }
+
 
 }

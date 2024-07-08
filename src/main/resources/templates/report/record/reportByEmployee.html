@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Количество СИ поверенных поверителе по датам</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="VRF_AMOUNT_EMPLOYEE_REPORT" ng-controller="VRF_AMOUNT_EMPLOYEE_REPORT_CTRL">
+    <div class="container text-center">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <div class="btn-group">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Сортировать
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{viewReference}}?employeeId={{employeeIdAttr}}&page=0&dir=ASC&size={{pageSize}}">По
+                                возрастанию</a>
+                        </li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?employeeId={{employeeIdAttr}}&page=0&dir=DESC&size={{pageSize}}">По
+                                убыванию</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Выводить по
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item"
+                                href="{{viewReference}}?employeeId={{employeeIdAttr}}&page=0&dir={{sortDirection}}&size=10">10</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{viewReference}}?employeeId={{employeeIdAttr}}&page=0&dir={{sortDirection}}&size=20">20</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{viewReference}}?employeeId={{employeeIdAttr}}&page=0&dir={{sortDirection}}&size=50">50</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{viewReference}}?employeeId={{employeeIdAttr}}&page=0&dir={{sortDirection}}&size=100">100</a></li>
+                    </ul>
+                </div>
+               
+            </form>
+        </nav>
+        <h4>Отчет о поверках поверителя по датам</h4>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="input-group mb">
+                    <span class="input-group-text" id="basic-addon1">Поверитель</span>
+                    <input type="text" class="form-control dropdown-toggle" data-bs-toggle="dropdown"
+                        ng-change="searchEmployee()" ng-model="employeeSearchString" id="inputEmployee"
+                        placeholder="ФИО поверителя">
+                    <ul class="dropdown-menu">
+                        <li ng-repeat="item in employees" value="{{item}}"> <a class="dropdown-item" href="#"
+                                ng-click="selectEmployee(item)">{{item.surname}}
+                                {{item.name}}
+                                {{item.patronymic}}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p></p>
+            <div class="row">
+                <ul>
+                    <li ng-repeat="item in contentlist">
+                        <div class="row">
+                            <div class="col-md-2">{{item.verification_date | date:"dd.MM.yyyy"}}</div>
+                            <div class="col-md-8">
+                                <div class="progress" role="progressbar">
+                                    <div class="progress-bar bg-primary text-white"
+                                        ng-style="{width : ( item.countPercent + '%' ) }">
+                                        {{item.verifications_count}}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+            <div class="row">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        <li class="page-item"><a class="page-link"
+                                href="{{viewReference}}?employeeId={{employeeIdAttr}}&page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}">Предыдущая</a>
+                        </li>
+                        <li ng-repeat="item in pageArray track by $index" class="page-item"><a class="page-link"
+                                href="{{viewReference}}?employeeId={{employeeIdAttr}}&page={{item}}&dir={{sortDirection}}&size={{pageSize}}">{{item+1}}</a>
+                        </li>
+                        <li class="page-item"><a class="page-link"
+                                href="{{viewReference}}?employeeId={{employeeIdAttr}}&page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}">Следующая</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+        <!-- Модальное окно -->
+        <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаления" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить отчет?</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                        <button type="button" class="btn btn-primary"
+                            ng-click="deleteReport(deleteableId)">Удалить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="/js/angular.min.js"></script>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript">
+            var app = angular.module("VRF_AMOUNT_EMPLOYEE_REPORT", []);
+            app.controller("VRF_AMOUNT_EMPLOYEE_REPORT_CTRL", function ($scope, $http) {
+                $scope.employeeIdAttr = new URL (document.URL).searchParams.get("employeeId");
+                $scope.contentUrl = "/verifications/records/counters/dates/";
+                $scope.viewReference = "/report/verification/record/counter/date/employee";
+
+                function getAllEmployees() {
+                    $http({
+                        url: "/employees",
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.employees = response.data;
+                        $scope.getPagesContentlist($scope.employeeIdAttr);
+                    });
+                }
+
+                $scope.employees = [];
+                $scope.searchEmployee = function () {
+                    if ($scope.employeeSearchString.length > 3) {
+                        $http({
+                            url: "/employees/search?search=" + $scope.employeeSearchString,
+                            method: "GET"
+                        }).then(function (response) {
+                            $scope.employees = response.data;
+                        });
+                    }
+                }
+
+                $scope.selectEmployee = function (item) {
+                    $scope.employeeSearchString = item.surname + " " + item.name + " " + item.patronymic;
+                    getReportDataByEmployeeId(item.id);
+                    $scope.employeeIdAttr = item.id;
+                }
+
+                let maxVerificationsValue = 20;
+                function getReportDataByEmployeeId(employeeId) {
+                    $http({
+                        url: $scope.contentUrl  + employeeId + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection + "&size=" + $scope.pageSize,
+                        method: "GET"
+                    }).then(function (response) {
+                        console.log(response.data.content);
+                        $scope.contentlist = response.data.content;
+                        $scope.contentlist.forEach(item => { item.countPercent = item.verifications_count / maxVerificationsValue * 100;
+                            item.verification_date = new Date(item.verification_date);
+                         });
+                        $scope.createPaginationParams(response.data.totalPages);
+                        console.log($scope.contentlist);
+                    });
+                }
+
+
+                $scope.getPagesContentlist = function (employeeIdAttr) {
+                    $scope.getPageAttributes();
+                    let item = $scope.employees.find(employee => employee.id === Number(employeeIdAttr));
+                    $scope.selectEmployee(item);
+                }
+
+
+                $scope.getPageAttributes = function () {
+                    var documentUrl = new URL(document.URL);
+                    $scope.pageNum = documentUrl.searchParams.get("page");
+                    $scope.sortDirection = documentUrl.searchParams.get("dir");
+                    $scope.pageSize = documentUrl.searchParams.get("size");
+
+                    if ($scope.pageSize == null || $scope.pageSize == undefined) {
+                        $scope.pageSize = "10";
+                    }
+                    if ($scope.sortDirection == null || $scope.sortDirection == undefined) {
+                        $scope.sortDirection = "ASC";
+                    }
+                    if ($scope.pageNum == null || $scope.pageNum == undefined) {
+                        $scope.pageNum = "0";
+                    }
+                }
+
+                $scope.createPaginationParams = function (totalPages) {
+                    $scope.pageArray = [];
+                    $scope.previousPage = 0;
+                    $scope.nextPage = Number($scope.pageNum) + 1;
+
+                    if ($scope.pageNum > 0) {
+                        $scope.previousPage = $scope.pageNum - 1;
+                    }
+                    if ($scope.pageNum >= totalPages - 1) {
+                        $scope.nextPage = totalPages - 1;
+                    }
+                    $scope.pageArray = [];
+                    for (let i = 0; i < totalPages; i++) {
+                        $scope.pageArray.push(i);
+                    }
+                }
+
+
+                getAllEmployees();
+                
+            });
+        </script>
+</body>
+
+</html>
