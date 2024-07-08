@@ -49,12 +49,16 @@
                     <input type="text" ng-model="mi.miType.notation" class="form-control border-success" id="inputText3" value="">
                 </div>
                 <div class="col-md-3">
-                    <label class="form-label" for="select1">Модификация*</label>
-                    <select ng-model="mi.modification" class="form-select mb-3 border-success" aria-label="Заводской номер" id="select1">
-                        <option ng-repeat="modification in modifications" value="{{modification}}">
-                            {{modification}}
-                        </option>
-                    </select>
+                       
+                        <label class="form-label" for="inputOwner">Модификация*</label>
+                        <input type="text" ng-change="searchModification()" ng-model="mi.modification" data-bs-toggle="dropdown"
+                            class="form-control mb-3 border-success dropdown-toggle" id="inputModification" value="">
+    
+                        <ul class="dropdown-menu" ng-model="mi.modification">
+                            <li ng-repeat="item in modifications" value="{{item}}"> <a class="dropdown-item"
+                                    ng-click="selectModification(item)">{{item}}</a></li>
+                        </ul>
+          
                 </div>
             </div>
         </div>
@@ -224,6 +228,23 @@
                 }
             }
 
+            $scope.searchModification = function () {
+                showDropdownMenuById('inputModification');
+                if ($scope.mi.modification.length >= 2) {
+                    $http({
+                        url: "/mits/search/modifications/" + $scope.mi.miType.id + "?search=" + $scope.mi.modification,
+                        method: "GET"
+                    }).then(function (response) {
+                        $scope.modifications = response.data;
+                    });
+                }
+            }
+
+
+            $scope.selectModification = function (item) {
+               // $scope.organization = item.notation;
+                $scope.mi.modification = item;
+            }
 
 
             $scope.organizations = [];
@@ -238,7 +259,6 @@
                     });
                 }
             }
-
 
 
             $scope.selectOrganization = function (item) {

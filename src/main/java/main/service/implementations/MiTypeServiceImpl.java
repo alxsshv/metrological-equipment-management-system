@@ -175,6 +175,20 @@ public class MiTypeServiceImpl implements MiTypeService {
         }
     }
 
+    @Override
+    public ResponseEntity<?> findModificationsByMiTypeIdAndSearchString(long miTypeId, String searchString){
+        Optional<MiType> typeOpt = miTypeRepository.findById(miTypeId);
+        if (typeOpt.isPresent()) {
+            List<MiTypeModification> foundModifications = miTypeModificationRepository.findByMiTypeAndNotationIgnoreCaseContaining(typeOpt.get(), searchString);
+            List<String> modificationNotations = foundModifications.stream().map(MiTypeModification::getNotation).toList();
+            return ResponseEntity.ok(modificationNotations);
+        } else {
+            String errorMessage = "Запись о типе СИ №" + miTypeId + "  не найдена";
+            log.warn(errorMessage);
+            return ResponseEntity.notFound().build();
+        }
+    }
+
 
     @Override
     public Page<MiTypeDto> findAll(Pageable pageable) {

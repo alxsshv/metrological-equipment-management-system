@@ -61,8 +61,15 @@ public class MiTypeController {
     }
     @GetMapping("/modifications/{id}")
     public ResponseEntity<?> getMiTypeModifications(@PathVariable("id") String id){
-        return miTypeService.findModifications(Integer.parseInt(id));
+        return miTypeService.findModifications(Long.parseLong(id));
     }
+
+    @GetMapping("/search/modifications/{id}")
+    public ResponseEntity<?> getSearchMiTypeModifications(@PathVariable("id") String id,
+                                                          @RequestParam("search") String searchString){
+        return miTypeService.findModificationsByMiTypeIdAndSearchString(Long.parseLong(id), searchString);
+    }
+
     @PostMapping
     public ResponseEntity<?> addMiType(@RequestParam("miType") String miType,
                                        @RequestParam(name = "files", required = false) Optional<MultipartFile[]> filesOpt,

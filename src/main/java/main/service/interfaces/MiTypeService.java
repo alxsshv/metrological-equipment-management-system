@@ -19,6 +19,7 @@ public interface MiTypeService {
     ResponseEntity<?> findBySearchString(String searchString, Pageable pageable);
     ResponseEntity<?> findBySearchString(String searchString);
     ResponseEntity<?> findModifications(long miTypeId);
+    ResponseEntity<?> findModificationsByMiTypeIdAndSearchString(long miTypeId, String searchString);
     Page<MiTypeDto> findAll(Pageable pageable);
     List<MiTypeDto> findAll();
     ResponseEntity<?> update(MiTypeFullDto miTypeDto);

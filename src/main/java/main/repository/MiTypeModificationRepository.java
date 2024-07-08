@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface MiTypeModificationRepository extends JpaRepository<MiTypeModification, Long> {
    List<MiTypeModification> findByMiType(MiType miType);
+   List<MiTypeModification> findByMiTypeAndNotationIgnoreCaseContaining(MiType miType, String notation);
 }
