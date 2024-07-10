@@ -16,5 +16,8 @@ public class VerificationReportFullDto {
     private String creationDate;
     private String updateDate;
     private String comment;
+    private boolean readyToSend;
+    private boolean sentToArshin;
+    private boolean sentToFsa;
     private List<VerificationRecordDto> records = new ArrayList<>();
 }

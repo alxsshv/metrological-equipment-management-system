@@ -29,6 +29,12 @@ public class VerificationReport {
     private LocalDateTime updateDate;
     @Column(name = "comment")
     private String comment;
+    @Column(name = "ready_to_send")
+    private boolean readyToSend;
+    @Column(name = "sent_to_arshin")
+    private boolean sentToArshin;
+    @Column(name = "sent_to_fsa")
+    private boolean sentToFsa;
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VerificationRecord> records = new ArrayList<>();
 
@@ -40,5 +46,12 @@ public class VerificationReport {
     public void removeRecord(VerificationRecord record){
         records.remove(record);
         record.setReport(null);
+    }
+
+    public void update(VerificationReport report){
+       this.comment = report.getComment();
+       this.readyToSend = report.isReadyToSend();
+       this.sentToArshin = report.isSentToArshin();
+       this.sentToFsa = report.isSentToFsa();
     }
 }

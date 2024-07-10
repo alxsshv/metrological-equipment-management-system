@@ -64,13 +64,30 @@ public class VerificationReportServiceImpl implements VerificationReportService 
     @Override
     public ResponseEntity<?> findById(long id){
         try {
-            VerificationReport report = getReportById(id);
+            VerificationReport reportFromDb = getReportById(id);
+            VerificationReport report = updateSentToArshinFromReportIfConditionsMet(reportFromDb);
             VerificationReportFullDto reportFullDto = VerificationReportDtoMapper.mapToFullDto(report);
             return ResponseEntity.ok(reportFullDto);
         } catch (EntityNotFoundException ex){
             log.info(ex.getMessage());
             return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
         }
+    }
+
+    private  VerificationReport updateSentToArshinFromReportIfConditionsMet(VerificationReport report){
+        if (!report.isSentToArshin() && report.isReadyToSend()) {
+            boolean allArshinNumbersIsPresent = true;
+            for (VerificationRecord record : report.getRecords()) {
+                boolean arshinNumberIsPresent = (record.getArshinVerificationNumber() != null && !record.getArshinVerificationNumber().isEmpty());
+                allArshinNumbersIsPresent = allArshinNumbersIsPresent && arshinNumberIsPresent;
+            }
+            if (allArshinNumbersIsPresent) {
+                report.setReadyToSend(false);
+                report.setSentToArshin(true);
+                reportRepository.save(report);
+            }
+        }
+        return report;
     }
 
     @Override
@@ -98,6 +115,7 @@ public class VerificationReportServiceImpl implements VerificationReportService 
                     reportFromDB.addRecord(record);
                 }
             });
+            reportFromDB.update(VerificationReportDtoMapper.mapToEntity(reportDto));
             reportRepository.save(reportFromDB);
             String okMessage = "Отчет о поверке обновлен";
             log.info(okMessage);
@@ -127,20 +145,25 @@ public class VerificationReportServiceImpl implements VerificationReportService 
                         .build();
                 VriItem item = ArshinHttpClient.getVerificationItemIfOnlyMatches(verificationRequest);
                 verificationRecordService.updateArshinVerificationNumber(record.getId(), item.getResultDocnum());
+                Thread.sleep(800);
             }
             String okMessage = "Номера записей о поверке в ФГИС Аршин успешно получены";
+            report.setReadyToSend(false);
+            report.setSentToArshin(true);
+            reportRepository.save(report);
             log.info(okMessage);
             return ResponseEntity.ok().body(new ServiceMessage(okMessage));
         } catch (ArshinResponseException ex){
             log.error(ex.getMessage());
             return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
-
     }
 
     private void checkVerificationReportDtoComposition(VerificationReportFullDto reportDto) throws DtoCompositionException {
         if (reportDto.getRecords().isEmpty()){
-            throw new DtoCompositionException("Отчет должен содержать хотябы одну запись о поверке средства измерений");
+            throw new DtoCompositionException("Отчет должен содержать хотя бы одну запись о поверке средства измерений");
         }
     }
 

@@ -16,8 +16,9 @@
             <form class="container-fluid justify-content-start">
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
                 <button class="btn btn-outline-success me-2" onclick="location.href='/report/verification'"
-                    type="button">К перечню
-                    отчетов о поверке</button>
+                    type="button">К перечню отчетов о поверке</button>
+                <button class="btn btn-outline-success me-2" id="updateNumBtn" ng-click="updateArshinNumbers()"  type="button" >Обновить из ФГИС "Аршин"</button>
+                <button class="btn btn-outline-success me-2" id="readyToSendBtn" ng-click="setReadyToSend()" type="button" >Отправить на публикацию</button>
             </form>
         </nav>
 
@@ -30,7 +31,10 @@
 
                     <dt>Описание</dt>
                     <dd>{{report.comment}}</dd>
-
+                    <p></p>
+                    <dt>Состояние</dt>
+                    <dd>{{status}}</dd>
+                    <p></p>
                     <dt class="col-sm-6 text-start">Записи о поверке средств измерений</dt>
                     <table class="table table-striped">
                         <tr>
@@ -58,10 +62,10 @@
                             <td>{{record.mi.modification}}</td>
                             <td>{{record.mi.serialNum}}</td>
                             <td>{{record.mi.inventoryNum}}</td>
-                            <td>{{record.verificationType}}</td>
+                            <td>{{record.verificationTypeString}}</td>
                             <td>{{record.verificationDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
                             <td>{{record.validDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
-                            <td>{{record.applicable}}</td>
+                            <td>{{record.applicableString}}</td>
                             <td>{{record.employee.surname}}</td>
                             <td>{{record.standards}}</td>
                             <td>{{record.temperature}}</td>
@@ -99,10 +103,6 @@
         </div>
         <div class="row justify-content-center">
             <div class="col-3">
-                <button class="btn btn-primary" id="updateNumBtn" ng-click="updateArshinNumbers()" type="button">Обновить номера из ФГИС
-                    "Аршин"</button>
-            </div>
-            <div class="col-3">
                 <button class="btn btn-primary" ng-click="printXMLForArshin()" type="button">Получить отчет для ФГИС
                     Аршин</button>
             </div>
@@ -132,15 +132,17 @@
         let idAttr = new URL(document.URL).searchParams.get("id");
         app.controller("REPORT_CARD_CTRL", function ($scope, $http) {
             $scope.reference = "/report/verification/form/" + idAttr + "?id=" + idAttr
-
+            let reportData = {};
+            
             function getReport() {
                 $http({
                     url: "/reports/verifications/" + idAttr,
                     method: "GET"
                 }).then(function (response) {
                     $scope.report = response.data;
-                    console.log($scope.report);
-                    formatReportFields();
+                    reportData = response.data;
+                    console.log(reportData);
+                   formatReportFields();
                 });
             }
 
@@ -151,6 +153,7 @@
                     formatVerificationType(element);
                     formatApplicable(element);
                     convertStandardsToString(element);
+                    formatReportStatus();
                 });
             }
 
@@ -161,6 +164,19 @@
                 if ($scope.report.updateDate != null) {
                     $scope.report.updateDate = new Date($scope.report.updateDate);
                 }
+            }
+
+            function formatReportStatus(){
+                if ($scope.report.readyToSend == true){
+                    return $scope.status = "Ожидает передачи в ФГИС \"Аршин\" и ФСА";
+                }
+                if ($scope.report.sentToArshin == true && $scope.report.sentToFsa == true){
+                    return $scope.status = "Опубликован в ФГИС \"Аршин\" и ФСА";
+                }
+                if ($scope.report.sentToArshin == true){
+                    return $scope.status = "Опубликован в ФГИС \"Аршин\"";
+                }
+                return $scope.status = "Проект";
             }
 
             function formatRecordDate(record) {
@@ -175,17 +191,17 @@
 
             function formatVerificationType(record) {
                 if (record.verificationType == "1") {
-                    record.verificationType = "Первичная"
+                    record.verificationTypeString = "Первичная"
                 } else {
-                    record.verificationType = "Периодическая"
+                    record.verificationTypeString = "Периодическая"
                 }
             }
 
             function formatApplicable(record) {
                 if (record.applicable == true) {
-                    record.applicable = "Пригодно"
+                    record.applicableString = "Пригодно"
                 } else {
-                    record.applicable = "Не пригодно"
+                    record.applicableString = "Не пригодно"
                 }
             }
 
@@ -246,6 +262,19 @@
                 messageBootstrap.hide();
             }
 
+            $scope.setReadyToSend = function () {
+                $scope.report.readyToSend = true;
+                $http({
+                    url: "/reports/verifications",
+                    method: "PATCH",
+                    data: $scope.report
+                }).then(function successCallback(response) {
+                    alert(response.data.message);
+                    window.location.reload();
+                }, function errorCallback(response) {
+                    alert(response.data.message)
+                });
+            }   
 
 
             getReport();

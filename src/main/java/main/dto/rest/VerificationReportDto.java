@@ -13,4 +13,7 @@ public class VerificationReportDto {
     private String creationDate;
     private String updateDate;
     private String comment;
+    private boolean readyToSend;
+    private boolean sentToArshin;
+    private boolean sentToFsa;
 }
