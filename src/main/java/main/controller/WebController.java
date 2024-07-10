@@ -134,6 +134,10 @@ public class WebController {
     public String getVerificationListForArshinPublication(){
         return "report/listForArshin";
     }
+    @GetMapping("/report/verification/ready/fsa")
+    public String getVerificationListForFSAPublication(){
+        return "report/listForFsa";
+    }
 
 
 

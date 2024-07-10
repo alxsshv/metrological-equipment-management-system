@@ -107,6 +107,11 @@ public class VerificationReportServiceImpl implements VerificationReportService 
     }
 
     @Override
+    public List<VerificationReport> getPublicToArshinReportsAndNotSendToFsa(){
+        return reportRepository.findByPublicToArshinAndSentToFsa(true, false);
+    }
+
+    @Override
     public Page<VerificationReportDto> findAll(Pageable pageable){
         return reportRepository.findAll(pageable).map(VerificationReportDtoMapper::mapToDto);
     }

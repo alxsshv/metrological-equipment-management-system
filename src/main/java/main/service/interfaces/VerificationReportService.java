@@ -15,6 +15,7 @@ public interface VerificationReportService {
     ResponseEntity<?> findById (long id);
     VerificationReport getReportById(long id);
     List<VerificationReport> getReadyToSendReports();
+    List<VerificationReport> getPublicToArshinReportsAndNotSendToFsa();
     ResponseEntity<?> update (VerificationReportFullDto reportFullDto);
     ResponseEntity<?> updateReportFromArshin(long id);
     ResponseEntity<?> delete (long id);

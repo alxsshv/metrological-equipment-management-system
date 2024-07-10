@@ -99,13 +99,13 @@ public class XMLServiceImpl implements XMLService {
             throw new EntityNotFoundException("Данных, подготовленных для передачи в ФГИС \"Аршин\" не найдено");
         }
         VerificationApplication application = applicationFactory.createApplicationByReportList(readyToSendReportList);
-        String fileName = generateFileName(readyToSendReportList);
+        String fileName = generateFileNameForArshinReport(readyToSendReportList);
         jaxbWriter.writeXMLForArshin(application, fileName);
         setSentToArshinStatusForReports(readyToSendReportList);
         return fileName;
     }
 
-    private String generateFileName(List<VerificationReport> reports){
+    private String generateFileNameForArshinReport(List<VerificationReport> reports){
         String fistReportNum = String.valueOf(reports.get(0).getId());
         String lastReportNum = String.valueOf(reports.get(reports.size()-1).getId());
         return "arshinReport_"+ fistReportNum + "_" + lastReportNum + ".xml";
@@ -116,10 +116,9 @@ public class XMLServiceImpl implements XMLService {
     }
 
     @Override
-    public ResponseEntity<?> getXMLFileForFSA(long reportId) {
+    public ResponseEntity<?> getXMLFileForFSAByReportId(long reportId) {
         try {
-            String fileName = "FSAReport" + reportId + ".xml";
-            writeXMLFileForFSA(reportId, fileName);
+            String fileName =  writeXMLFileForFSA(reportId);
             byte[] fileBytes = FileReader.readBytesFromFile(tempFileUploadPath, fileName);
             log.info("Файл {} передан", fileName);
             return ResponseEntity.ok()
@@ -132,11 +131,43 @@ public class XMLServiceImpl implements XMLService {
     }
 
 
-    private void writeXMLFileForFSA(Long reportId,String fileName) throws FileNotFoundException {
+    private String writeXMLFileForFSA(Long reportId) throws FileNotFoundException {
+        String fileName = "FSAReport" + reportId + ".xml";
         VerificationReport report = reportService.getReportById(reportId);
         FsaVerificationMessage message = VerificationMessageFactory
-                .createVerificationMessage(report);
+                .createVerificationMessageByReport(report);
         jaxbWriter.writeXMLForFSA(message, fileName);
+        return fileName;
+    }
+
+    @Override
+    public ResponseEntity<?> getXMLFileForFSAByPublicToArshinReports() {
+        try {
+            String fileName =  writeXMLFileForFSAByReportList();
+            byte[] fileBytes = FileReader.readBytesFromFile(tempFileUploadPath, fileName);
+            log.info("Файл {} передан", fileName);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition" , "attachment; filename=\""+ fileName +"\"")
+                    .body(fileBytes);
+        } catch(IOException | EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
+        }
+    }
+
+    private String writeXMLFileForFSAByReportList() throws FileNotFoundException {
+        List<VerificationReport> publicToArshinReports = reportService.getPublicToArshinReportsAndNotSendToFsa();
+        FsaVerificationMessage message = VerificationMessageFactory
+                .createVerificationMessageByReportList(publicToArshinReports);
+        String fileName = generateFileNameForFsaReport(publicToArshinReports);
+        jaxbWriter.writeXMLForFSA(message, fileName);
+        return fileName;
+    }
+
+    private String generateFileNameForFsaReport(List<VerificationReport> reports){
+        String fistReportNum = String.valueOf(reports.get(0).getId());
+        String lastReportNum = String.valueOf(reports.get(reports.size()-1).getId());
+        return "fsaReport_"+ fistReportNum + "_" + lastReportNum + ".xml";
     }
 
 

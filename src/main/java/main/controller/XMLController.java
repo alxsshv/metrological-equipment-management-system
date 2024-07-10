@@ -30,6 +30,11 @@ public class XMLController {
 
     @GetMapping("/fsa/{id}")
     public ResponseEntity<?> getFsaReportFile(@PathVariable ("id") long id)  {
-        return xmlService.getXMLFileForFSA(id);
+        return xmlService.getXMLFileForFSAByReportId(id);
+    }
+
+    @GetMapping("/fsa/ready")
+    public ResponseEntity<?> getReadyToSendFsaReportFile()  {
+        return xmlService.getXMLFileForFSAByPublicToArshinReports();
     }
 }

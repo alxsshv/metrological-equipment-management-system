@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Перечень записей о поверках ожидающих опубликования в ФГИС "Аршин"</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="VRF_AMOUNT_EMPLOYEE_REPORT" ng-controller="VRF_AMOUNT_EMPLOYEE_REPORT_CTRL">
+    <div class="container text-center">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+               
+            </form>
+        </nav>
+        <h4>Формируем файл из записей о поверках, ожидающих опубликования в ФГИС "Аршин"</h4>
+
+ 
+
+
+        </div>
+
+        </div>
+        <script src="/js/angular.min.js"></script>
+        <script src="/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript">
+            var app = angular.module("VRF_AMOUNT_EMPLOYEE_REPORT", []);
+            app.controller("VRF_AMOUNT_EMPLOYEE_REPORT_CTRL", function ($scope, $http) {
+ 
+
+                function printXMLForArshin() {
+                window.location.href = "/xml/arshin/ready";
+            }
+            printXMLForArshin();
+                
+            });
+        </script>
+</body>
+
+</html>
