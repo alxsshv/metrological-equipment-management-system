@@ -7,11 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
+
 
 public interface VerificationReportService {
     ResponseEntity<?> save(VerificationReportFullDto reportFullDto);
     ResponseEntity<?> findById (long id);
     VerificationReport getReportById(long id);
+    List<VerificationReport> getReadyToSendReports();
     ResponseEntity<?> update (VerificationReportFullDto reportFullDto);
     ResponseEntity<?> updateReportFromArshin(long id);
     ResponseEntity<?> delete (long id);

@@ -3,13 +3,14 @@ package main.service.implementations;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.Setter;
+import main.dto.rest.mappers.VerificationReportDtoMapper;
 import main.dto.xml.arshin.VerificationApplication;
 import main.dto.xml.arshin.factory.VerificationApplicationFactory;
 import main.dto.xml.fsa.FsaVerificationMessage;
 import main.dto.xml.fsa.factory.VerificationMessageFactory;
 import main.model.VerificationReport;
-import main.repository.VerificationReportRepository;
 import main.service.ServiceMessage;
+import main.service.interfaces.VerificationReportService;
 import main.service.interfaces.XMLService;
 import main.service.utils.FileReader;
 import main.service.utils.JaxbWriter;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Optional;
+import java.util.List;
 
 @Getter
 @Setter
@@ -33,71 +34,108 @@ public class XMLServiceImpl implements XMLService {
     public static final Logger log = LoggerFactory.getLogger(XMLServiceImpl.class);
     private final String tempFileUploadPath;
     @Autowired
-    private final VerificationReportRepository reportRepository;
+    private final VerificationReportService reportService;
     @Autowired
     private final VerificationApplicationFactory applicationFactory;
     @Autowired
     private final JaxbWriter jaxbWriter;
 
 
-    public XMLServiceImpl(@Value("${upload.temp.path}") String tempFileUploadPath, VerificationReportRepository reportRepository, VerificationApplicationFactory applicationFactory, JaxbWriter jaxbWriter) {
+    public XMLServiceImpl(@Value("${upload.temp.path}") String tempFileUploadPath, VerificationReportService reportService, VerificationApplicationFactory applicationFactory, JaxbWriter jaxbWriter) {
         this.tempFileUploadPath = tempFileUploadPath;
-        this.reportRepository = reportRepository;
+        this.reportService = reportService;
         this.applicationFactory = applicationFactory;
         this.jaxbWriter = jaxbWriter;
     }
 
     @Override
-    public ResponseEntity<?> getXMLFileForArshin(long reportId) {
-        String fileName = "ArshinReport" + reportId + ".xml";
-        byte[] fileBytes;
+    public ResponseEntity<?> getXMLFileForArshinByReport(long reportId) {
         try {
-            writeXMLFileForArshin(reportId, fileName);
-            fileBytes = FileReader.readBytesFromFile(tempFileUploadPath, fileName);
-        } catch(IOException | EntityNotFoundException ex){
-        log.error(ex.getMessage());
-        return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
-        }
-        log.info("Файл {} передан", fileName);
-        return ResponseEntity.ok()
-                .header("Content-Disposition" , "attachment; filename=\""+ fileName +"\"")
-                .body(fileBytes);
-    }
-
-    private void writeXMLFileForArshin(Long reportId,String fileName) throws FileNotFoundException {
-        Optional<VerificationReport> reportOpt = reportRepository.findById(reportId);
-        if (reportOpt.isEmpty()){
-            throw new EntityNotFoundException("Отчет о поверке № " + reportId + " не найден");
-        }
-        VerificationApplication application = applicationFactory.createApplication(reportOpt.get());
-        jaxbWriter.writeXMLForArshin(application, fileName);
-    }
-
-    @Override
-    public ResponseEntity<?> getXMLFileForFSA(long reportId) {
-        String fileName = "FSAReport" + reportId + ".xml";
-        byte[] fileBytes;
-        try {
-            writeXMLFileForFSA(reportId, fileName);
-            fileBytes = FileReader.readBytesFromFile(tempFileUploadPath, fileName);
+            String fileName = writeXMLFileForArshin(reportId);
+            byte[] fileBytes = FileReader.readBytesFromFile(tempFileUploadPath, fileName);
+            log.info("Файл {} передан", fileName);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition" , "attachment; filename=\""+ fileName +"\"")
+                    .body(fileBytes);
         } catch(IOException | EntityNotFoundException ex){
             log.error(ex.getMessage());
             return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
         }
-        log.info("Файл {} передан", fileName);
-        return ResponseEntity.ok()
-                .header("Content-Disposition" , "attachment; filename=\""+ fileName +"\"")
-                .body(fileBytes);
+    }
+
+    private String writeXMLFileForArshin(Long reportId) throws FileNotFoundException {
+        String fileName = "ArshinReport" + reportId + ".xml";
+        VerificationReport report = reportService.getReportById(reportId);
+        VerificationApplication application = applicationFactory.createApplicationByReport(report);
+        jaxbWriter.writeXMLForArshin(application, fileName);
+        setSentToArshinStatusForReport(report);
+        return fileName;
+    }
+
+    @Override
+    public ResponseEntity<?> getXMLFileForArshinByReadyToSendReports() {
+        try {
+            String fileName = writeXMLFileForArshinByReportList();
+            byte[] fileBytes = FileReader.readBytesFromFile(tempFileUploadPath, fileName);
+            log.info("Файл {} передан", fileName);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition" , "attachment; filename=\""+ fileName +"\"")
+                    .body(fileBytes);
+        } catch(IOException | EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
+        }
+    }
+
+    private void setSentToArshinStatusForReport(VerificationReport report){
+            report.setReadyToSend(false);
+            report.setSentToArshin(true);
+            reportService.update(VerificationReportDtoMapper.mapToFullDto(report));
+    }
+
+    private String writeXMLFileForArshinByReportList() throws FileNotFoundException {
+        List<VerificationReport> readyToSendReportList = reportService.getReadyToSendReports();
+        if (readyToSendReportList.isEmpty()){
+            throw new EntityNotFoundException("Данных, подготовленных для передачи в ФГИС \"Аршин\" не найдено");
+        }
+        VerificationApplication application = applicationFactory.createApplicationByReportList(readyToSendReportList);
+        String fileName = generateFileName(readyToSendReportList);
+        jaxbWriter.writeXMLForArshin(application, fileName);
+        setSentToArshinStatusForReports(readyToSendReportList);
+        return fileName;
+    }
+
+    private String generateFileName(List<VerificationReport> reports){
+        String fistReportNum = String.valueOf(reports.get(0).getId());
+        String lastReportNum = String.valueOf(reports.get(reports.size()-1).getId());
+        return "arshinReport_"+ fistReportNum + "_" + lastReportNum + ".xml";
+    }
+
+    private void setSentToArshinStatusForReports(List<VerificationReport> readyToSendReports){
+        readyToSendReports.forEach(this::setSentToArshinStatusForReport);
+    }
+
+    @Override
+    public ResponseEntity<?> getXMLFileForFSA(long reportId) {
+        try {
+            String fileName = "FSAReport" + reportId + ".xml";
+            writeXMLFileForFSA(reportId, fileName);
+            byte[] fileBytes = FileReader.readBytesFromFile(tempFileUploadPath, fileName);
+            log.info("Файл {} передан", fileName);
+            return ResponseEntity.ok()
+                    .header("Content-Disposition" , "attachment; filename=\""+ fileName +"\"")
+                    .body(fileBytes);
+        } catch(IOException | EntityNotFoundException ex){
+            log.error(ex.getMessage());
+            return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
+        }
     }
 
 
     private void writeXMLFileForFSA(Long reportId,String fileName) throws FileNotFoundException {
-        Optional<VerificationReport> reportOpt = reportRepository.findById(reportId);
-        if (reportOpt.isEmpty()){
-            throw new EntityNotFoundException("Отчет о поверке № " + reportId + " не найден");
-        }
+        VerificationReport report = reportService.getReportById(reportId);
         FsaVerificationMessage message = VerificationMessageFactory
-                .createVerificationMessage(reportOpt.get());
+                .createVerificationMessage(report);
         jaxbWriter.writeXMLForFSA(message, fileName);
     }
 

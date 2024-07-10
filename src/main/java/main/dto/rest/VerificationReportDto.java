@@ -15,5 +15,6 @@ public class VerificationReportDto {
     private String comment;
     private boolean readyToSend;
     private boolean sentToArshin;
+    private boolean publicToArshin;
     private boolean sentToFsa;
 }

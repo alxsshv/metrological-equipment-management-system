@@ -130,6 +130,12 @@ public class WebController {
     public String getVerificationReportEditForm(){
         return "report/edit";
     }
+    @GetMapping("/report/verification/ready/arshin")
+    public String getVerificationListForArshinPublication(){
+        return "report/listForArshin";
+    }
+
+
 
     //Вывод шаблонов записей о поверке
     @GetMapping("/report/verification/record/form/{id}")

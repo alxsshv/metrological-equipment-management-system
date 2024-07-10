@@ -15,6 +15,7 @@ public class VerificationReportDtoMapper {
         report.setReadyToSend(dto.isReadyToSend());
         report.setSentToArshin(dto.isSentToArshin());
         report.setSentToFsa(dto.isSentToFsa());
+        report.setPublicToArshin(dto.isPublicToArshin());
         addRecordsToReportFromReportDto(report, dto);
         return report;
     }
@@ -36,6 +37,7 @@ public class VerificationReportDtoMapper {
         dto.setReadyToSend(report.isReadyToSend());
         dto.setSentToArshin(report.isSentToArshin());
         dto.setSentToFsa(report.isSentToFsa());
+        dto.setPublicToArshin(report.isPublicToArshin());
         return dto;
     }
 
@@ -48,6 +50,7 @@ public class VerificationReportDtoMapper {
         dto.setReadyToSend(report.isReadyToSend());
         dto.setSentToArshin(report.isSentToArshin());
         dto.setSentToFsa(report.isSentToFsa());
+        dto.setPublicToArshin(report.isPublicToArshin());
         return dto;
     }
 }

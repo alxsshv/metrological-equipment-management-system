@@ -20,7 +20,12 @@ public class XMLController {
 
     @GetMapping("/arshin/{id}")
     public ResponseEntity<?> getArshinReportFile(@PathVariable ("id") long id) {
-        return xmlService.getXMLFileForArshin(id);
+        return xmlService.getXMLFileForArshinByReport(id);
+    }
+
+    @GetMapping("/arshin/ready")
+    public ResponseEntity<?> getReadyToSendArshinReportFile() {
+        return xmlService.getXMLFileForArshinByReadyToSendReports();
     }
 
     @GetMapping("/fsa/{id}")

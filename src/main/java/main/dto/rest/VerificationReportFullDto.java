@@ -18,6 +18,7 @@ public class VerificationReportFullDto {
     private String comment;
     private boolean readyToSend;
     private boolean sentToArshin;
+    private boolean publicToArshin;
     private boolean sentToFsa;
     private List<VerificationRecordDto> records = new ArrayList<>();
 }

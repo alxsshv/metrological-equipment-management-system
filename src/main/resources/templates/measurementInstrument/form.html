@@ -25,7 +25,7 @@
             <div class="row g-2">
                 <div class="col-md-2">
                     <label for="inputMiType" class="form-label">№ типа СИ</label>
-                    <input type="text" ng-change="searchTypeOnNumber()" ng-model="mi.miType.number" data-bs-toggle="dropdown" placeholder="XXXXX-XX"
+                    <input type="text" autocomplete="off" ng-change="searchTypeOnNumber()" ng-model="mi.miType.number" data-bs-toggle="dropdown" placeholder="XXXXX-XX"
                         class="form-control dropdown-toggle" id="inputMiType" value="" required>
                         <ul class="dropdown-menu" ng-model="typeTitle" id="numberDropdown" >
                             <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
@@ -35,7 +35,7 @@
                 </div>
                 <div class="col-md-5 ">
                     <label class="form-label" for="inputMiTitle">Наименование типа*</label>
-                    <input type="text" ng-change="searchType()" ng-model="mi.miType.title" data-bs-toggle="dropdown"
+                    <input type="text" autocomplete="off" ng-change="searchType()" ng-model="mi.miType.title" data-bs-toggle="dropdown"
                         class="form-control dropdown-toggle border-success" id="inputMiTitle" value="">
 
                     <ul class="dropdown-menu" ng-model="typeTitle" id="titleDropdown" >
@@ -46,12 +46,12 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label" for="inputText3">Обозначение типа СИ*</label>
-                    <input type="text" ng-model="mi.miType.notation" class="form-control border-success" id="inputText3" value="">
+                    <input type="text" autocomplete="off" ng-model="mi.miType.notation" class="form-control border-success" id="inputText3" value="">
                 </div>
                 <div class="col-md-3">
                        
                         <label class="form-label" for="inputOwner">Модификация*</label>
-                        <input type="text" ng-change="searchModification()" ng-model="mi.modification" data-bs-toggle="dropdown"
+                        <input type="text" autocomplete="off" ng-change="searchModification()" ng-model="mi.modification" data-bs-toggle="dropdown"
                             class="form-control mb-3 border-success dropdown-toggle" id="inputModification" value="">
     
                         <ul class="dropdown-menu" ng-model="mi.modification">
@@ -68,16 +68,16 @@
             <div class="row g-2">
                 <div class="col-md-3">
                     <label class="form-label" for="inputText4">Заводской №*</label>
-                    <input type="text" ng-model="mi.serialNum" class="form-control border-success" id="inputText4" value="" required>
+                    <input type="text" autocomplete="off" ng-model="mi.serialNum" class="form-control border-success" id="inputText4" value="" required>
                 </div>
                 <div class="col-md-3">
                     <label for="inputText5" class="form-label">Инвентарный №</label>
-                    <input type="text" ng-model="mi.inventoryNumber" class="form-control" id="inputText5" value=""
+                    <input type="text" autocomplete="off" ng-model="mi.inventoryNumber" class="form-control" id="inputText5" value=""
                         required>
                 </div>
                 <div class="col-md-6 ">
                     <label class="form-label" for="inputOwner">Владелец</label>
-                    <input type="text" ng-change="searchOrganization()" ng-model="organization" data-bs-toggle="dropdown"
+                    <input type="text" autocomplete="off" ng-change="searchOrganization()" ng-model="organization" data-bs-toggle="dropdown"
                         class="form-control dropdown-toggle" id="inputOwner" value="">
 
                     <ul class="dropdown-menu" ng-model="mi.owner">
@@ -93,7 +93,7 @@
             <div class="row g-2 collapse"  id="additionalFields">
                 <div class="col-md-3">
                     <label for="inputDate1" class="form-label">Изготовлено</label>
-                    <input type="date" ng-model="mi.manufactureDate" ng-model-options="{timezone: 'UTC'}"
+                    <input type="date"  ng-model="mi.manufactureDate" ng-model-options="{timezone: 'UTC'}"
                         class="form-control" id="inputDate1" value="">
                 </div>
                 <div class="col-md-3">
@@ -103,7 +103,7 @@
                 </div>
                 <div class="col-md-6">
                     <label for="inputText7" class="form-label">Ответственный за эксплуатацию</label>
-                    <input type="text" ng-model="user" class="form-control" id="inputText7" value="" required>
+                    <input type="text" autocomplete="off" ng-model="user" class="form-control" id="inputText7" value="" required>
                 </div>
             </div>
         </div>

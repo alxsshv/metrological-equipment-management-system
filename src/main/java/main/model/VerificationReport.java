@@ -30,11 +30,13 @@ public class VerificationReport {
     @Column(name = "comment")
     private String comment;
     @Column(name = "ready_to_send")
-    private boolean readyToSend;
+    private boolean readyToSend= false;
     @Column(name = "sent_to_arshin")
-    private boolean sentToArshin;
+    private boolean sentToArshin= false;
+    @Column(name = "public_to_arshin", columnDefinition="tinyint(1) default 0")
+    private boolean publicToArshin = false;
     @Column(name = "sent_to_fsa")
-    private boolean sentToFsa;
+    private boolean sentToFsa= false;
     @OneToMany(mappedBy = "report", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<VerificationRecord> records = new ArrayList<>();
 

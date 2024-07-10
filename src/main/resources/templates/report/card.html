@@ -19,6 +19,7 @@
                     type="button">К перечню отчетов о поверке</button>
                 <button class="btn btn-outline-success me-2" id="updateNumBtn" ng-click="updateArshinNumbers()"  type="button" >Обновить из ФГИС "Аршин"</button>
                 <button class="btn btn-outline-success me-2" id="readyToSendBtn" ng-click="setReadyToSend()" type="button" >Отправить на публикацию</button>
+                <button class="btn btn-outline-success me-2" id="sentToFsaBtn" ng-click="setSentToFsa()" type="button" >Пометить как отправленное в ФСА</button>
             </form>
         </nav>
 
@@ -168,15 +169,35 @@
 
             function formatReportStatus(){
                 if ($scope.report.readyToSend == true){
+                    desabledBtn("readyToSendBtn");
                     return $scope.status = "Ожидает передачи в ФГИС \"Аршин\" и ФСА";
                 }
-                if ($scope.report.sentToArshin == true && $scope.report.sentToFsa == true){
+                if ($scope.report.publicToArshin == true && $scope.report.sentToFsa == true){
+                    desabledBtn("updateNumBtn");
+                    desabledBtn("readyToSendBtn");
+                    desabledBtn("sentToFsaBtn");
                     return $scope.status = "Опубликован в ФГИС \"Аршин\" и ФСА";
                 }
-                if ($scope.report.sentToArshin == true){
+
+                if ($scope.report.publicToArshin == true){
+                    desabledBtn("updateNumBtn");
+                    desabledBtn("readyToSendBtn");
                     return $scope.status = "Опубликован в ФГИС \"Аршин\"";
+                   
+                }
+
+                if ($scope.report.sentToArshin == true){
+                    desabledBtn("readyToSendBtn");
+                    return $scope.status = "Отправлен в ФГИС \"Аршин\"";
+                   
                 }
                 return $scope.status = "Проект";
+            }
+
+            function desabledBtn(id){
+                console.log("неактивно")
+                const element = document.getElementById(id);
+                element.disabled = true;
             }
 
             function formatRecordDate(record) {
@@ -264,6 +285,21 @@
 
             $scope.setReadyToSend = function () {
                 $scope.report.readyToSend = true;
+                $http({
+                    url: "/reports/verifications",
+                    method: "PATCH",
+                    data: $scope.report
+                }).then(function successCallback(response) {
+                    alert(response.data.message);
+                    window.location.reload();
+                }, function errorCallback(response) {
+                    alert(response.data.message)
+                });
+            }   
+
+
+            $scope.setSentToFsa = function () {
+                $scope.report.sentToFsa = true;
                 $http({
                     url: "/reports/verifications",
                     method: "PATCH",

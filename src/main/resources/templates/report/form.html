@@ -9,80 +9,80 @@
 </head>
 
 <body ng-app="VRF_REPORT_FORM" ng-controller="VRF_REPORT_FORM_CTRL">
-        <nav class="navbar bg-body-tertiary">
-            <div class="container-fluid justify-content-start">
-                <button class="btn btn-outline-success me-2" onclick="location.href='/'" type="button">Домой</button>
-                <button class="btn btn-outline-success me-2" onclick="location.href='/report/verification'"
-                    type="button">Перечень
-                    отчетов о поверке</button>
-            </div>
-        </nav>
-
-        <div class="row text-center">
-            <h5>Формирование отчета</h5>
+    <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid justify-content-start">
+            <button class="btn btn-outline-success me-2" onclick="location.href='/'" type="button">Домой</button>
+            <button class="btn btn-outline-success me-2" onclick="location.href='/report/verification'"
+                type="button">Перечень
+                отчетов о поверке</button>
         </div>
+    </nav>
 
-        <table class="table table-info table-striped table-hover">
-            <thead>
-                <tr>
-                    <th>Модификация</th>
-                    <th>Зав.(инв.) №</th>
-                    <th>Тип поверки</th>
-                    <th>Дата поверки</th>
-                    <th>Действительно до</th>
-                    <th>Сокр. поверка</th>
-                    <th>Объем поверки</th>
-                    <th>Пригодность</th>
-                    <th>Поверитель</th>
-                    <th>Эталон</th>
-                    <th>t, &degC</th>
-                    <th>h, %</th>
-                    <th>P, kPa</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="item in tableContent" ng-model-options="{timezone: 'UTC'}" value="{{item}}">
-                    <td>{{item.modification}}</td>
-                    <td>{{item.serialNum}}</td>
-                    <td>{{item.verificationType}}</td>
-                    <td>{{item.verificationDate | date: "dd.MM.yyyy" : 'UTC'}}</td>
-                    <td>{{item.validDate | date: "dd.MM.yyyy" : 'UTC'}}</td>
-                    <td>{{item.shortVerification}}</td>
-                    <td>{{item.shortVerificationCharacteristic}}</td>
-                    <td>{{item.applicable}}</td>
-                    <td>{{item.employeeSurname}}</td>
-                    <td>{{item.standardsString}}</td>
-                    <td>{{item.temperature}}</td>
-                    <td>{{item.humidity}}</td>
-                    <td>{{item.pressure}}</td>
-                    <td> <button class="btn btn-outline-info" ng-click="deleteFromTable(item)"
-                            type="button">Удалить</button></td>
-                </tr>
-            </tbody>
+    <div class="row text-center">
+        <h5>Формирование отчета</h5>
+    </div>
 
-        </table>
+    <table class="table table-info table-striped table-hover">
+        <thead>
+            <tr>
+                <th>Модификация</th>
+                <th>Зав.(инв.) №</th>
+                <th>Тип поверки</th>
+                <th>Дата поверки</th>
+                <th>Действительно до</th>
+                <th>Сокр. поверка</th>
+                <th>Объем поверки</th>
+                <th>Пригодность</th>
+                <th>Поверитель</th>
+                <th>Эталон</th>
+                <th>t, &degC</th>
+                <th>h, %</th>
+                <th>P, kPa</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="item in tableContent" ng-model-options="{timezone: 'UTC'}" value="{{item}}">
+                <td>{{item.modification}}</td>
+                <td>{{item.serialNum}}</td>
+                <td>{{item.verificationType}}</td>
+                <td>{{item.verificationDate | date: "dd.MM.yyyy" : 'UTC'}}</td>
+                <td>{{item.validDate | date: "dd.MM.yyyy" : 'UTC'}}</td>
+                <td>{{item.shortVerification}}</td>
+                <td>{{item.shortVerificationCharacteristic}}</td>
+                <td>{{item.applicable}}</td>
+                <td>{{item.employeeSurname}}</td>
+                <td>{{item.standardsString}}</td>
+                <td>{{item.temperature}}</td>
+                <td>{{item.humidity}}</td>
+                <td>{{item.pressure}}</td>
+                <td> <button class="btn btn-outline-info" ng-click="deleteFromTable(item)"
+                        type="button">Удалить</button></td>
+            </tr>
+        </tbody>
 
-        <div class="row">
-            <div class="col-1"></div>
-            <div class="col-8"><input class="form-control" id="comment" ng-model="comment"
-                    placeholder="Добавьте комментарий к отчету" type="text" value=""></div>
-            <div class="col-2">
-                <button class="btn btn-primary" ng-click="addReport()" type="button">Сохранить отчет</button>
-            </div>
-            <div class="col-1"></div>
+    </table>
+
+    <div class="row">
+        <div class="col-1"></div>
+        <div class="col-8"><input class="form-control" id="comment" ng-model="comment"
+                placeholder="Добавьте комментарий к отчету" type="text" value=""></div>
+        <div class="col-2">
+            <button class="btn btn-primary" ng-click="addReport()" type="button">Сохранить отчет</button>
         </div>
+        <div class="col-1"></div>
+    </div>
 
-        <p></p>
-        <div class="row justify-content-center">
-            <div class="col-md-3 justify-content-center">
-                <!-- Кнопка-триггер модального окна -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
-                    data-bs-target="#defaultVerificationForm">
-                    Добавить сведения о поверке
-                </button>
-            </div>
+    <p></p>
+    <div class="row justify-content-center">
+        <div class="col-md-3 justify-content-center">
+            <!-- Кнопка-триггер модального окна -->
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                data-bs-target="#defaultVerificationForm">
+                Добавить сведения о поверке
+            </button>
         </div>
+    </div>
     </div>
     </div>
 
@@ -110,7 +110,7 @@
                                     <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
                                         <div class="col-md-7">
                                             <label class="form-label" for="inputModification">Модификация*</label>
-                                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
+                                            <input class="form-control dropdown-toggle" autocomplete="off" data-bs-toggle="dropdown"
                                                 id="inputModification" ng-change="searchMi()" ng-model="miSearchString"
                                                 placeholder="Пример: В7-78/2" type="text" value="">
                                             <ul class="dropdown-menu">
@@ -123,7 +123,7 @@
                                         </div>
                                         <div class="col-md-5">
                                             <label class="form-label" for="inputSN">Зав. №*</label>
-                                            <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
+                                            <input class="form-control dropdown-toggle" autocomplete="off" data-bs-toggle="dropdown"
                                                 id="inputSN" ng-change="searchMiBySerialNumber()"
                                                 ng-model="miSNSearchString" type="text" value="">
                                             <ul class="dropdown-menu" id="serialDropDown" ng-model="mi">
@@ -157,17 +157,18 @@
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label" for="inputApplicable">Пригодность*</label>
-                                            <select class="form-control" id="inputApplicable" ng-model="applicable"
+                                            <select class="form-control" ng-change="collapseVrfReason()" id="inputApplicable" ng-model="applicable"
                                                 ng-options="applicable as applicable.title for applicable in applicables track by applicable.value"
                                                 required>
                                             </select>
                                         </div>
                                         <div class="col-md-12">
-                                            <label class="form-label" for="inputInapplicableReason">Причина
-                                                непригодности</label>
-                                            <textarea class="form-control dropdown-toggle" data-bs-toggle="dropdown"
-                                                id="inputInapplicableReason" ng-model="inapplicableReason" type="text"
-                                                value=""></textarea>
+                                            <div class="collapse" id="collapseVerificationReason">
+                                                <label class="form-label" for="inputInapplicableReason">Причина
+                                                    непригодности</label>
+                                                <textarea class="form-control" id="inputInapplicableReason"
+                                                    ng-model="inapplicableReason" type="text" value=""></textarea>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -188,11 +189,12 @@
                                             <label class="form-label" for="inputPress">Давление,кПа*</label>
                                             <input class="form-control" id="inputPress" ng-model="pressure"
                                                 placeholder="99,3" required step="0.01" type="number" value="">
-                                        </div> 
+                                        </div>
                                         <div class="col-md-3">
                                             <label class="form-label" for="inputPress">Давление, мм рт. ст.</label>
-                                            <input class="form-control" id="inputPressTorr" ng-model="pressureInTorr" ng-change="convertPressure()"
-                                                placeholder="744,8" required step="0.01" type="number" value="">
+                                            <input class="form-control" id="inputPressTorr" ng-model="pressureInTorr"
+                                                ng-change="convertPressure()" placeholder="744,8" required step="0.01"
+                                                type="number" value="">
                                         </div>
                                     </div>
                                 </div>
@@ -202,7 +204,7 @@
                                         <div class="row">
                                             <div class="col-md">
                                                 <label class="form-label" for="inputEmployee">Поверитель*</label>
-                                                <input class="form-control dropdown-toggle" data-bs-toggle="dropdown"
+                                                <input class="form-control dropdown-toggle" autocomplete="off" data-bs-toggle="dropdown"
                                                     id="inputEmployee" ng-change="searchEmployee()"
                                                     ng-model="employeeSearchString" type="text" value="">
                                                 <ul class="dropdown-menu">
@@ -217,22 +219,26 @@
                                     </div>
                                 </div>
                                 <div class="form-check">
-                                    <input class="form-check-input" data-bs-toggle="collapse" href="#shortVerification" ng-model="shortVerification" value="false" ng-click="setShortVerification()" type="checkbox" id="flexCheckDefault">
+                                    <input class="form-check-input" data-bs-toggle="collapse" href="#shortVerification"
+                                        ng-model="shortVerification" value="false" ng-click="setShortVerification()"
+                                        type="checkbox" id="flexCheckDefault">
                                     <label class="form-check-label" for="flexCheckDefault">
-                                      Сокращенная поверка
+                                        Сокращенная поверка
                                     </label>
-                                  </div>
+                                </div>
                                 <div class="collapse" id="shortVerification">
-                                <div class="row">
-                                    <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
-                                        <div class="row">
-                                            <div class="col-md">
-                                                <label class="form-label" for="inputEmployee">Объем поверки</label>
-                                                <textarea class="form-control dropdown-toggle" data-bs-toggle="dropdown"
-                                                    id="inputShortVrfCharacteristic" ng-model="shortVerificationCharacteristic" type="text" value=""></textarea>
+                                    <div class="row">
+                                        <div class="row p-2 bg-info bg-opacity-10 border border-info rounded-3">
+                                            <div class="row">
+                                                <div class="col-md">
+                                                    <label class="form-label" for="inputEmployee">Объем поверки</label>
+                                                    <textarea class="form-control dropdown-toggle"
+                                                        data-bs-toggle="dropdown" id="inputShortVrfCharacteristic"
+                                                        ng-model="shortVerificationCharacteristic" type="text"
+                                                        value=""></textarea>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
                                     </div>
                                 </div>
                             </div>
@@ -363,8 +369,8 @@
         app.controller("VRF_REPORT_FORM_CTRL", function ($scope, $http) {
             $scope.miStandard = {};
             $scope.shortVerification = false;
-            $scope.shortVerificationCharacteristic = "";  
-             
+            $scope.shortVerificationCharacteristic = "";
+
 
             //Поиск СИ по модификации
             $scope.mis = [];
@@ -397,7 +403,7 @@
                 getMiFullData(item.id);
                 $scope.miSearchString = item.modification;
                 $scope.miSNSearchString = item.serialNum;
-        
+
             }
 
             //Получение полных сведений о выбранном средстве измерений
@@ -427,7 +433,7 @@
             { 'title': 'Не пригодно', 'value': false }];
 
 
-            setApplicableFromMi = function(mi) {
+            setApplicableFromMi = function (mi) {
                 let applicable = { 'title': 'Пригодно', 'value': true };
                 if (mi.applicable == false) {
                     applicable = { 'title': 'Не пригодно', 'value': false };
@@ -523,7 +529,7 @@
                 }).then(function (response) {
                     selectedVerificationMi = response.data;
                     formatDateFieldsFromMi(selectedVerificationMi);
-                
+
                 });
             }
 
@@ -545,7 +551,7 @@
                 updateStandards();
             }
             // Сокращенная поверка
-            $scope.setShortVerification = function(){
+            $scope.setShortVerification = function () {
                 console.log($scope.shortVerification);
                 console.log($scope.shortVerificationCharacteristic);
             }
@@ -630,7 +636,7 @@
                 if (reportRow.employee != null) {
                     buildReportRow();
                 }
-                if (reportRow.mi == null || reportRow.employee == null || reportRow.verificationType == 0 || reportRow.verificationDate == null || reportRow.applicable == null || (reportRow.miStandards == undefined && reportRow.verificationMis== null) || reportRow.temperature == null ||
+                if (reportRow.mi == null || reportRow.employee == null || reportRow.verificationType == 0 || reportRow.verificationDate == null || reportRow.applicable == null || (reportRow.miStandards == undefined && reportRow.verificationMis == null) || reportRow.temperature == null ||
                     reportRow.humidity == null || reportRow.pressure == null) {
                     alert('Пожалуйста заполните поля, отмеченные *');
                 } else {
@@ -645,6 +651,16 @@
                 var myModalEl = document.getElementById(modalId)
                 var modal = bootstrap.Modal.getInstance(myModalEl);
                 modal.hide();
+            }
+
+            const collapse = document.getElementById('collapseVerificationReason');
+            $scope.collapseVrfReason = function(){
+                console.log($scope.applicable.value);
+                if ($scope.applicable.value == false){
+                bootstrap.Collapse.getOrCreateInstance(collapse).show();
+                } else {
+                    bootstrap.Collapse.getOrCreateInstance(collapse).hide();
+                }
             }
 
 
@@ -671,7 +687,7 @@
                 $scope.applicable = "";
                 $scope.mi = {};
                 verificationMis = [];
-                verificationMiStandards=[];
+                verificationMiStandards = [];
                 verificationMiStandardsForView = [];
                 verificationMisForView = [];
 
@@ -700,7 +716,7 @@
                 }
             }
 
-            $scope.convertPressure = function(){
+            $scope.convertPressure = function () {
                 let decimalPressure = $scope.pressureInTorr * 0.1333223684210526;
                 $scope.pressure = Math.round(decimalPressure * 100) / 100;
             }

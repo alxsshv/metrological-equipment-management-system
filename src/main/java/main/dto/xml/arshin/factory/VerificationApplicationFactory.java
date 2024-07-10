@@ -10,6 +10,8 @@ import main.model.VerificationReport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Setter
 @Getter
@@ -18,7 +20,7 @@ public class VerificationApplicationFactory {
     @Autowired
     private ResultFactory resultFactory;
 
-    public VerificationApplication createApplication(VerificationReport report){
+    public VerificationApplication createApplicationByReport(VerificationReport report){
         VerificationApplication application = new VerificationApplication();
         for (VerificationRecord record: report.getRecords()) {
             Result result = resultFactory.createResult(record);
@@ -26,4 +28,17 @@ public class VerificationApplicationFactory {
         }
         return application;
     }
+
+    public VerificationApplication createApplicationByReportList(List<VerificationReport> readyToSendReportList){
+        VerificationApplication application = new VerificationApplication();
+        for (VerificationReport report : readyToSendReportList){
+            for (VerificationRecord record: report.getRecords()) {
+                Result result = resultFactory.createResult(record);
+                application.getResults().add(result);
+            }
+        }
+        return application;
+    }
+
+
 }

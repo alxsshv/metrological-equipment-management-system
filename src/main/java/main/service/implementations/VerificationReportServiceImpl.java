@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 @Getter
 @Setter
@@ -74,6 +75,7 @@ public class VerificationReportServiceImpl implements VerificationReportService 
         }
     }
 
+
     private  VerificationReport updateSentToArshinFromReportIfConditionsMet(VerificationReport report){
         if (!report.isSentToArshin() && report.isReadyToSend()) {
             boolean allArshinNumbersIsPresent = true;
@@ -100,9 +102,15 @@ public class VerificationReportServiceImpl implements VerificationReportService 
     }
 
     @Override
+    public List<VerificationReport> getReadyToSendReports(){
+        return reportRepository.findByReadyToSend(true);
+    }
+
+    @Override
     public Page<VerificationReportDto> findAll(Pageable pageable){
         return reportRepository.findAll(pageable).map(VerificationReportDtoMapper::mapToDto);
     }
+
 
     @Override
     public ResponseEntity<?> update(VerificationReportFullDto reportDto){
@@ -150,6 +158,7 @@ public class VerificationReportServiceImpl implements VerificationReportService 
             String okMessage = "Номера записей о поверке в ФГИС Аршин успешно получены";
             report.setReadyToSend(false);
             report.setSentToArshin(true);
+            report.setPublicToArshin(true);
             reportRepository.save(report);
             log.info(okMessage);
             return ResponseEntity.ok().body(new ServiceMessage(okMessage));
