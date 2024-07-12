@@ -4,8 +4,6 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import main.arshin.ArshinHttpClient;
-import main.arshin.VerificationRequestBuilder;
 import main.arshin.entities.vri.VriItem;
 import main.dto.rest.VerificationReportDto;
 import main.dto.rest.VerificationReportFullDto;
@@ -17,9 +15,10 @@ import main.model.VerificationRecord;
 import main.model.VerificationReport;
 import main.repository.VerificationReportRepository;
 import main.service.ServiceMessage;
+import main.service.interfaces.ArshinDataService;
+import main.service.interfaces.VerificationRecordService;
 import main.service.interfaces.VerificationReportService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -36,16 +35,17 @@ public class VerificationReportServiceImpl implements VerificationReportService 
     @Autowired
     private final VerificationReportRepository reportRepository;
     @Autowired
-    private final VerificationRecordServiceImpl verificationRecordService;
+    private final VerificationRecordService verificationRecordService;
     @Autowired
-    private final SettingsServiceImpl settingsService;
+    private final ArshinDataService arshinDataService;
 
-    public VerificationReportServiceImpl(@Value("${arshin.verification.uri}") String arshinVerificationUri, VerificationReportRepository reportRepository, VerificationRecordServiceImpl verificationRecordService, SettingsServiceImpl settingsService) {
+    public VerificationReportServiceImpl(String arshinVerificationUri, VerificationReportRepository reportRepository, VerificationRecordService verificationRecordService, ArshinDataService arshinDataService) {
         this.arshinVerificationUri = arshinVerificationUri;
         this.reportRepository = reportRepository;
         this.verificationRecordService = verificationRecordService;
-        this.settingsService = settingsService;
+        this.arshinDataService = arshinDataService;
     }
+
 
     @Override
     public ResponseEntity<?> save(VerificationReportFullDto reportDto){
@@ -146,22 +146,18 @@ public class VerificationReportServiceImpl implements VerificationReportService 
     @Override
     public ResponseEntity<?> updateReportFromArshin(long id) {
         try {
+
+            String okMessage = "Номера записей о поверке в ФГИС Аршин успешно получены";
             VerificationReport report = getReportById(id);
-            String verificationOrganization = settingsService.getSettings().getOrganizationNotation();
+            if (report.isPublicToArshin()){
+                log.info("Номера записей о поверке в отчете № {} получены ранее, получения данных из ФГИС \"Аршин\" не требуется", report.getId());
+                return ResponseEntity.ok().body(new ServiceMessage(okMessage));
+            }
             for (VerificationRecord record : report.getRecords()) {
-                log.info("Обновляем запись о поверке №" + record.getId());
-                String verificationRequest = new VerificationRequestBuilder()
-                        .uri("https://fgis.gost.ru/fundmetrology/eapi/vri?")
-                        .miModification(record.getMi().getModification())
-                        .miNumber(record.getMi().getSerialNum())
-                        .orgTitle(verificationOrganization)
-                        .verificationDate(record.getVerificationDate())
-                        .build();
-                VriItem item = ArshinHttpClient.getVerificationItemIfOnlyMatches(verificationRequest, 0);
+                VriItem item = arshinDataService.findVerificationRecordsData(record);
                 verificationRecordService.updateArshinVerificationNumber(record.getId(), item.getResultDocnum());
                 Thread.sleep(100);
             }
-            String okMessage = "Номера записей о поверке в ФГИС Аршин успешно получены";
             setPublicToArshinStatus(report);
             log.info(okMessage);
             return ResponseEntity.ok().body(new ServiceMessage(okMessage));
@@ -176,7 +172,7 @@ public class VerificationReportServiceImpl implements VerificationReportService 
 
     public ResponseEntity<?> updateSentToArshinReportsFromArshin(){
         List<VerificationReport> sentToArshinReports = reportRepository.findBySentToArshin(true);
-        sentToArshinReports.forEach(report -> {updateReportFromArshin(report.getId());});
+        sentToArshinReports.forEach(report -> updateReportFromArshin(report.getId()));
         String okMessage = "Номера записей о поверке в ФГИС Аршин успешно получены";
         return ResponseEntity.ok().body(new ServiceMessage(okMessage));
     }

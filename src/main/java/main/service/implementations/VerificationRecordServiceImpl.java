@@ -74,7 +74,6 @@ public class VerificationRecordServiceImpl implements VerificationRecordService 
            }
     }
 
-
     @Override
     public ResponseEntity<?> delete(long id) {
         recordRepository.deleteById(id);

@@ -3,7 +3,6 @@ package main.service.implementations;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.Setter;
-import main.dto.rest.mappers.VerificationReportDtoMapper;
 import main.dto.xml.arshin.VerificationApplication;
 import main.dto.xml.arshin.factory.VerificationApplicationFactory;
 import main.dto.xml.fsa.FsaVerificationMessage;
