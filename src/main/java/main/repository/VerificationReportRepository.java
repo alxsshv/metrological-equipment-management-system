@@ -11,5 +11,6 @@ public interface VerificationReportRepository extends JpaRepository<Verification
     @Override
     Page<VerificationReport> findAll(Pageable pageable);
     List<VerificationReport> findByReadyToSend(boolean readyToSend);
+    List<VerificationReport> findBySentToArshin(boolean sentToArshin);
     List<VerificationReport> findByPublicToArshinAndSentToFsa(boolean publicToArshin, boolean sentToFsa);
 }

@@ -67,8 +67,7 @@ public class XMLServiceImpl implements XMLService {
         String fileName = "ArshinReport" + reportId + ".xml";
         VerificationReport report = reportService.getReportById(reportId);
         VerificationApplication application = applicationFactory.createApplicationByReport(report);
-        jaxbWriter.writeXMLForArshin(application, fileName);
-        setSentToArshinStatusForReport(report);
+        jaxbWriter.writeXMLForArshin(application, fileName);reportService.setSentToArshinStatus(report);
         return fileName;
     }
 
@@ -87,11 +86,6 @@ public class XMLServiceImpl implements XMLService {
         }
     }
 
-    private void setSentToArshinStatusForReport(VerificationReport report){
-            report.setReadyToSend(false);
-            report.setSentToArshin(true);
-            reportService.update(VerificationReportDtoMapper.mapToFullDto(report));
-    }
 
     private String writeXMLFileForArshinByReportList() throws FileNotFoundException {
         List<VerificationReport> readyToSendReportList = reportService.getReadyToSendReports();
@@ -112,7 +106,7 @@ public class XMLServiceImpl implements XMLService {
     }
 
     private void setSentToArshinStatusForReports(List<VerificationReport> readyToSendReports){
-        readyToSendReports.forEach(this::setSentToArshinStatusForReport);
+        readyToSendReports.forEach(reportService::setSentToArshinStatus);
     }
 
     @Override
@@ -137,8 +131,10 @@ public class XMLServiceImpl implements XMLService {
         FsaVerificationMessage message = VerificationMessageFactory
                 .createVerificationMessageByReport(report);
         jaxbWriter.writeXMLForFSA(message, fileName);
+        reportService.setSentToFsaStatus(report);
         return fileName;
     }
+
 
     @Override
     public ResponseEntity<?> getXMLFileForFSAByPublicToArshinReports() {
@@ -161,6 +157,7 @@ public class XMLServiceImpl implements XMLService {
                 .createVerificationMessageByReportList(publicToArshinReports);
         String fileName = generateFileNameForFsaReport(publicToArshinReports);
         jaxbWriter.writeXMLForFSA(message, fileName);
+        setSentToFsaStatusForReports(publicToArshinReports);
         return fileName;
     }
 
@@ -168,6 +165,10 @@ public class XMLServiceImpl implements XMLService {
         String fistReportNum = String.valueOf(reports.get(0).getId());
         String lastReportNum = String.valueOf(reports.get(reports.size()-1).getId());
         return "fsaReport_"+ fistReportNum + "_" + lastReportNum + ".xml";
+    }
+
+    private void setSentToFsaStatusForReports(List<VerificationReport> reports){
+        reports.forEach(reportService::setSentToFsaStatus);
     }
 
 

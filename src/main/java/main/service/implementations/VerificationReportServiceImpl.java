@@ -149,6 +149,7 @@ public class VerificationReportServiceImpl implements VerificationReportService 
             VerificationReport report = getReportById(id);
             String verificationOrganization = settingsService.getSettings().getOrganizationNotation();
             for (VerificationRecord record : report.getRecords()) {
+                log.info("Обновляем запись о поверке №" + record.getId());
                 String verificationRequest = new VerificationRequestBuilder()
                         .uri("https://fgis.gost.ru/fundmetrology/eapi/vri?")
                         .miModification(record.getMi().getModification())
@@ -156,15 +157,12 @@ public class VerificationReportServiceImpl implements VerificationReportService 
                         .orgTitle(verificationOrganization)
                         .verificationDate(record.getVerificationDate())
                         .build();
-                VriItem item = ArshinHttpClient.getVerificationItemIfOnlyMatches(verificationRequest);
+                VriItem item = ArshinHttpClient.getVerificationItemIfOnlyMatches(verificationRequest, 0);
                 verificationRecordService.updateArshinVerificationNumber(record.getId(), item.getResultDocnum());
-                Thread.sleep(800);
+                Thread.sleep(100);
             }
             String okMessage = "Номера записей о поверке в ФГИС Аршин успешно получены";
-            report.setReadyToSend(false);
-            report.setSentToArshin(true);
-            report.setPublicToArshin(true);
-            reportRepository.save(report);
+            setPublicToArshinStatus(report);
             log.info(okMessage);
             return ResponseEntity.ok().body(new ServiceMessage(okMessage));
         } catch (ArshinResponseException ex){
@@ -173,6 +171,14 @@ public class VerificationReportServiceImpl implements VerificationReportService 
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    public ResponseEntity<?> updateSentToArshinReportsFromArshin(){
+        List<VerificationReport> sentToArshinReports = reportRepository.findBySentToArshin(true);
+        sentToArshinReports.forEach(report -> {updateReportFromArshin(report.getId());});
+        String okMessage = "Номера записей о поверке в ФГИС Аршин успешно получены";
+        return ResponseEntity.ok().body(new ServiceMessage(okMessage));
     }
 
     private void checkVerificationReportDtoComposition(VerificationReportFullDto reportDto) throws DtoCompositionException {
@@ -187,6 +193,27 @@ public class VerificationReportServiceImpl implements VerificationReportService 
         String okMessage = "Отчет № " + id + " успешно удален";
         log.info(okMessage);
         return ResponseEntity.ok().body(okMessage);
+    }
+
+    @Override
+    public void setSentToArshinStatus(VerificationReport report){
+        report.setReadyToSend(false);
+        report.setSentToArshin(true);
+        reportRepository.save(report);
+    }
+
+    @Override
+    public void setPublicToArshinStatus(VerificationReport report){
+        report.setReadyToSend(false);
+        report.setSentToArshin(true);
+        report.setPublicToArshin(true);
+        reportRepository.save(report);
+    }
+
+    @Override
+    public void setSentToFsaStatus(VerificationReport report){
+        report.setSentToFsa(true);
+        reportRepository.save(report);
     }
 
 

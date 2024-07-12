@@ -45,6 +45,11 @@ public class VerificationReportController {
         return verificationReportService.updateReportFromArshin(Long.parseLong(id));
     }
 
+    @GetMapping("/update/all")
+    public ResponseEntity<?> updateReportsFromArshin(){
+        return verificationReportService.updateSentToArshinReportsFromArshin();
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteVerificationReport(@PathVariable("id") String id){
         return verificationReportService.delete(Long.parseLong(id));

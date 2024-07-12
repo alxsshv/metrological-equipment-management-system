@@ -17,9 +17,8 @@
                 <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
                 <button class="btn btn-outline-success me-2" onclick="location.href='/report/verification'"
                     type="button">К перечню отчетов о поверке</button>
-                <button class="btn btn-outline-success me-2" id="updateNumBtn" ng-click="updateArshinNumbers()"  type="button" >Обновить из ФГИС "Аршин"</button>
+                <button class="btn btn-outline-success me-2" id="updateNumBtn" ng-click="updateArshinNumbers()" type="button" >Обновить из ФГИС "Аршин"</button>
                 <button class="btn btn-outline-success me-2" id="readyToSendBtn" ng-click="setReadyToSend()" type="button" >Отправить на публикацию</button>
-                <button class="btn btn-outline-success me-2" id="sentToFsaBtn" ng-click="setSentToFsa()" type="button" >Пометить как отправленное в ФСА</button>
             </form>
         </nav>
 
@@ -175,7 +174,6 @@
                 if ($scope.report.publicToArshin == true && $scope.report.sentToFsa == true){
                     desabledBtn("updateNumBtn");
                     desabledBtn("readyToSendBtn");
-                    desabledBtn("sentToFsaBtn");
                     return $scope.status = "Опубликован в ФГИС \"Аршин\" и ФСА";
                 }
 
