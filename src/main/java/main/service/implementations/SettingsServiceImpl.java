@@ -8,11 +8,9 @@ import main.dto.rest.mappers.SettingsDtoMapper;
 import main.exception.DtoCompositionException;
 import main.model.Settings;
 import main.repository.SettingsRepository;
-import main.service.ServiceMessage;
 import main.service.interfaces.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -26,9 +24,8 @@ public class SettingsServiceImpl implements SettingsService {
 
 
     @Override
-    public ResponseEntity<?> saveOrUpdate(SettingsDto settingsDto) {
+    public void saveOrUpdate(SettingsDto settingsDto) {
         Settings settings;
-        try {
             checkSettingsDtoComposition(settingsDto);
             try {
                 settings = getSettings();
@@ -38,13 +35,6 @@ public class SettingsServiceImpl implements SettingsService {
                 settings = SettingsDtoMapper.mapToEntity(settingsDto);
             }
             settingsRepository.save(settings);
-            String okMessage = "Настройки сохранены";
-            log.info(okMessage);
-            return ResponseEntity.ok(new ServiceMessage(okMessage));
-        } catch(DtoCompositionException ex){
-            log.error(ex.getMessage());
-            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
-        }
     }
 
 
@@ -63,13 +53,8 @@ public class SettingsServiceImpl implements SettingsService {
     }
 
     @Override
-    public ResponseEntity<?> get() {
-        try {
-            SettingsDto settingsDto = SettingsDtoMapper.mapToDto(getSettings());
-            return ResponseEntity.ok(settingsDto);
-        } catch(EntityNotFoundException ex) {
-            return ResponseEntity.notFound().build();
-        }
+    public SettingsDto get() {
+            return SettingsDtoMapper.mapToDto(getSettings());
     }
 
     @Override
@@ -77,7 +62,6 @@ public class SettingsServiceImpl implements SettingsService {
         Optional<Settings> settingsOpt = settingsRepository.findById(1);
         if (settingsOpt.isEmpty()){
             throw new EntityNotFoundException("Настройки не установлены и заданы по умолчанию");
-
         }
         return settingsOpt.get();
     }

@@ -1,6 +1,6 @@
 package main.exception;
 
-public class EntityAlreadyExistException extends Exception{
+public class EntityAlreadyExistException extends RuntimeException{
     public EntityAlreadyExistException(String message) {
         super(message);
     }

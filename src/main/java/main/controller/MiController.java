@@ -5,9 +5,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import main.config.AppConstants;
 import main.dto.rest.MiDto;
 import main.dto.rest.MiFullDto;
+import main.service.ServiceMessage;
 import main.service.interfaces.MeasurementInstrumentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -25,6 +27,7 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/mis")
+@Slf4j
 public class MiController {
     @Autowired
     private MeasurementInstrumentService measurementInstrumentService;
@@ -33,24 +36,21 @@ public class MiController {
     public Page<MiDto> getMeasurementInstrumentPageableList(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNum,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir){
+            @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir,
+            @RequestParam(value = "search", defaultValue = "", required = false) String searchString){
         Pageable pageable = PageRequest.of(pageNum, pageSize,
                 Sort.by(Sort.Direction.valueOf(pageDir.toUpperCase()), "modification","serialNum"));
-        return measurementInstrumentService.findAll(pageable);
-    }
-
-    @GetMapping("/pages/search")
-    public ResponseEntity<?> searchMeasurementInstrumentWithPages(
-            @RequestParam(value = "search") String searchString){
-        Pageable pageable = PageRequest.of(0,10,
-                Sort.by(Sort.Direction.ASC,"modification","serialNum"));
+        if (searchString.isEmpty() || searchString.equals("undefined")) {
+            return measurementInstrumentService.findAll(pageable);
+        }
         return measurementInstrumentService.findBySearchString(searchString,pageable);
     }
+
     @GetMapping("/search")
     public ResponseEntity<?> searchMeasurementInstrumentWithoutPages(
             @RequestParam(value = "search") String searchString){
-        System.out.println("поиск...");
-        return measurementInstrumentService.findBySearchString(searchString);
+        List<MiDto> instruments = measurementInstrumentService.findBySearchString(searchString);
+        return ResponseEntity.ok(instruments);
     }
 
     @GetMapping
@@ -60,7 +60,8 @@ public class MiController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getMeasurementInstrument(@PathVariable("id") String id){
-        return measurementInstrumentService.findById(Integer.parseInt(id));
+        MiFullDto dto = measurementInstrumentService.findById(Integer.parseInt(id));
+        return ResponseEntity.ok(dto);
     }
     @PostMapping
     public ResponseEntity<?> addMeasurementInstrument(@RequestParam("instrument") String instrument,
@@ -70,16 +71,26 @@ public class MiController {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MiFullDto miFullDto = mapper.readValue(instrument, MiFullDto.class);
         MultipartFile[] files = filesOpt.orElseGet(() -> new MultipartFile[0]);
-        return measurementInstrumentService.save(miFullDto,files,descriptions);
+        measurementInstrumentService.save(miFullDto,files,descriptions);
+        String okMessage = "Запись о средстве измерений " + miFullDto.getModification() + " зав. № " +
+                miFullDto.getSerialNum() + " успешно добавлена";
+        log.info(okMessage);
+        return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
     }
 
     @PutMapping("{id}")
     public ResponseEntity<?> editMeasurementInstrument(@RequestBody MiFullDto instrumentDto){
-        return measurementInstrumentService.update(instrumentDto);
+        measurementInstrumentService.update(instrumentDto);
+        String okMessage = "Cведения о средстве измерений успешно обновлены";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteMeasurementInstrument(@PathVariable("id") int id){
-        return measurementInstrumentService.delete(id);
+    public ResponseEntity<?> deleteMeasurementInstrument(@PathVariable("id") int id) {
+        measurementInstrumentService.delete(id);
+        String okMessage = "Запись о средстве измерений № " + id + " успешно удалена";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 }
