@@ -5,8 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import main.config.AppConstants;
 import main.dto.rest.MiStandardDto;
+import main.service.ServiceMessage;
 import main.service.interfaces.MiStandardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("/standards/mis/")
@@ -35,12 +38,12 @@ public class MiStandardController {
             @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir){
         Pageable pageable = PageRequest.of(pageNum, pageSize,
                 Sort.by(Sort.Direction.valueOf(pageDir.toUpperCase()), "arshinNumber"));
-        return miStandardService.findAll(pageable);
+       return miStandardService.findAll(pageable);
+
     }
 
     @GetMapping("/pages/search")
-    public ResponseEntity<?> searchMiStandardWithoutPages(
-            @RequestParam(value = "search") String searchString){
+    public Page<MiStandardDto> searchMiStandardWithPages(@RequestParam(value = "search") String searchString){
         Pageable pageable = PageRequest.of(0,10,
                 Sort.by(Sort.Direction.ASC,"arshinNumber"));
         return miStandardService.findBySearchString(searchString,pageable);
@@ -49,7 +52,8 @@ public class MiStandardController {
     @GetMapping("/search")
     public ResponseEntity<?> searchMiStandard(
             @RequestParam(value = "search") String searchString){
-        return miStandardService.findBySearchString(searchString);
+        List<MiStandardDto> dtos = miStandardService.findBySearchString(searchString);
+        return ResponseEntity.ok(dtos);
     }
 
     @GetMapping
@@ -59,7 +63,8 @@ public class MiStandardController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getMiStandard(@PathVariable("id") String id){
-        return miStandardService.findById(Long.parseLong(id));
+        MiStandardDto miStandardDto = miStandardService.findById(Long.parseLong(id));
+        return ResponseEntity.ok(miStandardDto);
     }
     @PostMapping
     public ResponseEntity<?> addMiStandard(@RequestParam("miStandard") String miStandard,
@@ -69,17 +74,26 @@ public class MiStandardController {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         MiStandardDto miStandardDto = mapper.readValue(miStandard,MiStandardDto.class);
         MultipartFile[] files = filesOpt.orElseGet(() -> new MultipartFile[0]);
-        return miStandardService.save(miStandardDto, files, descriptions);
+        miStandardService.save(miStandardDto, files, descriptions);
+        String okMessage = "Запись об эталоне № " + miStandardDto.getArshinNumber() + " успешно добавлена";
+        log.info(okMessage);
+        return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
     }
 
 
     @PutMapping("/{id}")
     public ResponseEntity<?> editMiStandard(@RequestBody MiStandardDto miStandardDto){
-        return miStandardService.update(miStandardDto);
+        miStandardService.update(miStandardDto);
+        String okMessage = "Cведения об эталоне № " + miStandardDto.getArshinNumber() + " обновлены";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMiStandard(@PathVariable("id") int id){
-        return miStandardService.delete(id);
+        miStandardService.delete(id);
+        String okMessage ="Запись об эталоне № " + id + " успешно удалена";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 }

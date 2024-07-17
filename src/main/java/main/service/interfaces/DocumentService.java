@@ -15,8 +15,7 @@ public interface DocumentService {
     List<DocumentDto> getDocuments(Category category, long categoryId);
     Document getDocumentById(long id);
     ResponseEntity<?> getDocumentFile(Long id);
-    ResponseEntity<?> descriptionUpdate(long id, String description);
-    ResponseEntity<?> delete(long id) throws IOException;
+    void delete(long id) throws IOException;
     void deleteAll(Category category, long categoryId) throws IOException;
 
 }

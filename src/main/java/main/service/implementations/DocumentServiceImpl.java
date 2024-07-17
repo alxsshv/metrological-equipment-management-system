@@ -81,25 +81,11 @@ public class DocumentServiceImpl implements DocumentService {
                 document.setCategoryId(CategoryId);
                 file.transferTo(new File(documentUploadPath + "/" + storageFileName));
                 documentRepository.save(document);
-                log.info("Файл " + filename + " успешно загружен на сервер");
+                log.info("Файл {} успешно загружен на сервер", filename );
         }
 
     }
 
-    @Override
-    public ResponseEntity<?> descriptionUpdate(long id, String description){
-        try {
-            Document document = getDocumentById(id);
-            document.setDescription(description);
-            documentRepository.save(document);
-            String okMessage = "Описание файла " + id + " успешно обновлено";
-            log.info(okMessage);
-            return ResponseEntity.ok(new ServiceMessage(okMessage));
-        } catch (EntityNotFoundException ex) {
-            log.error(ex.getMessage());
-            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
-        }
-    }
 
     @Override
     public List<DocumentDto> getDocuments(Category category, long categoryId){
@@ -117,12 +103,9 @@ public class DocumentServiceImpl implements DocumentService {
             return responseEntity;
         } catch (IOException ex) {
             String errorMessage = "Файл не найден или поврежден. ";
-            log.error(errorMessage + ex.getMessage());
+            log.error("{}:{}", errorMessage, ex.getMessage());
             return ResponseEntity.status(500).body(new ServiceMessage(errorMessage));
-        } catch (EntityNotFoundException ex){
-            log.error(ex.getMessage());
-            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
-        }
+            }
     }
 
     @Override
@@ -146,18 +129,10 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public ResponseEntity<?> delete(long id) throws IOException {
-        try {
+    public void delete(long id) throws IOException {
             Document document = getDocumentById(id);
             Files.deleteIfExists(Path.of(documentUploadPath + "/" + document.getStorageFileName()));
             documentRepository.delete(document);
-            String okMessage = "Файл " + document.getStorageFileName() + " успешно удален";
-            log.info(okMessage);
-            return ResponseEntity.ok(new ServiceMessage(okMessage));
-        } catch (EntityNotFoundException ex){
-            log.info(ex.getMessage());
-            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
-        }
     }
 
     @Override

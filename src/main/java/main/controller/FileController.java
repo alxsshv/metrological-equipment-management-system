@@ -1,9 +1,12 @@
 package main.controller;
 
+
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import main.dto.rest.DocumentDto;
 import main.dto.rest.ImageDto;
 import main.service.Category;
+import main.service.ServiceMessage;
 import main.service.interfaces.DocumentService;
 import main.service.interfaces.FileService;
 import main.service.interfaces.ImageService;
@@ -14,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
-
+@Slf4j
 @RestController
 @AllArgsConstructor
 @RequestMapping("files")
@@ -42,13 +45,16 @@ public class FileController {
 
 
     @DeleteMapping("/documents/{id}")
-    public ResponseEntity<?> getDeleteDocument(@PathVariable(value = "id") String id) throws IOException {
-        return documentService.delete(Long.parseLong(id));
+    public ResponseEntity<?> deleteDocument(@PathVariable(value = "id") String id) throws IOException {
+        documentService.delete(Long.parseLong(id));
+        String okMessage = "Файл № " + id + " успешно удален";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
     @GetMapping("/documents/{id}")
     public ResponseEntity<?> getDocumentFile(@PathVariable(value = "id") String id) {
-        return documentService.getDocumentFile(Long.parseLong(id));
+        return  documentService.getDocumentFile(Long.parseLong(id));
     }
 
     @GetMapping("/images")

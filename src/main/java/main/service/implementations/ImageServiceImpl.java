@@ -6,12 +6,10 @@ import main.dto.rest.mappers.ImageDtoMapper;
 import main.model.Image;
 import main.repository.ImageRepository;
 import main.service.Category;
-import main.service.ServiceMessage;
 import main.service.interfaces.ImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,20 +51,13 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public ResponseEntity<?> delete(long id) throws IOException {
+    public void delete(long id) throws IOException {
         try {
             Image image = getImageById(id);
             Files.deleteIfExists(Path.of(imageUploadPath + "/" + image.getStorageFileName()));
             imageRepository.delete(image);
-            String okMessage = "Файл " + image.getStorageFileName() + " успешно удален";
-            log.info(okMessage);
-            return ResponseEntity.ok(new ServiceMessage(okMessage));
-        } catch (EntityNotFoundException ex){
-            log.info(ex.getMessage());
-            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
         } catch (IOException ex) {
-            log.error(ex.getMessage());
-            return ResponseEntity.status(500).body(new ServiceMessage("Ошибка удаления файла "));
+            throw new RuntimeException("Ошибка удаления файла");
         }
     }
 
@@ -106,7 +97,7 @@ public class ImageServiceImpl implements ImageService {
                 image.setCategoryId(CategoryId);
                 file.transferTo(new File(imageUploadPath + "/" + storageFileName));
                 imageRepository.save(image);
-                log.info("Файл " + filename + " успешно загружен на сервер");
+            log.info("Файл {} успешно загружен на сервер", filename);
         }
     }
 

@@ -31,7 +31,6 @@ import java.util.Optional;
 @Service
 @Slf4j
 public class VerificationReportServiceImpl implements VerificationReportService {
-    private final String arshinVerificationUri;
     @Autowired
     private final VerificationReportRepository reportRepository;
     @Autowired
@@ -39,8 +38,7 @@ public class VerificationReportServiceImpl implements VerificationReportService 
     @Autowired
     private final ArshinDataService arshinDataService;
 
-    public VerificationReportServiceImpl(String arshinVerificationUri, VerificationReportRepository reportRepository, VerificationRecordService verificationRecordService, ArshinDataService arshinDataService) {
-        this.arshinVerificationUri = arshinVerificationUri;
+    public VerificationReportServiceImpl(VerificationReportRepository reportRepository, VerificationRecordService verificationRecordService, ArshinDataService arshinDataService) {
         this.reportRepository = reportRepository;
         this.verificationRecordService = verificationRecordService;
         this.arshinDataService = arshinDataService;
