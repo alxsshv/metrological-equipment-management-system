@@ -188,12 +188,12 @@
                                         <div class="col-md-3">
                                             <label class="form-label" for="inputPress">Давление,кПа*</label>
                                             <input class="form-control" id="inputPress" ng-model="pressure"
-                                                placeholder="99,3" required step="0.01" type="number" value="">
+                                            ng-change="convertPressureToTorr()" placeholder="99,3" required step="0.01" type="number" value="">
                                         </div>
                                         <div class="col-md-3">
                                             <label class="form-label" for="inputPress">Давление, мм рт. ст.</label>
                                             <input class="form-control" id="inputPressTorr" ng-model="pressureInTorr"
-                                                ng-change="convertPressure()" placeholder="744,8" required step="0.01"
+                                                ng-change="convertPressureToPascal()" placeholder="744,8" required step="0.01"
                                                 type="number" value="">
                                         </div>
                                     </div>
@@ -664,11 +664,10 @@
             }
 
 
-
             $scope.deleteFromTable = function (tableRow) {
                 deleteableIndex = $scope.tableContent.indexOf(tableRow);
                 $scope.tableContent.splice(deleteableIndex, 1);
-                $scope.report.splice(deleteableIndex, 1);
+                records.splice(deleteableIndex, 1);
             }
 
             clearFields = function () {
@@ -716,9 +715,14 @@
                 }
             }
 
-            $scope.convertPressure = function () {
+            $scope.convertPressureToPascal = function () {
                 let decimalPressure = $scope.pressureInTorr * 0.1333223684210526;
                 $scope.pressure = Math.round(decimalPressure * 100) / 100;
+            }
+
+            $scope.convertPressureToTorr = function () {
+                let decimalPressure = $scope.pressure * 7.501;
+                $scope.pressureInTorr = Math.round(decimalPressure * 100) / 100;
             }
 
         });
