@@ -35,19 +35,16 @@ public class MiStandardController {
     public Page<MiStandardDto> getMiStandardPageableList(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNum,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir){
+            @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir,
+            @RequestParam(value = "search", defaultValue = "", required = false) String searchString){
         Pageable pageable = PageRequest.of(pageNum, pageSize,
                 Sort.by(Sort.Direction.valueOf(pageDir.toUpperCase()), "arshinNumber"));
-       return miStandardService.findAll(pageable);
-
+        if (searchString.isEmpty() || searchString.equals("undefined")) {
+            return miStandardService.findAll(pageable);
+        }
+        return miStandardService.findBySearchString(searchString, pageable);
     }
 
-    @GetMapping("/pages/search")
-    public Page<MiStandardDto> searchMiStandardWithPages(@RequestParam(value = "search") String searchString){
-        Pageable pageable = PageRequest.of(0,10,
-                Sort.by(Sort.Direction.ASC,"arshinNumber"));
-        return miStandardService.findBySearchString(searchString,pageable);
-    }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchMiStandard(

@@ -20,9 +20,9 @@
                         Сортировать
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}">По возрастанию</a>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}&search={{searchString}}">По возрастанию</a>
                         </li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}">По убыванию</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}&search={{searchString}}">По убыванию</a></li>
                     </ul>
                 </div>
                 <div class="btn-group">
@@ -30,10 +30,9 @@
                         Выводить по
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10">10</a></li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=20">20</a></li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50">50</a></li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=100">100</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10&search={{searchString}}">10</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=20&search={{searchString}}">20</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50&search={{searchString}}">50</a></li>
                     </ul>
                 </div>
                 <form class="d-flex" role="search">
@@ -78,12 +77,12 @@
             <nav aria-label="Page navigation">
                 <ul class="pagination">
                     <li class="page-item"><a class="page-link"
-                            href="/{{viewReference}}?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}">Предыдущая</a>
+                            href="{{viewReference}}?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">Предыдущая</a>
                     </li>
                     <li ng-repeat="item in pageArray track by $index" class="page-item"><a class="page-link"
-                            href="/{{viewReference}}?page={{item}}&dir={{sortDirection}}&size={{pageSize}}">{{item+1}}</a></li>
+                            href="{{viewReference}}?page={{item}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">{{item+1}}</a></li>
                     <li class="page-item"><a class="page-link"
-                            href="/{{viewReference}}?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}">Следующая</a></li>
+                            href="{{viewReference}}?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">Следующая</a></li>
                 </ul>
             </nav>
         </div>
@@ -115,11 +114,10 @@
             $scope.getPagesContentlist = function (contentUrl) {
                 $scope.getPageAttributes();
                 $http({
-                    url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection + "&size=" + $scope.pageSize,
+                    url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection + "&size=" + $scope.pageSize +"&search=" + $scope.searchString,
                     method: "GET"
                 }).then(function (response) {
                     $scope.contentlist = response.data.content;
-                    console.log($scope.contentlist);
                     $scope.formatDateFieldsFromContentList();
                     $scope.createPaginationParams(response.data.totalPages);
                 });
@@ -145,6 +143,7 @@
                 $scope.pageNum = documentUrl.searchParams.get("page");
                 $scope.sortDirection = documentUrl.searchParams.get("dir");
                 $scope.pageSize = documentUrl.searchParams.get("size");
+                $scope.searchString = documentUrl.searchParams.get("search");
 
                 if ($scope.pageSize == null || $scope.pageSize == undefined) {
                     $scope.pageSize = "10";
@@ -154,6 +153,9 @@
                 }
                 if ($scope.pageNum == null || $scope.pageNum == undefined) {
                     $scope.pageNum = "0";
+                }
+                if ($scope.searchString == null || $scope.searchString == undefined) {
+                    $scope.searchString = "";
                 }
             }
 
@@ -176,12 +178,12 @@
 
 
             $scope.getSearchContentlist = function (contentUrl) {
-                $scope.getPageAttributes();
                 $http({
-                    url: contentUrl + "/search?search=" + $scope.searchString,
+                    url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection + "&size=" + $scope.pageSize +"&search=" + $scope.searchString,
                     method: "GET"
                 }).then(function (response) {
                     $scope.contentlist = response.data.content;
+                    $scope.formatDateFieldsFromContentList();
                     $scope.createPaginationParams(response.data.totalPages);
                 });
             }
