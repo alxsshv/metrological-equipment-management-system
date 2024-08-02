@@ -87,7 +87,7 @@ public class MiStandardController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteMiStandard(@PathVariable("id") int id){
+    public ResponseEntity<?> deleteMiStandard(@PathVariable("id") long id){
         miStandardService.delete(id);
         String okMessage ="Запись об эталоне № " + id + " успешно удалена";
         log.info(okMessage);

@@ -9,13 +9,11 @@ import main.exception.EntityAlreadyExistException;
 import main.exception.ParameterNotValidException;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
-import main.service.ServiceMessage;
 import main.service.interfaces.EmployeeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,19 +28,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public ResponseEntity<?> save(EmployeeDto employeeDto) {
-        try {
+    public void save(EmployeeDto employeeDto) {
             checkEmployeeDtoComposition(employeeDto);
             validateIfEntityAlreadyExist(employeeDto.getSnils());
             employeeRepository.save(EmployeeDtoMapper.mapToEntity(employeeDto));
-            String okMessage = "Поверитель " + employeeDto.getName() + " " + employeeDto.getSurname() + " успешно добавлен";
-            log.info(okMessage);
-            return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
-        } catch (EntityAlreadyExistException | DtoCompositionException ex) {
-            log.error(ex.getMessage());
-            return ResponseEntity.status(400).body(
-                    new ServiceMessage(ex.getMessage()));
-        }
     }
     private void checkEmployeeDtoComposition(EmployeeDto dto) throws DtoCompositionException {
         if (dto.getSurname() == null || dto.getSurname().isEmpty()){
@@ -63,15 +52,9 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<?> findById(long id) {
-        try {
+    public EmployeeDto findById(long id) {
             Employee employee = getEmployeeById(id);
-            EmployeeDto employeeDto = EmployeeDtoMapper.mapToDto(employee);
-            return ResponseEntity.ok(employeeDto);
-        } catch (EntityNotFoundException ex){
-            log.error(ex.getMessage());
-            return ResponseEntity.status(400).body(ex.getMessage());
-        }
+            return EmployeeDtoMapper.mapToDto(employee);
     }
 
     public Employee getEmployeeById(long id) {
@@ -91,29 +74,16 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<?> findBySurname(String surname, Pageable pageable) {
-        try {
+    public Page<EmployeeDto> findBySurname(String surname, Pageable pageable) {
             validateSearchString(surname);
-            Page<EmployeeDto> page = employeeRepository.findBySurnameIgnoreCaseContaining(surname.trim(), pageable)
+            return employeeRepository.findBySurnameIgnoreCaseContaining(surname.trim(), pageable)
                     .map(EmployeeDtoMapper::mapToDto);
-            return ResponseEntity.ok(page);
-        } catch (ParameterNotValidException ex){
-            log.error(ex.getMessage());
-            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
-        }
     }
     @Override
-    public ResponseEntity<?> findBySurname(String surname) {
-        try {
+    public List<EmployeeDto>  findBySurname(String surname) {
             validateSearchString(surname);
-            List<EmployeeDto> list = employeeRepository.findBySurnameIgnoreCaseContaining(surname.trim()).stream()
+            return employeeRepository.findBySurnameIgnoreCaseContaining(surname.trim()).stream()
                     .map(EmployeeDtoMapper::mapToDto).toList();
-            return ResponseEntity.ok(list);
-        } catch (ParameterNotValidException ex){
-            log.info(ex.getMessage());
-            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
-
-        }
     }
 
     private void validateSearchString(String searchString) throws ParameterNotValidException {
@@ -133,29 +103,17 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public ResponseEntity<?> update(EmployeeDto employeeDto){
-        try {
+    public void update(EmployeeDto employeeDto){
             checkEmployeeDtoComposition(employeeDto);
             Employee employee = getEmployeeById(employeeDto.getId());
             Employee updatingEmployeeData = EmployeeDtoMapper.mapToEntity(employeeDto);
             employee.updateFrom(updatingEmployeeData);
             employeeRepository.save(employee);
-            String okMessage = "Сведения о поверителе " + employee.getName() + " "
-                    + employee.getSurname() + " обновлены";
-            log.info(okMessage);
-            return ResponseEntity.ok(new ServiceMessage(okMessage));
-        } catch (DtoCompositionException | EntityNotFoundException ex){
-            log.error(ex.getMessage());
-            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
-        }
     }
 
     @Override
-    public ResponseEntity<?>delete(long id){
+    public void delete(long id){
         employeeRepository.deleteById(id);
-        String okMessage ="Запись о поверителе № " + id + " успешно удалена";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
 }

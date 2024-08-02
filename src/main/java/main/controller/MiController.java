@@ -7,10 +7,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main.config.AppConstants;
+import main.dto.rest.MiDetailsDto;
 import main.dto.rest.MiDto;
-import main.dto.rest.MiFullDto;
 import main.service.ServiceMessage;
 import main.service.interfaces.MeasurementInstrumentService;
+import main.service.interfaces.MiDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,6 +32,8 @@ import java.util.Optional;
 public class MiController {
     @Autowired
     private MeasurementInstrumentService measurementInstrumentService;
+    @Autowired
+    private MiDetailsService miDetailsService;
 
     @GetMapping("/pages")
     public Page<MiDto> getMeasurementInstrumentPageableList(
@@ -59,8 +62,8 @@ public class MiController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getMeasurementInstrument(@PathVariable("id") String id){
-        MiFullDto dto = measurementInstrumentService.findById(Integer.parseInt(id));
+    public ResponseEntity<?> getMeasurementInstrument(@PathVariable("id") long id){
+        MiDetailsDto dto = miDetailsService.findById(id);
         return ResponseEntity.ok(dto);
     }
     @PostMapping
@@ -69,26 +72,26 @@ public class MiController {
                                                       @RequestParam("descriptions") String[] descriptions) throws IOException {
         ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        MiFullDto miFullDto = mapper.readValue(instrument, MiFullDto.class);
+        MiDetailsDto miDetailsDto = mapper.readValue(instrument, MiDetailsDto.class);
         MultipartFile[] files = filesOpt.orElseGet(() -> new MultipartFile[0]);
-        measurementInstrumentService.save(miFullDto,files,descriptions);
-        String okMessage = "Запись о средстве измерений " + miFullDto.getModification() + " зав. № " +
-                miFullDto.getSerialNum() + " успешно добавлена";
+        miDetailsService.save(miDetailsDto,files,descriptions);
+        String okMessage = "Запись о средстве измерений " + miDetailsDto.getMiFullDto().getModification() + " зав. № " +
+                miDetailsDto.getMiFullDto().getSerialNum() + " успешно добавлена";
         log.info(okMessage);
         return ResponseEntity.status(201).body(new ServiceMessage(okMessage));
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> editMeasurementInstrument(@RequestBody MiFullDto instrumentDto){
-        measurementInstrumentService.update(instrumentDto);
+    public ResponseEntity<?> editMeasurementInstrument(@RequestBody MiDetailsDto miDetailsDto){
+        miDetailsService.update(miDetailsDto);
         String okMessage = "Cведения о средстве измерений успешно обновлены";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteMeasurementInstrument(@PathVariable("id") int id) {
-        measurementInstrumentService.delete(id);
+    public ResponseEntity<?> deleteMeasurementInstrument(@PathVariable("id") long id) {
+        miDetailsService.delete(id);
         String okMessage = "Запись о средстве измерений № " + id + " успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));

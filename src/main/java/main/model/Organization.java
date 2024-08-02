@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -25,8 +27,10 @@ public class Organization {
     private String notation;
     @Column(name = "address")
     private String address;
+    @CreationTimestamp
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
+    @UpdateTimestamp
     @Column(name = "updating_date_time")
     private LocalDateTime updatingDateTime;
 
@@ -34,6 +38,17 @@ public class Organization {
         this.title = updateData.getTitle();
         this.notation = updateData.getNotation();
         this.address = updateData.getAddress();
-        this.updatingDateTime = LocalDateTime.now();
+    }
+
+    @Override
+    public String toString() {
+        return "Organization{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", notation='" + notation + '\'' +
+                ", address='" + address + '\'' +
+                ", creationDateTime=" + creationDateTime +
+                ", updatingDateTime=" + updatingDateTime +
+                '}';
     }
 }

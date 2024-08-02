@@ -126,6 +126,7 @@
                     method: "GET"
                 }).then(function (response) {
                     $scope.contentlist = response.data.content;
+                    console.log( $scope.contentlist);
                     $scope.formatDateAndBooleanFieldsFromContentList();
                     $scope.createPaginationParams(response.data.totalPages);
                 });

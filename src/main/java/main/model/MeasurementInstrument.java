@@ -11,6 +11,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+
 @Getter
 @Setter
 @Entity
@@ -19,8 +20,7 @@ import java.time.LocalDateTime;
 @Table(name = "measurement_instruments")
 public class MeasurementInstrument {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name ="id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mi_type_id")
@@ -31,12 +31,6 @@ public class MeasurementInstrument {
     private String modification; // Модификация
     @Column(name = "serial_number")
     private String serialNum; // Заводской номер или серийный номер
-    @Column(name = "inventory_number")
-    private String inventoryNum; // Инвентарный номер или буквенное-цифровое обозначение СИ
-    @Column(name = "manufacture_date")
-    private LocalDate manufactureDate; // Дата выпуска
-    @Column(name = "start_use_date")
-    private LocalDate startUseDate; //Дата ввода в эксплуатацию
     @Column(name = "verification_date")
     private LocalDate verificationDate; //Дата поверки
     @Column(name = "valid_date")
@@ -46,12 +40,10 @@ public class MeasurementInstrument {
     @Column(name = "verification_organization")
     private String verificationOrganization; // Организация-поверитель
     @Column(name = "certificate_number")
-    private String certificateNumber; // номер свидетельства о поверке
+    private String certificateNumber; // Номер свидетельства о поверке
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "owner_id")
     private Organization owner; // Владелец СИ
-    @Column(name = "mi_user")
-    private String user; // Ответственный за эксплуатацию
     @CreationTimestamp
     @Column(name = "creation_date_time")
     private LocalDateTime creationDateTime;
@@ -59,18 +51,34 @@ public class MeasurementInstrument {
     @Column(name = "updating_date_time")
     private LocalDateTime updatingDateTime;
 
+
     public void updateFrom(MeasurementInstrument updatingData){
         this.miType = updatingData.getMiType();
         this.title = updatingData.getMiType().getMiTitleTemplate();
         this.modification = updatingData.getModification();
         this.serialNum = updatingData.getSerialNum();
-        this.inventoryNum = updatingData.getInventoryNum();
         this.verificationDate = updatingData.getVerificationDate();
         this.validDate = updatingData.getValidDate();
         this.applicable = updatingData.isApplicable();
-        this.manufactureDate = updatingData.getManufactureDate();
-        this.startUseDate = updatingData.getStartUseDate();
         this.owner = updatingData.getOwner();
-        this.user = updatingData.getUser();
+    }
+
+    @Override
+    public String toString() {
+        return "MeasurementInstrument{" +
+                "id=" + id +
+                ", miType=" + miType +
+                ", title='" + title + '\'' +
+                ", modification='" + modification + '\'' +
+                ", serialNum='" + serialNum + '\'' +
+                ", verificationDate=" + verificationDate +
+                ", validDate=" + validDate +
+                ", applicable=" + applicable +
+                ", verificationOrganization='" + verificationOrganization + '\'' +
+                ", certificateNumber='" + certificateNumber + '\'' +
+                ", owner=" + owner +
+                ", creationDateTime=" + creationDateTime +
+                ", updatingDateTime=" + updatingDateTime +
+                '}';
     }
 }

@@ -54,7 +54,7 @@ public class MiTypeServiceImpl implements MiTypeService {
         try {
             checkMiTypeDtoComposition(miTypeFullDto);
             checkExistenceEntity(miTypeFullDto.getNumber());
-            MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapToEntity(miTypeFullDto);
+            MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapFullDtoToEntity(miTypeFullDto);
             MiTypeInstruction savedInstruction = miTypeInstructionRepository.save(miTypeInstruction);
             uploadFilesIfFilesExist(files, descriptions, savedInstruction.getId());
             String okMessage = "Запись о типе СИ № " + miTypeFullDto.getNumber() + " успешно добавлена";
@@ -205,7 +205,7 @@ public class MiTypeServiceImpl implements MiTypeService {
         try {
             checkMiTypeDtoComposition(miTypeDto);
             MiTypeInstruction instruction = getInstructionById(miTypeDto.getId());
-            MiTypeInstruction updateData = MiTypeDtoMapper.mapToEntity(miTypeDto);
+            MiTypeInstruction updateData = MiTypeDtoMapper.mapFullDtoToEntity(miTypeDto);
             instruction.updateFrom(updateData);
             miTypeInstructionRepository.save(instruction);
             String okMessage = "Cведения о типе СИ " + miTypeDto.getNumber() + " обновлены";

@@ -16,4 +16,15 @@ public class OrganizationDto {
     private String creationDateTime;
     private String updatingDateTime;
 
+    @Override
+    public String toString() {
+        return "OrganizationDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", notation='" + notation + '\'' +
+                ", address='" + address + '\'' +
+                ", creationDateTime='" + creationDateTime + '\'' +
+                ", updatingDateTime='" + updatingDateTime + '\'' +
+                '}';
+    }
 }

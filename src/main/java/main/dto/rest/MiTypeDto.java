@@ -15,5 +15,6 @@ public class MiTypeDto {
     private String notation;
     private String startDate;
     private String endDate;
+    private String miTitleTemplate;
     private double verificationPeriod;
 }

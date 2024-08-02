@@ -1,8 +1,10 @@
 package main.controller;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import main.config.AppConstants;
 import main.dto.rest.OrganizationDto;
+import main.service.ServiceMessage;
 import main.service.interfaces.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Slf4j
 @AllArgsConstructor
 @RequestMapping("/organizations")
 public class OrganizationController {
@@ -25,22 +28,20 @@ public class OrganizationController {
     public Page<OrganizationDto> getOrganisationPageableList(
             @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNum,
             @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir){
+            @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir,
+            @RequestParam(value = "search", defaultValue = "") String searchString){
         Pageable pageable = PageRequest.of(pageNum, pageSize, Sort.by(Sort.Direction.valueOf(pageDir.toUpperCase()), "notation"));
-        return organizationService.findAll(pageable);
+        if(searchString.isEmpty() || searchString.equals("undefined")) {
+            return organizationService.findAll(pageable);
+        }
+        return organizationService.findBySearchString(searchString,pageable);
     }
 
     @GetMapping("/search")
     public ResponseEntity<?> searchOrganisation(
             @RequestParam(value = "search") String searchString){
-        return organizationService.findBySearchString(searchString);
-    }
-
-    @GetMapping("/pages/search")
-    public ResponseEntity<?> searchOrganisationWithPages(
-            @RequestParam(value = "search") String searchString){
-        Pageable pageable = PageRequest.of(0,20,Sort.by(Sort.Direction.ASC,"notation"));
-        return organizationService.findBySearchString(searchString, pageable);
+        List<OrganizationDto> organizationDtos = organizationService.findBySearchString(searchString);
+        return ResponseEntity.ok(organizationDtos);
     }
 
     @GetMapping
@@ -50,21 +51,31 @@ public class OrganizationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getOrganization(@PathVariable("id") String id){
-        return organizationService.findById(Long.parseLong(id));
+        OrganizationDto organizationDto = organizationService.findById(Long.parseLong(id));
+        return ResponseEntity.ok(organizationDto);
     }
 
     @PostMapping
     public ResponseEntity<?> addOrganization(@RequestBody OrganizationDto organizationDto) {
-        return organizationService.save(organizationDto);
+        organizationService.save(organizationDto);
+        String okMessage = "Запись об организации " + organizationDto.getNotation() + " успешно добавлена";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
     @PutMapping("{id}")
     public ResponseEntity<?> editOrganization(@RequestBody OrganizationDto organizationDto){
-        return organizationService.update(organizationDto);
+        organizationService.update(organizationDto);
+        String okMessage = "Cведения об организации " + organizationDto.getNotation() + " обновлены";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteOrganization(@PathVariable("id") Long id){
-        return organizationService.delete(id);
+    public ResponseEntity<?> deleteOrganization(@PathVariable("id") long id){
+        organizationService.delete(id);
+        String okMessage ="Запись об организации"  + id + " успешно удалена";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 }

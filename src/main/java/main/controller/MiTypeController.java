@@ -86,7 +86,7 @@ public class MiTypeController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteMiType(@PathVariable("id") int id) throws IOException {
+    public ResponseEntity<?> deleteMiType(@PathVariable("id") long id) throws IOException {
         return miTypeService.delete(id);
     }
 }

@@ -40,7 +40,6 @@ public class FileServiceImpl implements FileService {
 
     private void fillDescriptionsToFilesLength(String[] descriptions, MultipartFile[] files, int startIndex){
         for (int i = startIndex; i < files.length; i++){
-            System.out.println(i);
             descriptions[i] = "";
         }
     }

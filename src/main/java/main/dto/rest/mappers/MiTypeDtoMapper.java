@@ -18,6 +18,7 @@ public class MiTypeDtoMapper {
         dto.setNumber(type.getNumber());
         dto.setNotation(type.getNotation());
         dto.setTitle(type.getTitle());
+        dto.setMiTitleTemplate(type.getMiTitleTemplate());
         dto.setStartDate(DateStringConverter.getStringOrNull(type.getStartDate()));
         dto.setEndDate(DateStringConverter.getStringOrNull(type.getEndDate()));
         dto.setVerificationPeriod(type.getVerificationPeriod());
@@ -46,7 +47,7 @@ public class MiTypeDtoMapper {
         return dto;
     }
 
-    public static MiTypeInstruction mapToEntity (MiTypeFullDto fullDto){
+    public static MiTypeInstruction mapFullDtoToEntity(MiTypeFullDto fullDto){
         MiTypeInstruction instruction = new MiTypeInstruction();
         instruction.setInstructionTitle(fullDto.getInstructionTitle());
         instruction.setInstructionNotation(fullDto.getInstructionNotation());
@@ -75,6 +76,23 @@ public class MiTypeDtoMapper {
         type.setStartDate(DateStringConverter.parseLocalDateOrGetNull(fullDto.getStartDate()));
         type.setEndDate(DateStringConverter.parseLocalDateOrGetNull(fullDto.getEndDate()));
         type.setVerificationPeriod(fullDto.getVerificationPeriod());
+        return type;
+    }
+
+    public static MiType mapDtoToEntity(MiTypeDto dto) {
+        MiType type = new MiType();
+        type.setId(dto.getId());
+        type.setNumber(dto.getNumber());
+        if (dto.getNotation().isEmpty() | dto.getNotation().equals("-")) {
+            type.setNotation("Обозначение отсутствует");
+        } else {
+            type.setNotation(dto.getNotation());
+        }
+        type.setMiTitleTemplate(dto.getMiTitleTemplate());
+        type.setTitle(dto.getTitle());
+        type.setStartDate(DateStringConverter.parseLocalDateOrGetNull(dto.getStartDate()));
+        type.setEndDate(DateStringConverter.parseLocalDateOrGetNull(dto.getEndDate()));
+        type.setVerificationPeriod(dto.getVerificationPeriod());
         return type;
     }
 

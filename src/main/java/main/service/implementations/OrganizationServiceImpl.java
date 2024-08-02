@@ -3,22 +3,19 @@ package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
 import main.dto.rest.OrganizationDto;
-import main.dto.rest.mappers.OrganizationDtoMapper;
 import main.exception.DtoCompositionException;
 import main.exception.EntityAlreadyExistException;
 import main.exception.ParameterNotValidException;
 import main.model.Organization;
 import main.repository.OrganizationRepository;
-import main.service.ServiceMessage;
 import main.service.interfaces.OrganizationService;
+import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,31 +23,22 @@ import java.util.Optional;
 public class OrganizationServiceImpl implements OrganizationService {
     public static final Logger log = LoggerFactory.getLogger(OrganizationServiceImpl.class);
     private final OrganizationRepository organizationRepository;
+    private final ModelMapper modelMapper;
 
     public OrganizationServiceImpl(OrganizationRepository organizationRepository) {
         this.organizationRepository = organizationRepository;
+        this.modelMapper = new ModelMapper();
     }
 
     @Override
-    public ResponseEntity<?> save(OrganizationDto organizationDto) {
-        try {
+    public void save(OrganizationDto organizationDto) throws EntityAlreadyExistException{
             checkOrganisationDtoComposition(organizationDto);
-            checkExistenceEntity(organizationDto.getNotation());
-            Organization organization = OrganizationDtoMapper.mapToEntity(organizationDto);
-            organization.setCreationDateTime(LocalDateTime.now());
+            validateIfEntityAlreadyExist(organizationDto.getNotation());
+            Organization organization = modelMapper.map(organizationDto, Organization.class);
             organizationRepository.save(organization);
-            String okMessage = "Запись об организации " + organizationDto.getNotation() + " успешно добавлена";
-            log.info(okMessage);
-            return ResponseEntity.ok(new ServiceMessage(okMessage));
-        } catch (EntityAlreadyExistException | DtoCompositionException ex) {
-            log.error(ex.getMessage());
-            return ResponseEntity.status(400).body(
-                    new ServiceMessage(ex.getMessage()));
-        }
     }
 
-
-    private void checkOrganisationDtoComposition(OrganizationDto organizationDto) throws DtoCompositionException {
+    private void checkOrganisationDtoComposition (OrganizationDto organizationDto) throws DtoCompositionException {
         if (organizationDto.getTitle() == null || organizationDto.getTitle().isEmpty()) {
             throw new DtoCompositionException("Пожалуйста заполните полное наименование организации");
         }
@@ -59,23 +47,17 @@ public class OrganizationServiceImpl implements OrganizationService {
         }
     }
 
-    private void checkExistenceEntity(String orgNotation) throws EntityAlreadyExistException {
+    private void validateIfEntityAlreadyExist(String orgNotation) throws EntityAlreadyExistException {
         Organization organizationFromDb = organizationRepository.findByNotation(orgNotation);
         if (organizationFromDb != null){
-            throw new EntityAlreadyExistException("Запись об организации "+ orgNotation + " уже существует");
+            throw new EntityAlreadyExistException("Запись об организации \""+ orgNotation + "\" уже существует");
         }
     }
 
     @Override
-    public ResponseEntity<?> findById(long id) {
-        try {
+    public OrganizationDto findById(long id) {
             Organization organization = getOrganizationById(id);
-            OrganizationDto organizationDto = OrganizationDtoMapper.mapToDto(organization);
-            return ResponseEntity.ok(organizationDto);
-        } catch (EntityNotFoundException ex){
-            log.error(ex.getMessage());
-            return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
-        }
+            return modelMapper.map(organization, OrganizationDto.class);
     }
 
     @Override
@@ -88,73 +70,52 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public ResponseEntity<?> findBySearchString(String searchString) {
-        if (searchString == null || searchString.isEmpty()){
-            String errorMessage = "Поле для поиска не может быть пустым";
-            log.error(errorMessage);
-            return ResponseEntity.status(400).body(new ServiceMessage(errorMessage));
-        }
-        List<OrganizationDto> organizationDtos =  organizationRepository
-                .findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(),searchString.trim())
-                .stream().map(OrganizationDtoMapper::mapToDto).toList();
-        return ResponseEntity.ok(organizationDtos);
+    public List<OrganizationDto> findBySearchString(String searchString) {
+            validateSearchString(searchString);
+         return organizationRepository.findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(),searchString.trim())
+                .stream().map(organization -> modelMapper.map(organization, OrganizationDto.class)).toList();
     }
+
+    private void validateSearchString(String searchString) {
+        if (searchString == null || searchString.isEmpty()){
+            throw  new ParameterNotValidException("Поле для поиска не может быть пустым");
+        }
+    }
+
 
     @Override
-    public ResponseEntity<?> findBySearchString(String searchString, Pageable pageable) {
-        try {
+    public Page<OrganizationDto> findBySearchString(String searchString, Pageable pageable) {
             validateSearchString(searchString);
-            Page<OrganizationDto> organizationDtos = organizationRepository
+            return organizationRepository
                     .findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(), searchString.trim(), pageable)
-                    .map(OrganizationDtoMapper::mapToDto);
-            return ResponseEntity.ok(organizationDtos);
-        } catch (ParameterNotValidException ex){
-            log.error(ex.getMessage());
-            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
-        }
-
+                    .map(organization -> modelMapper.map(organization, OrganizationDto.class));
     }
 
-    private void validateSearchString(String searchString) throws ParameterNotValidException {
-        if (searchString == null || searchString.isEmpty()){
-            throw new ParameterNotValidException("Поле для поиска не может быть пустым");
-        }
-    }
 
     @Override
     public Page<OrganizationDto> findAll(Pageable pageable) {
-        return organizationRepository.findAll(pageable).map(OrganizationDtoMapper ::mapToDto);
+        return organizationRepository.findAll(pageable)
+                .map(organization -> modelMapper.map(organization, OrganizationDto.class));
     }
 
     @Override
     public List<OrganizationDto> findAll() {
-        return organizationRepository.findAll().stream().map(OrganizationDtoMapper ::mapToDto).toList();
+        return organizationRepository.findAll().stream()
+                .map(organization -> modelMapper.map(organization, OrganizationDto.class)).toList();
     }
 
     @Override
-    public ResponseEntity<?> update(OrganizationDto organizationDto){
-        try {
+    public void update(OrganizationDto organizationDto){
             checkOrganisationDtoComposition(organizationDto);
             Organization organization = getOrganizationById(organizationDto.getId());
-            Organization updateData = OrganizationDtoMapper.mapToEntity(organizationDto);
+            Organization updateData = modelMapper.map(organizationDto, Organization.class);
             organization.updateFrom(updateData);
             organizationRepository.save(organization);
-            String okMessage = "Cведения об организации " + organization.getNotation() + " обновлены";
-            log.info(okMessage);
-            return ResponseEntity.ok(new ServiceMessage(okMessage));
-        } catch (EntityNotFoundException | DtoCompositionException ex){
-            log.error(ex.getMessage());
-            return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
-        }
-
     }
 
     @Override
-    public ResponseEntity<?>delete(long id){
+    public void delete(long id){
         organizationRepository.deleteById(id);
-        String okMessage ="Запись об организации"  + id + " успешно удалена";
-        log.info(okMessage);
-        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
 

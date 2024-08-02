@@ -35,10 +35,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
     }
 
-    @ExceptionHandler
-    public ResponseEntity<?> catchRuntimeException(RuntimeException ex){
-        log.error(ex.getMessage());
-        return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
-    }
+//    @ExceptionHandler
+//    public ResponseEntity<?> catchRuntimeException(RuntimeException ex){
+//        log.error(ex.getMessage());
+//        return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
+//    }
 
 }

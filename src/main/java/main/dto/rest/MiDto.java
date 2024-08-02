@@ -17,4 +17,18 @@ public class MiDto {
     private String validDate;
     private boolean applicable;
     private String owner;
+
+    @Override
+    public String toString() {
+        return "MiDto{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", modification='" + modification + '\'' +
+                ", serialNum='" + serialNum + '\'' +
+                ", verificationDate='" + verificationDate + '\'' +
+                ", validDate='" + validDate + '\'' +
+                ", applicable=" + applicable +
+                ", owner='" + owner + '\'' +
+                '}';
+    }
 }

@@ -19,17 +19,9 @@ public class SingleMiFactory {
     public SingleMi createSingleMi(VerificationRecord record) {
         SingleMi singleMi = new SingleMi();
         singleMi.setMiTypeNumber(record.getMi().getMiType().getNumber());
-        singleMi.setManufactureNum(getNullIfSerialNumContentMaskSymbol(record));
-        singleMi.setInventoryNum(record.getMi().getInventoryNum());
+        singleMi.setManufactureNum(record.getMi().getSerialNum());
         singleMi.setModification(record.getMi().getModification());
         return singleMi;
-    }
-
-    private static String getNullIfSerialNumContentMaskSymbol(VerificationRecord record){
-        if (record.getMi().getSerialNum().contains("*") && record.getMi().getInventoryNum()!= null){
-            return record.getMi().getInventoryNum();
-        }
-        return record.getMi().getSerialNum();
     }
 
 

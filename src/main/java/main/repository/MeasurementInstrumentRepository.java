@@ -12,15 +12,13 @@ import java.util.List;
 @Repository
 public interface MeasurementInstrumentRepository extends JpaRepository <MeasurementInstrument, Long> {
     MeasurementInstrument findByModificationAndSerialNum(String modification, String serialNum);
-    Page<MeasurementInstrument> findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContainingOrInventoryNumIgnoreCaseContaining(
+    Page<MeasurementInstrument> findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContaining(
             String modification,
             String serialNum,
-            String inventoryNum,
             Pageable pageable);
-    List<MeasurementInstrument> findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContainingOrInventoryNumIgnoreCaseContaining(
+    List<MeasurementInstrument> findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContaining(
             String modification,
-            String serialNum,
-            String inventoryNum);
+            String serialNum);
     @Override
     @NonNull
     Page<MeasurementInstrument> findAll(@NonNull Pageable pageable);

@@ -46,6 +46,13 @@
                     <dd ng-model="type" class="col-sm-6">{{mi.startUseDate | date: "dd.MM.yyyy" : 'UTC'}}</dd>
 
                     <p></p>
+                    <dt class="col-sm-6 ">Статус СИ</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miDetails.status.status}}</dd>
+
+                    <dt class="col-sm-6 ">Состояние</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miDetails.condition.title}}</dd>
+
+                    <p></p>
 
                     <h5>Сведения о владельце</h5>
 
@@ -57,6 +64,12 @@
 
                     <dt class="col-sm-6">Адрес</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.owner.address}}</dd>
+
+                    <dt class="col-sm-6 ">Эксплуатирующее подразделение</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miDetails.department.notation}}</dd>
+
+                    <dt class="col-sm-6 ">Ответственный за эксплуатацию</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miDetails.user}}</dd>
 
                     <p></p>
                     <h5>Файлы</h5>
@@ -79,6 +92,11 @@
 
                     <dt class="col-sm-6 ">Пригоден</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.applicable}}</dd>
+
+                    <p></p>
+
+                    <dt class="col-sm-6 ">Вид измерений</dt>
+                    <dd ng-model="type" class="col-sm-6">{{miDetails.measCategory.title}}</dd>
 
                     <p></p>
 
@@ -138,7 +156,9 @@
                     url: "/mis/" + idAttr,
                     method: "GET"
                 }).then(function (response) {
-                    $scope.mi = response.data;
+                    $scope.miDetails = response.data;
+                    console.log($scope.miDetails);
+                    $scope.mi = $scope.miDetails.miFullDto;
                     $scope.formatMiDateFields();
                     $scope.mi.applicable = $scope.mi.applicable ? "Пригоден" : "Не пригоден";
                     $scope.getMiTypeDocuments();
