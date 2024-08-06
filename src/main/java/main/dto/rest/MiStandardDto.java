@@ -12,7 +12,7 @@ import main.model.MeasurementInstrument;
 public class MiStandardDto {
     private long id;
     private String arshinNumber;
-    private MeasurementInstrument measurementInstrument;
+    private MiDetailsDto miDetails;
     private String schemaType;
     private String schemaTitle;
     private String schemaNotation;
@@ -26,7 +26,7 @@ public class MiStandardDto {
         return "MiStandardDto{" +
                 "id=" + id +
                 ", arshinNumber='" + arshinNumber + '\'' +
-                ", measurementInstrument=" + measurementInstrument +
+                ", miDetails=" + miDetails +
                 ", schemaType='" + schemaType + '\'' +
                 ", schemaTitle='" + schemaTitle + '\'' +
                 ", stateStandardNumber='" + stateStandardNumber + '\'' +

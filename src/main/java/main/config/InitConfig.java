@@ -132,8 +132,12 @@ public class InitConfig {
         } catch (EntityAlreadyExistException ex){
             log.warn(ex.getMessage());
         }
-        MiStatusDto defaultMiStatusDto =  miStatusService.findByStatus("Рабочее СИ").get(0);
-        AppDefaults.setDefaultMiStatus(modelMapper.map(defaultMiStatusDto, MiStatus.class));
+        MiStatusDto workingToolMiStatusDto =  miStatusService.findByStatus("Рабочее СИ").get(0);
+        AppDefaults.setWorkingToolMiStatus(modelMapper.map(workingToolMiStatusDto, MiStatus.class));
+        MiStatusDto standardMiStatusDto =  miStatusService.findByStatus("Эталон").get(0);
+        AppDefaults.setStandardMiStatus(modelMapper.map(standardMiStatusDto, MiStatus.class));
+        MiStatusDto indicatorMiStatusDto =  miStatusService.findByStatus("Индикатор").get(0);
+        AppDefaults.setIndicatorMiStatus(modelMapper.map(indicatorMiStatusDto, MiStatus.class));
     }
 
 

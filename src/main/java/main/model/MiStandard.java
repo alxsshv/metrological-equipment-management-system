@@ -26,7 +26,7 @@ public class MiStandard {
     private String arshinNumber; // номер эталона, присвоенный организацией-владельцем
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "mi_id")
-    private MeasurementInstrument measurementInstrument; // Средство измерения, являющееся эталоном
+    private MiDetails miDetails; // Средство измерения, являющееся эталоном
     @Column(name = "schema_type")
     private String schemaType; // локальная или государственная поверочная схема
     @Column(name = "schema_title", length = 2000)

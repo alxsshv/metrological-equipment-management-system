@@ -60,7 +60,7 @@ public class MiDetailsServiceImpl implements MiDetailsService {
             miDetailsDto.setDepartment(modelMapper.map(AppDefaults.getDefaultDepartment(), DepartmentDto.class));
         }
         if (miDetailsDto.getStatus() == null) {
-            miDetailsDto.setStatus(modelMapper.map(AppDefaults.getDefaultMiStatus(), MiStatusDto.class));
+            miDetailsDto.setStatus(modelMapper.map(AppDefaults.getMiStatusWorkingTool(), MiStatusDto.class));
         }
         if (miDetailsDto.getMeasCategory() == null) {
             miDetailsDto.setMeasCategory(modelMapper.map(AppDefaults.getDefaultMeasCategory(), MeasCategoryDto.class));

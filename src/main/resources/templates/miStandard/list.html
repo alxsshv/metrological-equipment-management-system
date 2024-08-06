@@ -62,12 +62,12 @@
                     <td><a href="{{viewReference}}/{{standard.id}}?id={{standard.id}}">{{standard.arshinNumber}}</a></td>
                     <td>{{standard.schemaNotation}}</td>
                     <td>{{standard.level}}</td>
-                    <td>{{standard.measurementInstrument.modification}}</td>
-                    <td>{{standard.measurementInstrument.serialNum}}</td>
-                    <td>{{standard.measurementInstrument.manufactureDate | date:"yyyy"}}</td>
-                    <td>{{standard.measurementInstrument.miType.number}}</td>
-                    <td>{{standard.measurementInstrument.verificationDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
-                    <td>{{standard.measurementInstrument.validDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
+                    <td>{{standard.miDetails.miFullDto.modification}}</td>
+                    <td>{{standard.miDetails.miFullDto.serialNum}}</td>
+                    <td>{{standard.miDetails.manufactureDate | date:"yyyy"}}</td>
+                    <td>{{standard.miDetails.miFullDto.miType.number}}</td>
+                    <td>{{standard.miDetails.miFullDto.verificationDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
+                    <td>{{standard.miDetails.miFullDto.validDate | date:"dd.MM.yyyy" : 'UTC'}}</td>
                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
                             ng-click="getDeleteableId(standard.id)" type="button">Удалить</button></td>
                 </tr>
@@ -125,14 +125,14 @@
 
             $scope.formatDateFieldsFromContentList = function () {
                 $scope.contentlist.forEach(element => {
-                    if (element.measurementInstrument.verificationDate != null) {
-                        element.measurementInstrument.verificationDate = new Date(element.measurementInstrument.verificationDate);
+                    if (element.miDetails.miFullDto.verificationDate != null) {
+                        element.miDetails.miFullDto.verificationDate = new Date(element.miDetails.miFullDto.verificationDate);
                     }
-                    if (element.measurementInstrument.validDate != null) {
-                        element.measurementInstrument.validDate = new Date(element.measurementInstrument.validDate);
+                    if (element.miDetails.miFullDto.validDate != null) {
+                        element.miDetails.miFullDto.validDate = new Date(element.miDetails.miFullDto.validDate);
                     }
-                    if (element.measurementInstrument.manufactureDate != null) {
-                        element.measurementInstrument.manufactureDate = new Date(element.measurementInstrument.manufactureDate);
+                    if (element.miDetails.manufactureDate != null) {
+                        element.miDetails.miFullDto.manufactureDate = new Date(element.miDetails.manufactureDate);
                     }
                 });
             }

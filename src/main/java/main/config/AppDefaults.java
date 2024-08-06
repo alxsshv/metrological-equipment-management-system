@@ -13,7 +13,11 @@ public class AppDefaults {
     @Getter
     private static MeasCategory defaultMeasCategory;
     @Getter
-    private static MiStatus defaultMiStatus;
+    private static MiStatus miStatusWorkingTool;
+    @Getter
+    private static MiStatus miStatusStandard;
+    @Getter
+    private static MiStatus miStatusIndicator;
 
 
     public static void setDefaultMiCondition(MiCondition defaultMiCondition) {
@@ -32,7 +36,15 @@ public class AppDefaults {
         AppDefaults.defaultMeasCategory = measCategory;
     }
 
-    public static void setDefaultMiStatus(MiStatus miStatus) {
-        AppDefaults.defaultMiStatus = miStatus;
+    public static void setWorkingToolMiStatus(MiStatus miStatus) {
+        AppDefaults.miStatusWorkingTool = miStatus;
+    }
+
+    public static void setStandardMiStatus(MiStatus miStatus) {
+        AppDefaults.miStatusStandard = miStatus;
+    }
+
+    public static void setIndicatorMiStatus(MiStatus miStatus) {
+        AppDefaults.miStatusIndicator = miStatus;
     }
 }

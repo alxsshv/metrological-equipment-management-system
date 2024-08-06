@@ -117,15 +117,16 @@
                 $scope.miStandard = {};
 
 
-                //Поиск типа СИ по подстроке
+                //Поиск СИ по подстроке
                 $scope.mis = [];
                 $scope.searchMi = function () {
-                    if ($scope.searchString.length > 3) {
+                    if ($scope.searchString.length > 2) {
                         $http({
                             url: "/mis/search?search=" + $scope.searchString,
                             method: "GET"
                         }).then(function (response) {
                             $scope.mis = response.data;
+                            console.log($scope.mis);
                         });
                     }
                 }
@@ -141,7 +142,7 @@
                         url: "/mis/" + id,
                         method: "GET"
                     }).then(function (response) {
-                        $scope.miStandard.measurementInstrument = response.data;
+                        $scope.miStandard.miDetails = response.data;
                     });
                 }
 
