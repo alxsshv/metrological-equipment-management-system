@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/settings")
+@RequestMapping("/entity-settings")
 public class SettingsController {
     @Autowired
     private SettingsService settingsService;

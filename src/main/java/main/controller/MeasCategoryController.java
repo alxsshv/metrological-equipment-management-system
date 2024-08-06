@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/measurement_categories")
+@RequestMapping("/measurement-categories")
 public class MeasCategoryController {
     @Autowired
     private MeasCategoryService measCategoryService;

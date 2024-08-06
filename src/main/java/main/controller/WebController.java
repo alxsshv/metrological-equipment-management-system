@@ -154,9 +154,15 @@ public class WebController {
         return "report/record/reportByEmployee";
     }
 
-    //Вывод шаблонов для настроек
-    @GetMapping("/settings/form")
+    //Вывод шаблонов для настроек юр.лица
+    @GetMapping("settings/entity/form")
     public String getSettingsForm(){
-        return "settings/form";
+        return "settings/entity/form";
+    }
+
+    //Вывод шаблонов для добавления и удаления видов измерений
+    @GetMapping("meas-categories/form")
+    public String getMeasCategoryForm(){
+        return "measCategory/form";
     }
 }

@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @Slf4j
-@RequestMapping("/mi_conditions")
+@RequestMapping("/mi-conditions")
 public class MiConditionController {
     @Autowired
     private MiConditionService miConditionService;

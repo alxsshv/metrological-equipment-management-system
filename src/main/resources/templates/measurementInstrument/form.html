@@ -25,20 +25,22 @@
             <div class="row g-2">
                 <div class="col-md-2">
                     <label for="inputMiType" class="form-label">№ типа СИ</label>
-                    <input type="text" autocomplete="off" ng-change="searchTypeOnNumber()" ng-model="mi.miType.number" data-bs-toggle="dropdown" placeholder="XXXXX-XX"
-                        class="form-control dropdown-toggle" id="inputMiType" value="" required>
-                        <ul class="dropdown-menu" ng-model="typeTitle" id="numberDropdown" >
-                            <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
-                                    ng-click="selectType(item)">{{item.number}} {{item.title}}
-                                    {{item.notation}}</a></li>
-                        </ul>
+                    <input type="text" autocomplete="off" ng-change="searchTypeOnNumber()" ng-model="mi.miType.number"
+                        data-bs-toggle="dropdown" placeholder="XXXXX-XX" class="form-control dropdown-toggle"
+                        id="inputMiType" value="" required>
+                    <ul class="dropdown-menu" ng-model="typeTitle" id="numberDropdown">
+                        <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
+                                ng-click="selectType(item)">{{item.number}} {{item.title}}
+                                {{item.notation}}</a></li>
+                    </ul>
                 </div>
                 <div class="col-md-5 ">
                     <label class="form-label" for="inputMiTitle">Наименование типа*</label>
-                    <input type="text" autocomplete="off" ng-change="searchType()" ng-model="mi.miType.title" data-bs-toggle="dropdown"
-                        class="form-control dropdown-toggle border-success" id="inputMiTitle" value="">
+                    <input type="text" autocomplete="off" ng-change="searchType()" ng-model="mi.miType.title"
+                        data-bs-toggle="dropdown" class="form-control dropdown-toggle border-success" id="inputMiTitle"
+                        value="">
 
-                    <ul class="dropdown-menu" ng-model="typeTitle" id="titleDropdown" >
+                    <ul class="dropdown-menu" ng-model="typeTitle" id="titleDropdown">
                         <li ng-repeat="item in types" value="{{item}}"> <a class="dropdown-item"
                                 ng-click="selectType(item)">{{item.number}} {{item.title}}
                                 {{item.notation}}</a></li>
@@ -46,19 +48,21 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label" for="inputText3">Обозначение типа СИ*</label>
-                    <input type="text" autocomplete="off" ng-model="mi.miType.notation" class="form-control border-success" id="inputText3" value="">
+                    <input type="text" autocomplete="off" ng-model="mi.miType.notation"
+                        class="form-control border-success" id="inputText3" value="">
                 </div>
                 <div class="col-md-3">
-                       
-                        <label class="form-label" for="inputOwner">Модификация*</label>
-                        <input type="text" autocomplete="off" ng-change="searchModification()" ng-model="mi.modification" data-bs-toggle="dropdown"
-                            class="form-control mb-3 border-success dropdown-toggle" id="inputModification" value="">
-    
-                        <ul class="dropdown-menu" ng-model="mi.modification">
-                            <li ng-repeat="item in modifications" value="{{item}}"> <a class="dropdown-item"
-                                    ng-click="selectModification(item)">{{item}}</a></li>
-                        </ul>
-          
+
+                    <label class="form-label" for="inputOwner">Модификация*</label>
+                    <input type="text" autocomplete="off" ng-change="searchModification()" ng-model="mi.modification"
+                        data-bs-toggle="dropdown" class="form-control mb-3 border-success dropdown-toggle"
+                        id="inputModification" value="">
+
+                    <ul class="dropdown-menu" ng-model="mi.modification">
+                        <li ng-repeat="item in modifications" value="{{item}}"> <a class="dropdown-item"
+                                ng-click="selectModification(item)">{{item}}</a></li>
+                    </ul>
+
                 </div>
             </div>
         </div>
@@ -68,17 +72,18 @@
             <div class="row g-2">
                 <div class="col-md-3">
                     <label class="form-label" for="inputText4">Заводской №*</label>
-                    <input type="text" autocomplete="off" ng-model="mi.serialNum" class="form-control border-success" id="inputText4" value="" required>
+                    <input type="text" autocomplete="off" ng-model="mi.serialNum" class="form-control border-success"
+                        id="inputText4" value="" required>
                 </div>
                 <div class="col-md-3">
                     <label for="inputText5" class="form-label">Инвентарный №</label>
-                    <input type="text" autocomplete="off" ng-model="mi.inventoryNumber" class="form-control" id="inputText5" value=""
-                        required>
+                    <input type="text" autocomplete="off" ng-model="mi.inventoryNumber" class="form-control"
+                        id="inputText5" value="" required>
                 </div>
                 <div class="col-md-6 ">
                     <label class="form-label" for="inputOwner">Владелец</label>
-                    <input type="text" autocomplete="off" ng-change="searchOrganization()" ng-model="organization" data-bs-toggle="dropdown"
-                        class="form-control dropdown-toggle" id="inputOwner" value="">
+                    <input type="text" autocomplete="off" ng-change="searchOrganization()" ng-model="organization"
+                        data-bs-toggle="dropdown" class="form-control dropdown-toggle" id="inputOwner" value="">
 
                     <ul class="dropdown-menu" ng-model="mi.owner">
                         <li ng-repeat="item in organizations" value="{{item}}"> <a class="dropdown-item"
@@ -86,26 +91,49 @@
                     </ul>
                 </div>
             </div>
-            <div class="row g-2"> <a class="label" data-bs-toggle="collapse" href="#additionalFields" role="button" aria-expanded="false" aria-controls="collapseExample">
-                Дополнительные поля
-              </a>
+            <div class="row g-2"> <a class="label" data-bs-toggle="collapse" href="#additionalFields" role="button"
+                    aria-expanded="false" aria-controls="collapseExample">
+                    Дополнительные поля
+                </a>
             </div>
-            <div class="row g-2 collapse"  id="additionalFields">
-                <div class="col-md-3">
-                    <label for="inputDate1" class="form-label">Изготовлено</label>
-                    <input type="date"  ng-model="mi.manufactureDate" ng-model-options="{timezone: 'UTC'}"
-                        class="form-control" id="inputDate1" value="">
+            <div class="row g-2 collapse" id="additionalFields">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="inputDate1" class="form-label">Изготовлено</label>
+                        <input type="date" ng-model="mi.manufactureDate" ng-model-options="{timezone: 'UTC'}"
+                            class="form-control" id="inputDate1" value="">
+                    </div>
+                    <div class="col-md-3">
+                        <label for="inputDate2" class="form-label">Введено в эксплуатацию</label>
+                        <input type="date" ng-model="mi.startUseDate" ng-model-options="{timezone: 'UTC'}"
+                            class="form-control" id="inputDate2" value="">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="inputText7" class="form-label">Ответственный за эксплуатацию</label>
+                        <input type="text" autocomplete="off" ng-model="user" class="form-control" id="inputText7"
+                            value="" required>
+                    </div>
                 </div>
-                <div class="col-md-3">
-                    <label for="inputDate2" class="form-label">Введено в эксплуатацию</label>
-                    <input type="date" ng-model="mi.startUseDate" ng-model-options="{timezone: 'UTC'}" class="form-control"
-                        id="inputDate2" value="">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label" for="select4">Вид измерений</label>
+                        <select ng-options="item as item.title for item in measCategories track by item.id"
+                            ng-model="measCategory" class="form-select border-info" 
+                            id="select4">
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label" for="select5">Состояние СИ</label>
+                        <select ng-options="item as item.title for item in miConditions track by item.id"
+                            ng-model="miCondition" class="form-select border-info" 
+                            id="select5">
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                    
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <label for="inputText7" class="form-label">Ответственный за эксплуатацию</label>
-                    <input type="text" autocomplete="off" ng-model="user" class="form-control" id="inputText7" value="" required>
-                </div>
-                
+
             </div>
         </div>
 
@@ -125,7 +153,8 @@
                 </div>
                 <div class="col-md-4">
                     <label class="form-label" for="select2">Пригодность*</label>
-                    <select ng-model="mi.applicable" class="form-select border-success" aria-label="Заводской номер"  id="select2">
+                    <select ng-model="mi.applicable" class="form-select border-success" aria-label="Заводской номер"
+                        id="select2">
                         <option value="true">Пригоден</option>
                         <option value="false">Непригоден</option>
                     </select>
@@ -170,6 +199,27 @@
             $scope.mi = {};
             $scope.descriptions = [];
 
+            $scope.getMeasCategories = function () {
+                $http({
+                    url: "/measurement-categories",
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.measCategories = response.data;
+                    console.log($scope.measCategories);
+                });
+            }
+
+            $scope.getMiConditions = function () {
+                $http({
+                    url: "/mi-conditions",
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.miConditions = response.data;
+                    console.log($scope.miConditions);
+                });
+            }
+
+
             // Поиск типа СИ по номеру в ФИФ ОЕИ
             $scope.searchTypeOnNumber = function () {
                 showDropdownMenuById('inputMiType');
@@ -182,6 +232,7 @@
                     });
                 }
             }
+
 
             //Поиск типа СИ по подстроке
             $scope.types = [];
@@ -197,7 +248,7 @@
                 }
             }
 
-            function showDropdownMenuById(id){
+            function showDropdownMenuById(id) {
                 let elem = document.getElementById(id);
                 bootstrap.Dropdown.getOrCreateInstance(elem).show();
             }
@@ -207,13 +258,13 @@
             }
 
             getMiTypeFullData = function (id) {
-                    $http({
-                        url: "/mits/" + id,
-                        method: "GET"
-                    }).then(function (response) {
-                        $scope.mi.miType = response.data;
-                        $scope.getModifications();
-                    });
+                $http({
+                    url: "/mits/" + id,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.mi.miType = response.data;
+                    $scope.getModifications();
+                });
             }
 
             //Получение модификаций для выбранного типа СИ
@@ -243,7 +294,6 @@
 
 
             $scope.selectModification = function (item) {
-               // $scope.organization = item.notation;
                 $scope.mi.modification = item;
             }
 
@@ -266,7 +316,7 @@
                 $scope.organization = item.notation;
                 $scope.mi.owner = item;
             }
-            
+
             $scope.buildFileNameList = function () {
                 $scope.filenames = [];
                 for (let i = 0; i < file.files.length; i++) {
@@ -280,6 +330,8 @@
             $scope.buildFormData = function () {
                 let miDetails = {};
                 miDetails.miFullDto = $scope.mi;
+                miDetails.measCategory = $scope.measCategory;
+                miDetails.condition = $scope.miCondition;
                 formData.append('instrument', JSON.stringify(miDetails));
                 formData.append('descriptions', $scope.descriptions);
                 for (let i = 0; i < file.files.length; i++) {
@@ -297,9 +349,9 @@
                     method: "POST",
                     data: formData,
                     headers: {
-                            'Accept': '*/*',
-                            'Content-Type': undefined
-                        }
+                        'Accept': '*/*',
+                        'Content-Type': undefined
+                    }
                 }).then(function successCallback(response) {
                     alert(response.data.message);
                     formData = new FormData();
@@ -307,6 +359,9 @@
                     alert(response.data.message)
                 });
             }
+
+            $scope.getMiConditions();
+            $scope.getMeasCategories();
 
         });
     </script>

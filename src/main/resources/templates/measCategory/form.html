@@ -1,0 +1,229 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Виды измерений</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="MEAS_CATEGORIES_FORM" ng-controller="MEAS_CATEGORIES_FORM_CTRL">
+    <div class="container text-center">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <div class="btn-group">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Сортировать
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}&search={{searchString}}">По
+                                возрастанию</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}&search={{searchString}}">По
+                                убыванию</a></li>
+                    </ul>
+                </div>
+                <div class="btn-group">
+                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Выводить по
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item"
+                                href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10&search={{searchString}}">10</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{viewReference}}?page=0&dir={{sortDirection}}&size=20&search={{searchString}}">20</a></li>
+                        <li><a class="dropdown-item"
+                                href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50&search={{searchString}}">50</a></li>
+                    </ul>
+                </div>
+                <form class="d-flex" role="search">
+                    <input ng-model="searchString" style="display: inline-block; max-width: 300px;"
+                        class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
+                    <button class="btn btn-outline-success" ng-click="getSearchContentlist()"
+                        type="submit">Поиск</button>
+                </form>
+            </form>
+        </nav>
+        <p></p>
+
+        <p></p>
+        <div class="row">
+            <div class="col-md-7">
+                <h5>Виды измерений</h5>
+                <div class="row">
+                    <table class="table table-info table-striped table-hover">
+                        <tr>
+                            <th>Наименование</th>
+                            <th></th>
+                        </tr>
+                        <tr ng-repeat="item in contentlist">
+                            <td><a href="{{viewReference}}/{{item.id}}?id={{item.id}}">{{item.title}}</a></td>
+                            <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
+                                    ng-click="getDeleteableId(item.id)" type="button">Удалить</button></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="row">
+                    <nav aria-label="Page navigation">
+                        <ul class="pagination">
+                            <li class="page-item"><a class="page-link"
+                                    href="{{viewReference}}?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">Предыдущая</a>
+                            </li>
+                            <li ng-repeat="item in pageArray track by $index" class="page-item"><a class="page-link"
+                                    href="{{viewReference}}?page={{item}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">{{item+1}}</a>
+                            </li>
+                            <li class="page-item"><a class="page-link"
+                                    href="{{viewReference}}?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">Следующая</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="col-md-1"></div>
+            <div class="col-md-4 justify-content-center">
+                <h5>Добавить вид измерений</h5>
+                <p>
+                </p>
+                <div class="row">
+                    <input ng-model="measCategory.title" class="form-control" type="text" placeholder="Наименование">
+                </div>
+                <p></p>
+                <div class="row">
+                    <div class="col-md-7"></div>
+                    <div class="col justify-content-end">
+                        <button class="btn btn-outline-primary" ng-click="addMiCategory()"
+                            type="submit">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+
+    <!-- Модальное окно -->
+    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаления" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить вид измерений
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
+                    <button type="button" class="btn btn-primary"
+                        ng-click="deleteContent(deleteableId)">Удалить</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/angular.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("MEAS_CATEGORIES_FORM", []);
+        app.controller("MEAS_CATEGORIES_FORM_CTRL", function ($scope, $http) {
+            $scope.contentUrl = "/measurement-categories";
+            $scope.viewReference = "/meas-categories/form"
+
+            $scope.getPagesContentlist = function (contentUrl) {
+                $scope.getPageAttributes();
+                $http({
+                    url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection + "&size=" + $scope.pageSize + "&search=" + $scope.searchString,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.contentlist = response.data.content;
+                    console.log($scope.contentlist)
+                    $scope.createPaginationParams(response.data.totalPages);
+                });
+            }
+
+
+            $scope.getPageAttributes = function () {
+                var documentUrl = new URL(document.URL);
+                $scope.pageNum = documentUrl.searchParams.get("page");
+                $scope.sortDirection = documentUrl.searchParams.get("dir");
+                $scope.pageSize = documentUrl.searchParams.get("size");
+                $scope.searchString = documentUrl.searchParams.get("search");
+
+                if ($scope.pageSize == null || $scope.pageSize == undefined) {
+                    $scope.pageSize = "10";
+                }
+                if ($scope.sortDirection == null || $scope.sortDirection == undefined) {
+                    $scope.sortDirection = "ASC";
+                }
+                if ($scope.pageNum == null || $scope.pageNum == undefined) {
+                    $scope.pageNum = "0";
+                }
+                if ($scope.searchString == null || $scope.searchString == undefined) {
+                    $scope.searchString = "";
+                }
+            }
+
+            $scope.createPaginationParams = function (totalPages) {
+                $scope.pageArray = [];
+                $scope.previousPage = 0;
+                $scope.nextPage = Number($scope.pageNum) + 1;
+
+                if ($scope.pageNum > 0) {
+                    $scope.previousPage = $scope.pageNum - 1;
+                }
+                if ($scope.pageNum >= totalPages - 1) {
+                    $scope.nextPage = totalPages - 1;
+                }
+                $scope.pageArray = [];
+                for (let i = 0; i < totalPages; i++) {
+                    $scope.pageArray.push(i);
+                }
+            }
+
+
+            $scope.getSearchContentlist = function () {
+                $http({
+                    url: $scope.contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection + "&size=" + $scope.pageSize + "&search=" + $scope.searchString,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.contentlist = response.data.content;
+                    $scope.createPaginationParams(response.data.totalPages);
+                });
+            }
+
+
+            $scope.getDeleteableId = function (id) {
+                $scope.deleteableId = id;
+            }
+
+            $scope.deleteContent = function (delId) {
+                var myModalEl = document.getElementById('modal')
+                var modal = bootstrap.Modal.getInstance(myModalEl);
+                modal.hide();
+                $http({
+                    url: $scope.contentUrl + "/" + delId,
+                    method: "DELETE"
+                }).then(function (response) {
+                    alert(response.data.message);
+                    $scope.getPagesContentlist($scope.contentUrl);
+                });
+            }
+
+                $scope.addMiCategory = function () {
+                $http({
+                    url: $scope.contentUrl,
+                    method: "POST",
+                    data: $scope.measCategory
+                }).then(function successCallback(response) {
+                    alert(response.data.message);
+                    window.location.reload();
+                }, function errorCallback(response) {
+                    alert(response.data.message)
+                });
+            }
+
+            $scope.getPagesContentlist($scope.contentUrl);
+
+        });
+    </script>
+</body>
+
+</html>
