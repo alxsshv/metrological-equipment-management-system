@@ -1,5 +1,6 @@
 package main.service.interfaces;
 
+import jakarta.validation.Valid;
 import main.dto.rest.MiTypeDto;
 import main.dto.rest.MiTypeFullDto;
 import main.model.MiTypeInstruction;
@@ -12,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface MiTypeService {
-    ResponseEntity<?> save(MiTypeFullDto miTypeDto, MultipartFile[] files,String[] descriptions) throws IOException;
+    ResponseEntity<?> save(@Valid MiTypeFullDto miTypeDto, MultipartFile[] files, String[] descriptions) throws IOException;
     ResponseEntity<?> findById(long id);
     MiTypeInstruction getInstructionById(long id);
     ResponseEntity<?> findByNumber(String number);
@@ -22,6 +23,6 @@ public interface MiTypeService {
     ResponseEntity<?> findModificationsByMiTypeIdAndSearchString(long miTypeId, String searchString);
     Page<MiTypeDto> findAll(Pageable pageable);
     List<MiTypeDto> findAll();
-    ResponseEntity<?> update(MiTypeFullDto miTypeDto);
+    ResponseEntity<?> update(@Valid MiTypeFullDto miTypeDto);
     ResponseEntity<?>delete(long id) throws IOException;
 }

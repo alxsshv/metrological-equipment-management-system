@@ -1,6 +1,8 @@
 package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import main.dto.rest.MiTypeDto;
 import main.dto.rest.MiTypeFullDto;
 import main.dto.rest.mappers.MiTypeDtoMapper;
@@ -23,15 +25,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
 
 @Service
+@Validated
 public class MiTypeServiceImpl implements MiTypeService {
     public static final Logger log = LoggerFactory.getLogger(MiTypeServiceImpl.class);
     private final MiTypeRepository miTypeRepository;
@@ -50,9 +53,8 @@ public class MiTypeServiceImpl implements MiTypeService {
     }
 
     @Override
-    public ResponseEntity<?> save(MiTypeFullDto miTypeFullDto, MultipartFile[] files,String[] descriptions) throws IOException {
+    public ResponseEntity<?> save(@Valid MiTypeFullDto miTypeFullDto, MultipartFile[] files, String[] descriptions) throws IOException {
         try {
-            checkMiTypeDtoComposition(miTypeFullDto);
             checkExistenceEntity(miTypeFullDto.getNumber());
             MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapFullDtoToEntity(miTypeFullDto);
             MiTypeInstruction savedInstruction = miTypeInstructionRepository.save(miTypeInstruction);
@@ -66,23 +68,6 @@ public class MiTypeServiceImpl implements MiTypeService {
         }
     }
 
-    private void checkMiTypeDtoComposition(MiTypeFullDto dto) throws DtoCompositionException {
-        String miTypeNumberTemplate = "[0-9]{3,5}-[0-9]{2}";
-        Pattern pattern = Pattern.compile(miTypeNumberTemplate);
-        Matcher matcher = pattern.matcher(dto.getNumber());
-        if (dto.getNumber() == null || !matcher.find()) {
-            throw new DtoCompositionException("Некорректно указан регистрационный номер типа средства измерений" +
-                    " в Федеральном информационном фонде по обеспечению единства измерений");
-        }
-        if (dto.getTitle() == null || dto.getTitle().isEmpty()){
-            throw new DtoCompositionException("Пожалуйста заполните наименование типа средства измерений");
-        }
-        if (dto.getModifications().isEmpty()){
-            throw new DtoCompositionException("Пожалуйста укажите не менее одной модификации типа средства измерений," +
-                    " если модификации отсутствуют, введите единственную модифкацию," +
-                    " соответствующую обозначению типа СИ или фразу \"Модификация отсутствует\"");
-        }
-    }
 
     private void checkExistenceEntity(String miTypeNumber) throws EntityAlreadyExistException {
         MiType miTypeFromDb = miTypeRepository.findByNumber(miTypeNumber);
@@ -130,9 +115,8 @@ public class MiTypeServiceImpl implements MiTypeService {
     }
 
     @Override
-    public ResponseEntity<?> findBySearchString(String searchString, Pageable pageable) {
+    public ResponseEntity<?> findBySearchString(@NotBlank(message = "Поле для поиска не может быть пустым") String searchString, Pageable pageable) {
         try{
-            validateSearchString(searchString);
             Page<MiTypeDto> page =  miTypeRepository
                     .findByNumberContainingOrTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(),searchString.trim(),searchString.trim(), pageable)
                     .map(MiTypeDtoMapper::mapToDto);
@@ -144,9 +128,9 @@ public class MiTypeServiceImpl implements MiTypeService {
 
     }
     @Override
-    public ResponseEntity<?> findBySearchString(String searchString) {
+    public ResponseEntity<?> findBySearchString(
+            @NotBlank(message = "Поле для поиска не может быть пустым") String searchString) {
         try {
-            validateSearchString(searchString);
             List<MiTypeDto> miTypeDtos = miTypeRepository
                     .findByNumberContainingOrTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(), searchString.trim(), searchString.trim()).stream()
                     .map(MiTypeDtoMapper::mapToDto).toList();
@@ -157,11 +141,6 @@ public class MiTypeServiceImpl implements MiTypeService {
         }
     }
 
-    private void validateSearchString(String searchString) throws ParameterNotValidException {
-        if (searchString == null || searchString.isEmpty()){
-            throw new ParameterNotValidException("Поле для поиска не может быть пустым");
-        }
-    }
 
     @Override
     public ResponseEntity<?> findModifications(long miTypeId){
@@ -201,9 +180,8 @@ public class MiTypeServiceImpl implements MiTypeService {
     }
 
     @Override
-    public ResponseEntity<?> update(MiTypeFullDto miTypeDto){
+    public ResponseEntity<?> update(@Valid MiTypeFullDto miTypeDto){
         try {
-            checkMiTypeDtoComposition(miTypeDto);
             MiTypeInstruction instruction = getInstructionById(miTypeDto.getId());
             MiTypeInstruction updateData = MiTypeDtoMapper.mapFullDtoToEntity(miTypeDto);
             instruction.updateFrom(updateData);
@@ -220,7 +198,6 @@ public class MiTypeServiceImpl implements MiTypeService {
     @Override
     public ResponseEntity<?>delete(long id) throws IOException {
         try {
-            //  MiTypeInstruction instruction = getInstructionById(id);
             fileService.deleteAllFiles(Category.MI_TYPE, id);
             miTypeInstructionRepository.deleteById(id);
             miTypeRepository.deleteById(id);

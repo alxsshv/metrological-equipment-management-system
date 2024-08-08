@@ -1,5 +1,7 @@
 package main.dto.rest;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,9 +12,12 @@ import lombok.Setter;
 @Getter
 public class MiFullDto {
     private long id;
+    @NotNull(message = "Пожалуйста укажите тип средства измерений")
     private MiTypeDto miType;
     private String title;
+    @NotEmpty(message = "Некорректно указана модификация средства измерений")
     private String modification;
+    @NotEmpty(message = "Пожалуйста заполните заводской номер средства измерений")
     private String serialNum;
     private String inventoryNum;
     private String manufactureDate;

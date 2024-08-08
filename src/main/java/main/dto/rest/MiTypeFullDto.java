@@ -1,5 +1,7 @@
 package main.dto.rest;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,13 +16,22 @@ import java.util.List;
 @AllArgsConstructor
 public class MiTypeFullDto {
     private long id;
+    @Pattern(
+            regexp = "[0-9]{3,5}-[0-9]{2}",
+            message = "Некорректно указан регистрационный номер типа средства измерений" +
+                    " в Федеральном информационном фонде по обеспечению единства измерений"
+    )
     private String number;
+    @NotEmpty(message = "Пожалуйста заполните наименование типа средства измерений")
     private String title;
     private String notation;
     private String startDate;
     private String endDate;
     private double verificationPeriod;
     private String miTitleTemplate;
+    @NotEmpty(message = "Пожалуйста укажите не менее одной модификации типа средства измерений," +
+            " если модификации отсутствуют, введите единственную модифкацию," +
+            " соответствующую обозначению типа СИ или фразу \"Модификация отсутствует\"")
     private List<String> modifications = new ArrayList<>();
     private String instructionNotation;
     private String instructionTitle;

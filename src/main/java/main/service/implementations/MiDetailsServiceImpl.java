@@ -1,6 +1,7 @@
 package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import main.config.AppDefaults;
 import main.dto.rest.*;
@@ -68,22 +69,13 @@ public class MiDetailsServiceImpl implements MiDetailsService {
         setDefaultMiOwnerIfEmpty(miDetailsDto.getMiFullDto());
     }
 
-    private void setDefaultMiOwnerIfEmpty(MiFullDto miFullDto) throws DtoCompositionException {
+    private void setDefaultMiOwnerIfEmpty(@Valid MiFullDto miFullDto) throws DtoCompositionException {
         if (miFullDto.getOwner() == null){
             miFullDto.setOwner(OrganizationDtoMapper.mapToDto(AppDefaults.getDefaultOrganization()));
         }
     }
 
-    private void checkMeasurementInstrumentDtoComposition(MiFullDto dto) throws DtoCompositionException {
-        if (dto.getModification() == null || dto.getModification().isEmpty()) {
-            throw new DtoCompositionException("Некорректно указана мдификация средства измерений");
-        }
-        if (dto.getSerialNum() == null || dto.getSerialNum().isEmpty()){
-            throw new DtoCompositionException("Пожалуйста заполните заводской номер средства измерений");
-        }
-        if (dto.getMiType() == null){
-            throw new DtoCompositionException("Пожалуйста укажите тип средства измерений");
-        }
+    private void checkMeasurementInstrumentDtoComposition(@Valid MiFullDto dto) throws DtoCompositionException {
         MiType miTypeFromDb = miTypeService.getInstructionById(dto.getMiType().getId()).getMiType();
         if (miTypeFromDb == null){
             throw new DtoCompositionException("Выбранный тип средства измерений отсутствует в базе данных пожалуйста выберите имеющийся тип" +
@@ -96,7 +88,7 @@ public class MiDetailsServiceImpl implements MiDetailsService {
         }
     }
 
-    private void validateIfEntityAlreadyExist(MiFullDto miFullDto) throws EntityAlreadyExistException {
+    private void validateIfEntityAlreadyExist(@Valid MiFullDto miFullDto) throws EntityAlreadyExistException {
         MeasurementInstrument instrumentFromDb = measurementInstrumentRepository
                 .findByModificationAndSerialNum(miFullDto.getModification(), miFullDto.getSerialNum());
         if (instrumentFromDb != null){

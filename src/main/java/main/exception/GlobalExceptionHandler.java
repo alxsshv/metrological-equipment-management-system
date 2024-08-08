@@ -1,6 +1,7 @@
 package main.exception;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import main.service.ServiceMessage;
 import org.springframework.http.ResponseEntity;
@@ -35,10 +36,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(404).body(new ServiceMessage(ex.getMessage()));
     }
 
-//    @ExceptionHandler
-//    public ResponseEntity<?> catchRuntimeException(RuntimeException ex){
-//        log.error(ex.getMessage());
-//        return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
-//    }
+    @ExceptionHandler
+    public ResponseEntity<?> catchConstraintViolationException(ConstraintViolationException ex){
+        log.error(ex.getMessage());
+        String messageWithoutClassPropertyReference = ex.getMessage().replaceFirst(".+: ", "");
+        return ResponseEntity.status(400).body(new ServiceMessage(messageWithoutClassPropertyReference));
+    }
 
 }
