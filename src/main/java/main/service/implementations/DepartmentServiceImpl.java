@@ -2,10 +2,10 @@ package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import main.dto.rest.DepartmentDto;
-import main.exception.DtoCompositionException;
 import main.exception.EntityAlreadyExistException;
-import main.exception.ParameterNotValidException;
 import main.model.Department;
 
 import main.repository.DepartmentRepository;
@@ -14,12 +14,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
 
 
 @Service
+@Validated
 public class DepartmentServiceImpl implements DepartmentService {
     private final DepartmentRepository departmentRepository;
     private final ModelMapper modelMapper;
@@ -30,18 +32,12 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void save(DepartmentDto departmentDto) {
-        checkDepartmentDtoComposition(departmentDto);
+    public void save(@Valid DepartmentDto departmentDto) {
             validateIfEntityAlreadyExist(departmentDto.getNotation());
             Department department = modelMapper.map(departmentDto, Department.class);
             departmentRepository.save(department);
     }
 
-    private void checkDepartmentDtoComposition(DepartmentDto dto) throws DtoCompositionException {
-        if (dto.getNotation() == null || dto.getNotation().isEmpty()){
-            throw new DtoCompositionException("Пожалуйста заполните обозначение подразделения");
-        }
-    }
 
     @Override
     public DepartmentDto findById(long id) {
@@ -65,25 +61,21 @@ public class DepartmentServiceImpl implements DepartmentService {
         }
     }
 
+
     @Override
-    public Page<DepartmentDto> findByNotation(String notation, Pageable pageable) {
-            validateSearchString(notation);
+    public Page<DepartmentDto> findByNotation(
+            @NotBlank(message = "Поле для поиска не может быть пустым") String notation, Pageable pageable) {
             return departmentRepository.findByNotationIgnoreCaseContaining(notation.trim(), pageable)
                     .map(department -> modelMapper.map(department, DepartmentDto.class));
     }
 
     @Override
-    public List<DepartmentDto> findByNotation(String notation) {
-            validateSearchString(notation);
+    public List<DepartmentDto> findByNotation(
+            @NotBlank(message = "Поле для поиска не может быть пустым") String notation) {
             return departmentRepository.findByNotationIgnoreCaseContaining(notation.trim()).stream()
                     .map(department -> modelMapper.map(department, DepartmentDto.class)).toList();
     }
 
-    private void validateSearchString(String searchString) throws ParameterNotValidException {
-        if (searchString == null || searchString.isEmpty()){
-            throw  new ParameterNotValidException("Поле для поиска не может быть пустым");
-        }
-    }
 
     @Override
     public Page<DepartmentDto> findAll(Pageable pageable) {
@@ -98,8 +90,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void update(DepartmentDto departmentDto){
-        checkDepartmentDtoComposition(departmentDto);
+    public void update(@Valid DepartmentDto departmentDto){
         Department department = getById(departmentDto.getId());
         Department updatingDepartmentData = modelMapper.map(departmentDto, Department.class);
         department.setNotation(updatingDepartmentData.getNotation());

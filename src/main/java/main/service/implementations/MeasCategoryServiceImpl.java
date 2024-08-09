@@ -1,10 +1,10 @@
 package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import main.dto.rest.MeasCategoryDto;
-import main.exception.DtoCompositionException;
 import main.exception.EntityAlreadyExistException;
-import main.exception.ParameterNotValidException;
 import main.model.MeasCategory;
 import main.repository.MeasCategoryRepository;
 import main.service.interfaces.MeasCategoryService;
@@ -12,12 +12,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
 
 
 @Service
+@Validated
 public class MeasCategoryServiceImpl implements MeasCategoryService {
     private final MeasCategoryRepository measCategoryRepository;
     private final ModelMapper modelMapper;
@@ -28,17 +30,10 @@ public class MeasCategoryServiceImpl implements MeasCategoryService {
     }
 
     @Override
-    public void save(MeasCategoryDto measCategoryDto) {
-            checkMeasCategoryDtoComposition(measCategoryDto);
+    public void save(@Valid MeasCategoryDto measCategoryDto) {
             validateIfEntityAlreadyExist(measCategoryDto.getTitle());
         MeasCategory measCategory = modelMapper.map(measCategoryDto, MeasCategory.class);
             measCategoryRepository.save(measCategory);
-    }
-
-    private void checkMeasCategoryDtoComposition(MeasCategoryDto dto) throws DtoCompositionException {
-        if (dto.getTitle() == null || dto.getTitle().isEmpty()){
-            throw new DtoCompositionException("Пожалуйста заполните наименование вида измерений");
-        }
     }
 
     private void validateIfEntityAlreadyExist(String title) throws EntityAlreadyExistException {
@@ -64,24 +59,17 @@ public class MeasCategoryServiceImpl implements MeasCategoryService {
     }
 
     @Override
-    public Page<MeasCategoryDto> findByTitle(String title, Pageable pageable) {
-            validateSearchString(title);
+    public Page<MeasCategoryDto> findByTitle(@NotBlank(message = "Поле для поиска не может быть пустым") String title, Pageable pageable) {
             return measCategoryRepository.findByTitleIgnoreCaseContaining(title.trim(), pageable)
                     .map(measCategory -> modelMapper.map(measCategory, MeasCategoryDto.class));
     }
 
     @Override
-    public List<MeasCategoryDto> findByTitle(String title) {
-            validateSearchString(title);
+    public List<MeasCategoryDto> findByTitle(@NotBlank(message = "Поле для поиска не может быть пустым") String title) {
             return measCategoryRepository.findByTitleIgnoreCaseContaining(title.trim()).stream()
                     .map(measCategory -> modelMapper.map(measCategory, MeasCategoryDto.class)).toList();
     }
 
-    private void validateSearchString(String searchString) throws ParameterNotValidException {
-        if (searchString == null || searchString.isEmpty()){
-            throw  new ParameterNotValidException("Поле для поиска не может быть пустым");
-        }
-    }
 
     @Override
     public Page<MeasCategoryDto> findAll(Pageable pageable) {
@@ -96,8 +84,7 @@ public class MeasCategoryServiceImpl implements MeasCategoryService {
     }
 
     @Override
-    public void update(MeasCategoryDto measCategoryDto){
-        checkMeasCategoryDtoComposition(measCategoryDto);
+    public void update(@Valid MeasCategoryDto measCategoryDto){
         MeasCategory measCategory = getById(measCategoryDto.getId());
         MeasCategory updatingMiConditionData = modelMapper.map(measCategory, MeasCategory.class);
         measCategory.setTitle(updatingMiConditionData.getTitle());
