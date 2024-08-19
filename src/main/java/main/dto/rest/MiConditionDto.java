@@ -1,6 +1,7 @@
 package main.dto.rest;
 
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -11,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class MiConditionDto {
     private long id;
+    @NotEmpty(message = "Пожалуйста заполните наименование состояния СИ")
     private String title;
 
 

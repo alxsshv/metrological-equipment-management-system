@@ -1,5 +1,6 @@
 package main.dto.rest;
 
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,7 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class OrganizationDto {
     private Long id;
+    @NotEmpty(message = "Пожалуйста заполните полное наименование организации")
     private String title;
+    @NotEmpty(message = "Пожалуйста заполните сокращенное наименование организации")
     private String notation;
     private String address;
     private String creationDateTime;

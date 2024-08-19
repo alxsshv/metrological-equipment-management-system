@@ -55,7 +55,7 @@ public class MiTypeServiceImpl implements MiTypeService {
     @Override
     public ResponseEntity<?> save(@Valid MiTypeFullDto miTypeFullDto, MultipartFile[] files, String[] descriptions) throws IOException {
         try {
-            checkExistenceEntity(miTypeFullDto.getNumber());
+            validateIfEntityAlreadyExist(miTypeFullDto.getNumber());
             MiTypeInstruction miTypeInstruction = MiTypeDtoMapper.mapFullDtoToEntity(miTypeFullDto);
             MiTypeInstruction savedInstruction = miTypeInstructionRepository.save(miTypeInstruction);
             uploadFilesIfFilesExist(files, descriptions, savedInstruction.getId());
@@ -69,7 +69,7 @@ public class MiTypeServiceImpl implements MiTypeService {
     }
 
 
-    private void checkExistenceEntity(String miTypeNumber) throws EntityAlreadyExistException {
+    private void validateIfEntityAlreadyExist(String miTypeNumber) throws EntityAlreadyExistException {
         MiType miTypeFromDb = miTypeRepository.findByNumber(miTypeNumber);
         if (miTypeFromDb != null){
             throw new EntityAlreadyExistException("Запись о типе СИ № " + miTypeNumber + " уже существует");

@@ -2,24 +2,27 @@ package main.service.implementations;
 
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import main.dto.rest.OrganizationDto;
-import main.exception.DtoCompositionException;
 import main.exception.EntityAlreadyExistException;
-import main.exception.ParameterNotValidException;
 import main.model.Organization;
 import main.repository.OrganizationRepository;
 import main.service.interfaces.OrganizationService;
+import main.service.validators.OrganizationAlreadyExist;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Validated
 public class OrganizationServiceImpl implements OrganizationService {
     public static final Logger log = LoggerFactory.getLogger(OrganizationServiceImpl.class);
     private final OrganizationRepository organizationRepository;
@@ -31,28 +34,11 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public void save(OrganizationDto organizationDto) throws EntityAlreadyExistException{
-            checkOrganisationDtoComposition(organizationDto);
-            validateIfEntityAlreadyExist(organizationDto.getNotation());
+    public void save(@OrganizationAlreadyExist @Valid OrganizationDto organizationDto) throws EntityAlreadyExistException{
             Organization organization = modelMapper.map(organizationDto, Organization.class);
             organizationRepository.save(organization);
     }
 
-    private void checkOrganisationDtoComposition (OrganizationDto organizationDto) throws DtoCompositionException {
-        if (organizationDto.getTitle() == null || organizationDto.getTitle().isEmpty()) {
-            throw new DtoCompositionException("Пожалуйста заполните полное наименование организации");
-        }
-        if (organizationDto.getNotation() == null || organizationDto.getNotation().isEmpty()){
-            throw new DtoCompositionException("Пожалуйста заполните сокращенное наименование организации");
-        }
-    }
-
-    private void validateIfEntityAlreadyExist(String orgNotation) throws EntityAlreadyExistException {
-        Organization organizationFromDb = organizationRepository.findByNotation(orgNotation);
-        if (organizationFromDb != null){
-            throw new EntityAlreadyExistException("Запись об организации \""+ orgNotation + "\" уже существует");
-        }
-    }
 
     @Override
     public OrganizationDto findById(long id) {
@@ -70,22 +56,15 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public List<OrganizationDto> findBySearchString(String searchString) {
-            validateSearchString(searchString);
+    public List<OrganizationDto> findBySearchString(@NotBlank(message = "Поле для поиска не может быть пустым") String searchString) {
          return organizationRepository.findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(),searchString.trim())
                 .stream().map(organization -> modelMapper.map(organization, OrganizationDto.class)).toList();
     }
 
-    private void validateSearchString(String searchString) {
-        if (searchString == null || searchString.isEmpty()){
-            throw  new ParameterNotValidException("Поле для поиска не может быть пустым");
-        }
-    }
 
 
     @Override
-    public Page<OrganizationDto> findBySearchString(String searchString, Pageable pageable) {
-            validateSearchString(searchString);
+    public Page<OrganizationDto> findBySearchString(@NotBlank(message = "Поле для поиска не может быть пустым") String searchString, Pageable pageable) {
             return organizationRepository
                     .findByTitleIgnoreCaseContainingOrNotationIgnoreCaseContaining(searchString.trim(), searchString.trim(), pageable)
                     .map(organization -> modelMapper.map(organization, OrganizationDto.class));
@@ -105,8 +84,7 @@ public class OrganizationServiceImpl implements OrganizationService {
     }
 
     @Override
-    public void update(OrganizationDto organizationDto){
-            checkOrganisationDtoComposition(organizationDto);
+    public void update(@Valid OrganizationDto organizationDto){
             Organization organization = getOrganizationById(organizationDto.getId());
             Organization updateData = modelMapper.map(organizationDto, Organization.class);
             organization.updateFrom(updateData);

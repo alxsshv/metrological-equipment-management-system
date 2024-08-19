@@ -1,23 +1,25 @@
 package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import main.dto.rest.MiStatusDto;
-import main.exception.DtoCompositionException;
-import main.exception.EntityAlreadyExistException;
-import main.exception.ParameterNotValidException;
 import main.model.MiStatus;
 import main.repository.MiStatusRepository;
 import main.service.interfaces.MiStatusService;
+import main.service.validators.MiStatusAlreadyExist;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.List;
 import java.util.Optional;
 
 
 @Service
+@Validated
 public class MiStatusServiceImpl implements MiStatusService {
     private final MiStatusRepository miStatusRepository;
     private final ModelMapper modelMapper;
@@ -28,25 +30,11 @@ public class MiStatusServiceImpl implements MiStatusService {
     }
 
     @Override
-    public void save(MiStatusDto miStatusDto) {
-            checkMiStatusDtoComposition(miStatusDto);
-            validateIfEntityAlreadyExist(miStatusDto.getStatus());
+    public void save(@MiStatusAlreadyExist @Valid MiStatusDto miStatusDto) {
             MiStatus miStatus = modelMapper.map(miStatusDto, MiStatus.class);
             miStatusRepository.save(miStatus);
     }
 
-    private void checkMiStatusDtoComposition(MiStatusDto dto) throws DtoCompositionException {
-        if (dto.getStatus() == null || dto.getStatus().isEmpty()){
-            throw new DtoCompositionException("Пожалуйста заполните наименование статуса СИ");
-        }
-    }
-
-    private void validateIfEntityAlreadyExist(String status) throws EntityAlreadyExistException {
-        MiStatus miStatusFromDb = miStatusRepository.findByStatus(status);
-        if (miStatusFromDb != null){
-            throw new EntityAlreadyExistException("Статус СИ уже существует");
-        }
-    }
 
     @Override
     public MiStatusDto findById(long id) {
@@ -64,23 +52,15 @@ public class MiStatusServiceImpl implements MiStatusService {
     }
 
     @Override
-    public Page<MiStatusDto> findByStatus(String status, Pageable pageable) {
-            validateSearchString(status);
+    public Page<MiStatusDto> findByStatus(@NotBlank(message = "Поле для поиска не может быть пустым") String status, Pageable pageable) {
             return miStatusRepository.findByStatusIgnoreCaseContaining(status.trim(), pageable)
                     .map(miStatus -> modelMapper.map(miStatus, MiStatusDto.class));
     }
 
     @Override
-    public List<MiStatusDto> findByStatus(String status) {
-            validateSearchString(status);
+    public List<MiStatusDto> findByStatus(@NotBlank(message = "Поле для поиска не может быть пустым") String status) {
             return miStatusRepository.findByStatusIgnoreCaseContaining(status.trim()).stream()
                     .map(miStatus -> modelMapper.map(miStatus, MiStatusDto.class)).toList();
-    }
-
-    private void validateSearchString(String searchString) throws ParameterNotValidException {
-        if (searchString == null || searchString.isEmpty()){
-            throw  new ParameterNotValidException("Поле для поиска не может быть пустым");
-        }
     }
 
     @Override
@@ -96,8 +76,7 @@ public class MiStatusServiceImpl implements MiStatusService {
     }
 
     @Override
-    public void update(MiStatusDto miStatusDto){
-        checkMiStatusDtoComposition(miStatusDto);
+    public void update(@Valid MiStatusDto miStatusDto){
         MiStatus miStatus = getById(miStatusDto.getId());
         MiStatus updatingMiStatusData = modelMapper.map(miStatusDto, MiStatus.class);
         miStatus.setStatus(updatingMiStatusData.getStatus());

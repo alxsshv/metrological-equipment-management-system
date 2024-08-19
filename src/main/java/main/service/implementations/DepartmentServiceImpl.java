@@ -5,11 +5,11 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import main.dto.rest.DepartmentDto;
-import main.exception.EntityAlreadyExistException;
 import main.model.Department;
 
 import main.repository.DepartmentRepository;
 import main.service.interfaces.DepartmentService;
+import main.service.validators.DepartmentAlreadyExist;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -32,8 +32,7 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public void save(@Valid DepartmentDto departmentDto) {
-            validateIfEntityAlreadyExist(departmentDto.getNotation());
+    public void save(@DepartmentAlreadyExist @Valid DepartmentDto departmentDto) {
             Department department = modelMapper.map(departmentDto, Department.class);
             departmentRepository.save(department);
     }
@@ -51,14 +50,6 @@ public class DepartmentServiceImpl implements DepartmentService {
             throw new EntityNotFoundException("Запись о подразделении с id " + id + " не найдена");
         }
         return departmentOpt.get();
-    }
-
-
-    private void validateIfEntityAlreadyExist(String notation) throws EntityAlreadyExistException {
-        Department departmentFromDb = departmentRepository.findByNotation(notation);
-        if (departmentFromDb != null){
-            throw new EntityAlreadyExistException("Запись о подразделении уже существует");
-        }
     }
 
 

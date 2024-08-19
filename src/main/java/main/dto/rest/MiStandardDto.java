@@ -1,9 +1,10 @@
 package main.dto.rest;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import main.model.MeasurementInstrument;
 
 
 @Getter
@@ -11,7 +12,9 @@ import main.model.MeasurementInstrument;
 @NoArgsConstructor
 public class MiStandardDto {
     private long id;
+    @NotEmpty(message = "Пожалуйста укажите регистрационный номер эталона в ФГИС\"Аршин\"")
     private String arshinNumber;
+    @NotNull(message = "Некорректно указано средство измерений, применяемое в качестве эталона")
     private MiDetailsDto miDetails;
     private String schemaType;
     private String schemaTitle;

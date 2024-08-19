@@ -3,57 +3,43 @@ package main.service.implementations;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
-import main.dto.rest.SettingsDto;
+import main.dto.rest.EntitySettingsDto;
 import main.dto.rest.mappers.SettingsDtoMapper;
-import main.exception.DtoCompositionException;
 import main.model.Settings;
 import main.repository.SettingsRepository;
 import main.service.interfaces.SettingsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
 import java.util.Optional;
 
 
 @Service
 @RequiredArgsConstructor
+@Validated
 public class SettingsServiceImpl implements SettingsService {
     public static final Logger log = LoggerFactory.getLogger(SettingsServiceImpl.class);
     private final SettingsRepository settingsRepository;
 
 
     @Override
-    public void saveOrUpdate(SettingsDto settingsDto) {
+    public void saveOrUpdate(@Validated EntitySettingsDto entitySettingsDto) {
         Settings settings;
-            checkSettingsDtoComposition(settingsDto);
             try {
                 settings = getSettings();
-                Settings updateSettings = SettingsDtoMapper.mapToEntity(settingsDto);
+                Settings updateSettings = SettingsDtoMapper.mapToEntity(entitySettingsDto);
                 settings.updateFrom(updateSettings);
             } catch (EntityNotFoundException ex){
-                settings = SettingsDtoMapper.mapToEntity(settingsDto);
+                settings = SettingsDtoMapper.mapToEntity(entitySettingsDto);
             }
             settingsRepository.save(settings);
     }
 
 
-    private void checkSettingsDtoComposition(SettingsDto dto) throws DtoCompositionException {
-        if (dto.getOrganizationNotation() == null || dto.getOrganizationNotation().isEmpty()){
-            throw new DtoCompositionException("Пожалуйста заполните краткое наименование организации," +
-                    " эксплуатирующей данную систему метрологического обеспечения");
-        }
-        if (dto.getOrganizationTitle() == null || dto.getOrganizationTitle().isEmpty()){
-            throw new DtoCompositionException("Пожалуйста заполните полное наименование организации," +
-                    " эксплуатирующей даннусю систему метрологического обеспечения");
-        }
-        if (dto.getSignCipher() == null || dto.getSignCipher().length() < 3){
-            throw new DtoCompositionException("Убедитесь в правильности введенного условного шифра знака поверки");
-        }
-    }
-
     @Override
-    public SettingsDto get() {
+    public EntitySettingsDto get() {
             return SettingsDtoMapper.mapToDto(getSettings());
     }
 

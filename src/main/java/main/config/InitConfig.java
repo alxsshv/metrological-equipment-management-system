@@ -1,6 +1,7 @@
 package main.config;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.ConstraintViolationException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -80,7 +81,7 @@ public class InitConfig {
             defaultDepartmentDto.setNotation("не указано");
             departmentService.save(defaultDepartmentDto);
 
-        } catch (EntityAlreadyExistException ex){
+        } catch (ConstraintViolationException ex){
             log.warn(ex.getMessage());
         }
         defaultDepartmentDto = departmentService.findByNotation("Не указано").get(0);
@@ -93,7 +94,7 @@ public class InitConfig {
         defaultMeasCategoryDto.setNumber(0);
         defaultMeasCategoryDto.setTitle("не указан");
         measCategoryService.save(defaultMeasCategoryDto);
-        } catch (EntityAlreadyExistException ex){
+        } catch (ConstraintViolationException ex){
             log.warn(ex.getMessage());
         }
         defaultMeasCategoryDto = measCategoryService.findByTitle("Не указан").get(0);
@@ -111,7 +112,7 @@ public class InitConfig {
             MiConditionDto miConditionDto3 = new MiConditionDto();
             miConditionDto3.setTitle("В ремонте");
             miConditionService.save(miConditionDto3);
-        } catch (EntityAlreadyExistException ex){
+        } catch (ConstraintViolationException ex){
             log.warn(ex.getMessage());
         }
         MiConditionDto defaultMiConditionDto = miConditionService.findByTitle("В работе").get(0);
@@ -129,7 +130,7 @@ public class InitConfig {
             MiStatusDto defaultMiStatusDto3 = new MiStatusDto();
             defaultMiStatusDto3.setStatus("Индикатор");
             miStatusService.save(defaultMiStatusDto3);
-        } catch (EntityAlreadyExistException ex){
+        } catch (ConstraintViolationException ex){
             log.warn(ex.getMessage());
         }
         MiStatusDto workingToolMiStatusDto =  miStatusService.findByStatus("Рабочее СИ").get(0);

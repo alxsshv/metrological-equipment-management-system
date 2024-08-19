@@ -1,12 +1,12 @@
 package main.service.interfaces;
 
 
-import main.dto.rest.SettingsDto;
+import main.dto.rest.EntitySettingsDto;
 import main.model.Settings;
 
 public interface SettingsService {
-    void saveOrUpdate(SettingsDto settingsDto);
-    SettingsDto get();
+    void saveOrUpdate(EntitySettingsDto entitySettingsDto);
+    EntitySettingsDto get();
     Settings getSettings();
 
 }

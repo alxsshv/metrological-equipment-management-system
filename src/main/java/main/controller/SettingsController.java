@@ -2,7 +2,7 @@ package main.controller;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import main.dto.rest.SettingsDto;
+import main.dto.rest.EntitySettingsDto;
 import main.service.ServiceMessage;
 import main.service.interfaces.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +24,8 @@ public class SettingsController {
     }
 
     @PutMapping
-    public ResponseEntity<?> updateSettings(@RequestBody SettingsDto settingsDto) {
-        settingsService.saveOrUpdate(settingsDto);
+    public ResponseEntity<?> updateSettings(@RequestBody EntitySettingsDto entitySettingsDto) {
+        settingsService.saveOrUpdate(entitySettingsDto);
         String okMessage = "Настройки сохранены";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));

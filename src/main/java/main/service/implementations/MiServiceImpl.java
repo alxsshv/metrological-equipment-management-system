@@ -26,7 +26,6 @@ import java.util.Optional;
 public class MiServiceImpl implements MeasurementInstrumentService {
     public static final Logger log = LoggerFactory.getLogger(MiServiceImpl.class);
     private final MeasurementInstrumentRepository measurementInstrumentRepository;
-
     private final ModelMapper modelMapper = new ModelMapper();
 
     @Override

@@ -21,6 +21,7 @@ import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.util.Optional;
 @AllArgsConstructor
 @Service
+@Validated
 public class MiDetailsServiceImpl implements MiDetailsService {
     public static final Logger log = LoggerFactory.getLogger(MiDetailsServiceImpl.class);
     private final MiDetailsRepository miDetailsRepository;

@@ -6,10 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 import main.dto.rest.EmployeeDto;
 import main.dto.rest.mappers.EmployeeDtoMapper;
-import main.exception.EntityAlreadyExistException;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
 import main.service.interfaces.EmployeeService;
+import main.service.validators.EmployeeAlreadyExist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -28,16 +28,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public void save(@Valid EmployeeDto employeeDto) {
-            validateIfEntityAlreadyExist(employeeDto.getSnils());
+    public void save(@EmployeeAlreadyExist @Valid EmployeeDto employeeDto) {
             employeeRepository.save(EmployeeDtoMapper.mapToEntity(employeeDto));
-    }
-
-    private void validateIfEntityAlreadyExist(String snils) throws EntityAlreadyExistException {
-        Employee employeeFromDb = employeeRepository.findBySnils(snils);
-        if (employeeFromDb != null){
-            throw new EntityAlreadyExistException("Поверитель с СНИЛС " + snils + " уже существует");
-        }
     }
 
 

@@ -4,10 +4,10 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import main.dto.rest.MeasCategoryDto;
-import main.exception.EntityAlreadyExistException;
 import main.model.MeasCategory;
 import main.repository.MeasCategoryRepository;
 import main.service.interfaces.MeasCategoryService;
+import main.service.validators.MeasCategoryAlreadyExist;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,18 +30,11 @@ public class MeasCategoryServiceImpl implements MeasCategoryService {
     }
 
     @Override
-    public void save(@Valid MeasCategoryDto measCategoryDto) {
-            validateIfEntityAlreadyExist(measCategoryDto.getTitle());
+    public void save(@MeasCategoryAlreadyExist @Valid MeasCategoryDto measCategoryDto) {
         MeasCategory measCategory = modelMapper.map(measCategoryDto, MeasCategory.class);
             measCategoryRepository.save(measCategory);
     }
 
-    private void validateIfEntityAlreadyExist(String title) throws EntityAlreadyExistException {
-        MeasCategory measCategoryFromDb = measCategoryRepository.findByTitle(title);
-        if (measCategoryFromDb != null){
-            throw new EntityAlreadyExistException("Данный вид измерений уже занесен в БД");
-        }
-    }
 
     @Override
     public MeasCategoryDto findById(long id) {
