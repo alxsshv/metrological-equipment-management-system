@@ -5,10 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import main.dto.xml.arshin.BriefProcedure;
 import main.dto.xml.arshin.Result;
-import main.model.MiTypeInstruction;
+import main.model.MiTypeDetails;
 import main.model.Settings;
 import main.model.VerificationRecord;
-import main.service.interfaces.MiTypeService;
+import main.service.interfaces.MiTypeDetailsService;
 import main.service.interfaces.SettingsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -32,11 +32,11 @@ public class ResultFactory {
     @Autowired
     private ApplicabilityFactory applicabilityFactory;
     @Autowired
-    private MiTypeService miTypeService;
+    private MiTypeDetailsService miTypeDetailsService;
 
     public Result createResult(VerificationRecord record){
         Settings settings = settingsService.getSettings();
-        MiTypeInstruction instruction = miTypeService.getInstructionById(record.getMi().getMiType().getId());
+        MiTypeDetails instruction = miTypeDetailsService.getById(record.getMi().getMiType().getId());
 
         Result result = new Result();
         result.setMiInfo(miInfoFactory.createMiInfo(record));

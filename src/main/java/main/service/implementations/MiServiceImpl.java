@@ -67,5 +67,10 @@ public class MiServiceImpl implements MeasurementInstrumentService {
         return measurementInstrumentRepository.findAll().stream().map(MeasurementInstrumentMapper::mapToDto).toList();
     }
 
+    @Override
+    public void deleteById(long id){
+        measurementInstrumentRepository.deleteById(id);
+    }
+
 
 }

@@ -2,6 +2,7 @@ package main.dto.rest;
 
 
 
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,7 @@ public class MiDetailsDto {
     private MeasCategoryDto measCategory;
     private List<MiCharacteristic> characteristics;
     private String user;
+    @Valid
     private MiFullDto miFullDto;
 
     @Override

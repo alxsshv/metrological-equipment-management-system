@@ -8,14 +8,11 @@ import main.dto.rest.*;
 import main.dto.rest.mappers.MiDetailsMapper;
 import main.dto.rest.mappers.OrganizationDtoMapper;
 import main.exception.DtoCompositionException;
-import main.exception.EntityAlreadyExistException;
 import main.model.*;
-import main.repository.MeasurementInstrumentRepository;
 import main.repository.MiDetailsRepository;
 import main.service.Category;
-import main.service.interfaces.MiDetailsService;
-import main.service.interfaces.MiTypeService;
-import main.service.interfaces.OrganizationService;
+import main.service.interfaces.*;
+import main.service.validators.MiAlreadyExist;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.slf4j.Logger;
@@ -33,20 +30,17 @@ import java.util.Optional;
 public class MiDetailsServiceImpl implements MiDetailsService {
     public static final Logger log = LoggerFactory.getLogger(MiDetailsServiceImpl.class);
     private final MiDetailsRepository miDetailsRepository;
-    //TODO: заменить репозиторий сервисом
-    private final MeasurementInstrumentRepository measurementInstrumentRepository;
-    private final MiTypeService miTypeService;
-
+    private final MeasurementInstrumentService measurementInstrumentService;
+    private final MiTypeDetailsService miTypeDetailsService;
     private final OrganizationService organizationService;
     private final FileServiceImpl fileService;
     private final ModelMapper modelMapper = new ModelMapper();
 
 
 
-    public void save(MiDetailsDto miDetailsDto, MultipartFile[] files, String[] descriptions) throws IOException {
+    public void save(@MiAlreadyExist @Valid MiDetailsDto miDetailsDto, MultipartFile[] files, String[] descriptions) throws IOException {
             setDefaultsDtoFieldsIfEmpty(miDetailsDto);
             checkMeasurementInstrumentDtoComposition(miDetailsDto.getMiFullDto());
-            validateIfEntityAlreadyExist(miDetailsDto.getMiFullDto());
             modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
             MiDetails miDetails = MiDetailsMapper.mapToEntity(miDetailsDto);
             miDetails.getMi().setTitle(miDetails.getMi().getMiType().getMiTitleTemplate());
@@ -78,7 +72,7 @@ public class MiDetailsServiceImpl implements MiDetailsService {
     }
 
     private void checkMeasurementInstrumentDtoComposition(@Valid MiFullDto dto) throws DtoCompositionException {
-        MiType miTypeFromDb = miTypeService.getInstructionById(dto.getMiType().getId()).getMiType();
+        MiTypeDetails miTypeFromDb = miTypeDetailsService.getById(dto.getMiType().getId());
         if (miTypeFromDb == null){
             throw new DtoCompositionException("Выбранный тип средства измерений отсутствует в базе данных пожалуйста выберите имеющийся тип" +
                     " средства измерений  или добавьте требуемый тип средства измерений в базу");
@@ -90,21 +84,12 @@ public class MiDetailsServiceImpl implements MiDetailsService {
         }
     }
 
-    private void validateIfEntityAlreadyExist(@Valid MiFullDto miFullDto) throws EntityAlreadyExistException {
-        MeasurementInstrument instrumentFromDb = measurementInstrumentRepository
-                .findByModificationAndSerialNum(miFullDto.getModification(), miFullDto.getSerialNum());
-        if (instrumentFromDb != null){
-            throw new EntityAlreadyExistException("Данная модификация средства измерений с заводским номером "
-                    + miFullDto.getSerialNum() + " уже существует");
-        }
-    }
 
     private void uploadFilesIfFilesExist(MultipartFile[] files, String[] descriptions, Long categoryId) throws IOException {
         if (files.length > 0) {
             fileService.uploadAllFiles(files, descriptions, Category.MEASUREMENT_INSTRUMENT, categoryId);
         }
     }
-
 
     public MiDetailsDto findById(long id) {
         MiDetails miDetails = getById(id);
@@ -119,8 +104,6 @@ public class MiDetailsServiceImpl implements MiDetailsService {
         return miDetailsOpt.get();
     }
 
-
-
     public void update(MiDetailsDto miDetailsDto) {
             checkMeasurementInstrumentDtoComposition(miDetailsDto.getMiFullDto());
             MiDetails miDetailsFromDb = getById(miDetailsDto.getId());
@@ -129,13 +112,12 @@ public class MiDetailsServiceImpl implements MiDetailsService {
             miDetailsRepository.save(miDetailsFromDb);
     }
 
-
     public void delete(long id) {
             try {
                 getById(id);
                 fileService.deleteAllFiles(Category.MEASUREMENT_INSTRUMENT, id);
                 miDetailsRepository.deleteById(id);
-                measurementInstrumentRepository.deleteById(id);
+                measurementInstrumentService.deleteById(id);
             } catch (IOException ex) {
                 String errorMessage = "Ошибка доступа к файлу";
                 log.error("{}:{}", errorMessage, ex.getMessage());

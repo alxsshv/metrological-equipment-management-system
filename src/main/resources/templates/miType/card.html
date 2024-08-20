@@ -24,15 +24,15 @@
             <div class="col-sm-8">
                 <dl class="row text-start">
                     <dt class="col-sm-6">Номер в ФИФ ОЕИ</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miType.number}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miTypeDetails.miType.number}}</dd>
 
 
                     <dt class="col-sm-6">Наименование</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miType.title}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miTypeDetails.miType.title}}</dd>
 
 
                     <dt class="col-sm-6 text-truncate">Обозначение</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miType.notation}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miTypeDetails.miType.notation}}</dd>
 
 
                     <dt class="col-sm-6">Период действия</dt>
@@ -41,18 +41,18 @@
 
 
                     <dt class="col-sm-6">Интервал между поверками (МПИ), лет</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miType.verificationPeriod}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miTypeDetails.miType.verificationPeriod}}</dd>
 
 
                     <dt class="col-sm-6">Обозначение методики поверки</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miType.instructionNotation}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miTypeDetails.instructionNotation}}</dd>
 
 
                     <dt class="col-sm-6">Наименование методики поверки</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miType.instructionTitle}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miTypeDetails.instructionTitle}}</dd>
 
                     <dt class="col-sm-6">Шаблон наименования средства измерений</dt>
-                    <dd class="col-sm-6" ng-model="type">{{miType.miTitleTemplate}}</dd>
+                    <dd class="col-sm-6" ng-model="type">{{miTypeDetails.miType.miTitleTemplate}}</dd>
 
 
                     <p></p>
@@ -60,17 +60,17 @@
 
 
                     <dt class="col-sm-6">Допустимый диапазон температуры окружающей среды</dt>
-                    <dd ng-model="type" class="col-sm-6">от {{miType.temperatureLowLimit}}&degC до
-                        {{miType.temperatureHiLimit}}&degC</dd>
+                    <dd ng-model="type" class="col-sm-6">от {{miTypeDetails.temperatureLowLimit}}&degC до
+                        {{miTypeDetails.temperatureHiLimit}}&degC</dd>
 
 
                     <dt class="col-sm-6">Допустимый диапазон относительной влажности воздуха</dt>
-                    <dd ng-model="type" class="col-sm-6">от {{miType.humidityLowLimit}} % до {{miType.humidityHiLimit}}
+                    <dd ng-model="type" class="col-sm-6">от {{miTypeDetails.humidityLowLimit}} % до {{miTypeDetails.humidityHiLimit}}
                         %</dd>
 
 
                     <dt class="col-sm-6">Допустимый диапазон атмосферного давления</dt>
-                    <dd ng-model="type" class="col-sm-6">от {{miType.pressureLowLimit}} % до {{miType.pressureHiLimit}}
+                    <dd ng-model="type" class="col-sm-6">от {{miTypeDetails.pressureLowLimit}} % до {{miTypeDetails.pressureHiLimit}}
                         %</dd>
 
 
@@ -84,7 +84,7 @@
                 <div class="table-responsive" style="max-height: 250px;">
                     <table class="table table-striped">
                         <th>Модификации</th>
-                        <tr ng-repeat="modification in miType.modifications">
+                        <tr ng-repeat="modification in miTypeDetails.modifications">
                             <td>{{modification}}</td>
                         </tr>
                     </table>
@@ -132,7 +132,7 @@
                     url: "/mits/" + idAttr,
                     method: "GET"
                 }).then(function (response) {
-                    $scope.miType = response.data;
+                    $scope.miTypeDetails = response.data;
                     $scope.startDate = new Date(response.data.startDate);
                     $scope.endDate = new Date(response.data.endDate);
                 });

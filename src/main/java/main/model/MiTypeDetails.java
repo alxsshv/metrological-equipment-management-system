@@ -1,17 +1,20 @@
 package main.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Getter
 @Setter
 @Entity
 @Table(name = "mi_type_instructions")
-public class MiTypeInstruction {
+public class MiTypeDetails {
     @Id
     @Column(name = "id")
     private long id;
@@ -31,13 +34,32 @@ public class MiTypeInstruction {
     private double pressureLowLimit; //Нижнее допустимое значение атмосферного давления, кПа
     @Column(name = "pressure_hi_limit")
     private double pressureHiLimit; //Верхнее допустимое значение атмосферного давления, кПа
+    @OneToMany(mappedBy = "miTypeDetails", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Column(name = "modifications")
+    @JsonIgnore
+    private List<MiTypeModification> modifications = new ArrayList<>(); // Модификации
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private MiType miType;
 
+    public void addModification(MiTypeModification modification){
+        modification.setMiTypeDetails(this);
+        modifications.add(modification);
+    }
+
+    public void setModifications(List<MiTypeModification> modifications){
+        modifications.forEach(modification -> modification.setMiTypeDetails(this));
+        this.modifications = modifications;
+    }
 
 
-    public void updateFrom(MiTypeInstruction updateData){
+
+    public void removeModification(MiTypeModification modification){
+        modification.setMiTypeDetails(null);
+        modifications.remove(modification);
+    }
+
+    public void updateFrom(MiTypeDetails updateData){
         this.miType.updateFrom(updateData.getMiType());
         this.pressureHiLimit = updateData.getPressureHiLimit();
         this.pressureLowLimit = updateData.getPressureLowLimit();
@@ -47,6 +69,8 @@ public class MiTypeInstruction {
         this.humidityLowLimit = updateData.getHumidityLowLimit();
         this.instructionTitle = updateData.getInstructionTitle();
         this.instructionNotation = updateData.getInstructionNotation();
+        this.modifications.clear();
+        this.modifications.addAll(updateData.getModifications());
     }
 
     @Override

@@ -43,4 +43,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(400).body(new ServiceMessage(messageWithoutClassPropertyReference));
     }
 
+    @ExceptionHandler
+    public ResponseEntity<?> catchDeleteOperationException(DeleteOperationException ex){
+        log.error(ex.getMessage());
+        return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
+    }
+
+
 }

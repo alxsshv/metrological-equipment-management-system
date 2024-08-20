@@ -1,6 +1,6 @@
 package main.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -8,8 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -33,31 +32,12 @@ public class MiType {
     private LocalDate endDate; //Окончание срока действия
     @Column(name = "verification_period")
     private double verificationPeriod; //межповерочный интервал, лет
-    @OneToMany(mappedBy = "miType", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Column(name = "modifications")
-    @JsonIgnore
-    private List<MiTypeModification> modifications = new ArrayList<>(); // Модификации
     @Column(name = "mi_title_template")
     private String miTitleTemplate; //Шаблон для наименования средства измерений, на основе данного типа СИ
 
 
 
-    public void addModification(MiTypeModification modification){
-        modification.setMiType(this);
-        modifications.add(modification);
-    }
 
-    public void setModifications(List<MiTypeModification> modifications){
-        modifications.forEach(modification -> modification.setMiType(this));
-        this.modifications = modifications;
-    }
-
-
-
-    public void removeModification(MiTypeModification modification){
-        modification.setMiType(null);
-        modifications.remove(modification);
-    }
 
     public void updateFrom(MiType newData){
         this.number = newData.getNumber();
@@ -67,8 +47,7 @@ public class MiType {
         this.endDate = newData.getEndDate();
         this.verificationPeriod = newData.getVerificationPeriod();
         this.miTitleTemplate = newData.getMiTitleTemplate();
-        this.modifications.clear();
-        this.modifications.addAll(newData.getModifications());
+
     }
 
     @Override
@@ -81,7 +60,6 @@ public class MiType {
                 ", startDate=" + startDate +
                 ", endDate=" + endDate +
                 ", verificationPeriod=" + verificationPeriod +
-                ", modifications=" + modifications +
                 '}';
     }
 }

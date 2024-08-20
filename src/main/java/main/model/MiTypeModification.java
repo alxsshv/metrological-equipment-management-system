@@ -18,14 +18,14 @@ public class MiTypeModification {
     @Column(name = "notation")
     private String notation;
     @ManyToOne(fetch = FetchType.LAZY)
-    private MiType miType;
+    private MiTypeDetails miTypeDetails;
 
     @Override
     public String toString() {
         return "MiTypeModification{" +
                 "id=" + id +
                 ", notation='" + notation + '\'' +
-                ", miType=" + miType.getId() +
+                ", miType=" + miTypeDetails.getId() +
                 '}';
     }
 }

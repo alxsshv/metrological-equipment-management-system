@@ -1,10 +1,10 @@
 package main.repository;
 
-import main.model.MiTypeInstruction;
+import main.model.MiTypeDetails;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface MiTypeInstructionRepository extends JpaRepository<MiTypeInstruction, Long> {
+public interface MiTypeDetailsRepository extends JpaRepository<MiTypeDetails, Long> {
 
 }

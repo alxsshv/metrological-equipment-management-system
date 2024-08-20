@@ -36,7 +36,7 @@ public class MeasurementInstrumentMapper {
     public static MeasurementInstrument mapToEntity(MiFullDto miFullDto){
         ModelMapper modelMapper = new ModelMapper();
         MeasurementInstrument mi = modelMapper.map(miFullDto, MeasurementInstrument.class);
-        mi.setMiType(MiTypeDtoMapper.mapDtoToEntity(miFullDto.getMiType()));
+        mi.setMiType(MiTypeDtoMapper.mapToEntity(miFullDto.getMiType()));
         mi.setVerificationDate(DateStringConverter.parseLocalDateOrGetNull(miFullDto.getVerificationDate()));
         mi.setValidDate(DateStringConverter.parseLocalDateOrGetNull(miFullDto.getValidDate()));
         mi.setOwner(OrganizationDtoMapper.mapToEntity(miFullDto.getOwner()));
