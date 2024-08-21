@@ -8,7 +8,7 @@ import org.modelmapper.ModelMapper;
 
 import java.time.format.DateTimeFormatter;
 
-public class MeasurementInstrumentMapper {
+public class MeasurementInstrumentDtoMapper {
 
     public static MiFullDto mapToFullDto(MeasurementInstrument measurementInstrument){
         ModelMapper modelMapper = new ModelMapper();

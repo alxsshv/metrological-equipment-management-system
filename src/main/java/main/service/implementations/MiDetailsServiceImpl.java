@@ -5,7 +5,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import main.config.AppDefaults;
 import main.dto.rest.*;
-import main.dto.rest.mappers.MiDetailsMapper;
+import main.dto.rest.mappers.MiDetailsDtoMapper;
 import main.dto.rest.mappers.OrganizationDtoMapper;
 import main.exception.DtoCompositionException;
 import main.model.*;
@@ -42,7 +42,7 @@ public class MiDetailsServiceImpl implements MiDetailsService {
             setDefaultsDtoFieldsIfEmpty(miDetailsDto);
             checkMeasurementInstrumentDtoComposition(miDetailsDto.getMiFullDto());
             modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
-            MiDetails miDetails = MiDetailsMapper.mapToEntity(miDetailsDto);
+            MiDetails miDetails = MiDetailsDtoMapper.mapToEntity(miDetailsDto);
             miDetails.getMi().setTitle(miDetails.getMi().getMiType().getMiTitleTemplate());
             MiDetails savedMiDetails = miDetailsRepository.save(miDetails);
             uploadFilesIfFilesExist(files, descriptions, savedMiDetails.getId());
@@ -93,7 +93,7 @@ public class MiDetailsServiceImpl implements MiDetailsService {
 
     public MiDetailsDto findById(long id) {
         MiDetails miDetails = getById(id);
-        return MiDetailsMapper.mapToDto(miDetails);
+        return MiDetailsDtoMapper.mapToDto(miDetails);
     }
 
     public MiDetails getById(long id){
@@ -107,7 +107,7 @@ public class MiDetailsServiceImpl implements MiDetailsService {
     public void update(MiDetailsDto miDetailsDto) {
             checkMeasurementInstrumentDtoComposition(miDetailsDto.getMiFullDto());
             MiDetails miDetailsFromDb = getById(miDetailsDto.getId());
-            MiDetails updatingMiDetailsData = modelMapper.map(miDetailsDto, MiDetails.class);
+            MiDetails updatingMiDetailsData = MiDetailsDtoMapper.mapToEntity(miDetailsDto);
             miDetailsFromDb.updateFrom(updatingMiDetailsData);
             miDetailsRepository.save(miDetailsFromDb);
     }

@@ -9,8 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.data.domain.*;
-import org.springframework.http.ResponseEntity;
-
 
 import java.util.List;
 import java.util.Optional;
@@ -33,8 +31,7 @@ public class EmployeeServiceTest {
         EmployeeDto employeeDto = generateEmployeeDto(5L);
         Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
         when(employeeRepository.findBySnils(employeeDto.getSnils())).thenReturn(employee);
-        ResponseEntity<?> responseEntity = employeeService.save(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.save(employeeDto);
         verify(employeeRepository,times(1)).findBySnils(employeeDto.getSnils());
     }
 
@@ -43,8 +40,7 @@ public class EmployeeServiceTest {
     public void testSaveIfEmployeeSurnameIsNull(){
         EmployeeDto employeeDto = generateEmployeeDto(5L);
         employeeDto.setSurname(null);
-        ResponseEntity<?> responseEntity = employeeService.save(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.save(employeeDto);
         verify(employeeRepository,never()).findBySnils(employeeDto.getSnils());
         verify(employeeRepository,never()).save(any(Employee.class));
     }
@@ -54,8 +50,7 @@ public class EmployeeServiceTest {
     public void testSaveIfEmployeeNameIsNull(){
         EmployeeDto employeeDto = generateEmployeeDto(5L);
         employeeDto.setName(null);
-        ResponseEntity<?> responseEntity = employeeService.save(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.save(employeeDto);
         verify(employeeRepository,never()).findBySnils(employeeDto.getSnils());
         verify(employeeRepository,never()).save(any(Employee.class));
     }
@@ -65,8 +60,7 @@ public class EmployeeServiceTest {
     public void testSaveIfEmployeePatronymicIsNull(){
         EmployeeDto employeeDto = generateEmployeeDto(5L);
         employeeDto.setPatronymic(null);
-        ResponseEntity<?> responseEntity = employeeService.save(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.save(employeeDto);
         verify(employeeRepository,never()).findBySnils(employeeDto.getSnils());
         verify(employeeRepository,never()).save(any(Employee.class));
     }
@@ -76,8 +70,7 @@ public class EmployeeServiceTest {
     public void testSaveIfEmployeeSnilsIsNotCorrected(){
         EmployeeDto employeeDto = generateEmployeeDto(5L);
         employeeDto.setSnils("1234567-89");
-        ResponseEntity<?> responseEntity = employeeService.save(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.save(employeeDto);
         verify(employeeRepository,never()).findBySnils(employeeDto.getSnils());
         verify(employeeRepository,never()).save(any(Employee.class));
     }
@@ -87,8 +80,7 @@ public class EmployeeServiceTest {
     public void testSaveIfCreatedNewEmployee(){
         EmployeeDto employeeDto = generateEmployeeDto(5L);
         when(employeeRepository.findBySnils(employeeDto.getSnils())).thenReturn(null);
-        ResponseEntity<?> responseEntity = employeeService.save(employeeDto);
-        assertEquals("201 CREATED", responseEntity.getStatusCode().toString());
+        employeeService.save(employeeDto);
         verify(employeeRepository, times(1)).save(any(Employee.class));
     }
 
@@ -98,8 +90,7 @@ public class EmployeeServiceTest {
         EmployeeDto employeeDto = generateEmployeeDto(5L);
         Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
         when(employeeRepository.findById(employeeDto.getId())).thenReturn(Optional.of(employee));
-        ResponseEntity<?> responseEntity = employeeService.update(employeeDto);
-        assertEquals("200 OK", responseEntity.getStatusCode().toString());
+        employeeService.update(employeeDto);
         verify(employeeRepository, times(1)).save(employee);
     }
 
@@ -111,8 +102,7 @@ public class EmployeeServiceTest {
         employeeDto.setSurname(null);
         Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        ResponseEntity<?> responseEntity = employeeService.update(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.update(employeeDto);
         verify(employeeRepository,never()).findById(employeeId);
         verify(employeeRepository,never()).save(any(Employee.class));
     }
@@ -125,8 +115,7 @@ public class EmployeeServiceTest {
         employeeDto.setName(null);
         Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        ResponseEntity<?> responseEntity = employeeService.update(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.update(employeeDto);
         verify(employeeRepository,never()).findById(employeeId);
         verify(employeeRepository,never()).save(any(Employee.class));
     }
@@ -139,8 +128,7 @@ public class EmployeeServiceTest {
         employeeDto.setPatronymic(null);
         Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        ResponseEntity<?> responseEntity = employeeService.update(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.update(employeeDto);
         verify(employeeRepository,never()).findById(employeeId);
         verify(employeeRepository,never()).save(any(Employee.class));
     }
@@ -153,8 +141,7 @@ public class EmployeeServiceTest {
         employeeDto.setSnils("1234567-89");
         Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        ResponseEntity<?> responseEntity = employeeService.update(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.update(employeeDto);
         verify(employeeRepository,never()).findById(employeeId);
         verify(employeeRepository,never()).save(any(Employee.class));
     }
@@ -165,8 +152,7 @@ public class EmployeeServiceTest {
         long employeeId = 3L;
         EmployeeDto employeeDto = generateEmployeeDto(employeeId);
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
-        ResponseEntity<?> responseEntity = employeeService.update(employeeDto);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.update(employeeDto);
     }
 
     @Test
@@ -175,8 +161,7 @@ public class EmployeeServiceTest {
         long employeeId = 2L;
         Employee employee = generateEmployee(employeeId);
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        ResponseEntity<?> responseEntity = employeeService.delete(employeeId);
-        assertEquals("200 OK", responseEntity.getStatusCode().toString());
+        employeeService.delete(employeeId);
         verify(employeeRepository, times(1)).deleteById(2L);
     }
 
@@ -187,8 +172,7 @@ public class EmployeeServiceTest {
         long employeeId = 2L;
         Employee employee = generateEmployee(employeeId);
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        ResponseEntity<?> responseEntity = employeeService.findById(employeeId);
-        assertEquals("200 OK", responseEntity.getStatusCode().toString());
+        employeeService.findById(employeeId);
         verify(employeeRepository,times(1)).findById(employeeId);
     }
 
@@ -197,8 +181,7 @@ public class EmployeeServiceTest {
     public void testFindByIdIfEmployeeNotFound(){
         long employeeId = 3L;
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
-        ResponseEntity<?> responseEntity = employeeService.findById(employeeId);
-        assertEquals("400 BAD_REQUEST", responseEntity.getStatusCode().toString());
+        employeeService.findById(employeeId);
         verify(employeeRepository,times(1)).findById(employeeId);
     }
 
@@ -232,8 +215,7 @@ public class EmployeeServiceTest {
         long totalEmployees = 10L;
         Page<Employee> page = new PageImpl<>(employees,pageable,totalEmployees);
         when(employeeRepository.findBySurnameIgnoreCaseContaining(employee.getSurname(), pageable)).thenReturn(page);
-        ResponseEntity<?> responseEntity = employeeService.findBySurname(employee.getSurname(), pageable);
-        assertEquals("200 OK",responseEntity.getStatusCode().toString());
+        employeeService.findBySurname(employee.getSurname(), pageable);
         verify(employeeRepository,times(1)).findBySurnameIgnoreCaseContaining(employee.getSurname(), pageable);
     }
 

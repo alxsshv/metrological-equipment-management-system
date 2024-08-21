@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import main.dto.rest.MiDto;
 import main.dto.rest.MiFullDto;
-import main.dto.rest.mappers.MeasurementInstrumentMapper;
+import main.dto.rest.mappers.MeasurementInstrumentDtoMapper;
 import main.model.MeasurementInstrument;
 import main.repository.MeasurementInstrumentRepository;
 import main.service.interfaces.MeasurementInstrumentService;
@@ -46,25 +46,25 @@ public class MiServiceImpl implements MeasurementInstrumentService {
     public Page<MiDto> findBySearchString(@NotBlank(message = "Поле для поиска не может быть пустым") String searchString, Pageable pageable) {
             return measurementInstrumentRepository
                     .findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContaining(searchString.trim(), searchString.trim(), pageable)
-                    .map(MeasurementInstrumentMapper::mapToDto);
+                    .map(MeasurementInstrumentDtoMapper::mapToDto);
     }
 
     @Override
     public List<MiDto> findBySearchString(@NotBlank(message = "Поле для поиска не может быть пустым") String searchString) {
             return measurementInstrumentRepository
                     .findByModificationIgnoreCaseContainingOrSerialNumIgnoreCaseContaining(searchString.trim(), searchString.trim())
-                    .stream().map(MeasurementInstrumentMapper::mapToDto).toList();
+                    .stream().map(MeasurementInstrumentDtoMapper::mapToDto).toList();
     }
 
 
     @Override
     public Page<MiDto> findAll(Pageable pageable) {
-        return measurementInstrumentRepository.findAll(pageable).map(MeasurementInstrumentMapper::mapToDto);
+        return measurementInstrumentRepository.findAll(pageable).map(MeasurementInstrumentDtoMapper::mapToDto);
     }
 
     @Override
     public List<MiDto> findAll() {
-        return measurementInstrumentRepository.findAll().stream().map(MeasurementInstrumentMapper::mapToDto).toList();
+        return measurementInstrumentRepository.findAll().stream().map(MeasurementInstrumentDtoMapper::mapToDto).toList();
     }
 
     @Override

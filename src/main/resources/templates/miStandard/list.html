@@ -198,7 +198,7 @@
                 var modal = bootstrap.Modal.getInstance(myModalEl);
                 modal.hide();
                 $http({
-                    url: "/standards/mis" + delId,
+                    url: "/standards/mis/" + delId,
                     method: "DELETE"
                 }).then(function (response) {
                     alert(response.data.message);
