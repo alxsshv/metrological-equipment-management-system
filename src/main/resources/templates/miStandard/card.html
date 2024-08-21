@@ -45,22 +45,22 @@
                     <h5>Сведения о средстве измерений</h5>
 
                     <dt class="col-sm-6">Наименование</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.miType.title}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.miDetails.miFullDto.miType.title}}</dd>
 
                     <dt class="col-sm-6">Модификация</dt>
                     <dd ng-model="type" class="col-sm-6"><a
-                            href="/mi/{{miStandard.measurementInstrument.id}}?id={{miStandard.measurementInstrument.id}}">{{miStandard.measurementInstrument.modification}}</a>
+                            href="/mi/{{miStandard.measurementInstrument.id}}?id={{miStandard.measurementInstrument.id}}">{{miStandard.miDetails.miFullDto.modification}}</a>
                     </dd>
 
                     <dt class="col-sm-6">Зав. №</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.serialNum}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.miDetails.miFullDto.serialNum}}</dd>
 
                     <dt class="col-sm-6">Дата поверки</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.verificationDate | date:
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.miDetails.miFullDto.verificationDate | date:
                         "dd.MM.yyyy" : 'UTC'}}</dd>
 
                     <dt class="col-sm-6">Действительно до</dt>
-                    <dd ng-model="type" class="col-sm-6">{{miStandard.measurementInstrument.validDate | date:
+                    <dd ng-model="type" class="col-sm-6">{{miStandard.miDetails.miFullDto.validDate | date:
                         "dd.MM.yyyy" : 'UTC'}}</dd>
 
                     <dt class="col-sm-6 ">Пригодность</dt>
@@ -73,7 +73,7 @@
 
             </div>
             <div class="row text-start">
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <dl class="row text-start">
 
                         <p></p>
@@ -133,6 +133,7 @@
                     method: "GET"
                 }).then(function (response) {
                     $scope.miStandard = response.data;
+                    console.log($scope.miStandard);
                     $scope.formatDateFieldsFromMiStandard();
                     $scope.getMiStandardImages();
                     $scope.getMiStandardDocuments();
@@ -145,17 +146,17 @@
 
             $scope.setApplicableFromMiStandard = function(){
                 $scope.applicable = {'title' : 'Пригоден', 'value' : true};
-                if($scope.miStandard.measurementInstrument.applicable == false){
+                if($scope.miStandard.miDetails.miFullDto.applicable == false){
                     $scope.applicable = {'title' : 'Непригоден', 'value' : false};
                 }
             } 
 
             $scope.formatDateFieldsFromMiStandard = function () {
-                if ($scope.miStandard.measurementInstrument.verificationDate != null) {
-                    $scope.miStandard.measurementInstrument.verificationDate = new Date($scope.miStandard.measurementInstrument.verificationDate);
+                if ($scope.miStandard.miDetails.miFullDto.verificationDate != null) {
+                    $scope.miStandard.miDetails.miFullDto.verificationDate = new Date($scope.miStandard.miDetails.miFullDto.verificationDate);
                 }
-                if ($scope.miStandard.measurementInstrument.validDate != null) {
-                    $scope.miStandard.measurementInstrument.validDate = new Date($scope.miStandard.measurementInstrument.validDate);
+                if ($scope.miStandard.miDetails.miFullDto.validDate != null) {
+                    $scope.miStandard.miDetails.miFullDto.validDate = new Date($scope.miStandard.miDetails.miFullDto.validDate);
                 }
                 if ($scope.miStandard.creationDateTime != null) {
                     $scope.miStandard.creationDateTime = new Date($scope.miStandard.creationDateTime);

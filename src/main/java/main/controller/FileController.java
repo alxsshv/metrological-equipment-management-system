@@ -47,7 +47,15 @@ public class FileController {
     @DeleteMapping("/documents/{id}")
     public ResponseEntity<?> deleteDocument(@PathVariable(value = "id") String id) throws IOException {
         documentService.delete(Long.parseLong(id));
-        String okMessage = "Файл № " + id + " успешно удален";
+        String okMessage = "Файл успешно удален";
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
+    }
+
+    @DeleteMapping("/images/{id}")
+    public ResponseEntity<?> deleteImage(@PathVariable(value = "id") String id) throws IOException {
+        imageService.delete(Long.parseLong(id));
+        String okMessage = "Файл успешно удален";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

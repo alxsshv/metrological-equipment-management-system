@@ -79,14 +79,14 @@
                             <table class="table table-info table-striped table-hover">
                                 <tr ng-repeat="document in documents">
                                     <td><a href="/files/documents/{{document.id}}" target="_blank">
-                                        {{document.description}}
-                                    </a></td>
+                                            {{document.description}}
+                                        </a></td>
                                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
                                             ng-click="getDeleteableIdandFiletype(document.id, 'document')"
                                             type="button">Удалить</button></td>
                                 <tr ng-repeat="image in images">
                                     <td> <a href="/files/images/{{image.id}}" target="_blank">{{image.description}}
-                                    </a></td>
+                                        </a></td>
                                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
                                             ng-click="getDeleteableIdandFiletype(image.id, 'image')"
                                             type="button">Удалить</button></td>
@@ -146,18 +146,17 @@
                         method: "GET"
                     }).then(function (response) {
                         $scope.miStandard = response.data;
-                        console.log($scope.miStandard)
                         $scope.formatDateFieldsFromMiStandard();
-                        $scope.searchString = $scope.miStandard.measurementInstrument.modification + " зав. №" + $scope.miStandard.measurementInstrument.serialNum;
+                        $scope.searchString = $scope.miStandard.miDetails.miFullDto.modification + " зав. №" + $scope.miStandard.miDetails.miFullDto.serialNum;
                     });
                 }
 
                 $scope.formatDateFieldsFromMiStandard = function () {
-                    if ($scope.miStandard.measurementInstrument.verificationDate != null) {
-                        $scope.miStandard.measurementInstrument.verificationDate = new Date($scope.miStandard.measurementInstrument.verificationDate);
+                    if ($scope.miStandard.miDetails.miFullDto.verificationDate != null) {
+                        $scope.miStandard.miDetails.miFullDto.verificationDate = new Date($scope.miStandard.miDetails.miFullDto.verificationDate);
                     }
-                    if ($scope.miStandard.measurementInstrument.validDate != null) {
-                        $scope.miStandard.measurementInstrument.validDate = new Date($scope.miStandard.measurementInstrument.validDate);
+                    if ($scope.miStandard.miDetails.miFullDto.validDate != null) {
+                        $scope.miStandard.miDetails.miFullDto.validDate = new Date($scope.miStandard.miDetails.miFullDto.validDate);
                     }
                 }
 
@@ -172,7 +171,7 @@
                             data: $scope.miStandard,
                         }).then(function successCallback(response) {
                             alert(response.data.message);
-                            window.location.href = '/standard/'+ $scope.miStandard.id +'?id=' + $scope.miStandard.id;
+                            window.location.href = '/standard/' + $scope.miStandard.id + '?id=' + $scope.miStandard.id;
                         }, function errorCallback(response) {
                             alert(response.data.message)
                         });
@@ -188,7 +187,6 @@
                         method: "GET"
                     }).then(function (response) {
                         $scope.documents = response.data;
-                        console.log($scope.documents)
                     });
                 }
 
@@ -208,11 +206,15 @@
                 }
 
                 $scope.deleteFile = function () {
+                    let deleteUrl = "";
                     var myModalEl = document.getElementById('modal')
                     var modal = bootstrap.Modal.getInstance(myModalEl);
                     modal.hide();
-                    if ($scope.fileType = 'document') { deleteUrl = "/files/documents/" }
-                    else { deleteUrl = "/files/images/" }
+                    if ($scope.fileType == 'document') {
+                        deleteUrl = "/files/documents/";
+                    } else {
+                        deleteUrl = "/files/images/";
+                    }
                     $http({
                         url: deleteUrl + $scope.deleteableId,
                         method: "DELETE"
