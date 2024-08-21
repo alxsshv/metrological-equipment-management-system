@@ -43,7 +43,7 @@ public class MiCharacteristicController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteMiCharacteristic(@PathVariable("id") long id){
         miCharacteristicService.delete(id);
-        String okMessage ="Запись о характеристике № " + id + " успешно удалена";
+        String okMessage ="Запись о характеристике успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

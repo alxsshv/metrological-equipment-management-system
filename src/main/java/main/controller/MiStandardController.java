@@ -7,15 +7,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import main.config.AppConstants;
-import main.config.AppDefaults;
-import main.dto.rest.MiDetailsDto;
 import main.dto.rest.MiStandardDto;
-import main.dto.rest.MiStatusDto;
 import main.service.ServiceMessage;
-import main.service.interfaces.MeasurementInstrumentService;
 import main.service.interfaces.MiDetailsService;
 import main.service.interfaces.MiStandardService;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -98,7 +93,7 @@ public class MiStandardController {
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMiStandard(@PathVariable("id") long id){
         miStandardService.delete(id);
-        String okMessage ="Запись об эталоне № " + id + " успешно удалена";
+        String okMessage ="Запись об эталоне успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

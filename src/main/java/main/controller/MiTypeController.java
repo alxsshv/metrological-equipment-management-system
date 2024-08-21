@@ -99,7 +99,7 @@ public class MiTypeController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteMiType(@PathVariable("id") long id) throws IOException {
         miTypeDetailsService.delete(id);
-        String okMessage = "Запись о типе СИ № " + id + " успешно удалена";
+        String okMessage = "Запись о типе СИ успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

@@ -72,7 +72,7 @@ public class MiConditionController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteMiCondition(@PathVariable("id") long id){
         miConditionService.delete(id);
-        String okMessage ="Запись о состоянии средства измерений № " + id + " успешно удалена";
+        String okMessage ="Запись о состоянии средства измерений успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

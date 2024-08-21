@@ -73,7 +73,7 @@ public class EmployeeController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteEmployee(@PathVariable("id") long id){
         employeeService.delete(id);
-        String okMessage ="Запись о поверителе № " + id + " успешно удалена";
+        String okMessage ="Запись о поверителе успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

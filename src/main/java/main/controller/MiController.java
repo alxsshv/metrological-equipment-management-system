@@ -92,7 +92,7 @@ public class MiController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteMeasurementInstrument(@PathVariable("id") long id) {
         miDetailsService.delete(id);
-        String okMessage = "Запись о средстве измерений № " + id + " успешно удалена";
+        String okMessage = "Запись о средстве измерений успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

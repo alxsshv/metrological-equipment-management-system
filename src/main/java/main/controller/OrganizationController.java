@@ -74,7 +74,7 @@ public class OrganizationController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteOrganization(@PathVariable("id") long id){
         organizationService.delete(id);
-        String okMessage ="Запись об организации"  + id + " успешно удалена";
+        String okMessage ="Запись об организации успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }

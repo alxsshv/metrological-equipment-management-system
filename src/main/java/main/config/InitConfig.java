@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import main.dto.rest.*;
-import main.exception.EntityAlreadyExistException;
 import main.model.*;
 import main.service.interfaces.*;
 import org.modelmapper.ModelMapper;
@@ -67,7 +66,7 @@ public class InitConfig {
                 defaultOrganizationDto.setNotation(value);
                 defaultOrganizationDto.setAddress(value);
                 organizationService.save(defaultOrganizationDto);
-            } catch (EntityAlreadyExistException ex){
+            } catch (ConstraintViolationException ex){
                 log.warn(ex.getMessage());
             }
         defaultOrganizationDto = organizationService.findBySearchString(value).get(0);

@@ -72,7 +72,7 @@ public class MiStatusController {
     @DeleteMapping("{id}")
     public ResponseEntity<?> deleteMiStatus(@PathVariable("id") long id){
         miStatusService.delete(id);
-        String okMessage ="Запись о статусе средства измерений № " + id + " успешно удалена";
+        String okMessage ="Запись о статусе средства измерений успешно удалена";
         log.info(okMessage);
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
