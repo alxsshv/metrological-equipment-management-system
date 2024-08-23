@@ -85,6 +85,7 @@ public class MiTypeDetailsServiceImpl implements MiTypeDetailsService {
     public void update(@Valid MiTypeDetailsDto miTypeDetailsDto){
             MiTypeDetails miTypeDetailsFromDb = getById(miTypeDetailsDto.getId());
             MiTypeDetails updateData = MiTypeDetailsDtoMapper.mapToEntity(miTypeDetailsDto);
+            System.out.println(updateData);
             miTypeDetailsFromDb.updateFrom(updateData);
             miTypeDetailsRepository.save(miTypeDetailsFromDb);
     }

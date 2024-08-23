@@ -49,7 +49,7 @@ public class MiTypeDetails {
 
     public void setModifications(List<MiTypeModification> modifications){
         modifications.forEach(modification -> modification.setMiTypeDetails(this));
-        this.modifications = modifications;
+        this.modifications.addAll(modifications);
     }
 
 
@@ -70,12 +70,12 @@ public class MiTypeDetails {
         this.instructionTitle = updateData.getInstructionTitle();
         this.instructionNotation = updateData.getInstructionNotation();
         this.modifications.clear();
-        this.modifications.addAll(updateData.getModifications());
+        this.setModifications(updateData.getModifications());
     }
 
     @Override
     public String toString() {
-        return "MiTypeInstruction{" +
+        return "MiTypeDetails{" +
                 "id=" + id +
                 ", instructionNotation='" + instructionNotation + '\'' +
                 ", instructionTitle='" + instructionTitle + '\'' +
@@ -85,6 +85,7 @@ public class MiTypeDetails {
                 ", temperatureHiLimit=" + temperatureHiLimit +
                 ", pressureLowLimit=" + pressureLowLimit +
                 ", pressureHiLimit=" + pressureHiLimit +
+                ", modifications=" + modifications +
                 ", miType=" + miType +
                 '}';
     }
