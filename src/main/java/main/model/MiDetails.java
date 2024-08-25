@@ -64,6 +64,7 @@ public class MiDetails {
         this.department = updateData.getDepartment();
         this.measCategory = updateData.getMeasCategory();
         this.user = updateData.getUser();
+        this.mi.updateFrom(updateData.mi);
     }
 
     @Override

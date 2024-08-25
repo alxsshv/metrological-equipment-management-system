@@ -37,7 +37,7 @@
                     <dd ng-model="type" class="col-sm-6">{{mi.serialNum}}</dd>
 
                     <dt class="col-sm-6 ">Инвентарный номер</dt>
-                    <dd ng-model="type" class="col-sm-6">{{mi.inventoryNum}}</dd>
+                    <dd ng-model="type" class="col-sm-6">{{miDetails.inventoryNum}}</dd>
 
                     <dt class="col-sm-6 ">Дата изготовления</dt>
                     <dd ng-model="type" class="col-sm-6">{{mi.manufactureDate | date: "dd.MM.yyyy" : 'UTC'}}</dd>
@@ -157,7 +157,6 @@
                     method: "GET"
                 }).then(function (response) {
                     $scope.miDetails = response.data;
-                    console.log($scope.miDetails);
                     $scope.mi = $scope.miDetails.miFullDto;
                     $scope.formatMiDateFields();
                     $scope.mi.applicable = $scope.mi.applicable ? "Пригоден" : "Не пригоден";
@@ -216,7 +215,6 @@
             $scope.getImages = function(){
                 $scope.imagesExceptFirst = $scope.images.slice();            
                 $scope.imagesExceptFirst.shift(); 
-                console.log($scope.imagesExceptFirst); 
             }
             
             $scope.miTypeImages = [];
@@ -236,7 +234,6 @@
                 }).then(function (response) {
                     $scope.images = $scope.images.concat(response.data);
                     $scope.getImages();
-                    console.log($scope.images);
                 });
             }
 
