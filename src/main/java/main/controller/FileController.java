@@ -65,6 +65,11 @@ public class FileController {
         return  documentService.getDocumentFile(Long.parseLong(id));
     }
 
+    @GetMapping("/images/{id}")
+    public ResponseEntity<?> getImageFile(@PathVariable(value = "id") long id) {
+        return  imageService.getImageFile(id);
+    }
+
     @GetMapping("/images")
     public List<ImageDto> getImageList(@RequestParam (value ="category") String categoryName,
                                        @RequestParam(value = "id") String id){

@@ -6,15 +6,22 @@ import main.dto.rest.mappers.ImageDtoMapper;
 import main.model.Image;
 import main.repository.ImageRepository;
 import main.service.Category;
+import main.service.ServiceMessage;
 import main.service.interfaces.ImageService;
+import main.service.utils.FileContentTypeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -68,6 +75,32 @@ public class ImageServiceImpl implements ImageService {
             throw new EntityNotFoundException("Изображение  № "+ id +" не найдено");
         }
         return imageOpt.get();
+    }
+
+    @Override
+    public ResponseEntity<?> getImageFile(Long id) {
+        try {
+            Image image = getImageById(id);
+            ResponseEntity<?> responseEntity = buildResponseEntityFrom(image);
+            String okMessage = "Изображение " + image.getStorageFileName() + " передано";
+            log.info(okMessage);
+            return responseEntity;
+        } catch (IOException ex) {
+            String errorMessage = "Файл изображения не найден или поврежден. ";
+            log.error("{}:{}", errorMessage, ex.getMessage());
+            return ResponseEntity.status(500).body(new ServiceMessage(errorMessage));
+        }
+    }
+
+    private ResponseEntity<?> buildResponseEntityFrom(Image image) throws IOException {
+        ContentDisposition contentDisposition = ContentDisposition.builder("inline")
+                .filename(image.getOriginalFileName(), StandardCharsets.UTF_8).build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(FileContentTypeBuilder.getContentType(image.getExtension()));
+        headers.setContentDisposition(contentDisposition);
+        return ResponseEntity.ok()
+                .headers(headers)
+                .body(new ByteArrayResource(Files.readAllBytes(Path.of(imageUploadPath + image.getStorageFileName()))));
     }
 
     @Override

@@ -92,14 +92,14 @@
                 <p></p>
                 <div id="carousel" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
-                        <div ng-model="images" class="carousel-item active">
-                            <img ng-src="/storage/images/{{images[0].storageFileName}}" class="d-block w-100">
+                        <div ng-model="images" class="carousel-item active" >
+                            <a href="/files/images/{{images[0].id}}" target="_blank"> <img ng-src="/storage/images/{{images[0].storageFileName}}" class="d-block w-100"></a>
                             <div class="carousel-caption d-none d-md-block">
                                 <p>{{images[0].description}}</p>
                             </div>
                         </div>
                         <div ng-repeat="item in imagesExceptFirst" class="carousel-item">
-                            <img ng-src="/storage/images/{{item.storageFileName}}" class="d-block w-100">
+                            <a href="/files/images/{{item.id}}" target="_blank"><img ng-src="/storage/images/{{item.storageFileName}}" href="/images/{{item.id}}" class="d-block w-100"></a>
                             <div class="carousel-caption d-none d-md-block">
                                 <p>{{item.description}}</p>
                             </div>
