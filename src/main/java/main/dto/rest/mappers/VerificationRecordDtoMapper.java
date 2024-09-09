@@ -6,6 +6,7 @@ import main.dto.rest.mappers.utils.DateStringConverter;
 import main.model.VerificationRecord;
 
 
+
 public class VerificationRecordDtoMapper {
     public static VerificationRecord mapToEntity(VerificationRecordDto dto){
         VerificationRecord record = new VerificationRecord();
@@ -22,7 +23,7 @@ public class VerificationRecordDtoMapper {
         record.setArshinVerificationNumber(dto.getArshinVerificationNumber());
         record.setMi(dto.getMi());
         record.setEmployee(dto.getEmployee());
-        dto.getMiStandards().forEach(standard -> record.getMiStandards().add(standard));
+        dto.getMiStandards().forEach(standard -> record.getMiStandards().add(MiStandardDtoMapper.mapToEntity(standard)));
         dto.getVerificationMis().forEach(mi -> record.getVerificationMis().add(mi));
         record.setShortVerification(dto.isShortVerification());
         record.setShortVerificationCharacteristic(dto.getShortVerificationCharacteristic());
@@ -45,7 +46,7 @@ public class VerificationRecordDtoMapper {
         dto.setArshinVerificationNumber(record.getArshinVerificationNumber());
         dto.setMi(record.getMi());
         dto.setEmployee(record.getEmployee());
-        dto.setMiStandards(record.getMiStandards().stream().toList());
+        dto.setMiStandards(record.getMiStandards().stream().map(MiStandardDtoMapper::mapToDto).toList());
         dto.setVerificationMis(record.getVerificationMis().stream().toList());
         dto.setShortVerification(record.isShortVerification());
         dto.setShortVerificationCharacteristic(record.getShortVerificationCharacteristic());

@@ -61,8 +61,8 @@ public class FileController {
     }
 
     @GetMapping("/documents/{id}")
-    public ResponseEntity<?> getDocumentFile(@PathVariable(value = "id") String id) {
-        return  documentService.getDocumentFile(Long.parseLong(id));
+    public ResponseEntity<?> getDocumentFile(@PathVariable(value = "id") long id) {
+        return  documentService.getDocumentFile(id);
     }
 
     @GetMapping("/images/{id}")

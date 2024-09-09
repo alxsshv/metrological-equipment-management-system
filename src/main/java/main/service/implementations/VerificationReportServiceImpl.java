@@ -18,6 +18,7 @@ import main.service.ServiceMessage;
 import main.service.interfaces.ArshinDataService;
 import main.service.interfaces.VerificationRecordService;
 import main.service.interfaces.VerificationReportService;
+import main.service.interfaces.VerificationReportStatusService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,13 +31,14 @@ import java.util.Optional;
 @Setter
 @Service
 @Slf4j
-public class VerificationReportServiceImpl implements VerificationReportService {
+public class VerificationReportServiceImpl implements VerificationReportService, VerificationReportStatusService {
     @Autowired
     private final VerificationReportRepository reportRepository;
     @Autowired
     private final VerificationRecordService verificationRecordService;
     @Autowired
     private final ArshinDataService arshinDataService;
+    private int maxFileRecordsLimit;
 
     public VerificationReportServiceImpl(VerificationReportRepository reportRepository, VerificationRecordService verificationRecordService, ArshinDataService arshinDataService) {
         this.reportRepository = reportRepository;
@@ -108,6 +110,7 @@ public class VerificationReportServiceImpl implements VerificationReportService 
     public List<VerificationReport> getPublicToArshinReportsAndNotSendToFsa(){
         return reportRepository.findByPublicToArshinAndSentToFsa(true, false);
     }
+
 
     @Override
     public Page<VerificationReportDto> findAll(Pageable pageable){
@@ -196,6 +199,7 @@ public class VerificationReportServiceImpl implements VerificationReportService 
         reportRepository.save(report);
     }
 
+
     @Override
     public void setPublicToArshinStatus(VerificationReport report){
         report.setReadyToSend(false);
@@ -209,6 +213,21 @@ public class VerificationReportServiceImpl implements VerificationReportService 
         report.setSentToFsa(true);
         reportRepository.save(report);
     }
+
+    @Override
+    public void setSentToArshinStatusForReports(List<VerificationReport> readyToSendReports){
+        readyToSendReports.forEach(this::setSentToArshinStatus);
+    }
+
+    @Override
+    public void setSentToFsaStatusForReports(List<VerificationReport> reports){
+        reports.forEach(this::setSentToFsaStatus);
+    }
+
+
+
+
+
 
 
 

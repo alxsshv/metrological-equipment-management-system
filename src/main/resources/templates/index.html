@@ -14,127 +14,134 @@
       <div class="col-md-5"></div>
       <div class="col-md-7">
 
-      <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Переключатель навигации">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarNavDropdown">
-            <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Управление отчетностью
-              </a>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item " href="/report/verification/ready/arshin">Выгрузка сведений о поверке в
-                    Аршин</a></li>
-                <li><a class="dropdown-item" href="#" ng-click="updateReportsFromArshin()">Обновить отчеты данными из ФГИС
-                    "Аршин"</a></li>
-                <li><a class="dropdown-item " href="/report/verification/ready/fsa">Выгрузка сведений о поверке в
-                    ФСА</a></li>
-              </ul>
-              </li>
-              
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Администрирование системы
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/employee?page=0">Список поверителей</a></li>
-                  <li><a class="dropdown-item" href="/organization?page=0">Перечень организаций</a></li>
-                  <li><a class="dropdown-item" href="/standard?page=0">Перечень эталонов</a></li>
-                  <li><a class="dropdown-item" href="/meas-categories/form">Перечень видов измерений</a></li>
-                </ul>
-              </li>
-
-              <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                  Настройки
-                </a>
-                <ul class="dropdown-menu">
-                  <li><a class="dropdown-item" href="/settings/entity/form">Настройки юр. лица</a></li>
-                </ul>
-              </li>
-              
-            </ul>
-          </div>
-        </div>
-      </nav>
-    </div>
-    <div class="row text-primary-emphasis">
-      <div class="text-primary-emphasis">
-        <h4>Система метрологического обеспечения</h4>
-      </div>
-    </div>
-
-    <div class="row">
-      <div class="col-md-3 text-start">
-        <div class="btn-group-vertical" role="group" aria-label="vertical_menu">
-          <a class="btn btn-primary btn-lg" href="/mit" role="button">Типы средств измерений</a>
-          <a class="btn btn-primary btn-lg" href="/mi" role="button">Средства измерений</a>
-          <div class="btn-group dropend">
-            <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-bs-toggle="dropdown"
-              aria-expanded="false">
-              Отчеты
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+          <div class="container-fluid">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
+              aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Переключатель навигации">
+              <span class="navbar-toggler-icon"></span>
             </button>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item " href="/report/verification">Отчеты о поверке</a></li>
-              <li>
-                <hr class="dropdown-divider">
-              </li>
-              <li><a class="dropdown-item "
-                  href="/report/verification/record/counter/date/employee?employeeId=1">Количество выполненных поверок
-                  по поверителям</a></li>
-            </ul>
+            <div class="collapse navbar-collapse" id="navbarNavDropdown">
+              <ul class="navbar-nav">
+                <li class="nav-item">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Управление отчетностью
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item " href="/report/verification/ready/arshin">Выгрузка сведений о поверке в
+                        Аршин</a></li>
+                    <li><a class="dropdown-item" href="#" ng-click="updateReportsFromArshin()">Обновить отчеты данными
+                        из ФГИС
+                        "Аршин"</a></li>
+                    <li><a class="dropdown-item " href="/report/verification/ready/fsa">Выгрузка сведений о поверке в
+                        ФСА</a></li>
+                        <li>_</li>
+                    <li><a class="dropdown-item" href="/report/file/arshin">Файлы отчетов для ФГИС "Аршин"</a></li>
+                    <li><a class="dropdown-item " href="/report/file/fsa">Файлы отчетов для ФСА</a></li>
+                  </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Администрирование системы
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/employee?page=0">Список поверителей</a></li>
+                    <li><a class="dropdown-item" href="/organization?page=0">Перечень организаций</a></li>
+                    <li><a class="dropdown-item" href="/standard?page=0">Перечень эталонов</a></li>
+                    <li><a class="dropdown-item" href="/meas-categories/form">Перечень видов измерений</a></li>
+                  </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                    aria-expanded="false">
+                    Настройки
+                  </a>
+                  <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="/settings/entity/form">Настройки юр. лица</a></li>
+                  </ul>
+                </li>
+
+              </ul>
+            </div>
+          </div>
+        </nav>
+      </div>
+      <div class="row text-primary-emphasis">
+        <div class="text-primary-emphasis">
+          <h4>Система метрологического обеспечения</h4>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 text-start">
+          <div class="btn-group-vertical" role="group" aria-label="vertical_menu">
+            <a class="btn btn-primary btn-lg" href="/mit" role="button">Типы средств измерений</a>
+            <a class="btn btn-primary btn-lg" href="/mi" role="button">Средства измерений</a>
+            <div class="btn-group dropend">
+              <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false">
+                Отчеты
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item " href="/report/verification">Отчеты о поверке</a></li>
+                <li>
+                  <hr class="dropdown-divider">
+                </li>
+                <li><a class="dropdown-item "
+                    href="/report/verification/record/counter/date/employee?employeeId=1">Количество выполненных поверок
+                    по поверителям</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="pleaseWaitMessage" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <strong class="me-auto text-primary">Поиск информации в ФГИС "Аршин"</strong>
+          </div>
+          <div class="toast-body">
+            Пожалуйста ожидайте
           </div>
         </div>
       </div>
     </div>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+      var app = angular.module("MAIN", []);
+      app.controller("MAIN_CTRL", function ($scope, $http) {
 
-    <div class="toast-container position-fixed bottom-0 end-0 p-3">
-      <div id="pleaseWaitMessage" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-          <strong class="me-auto text-primary">Поиск информации в ФГИС "Аршин"</strong>
-        </div>
-        <div class="toast-body">
-          Пожалуйста ожидайте
-        </div>
-      </div>
-    </div>
-  </div>
-  <script src="/js/angular.min.js"></script>
-  <script src="/js/bootstrap.bundle.min.js"></script>
-  <script type="text/javascript">
-    var app = angular.module("MAIN", []);
-    app.controller("MAIN_CTRL", function ($scope, $http) {
+        $scope.updateReportsFromArshin = function () {
+          showMessage("pleaseWaitMessage");
+          $http({
+            url: "/reports/verifications/update/all",
+            method: "GET"
+          }).then(function (response) {
+            alert(response.data.message);
+            hideMessage("pleaseWaitMessage");
+          });
 
-      $scope.updateReportsFromArshin = function(){
-        showMessage("pleaseWaitMessage");
-        $http({
-          url: "/reports/verifications/update/all",
-          method: "GET"
-        }).then(function (response) {
-          alert(response.data.message);
-          hideMessage("pleaseWaitMessage");
-        });
-        
-      }
+        }
 
-      function showMessage(id) {
-        const message = document.getElementById(id);
-        const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
-        messageBootstrap.show();
-      }
+        function showMessage(id) {
+          const message = document.getElementById(id);
+          const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
+          messageBootstrap.show();
+        }
 
-      function hideMessage(id) {
-        const message = document.getElementById(id);
-        const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
-        messageBootstrap.hide();
-      }
+        function hideMessage(id) {
+          const message = document.getElementById(id);
+          const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
+          messageBootstrap.hide();
+        }
 
-    });
-  </script>
+      });
+    </script>
 </body>
 
 </html>

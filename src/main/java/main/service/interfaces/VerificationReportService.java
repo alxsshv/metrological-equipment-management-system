@@ -21,7 +21,5 @@ public interface VerificationReportService {
     ResponseEntity<?> updateReportFromArshin(long id);
     ResponseEntity<?> updateSentToArshinReportsFromArshin();
     ResponseEntity<?> delete (long id);
-    void setSentToArshinStatus(VerificationReport report);
-    void setPublicToArshinStatus(VerificationReport report);
-    void setSentToFsaStatus(VerificationReport report);
+
 }

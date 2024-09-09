@@ -10,7 +10,7 @@ public class MiStandardDtoMapper {
         MiStandardDto dto = new MiStandardDto();
         dto.setId(standard.getId());
         dto.setArshinNumber(standard.getArshinNumber());
-        dto.setMiDetails(MiDetailsDtoMapper.mapToDto(standard.getMiDetails()));
+        dto.setMiDetailsDto(MiDetailsDtoMapper.mapToDto(standard.getMiDetails()));
         dto.setSchemaType(standard.getSchemaType());
         dto.setSchemaTitle(standard.getSchemaTitle());
         dto.setSchemaNotation(standard.getSchemaNotation());
@@ -27,7 +27,7 @@ public class MiStandardDtoMapper {
         MiStandard standard = new MiStandard();
         standard.setId(dto.getId());
         standard.setArshinNumber(dto.getArshinNumber());
-        standard.setMiDetails(MiDetailsDtoMapper.mapToEntity(dto.getMiDetails()));
+        standard.setMiDetails(MiDetailsDtoMapper.mapToEntity(dto.getMiDetailsDto()));
         standard.setSchemaTitle(dto.getSchemaTitle());
         standard.setSchemaType(dto.getSchemaType());
         standard.setSchemaNotation(dto.getSchemaNotation());

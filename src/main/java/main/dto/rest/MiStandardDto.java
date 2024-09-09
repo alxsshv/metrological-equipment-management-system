@@ -15,7 +15,7 @@ public class MiStandardDto {
     @NotEmpty(message = "Пожалуйста укажите регистрационный номер эталона в ФГИС\"Аршин\"")
     private String arshinNumber;
     @NotNull(message = "Некорректно указано средство измерений, применяемое в качестве эталона")
-    private MiDetailsDto miDetails;
+    private MiDetailsDto miDetailsDto;
     private String schemaType;
     private String schemaTitle;
     private String schemaNotation;
@@ -29,7 +29,7 @@ public class MiStandardDto {
         return "MiStandardDto{" +
                 "id=" + id +
                 ", arshinNumber='" + arshinNumber + '\'' +
-                ", miDetails=" + miDetails +
+                ", miDetails=" + miDetailsDto +
                 ", schemaType='" + schemaType + '\'' +
                 ", schemaTitle='" + schemaTitle + '\'' +
                 ", stateStandardNumber='" + stateStandardNumber + '\'' +

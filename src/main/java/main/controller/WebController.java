@@ -132,11 +132,19 @@ public class WebController {
     }
     @GetMapping("/report/verification/ready/arshin")
     public String getVerificationListForArshinPublication(){
-        return "report/listForArshin";
+        return "report/arshin/listForArshin";
     }
     @GetMapping("/report/verification/ready/fsa")
     public String getVerificationListForFSAPublication(){
-        return "report/listForFsa";
+        return "report/fsa/listForFsa";
+    }
+    @GetMapping("/report/file/fsa")
+    public String getReportFilesListForFSA(){
+        return "report/fsa/filelist";
+    }
+    @GetMapping("/report/file/arshin")
+    public String getReportFilesListForArshin(){
+        return "report/arshin/filelist";
     }
 
 

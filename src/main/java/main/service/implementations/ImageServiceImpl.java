@@ -1,6 +1,8 @@
 package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
+import main.config.AppUploadPaths;
 import main.dto.rest.ImageDto;
 import main.dto.rest.mappers.ImageDtoMapper;
 import main.model.Image;
@@ -11,7 +13,7 @@ import main.service.interfaces.ImageService;
 import main.service.utils.FileContentTypeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -28,20 +30,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 @Service
+@AllArgsConstructor
 public class ImageServiceImpl implements ImageService {
     private final static Logger log = LoggerFactory.getLogger(ImageServiceImpl.class);
-    private String imageUploadPath;
+    @Autowired
     private final ImageRepository imageRepository;
-
-
-    public ImageServiceImpl(ImageRepository imageRepository) {
-        this.imageRepository = imageRepository;
-    }
-
-    @Value("${upload.images.path}")
-    public void setImageUploadPath(String imageUploadPath) {
-        this.imageUploadPath = imageUploadPath;
-    }
+    @Autowired
+    private AppUploadPaths appUploadPaths;
 
     @Override
     public void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
@@ -51,7 +46,7 @@ public class ImageServiceImpl implements ImageService {
     }
 
     private void createFolderIfNotExist(){
-        File uploadFolder = new File(imageUploadPath);
+        File uploadFolder = new File(appUploadPaths.getImagesPath());
         if (!uploadFolder.exists()){
             uploadFolder.mkdir();
         }
@@ -61,7 +56,7 @@ public class ImageServiceImpl implements ImageService {
     public void delete(long id) throws IOException {
         try {
             Image image = getImageById(id);
-            Files.deleteIfExists(Path.of(imageUploadPath + "/" + image.getStorageFileName()));
+            Files.deleteIfExists(Path.of(appUploadPaths.getImagesPath() + "/" + image.getStorageFileName()));
             imageRepository.delete(image);
         } catch (IOException ex) {
             throw new RuntimeException("Ошибка удаления файла");
@@ -100,7 +95,7 @@ public class ImageServiceImpl implements ImageService {
         headers.setContentDisposition(contentDisposition);
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(new ByteArrayResource(Files.readAllBytes(Path.of(imageUploadPath + image.getStorageFileName()))));
+                .body(new ByteArrayResource(Files.readAllBytes(Path.of(appUploadPaths.getImagesPath() + image.getStorageFileName()))));
     }
 
     @Override
@@ -128,7 +123,7 @@ public class ImageServiceImpl implements ImageService {
                 image.setExtension(extension);
                 image.setCategoryName(category.name());
                 image.setCategoryId(CategoryId);
-                file.transferTo(new File(imageUploadPath + "/" + storageFileName));
+                file.transferTo(new File(appUploadPaths.getImagesPath() + "/" + storageFileName));
                 imageRepository.save(image);
             log.info("Файл {} успешно загружен на сервер", filename);
         }

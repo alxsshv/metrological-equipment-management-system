@@ -412,10 +412,11 @@
                     url: "/mis/" + id,
                     method: "GET"
                 }).then(function (response) {
-                    $scope.mi = response.data;
+                    $scope.mi = response.data.miFullDto;
                     formatDateFieldsFromMi($scope.mi);
                     $scope.applicable = setApplicableFromMi($scope.mi);
                     reportRow.mi = $scope.mi;
+                    console.log($scope.mi);
 
                 });
             }

@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import main.model.Employee;
 import main.model.MeasurementInstrument;
-import main.model.MiStandard;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +27,7 @@ public class VerificationRecordDto {
     private String arshinVerificationNumber;
     private MeasurementInstrument mi;
     private Employee employee;
-    private List<MiStandard> miStandards = new ArrayList<>();
+    private List<MiStandardDto> miStandards = new ArrayList<>();
     private List<MeasurementInstrument> verificationMis = new ArrayList<>();
     private boolean  calibration;
     private String stickerNum;

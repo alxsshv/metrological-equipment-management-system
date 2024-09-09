@@ -3,6 +3,7 @@ package main.service.implementations;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.Getter;
 import lombok.Setter;
+import main.config.AppUploadPaths;
 import main.dto.rest.DocumentDto;
 import main.dto.rest.mappers.DocumentDtoMapper;
 import main.model.Document;
@@ -14,7 +15,6 @@ import main.service.utils.FileContentTypeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
@@ -36,17 +36,13 @@ import java.util.UUID;
 public class DocumentServiceImpl implements DocumentService {
     private final static Logger log = LoggerFactory.getLogger(DocumentServiceImpl.class);
     @Autowired
+    private AppUploadPaths appUploadPaths;
+    @Autowired
     private final DocumentRepository documentRepository;
-    private  String documentUploadPath;
-
     public DocumentServiceImpl(DocumentRepository documentRepository) {
         this.documentRepository = documentRepository;
     }
 
-    @Value("${upload.documents.path}")
-    public void setDocumentUploadPath(String documentUploadPath){
-        this.documentUploadPath = documentUploadPath;
-    }
 
     @Override
     public void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
@@ -56,7 +52,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private void createFolderIfNotExist(){
-        File uploadFolder = new File(documentUploadPath);
+        File uploadFolder = new File(appUploadPaths.getDocumentsPath());
         if (!uploadFolder.exists()){
             uploadFolder.mkdir();
         }
@@ -79,11 +75,10 @@ public class DocumentServiceImpl implements DocumentService {
                 document.setExtension(extension);
                 document.setCategoryName(category.name());
                 document.setCategoryId(CategoryId);
-                file.transferTo(new File(documentUploadPath + "/" + storageFileName));
+                file.transferTo(new File(appUploadPaths.getDocumentsPath() + "/" + storageFileName));
                 documentRepository.save(document);
                 log.info("Файл {} успешно загружен на сервер", filename );
         }
-
     }
 
 
@@ -125,13 +120,13 @@ public class DocumentServiceImpl implements DocumentService {
         headers.setContentDisposition(contentDisposition);
         return ResponseEntity.ok()
                 .headers(headers)
-                .body(new ByteArrayResource(Files.readAllBytes(Path.of(documentUploadPath + document.getStorageFileName()))));
+                .body(new ByteArrayResource(Files.readAllBytes(Path.of(appUploadPaths.getDocumentsPath() + document.getStorageFileName()))));
     }
 
     @Override
     public void delete(long id) throws IOException {
             Document document = getDocumentById(id);
-            Files.deleteIfExists(Path.of(documentUploadPath + "/" + document.getStorageFileName()));
+            Files.deleteIfExists(Path.of(appUploadPaths.getDocumentsPath() + "/" + document.getStorageFileName()));
             documentRepository.delete(document);
     }
 

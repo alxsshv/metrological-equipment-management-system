@@ -1,9 +1,8 @@
 package main.config;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -13,13 +12,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebMvc
 @AllArgsConstructor
-@NoArgsConstructor
 @Setter
 public class MVCConfig implements WebMvcConfigurer {
-    @Value("${upload.images.path}")
-    private String imageUploadFolder;
-    @Value("${upload.documents.path}")
-    private String fileUploadFolder;
+    @Autowired
+    private AppUploadPaths appUploadPaths;
 
 
     @Override
@@ -33,9 +29,9 @@ public class MVCConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/favicon.ico")
                 .addResourceLocations("classpath:/static/images/favicon.ico");
         registry.addResourceHandler("/storage/images/**")
-                .addResourceLocations("file://"+imageUploadFolder + "/");
+                .addResourceLocations("file://"+ appUploadPaths.getImagesPath() + "/");
         registry.addResourceHandler("/storage/files/**")
-                .addResourceLocations("file://"+fileUploadFolder + "/");
+                .addResourceLocations("file://"+ appUploadPaths.getDocumentsPath() + "/");
 
     }
 

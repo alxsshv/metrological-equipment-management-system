@@ -42,7 +42,7 @@ public class MiStandardServiceImpl implements MiStandardService {
 
     @Override
     public void save(@MiStandardAlreadyExist @Valid MiStandardDto miStandardDto, MultipartFile[] files, String[] descriptions) throws IOException {
-            MiDetails parentMi = getParentMi(miStandardDto.getMiDetails().getId());
+            MiDetails parentMi = getParentMi(miStandardDto.getMiDetailsDto().getId());
             MiStandard standard = MiStandardDtoMapper.mapToEntity(miStandardDto);
             standard.setMiDetails(parentMi);
             MiStandard savedMiStandard = miStandardRepository.save(standard);
