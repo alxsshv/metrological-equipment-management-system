@@ -37,6 +37,7 @@ public class FileContentTypeBuilder {
             case "zip" : return  MediaType.valueOf("application/zip");
             case "png" : return  MediaType.valueOf("image/png");
             case "jpeg", "jpg" : return MediaType.valueOf("image/jpeg");
+            case "ico" : return MediaType.valueOf("image/x-icon");
             case "gif" : return MediaType.valueOf("image/gif");
             default: return APPLICATION_OCTET_STREAM;
         }
