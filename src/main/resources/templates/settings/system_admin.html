@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Система метрологического обеспечения</title>
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body data-bs-theme="light" ng-app="MAIN" ng-controller="MAIN_CTRL">
+  <div class="container text-center">
+    <div class="row">
+      <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+          <div class="nav-item">
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+          </div>
+          <div class="col-md-8"></div>
+          <div class="col-md-2">
+            <label class="nav-link" ng-model="currentUser">{{currentUser.surname}} {{currentUser.name}}</label>
+          </div>
+          <div class="col-md-1">
+            <a role="button" class="btn btn-light" type="button" href="/logout">Выход</a>
+          </div>
+        </div>
+      </nav>
+      <div class="col-md-1">
+
+      </div>
+      </nav>
+    </div>
+    <div class="row text-primary-emphasis">
+      <div class="text-primary-emphasis">
+        <h4>Администрирование системы</h4>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-3 text-start">
+        <div class="btn-group-vertical" role="group" aria-label="vertical_menu">
+          <a class="btn btn-primary btn-lg" href="/user" role="button">Список пользователей</a>
+          <a class="btn btn-primary btn-lg" href="/settings/entity/form" role="button">Настройки юр. лица</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+      <div id="pleaseWaitMessage" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+          <strong class="me-auto text-primary">Поиск информации в ФГИС "Аршин"</strong>
+        </div>
+        <div class="toast-body">
+          Пожалуйста ожидайте
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/angular.min.js"></script>
+  <script src="/js/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript">
+    var app = angular.module("MAIN", []);
+    app.controller("MAIN_CTRL", function ($scope, $http) {
+
+      $scope.updateReportsFromArshin = function () {
+        showMessage("pleaseWaitMessage");
+        $http({
+          url: "/reports/verifications/update/all",
+          method: "GET"
+        }).then(function (response) {
+          alert(response.data.message);
+          hideMessage("pleaseWaitMessage");
+        });
+
+      }
+
+
+      function showMessage(id) {
+        const message = document.getElementById(id);
+        const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
+        messageBootstrap.show();
+      }
+
+      function hideMessage(id) {
+        const message = document.getElementById(id);
+        const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
+        messageBootstrap.hide();
+      }
+
+      function getCurrentUser() {
+        $http({
+          url: "/users/username",
+          method: "GET"
+        }).then(function (response) {
+          $scope.currentUser = response.data;
+        });
+      }
+      getCurrentUser();
+
+    });
+  </script>
+</body>
+
+</html>

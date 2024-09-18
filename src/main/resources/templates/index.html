@@ -31,8 +31,7 @@
                     <li><a class="dropdown-item " href="/report/verification/ready/arshin">Выгрузка сведений о поверке в
                         Аршин</a></li>
                     <li><a class="dropdown-item" href="#" ng-click="updateReportsFromArshin()">Обновить отчеты данными
-                        из ФГИС
-                        "Аршин"</a></li>
+                        из ФГИС "Аршин"</a></li>
                     <li><a class="dropdown-item " href="/report/verification/ready/fsa">Выгрузка сведений о поверке в
                         ФСА</a></li>
                     <li><hr class="dropdown-divider"></li>
@@ -44,7 +43,7 @@
                 <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                     aria-expanded="false">
-                    Администрирование системы
+                    Управление поверкой
                   </a>
                   <ul class="dropdown-menu">
                     <li><a class="dropdown-item" href="/employee?page=0">Список поверителей</a></li>
@@ -54,16 +53,17 @@
                   </ul>
                 </li>
 
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Настройки
+                <li class="nav-item">
+                  <a class="nav-link" href="/settings" role="button" aria-expanded="false">
+                    Администрирование
                   </a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/settings/entity/form">Настройки юр. лица</a></li>
-                  </ul>
                 </li>
-
+                <div class="col-md-2">
+                  <label class="nav-link" ng-model="currentUser">{{currentUser.surname}} {{currentUser.name}}</label>
+                </div>
+                <div class="col-md-1">
+                  <a role="button" class="btn btn-light" type="button" href="/logout">Выход</a>
+                </div>  
               </ul>
             </div>
           </div>
@@ -128,6 +128,7 @@
 
         }
 
+
         function showMessage(id) {
           const message = document.getElementById(id);
           const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
@@ -139,6 +140,17 @@
           const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
           messageBootstrap.hide();
         }
+
+
+        function getCurrentUser() {
+        $http({
+          url: "/users/username",
+          method: "GET"
+        }).then(function (response) {
+          $scope.currentUser = response.data;
+        });
+      }
+      getCurrentUser();
 
       });
     </script>

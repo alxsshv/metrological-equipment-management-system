@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Сведения о пользователе</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body ng-app="USER_CARD" ng-controller="USER_CARD_CTRL">
+    <div class="container text-center">
+        <nav class="navbar bg-body-tertiary">
+            <form class="container-fluid justify-content-start">
+                <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+                <button class="btn btn-outline-success me-2" type="button"
+                    onclick="location.href='/settings'">Администрирование</button>
+                <button class="btn btn-outline-success me-2" onclick="location.href='/user'" type="button">К списку
+                    пользователей</button>
+                <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
+            </form>
+        </nav>
+
+        <div class="row">
+            <div class="col-sm-9">
+                <dl class="row text-start">
+                    <dt class="col-sm-6">Логин</dt>
+                    <dd ng-model="type" class="col-sm-6">{{user.username}}</dd>
+
+                    <dt class="col-sm-6">Фамилия</dt>
+                    <dd ng-model="type" class="col-sm-6">{{user.surname}}</dd>
+
+                    <dt class="col-sm-6">Имя</dt>
+                    <dd ng-model="type" class="col-sm-6">{{user.name}}</dd>
+
+                    <dt class="col-sm-6 text-truncate">Отчество</dt>
+                    <dd ng-model="type" class="col-sm-6">{{user.patronymic}}</dd>
+
+                    <dt class="col-sm-6">Номер телефона</dt>
+                    <dd ng-model="type" class="col-sm-6">{{user.phoneNumber}}</dd>
+
+                    <dt class="col-sm-6">Уровни доступа</dt>
+                    <dd ng-model="type" class="col-sm-6">{{user.phoneNumber}}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+        var app = angular.module("USER_CARD", []);
+        var idAttr = new URL(document.URL).searchParams.get("id");
+        app.controller("USER_CARD_CTRL", function ($scope, $http) {
+            $scope.reference = "/user/form/" + idAttr + "?id=" + idAttr
+
+            $scope.getUser = function () {
+                $http({
+                    url: "/users/" + idAttr,
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.user = response.data;
+                });
+            }
+
+            $scope.getUser();
+
+        });
+
+
+    </script>
+</body>
+
+</html>

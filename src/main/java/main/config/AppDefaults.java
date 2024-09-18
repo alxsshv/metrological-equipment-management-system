@@ -13,6 +13,8 @@ public class AppDefaults {
     @Getter
     private static MeasCategory defaultMeasCategory;
     @Getter
+    private static Role defaultUserRole;
+    @Getter
     private static MiStatus miStatusWorkingTool;
     @Getter
     private static MiStatus miStatusStandard;
@@ -34,6 +36,10 @@ public class AppDefaults {
 
     public static void setDefaultMeasCategory(MeasCategory measCategory) {
         AppDefaults.defaultMeasCategory = measCategory;
+    }
+
+    public static void setDefaultUserRole(Role role) {
+        AppDefaults.defaultUserRole = role;
     }
 
     public static void setWorkingToolMiStatus(MiStatus miStatus) {

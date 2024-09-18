@@ -5,7 +5,10 @@ import jakarta.validation.ConstraintViolationException;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import main.config.utils.RoleConfigurator;
+import main.config.utils.SystemSecurityRoles;
 import main.dto.rest.*;
+import main.dto.rest.mappers.RoleDtoMapper;
 import main.model.*;
 import main.service.interfaces.*;
 import org.modelmapper.ModelMapper;
@@ -15,6 +18,8 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Set;
 
 
 @Configuration
@@ -43,6 +48,10 @@ public class InitConfig {
     private MiConditionService miConditionService;
     @Autowired
     private MiStatusService miStatusService;
+    @Autowired
+    private RoleConfigurator roleConfigurator;
+    @Autowired
+    private UserService userService;
     private ModelMapper modelMapper = new ModelMapper();
     private MultipartFile[] files = {};
     private String[] descriptions = {};
@@ -58,6 +67,8 @@ public class InitConfig {
         generateDefaultMeasCategory();
         generateDefaultMiConditions();
         generateDefaultMiStatus();
+        generateRoles();
+        generateDefaultUser();
     }
 
     private void generateDefaultOrganization(){
@@ -81,7 +92,6 @@ public class InitConfig {
         try {
             defaultDepartmentDto.setNotation("не указано");
             departmentService.save(defaultDepartmentDto);
-
         } catch (ConstraintViolationException ex){
             log.warn(ex.getMessage());
         }
@@ -140,6 +150,28 @@ public class InitConfig {
         AppDefaults.setStandardMiStatus(modelMapper.map(standardMiStatusDto, MiStatus.class));
         MiStatusDto indicatorMiStatusDto =  miStatusService.findByStatus("Индикатор").get(0);
         AppDefaults.setIndicatorMiStatus(modelMapper.map(indicatorMiStatusDto, MiStatus.class));
+    }
+
+    private void generateRoles(){
+        roleConfigurator.createDefaultRole(SystemSecurityRoles.SYSTEM_ADMIN);
+        roleConfigurator.create(SystemSecurityRoles.USER);
+        roleConfigurator.create(SystemSecurityRoles.VERIFICATION_EMPLOYEE);
+        roleConfigurator.create(SystemSecurityRoles.VERIFICATION_ADMIN);
+    }
+
+    private void generateDefaultUser(){
+        UserDto userDto = new UserDto();
+        try{
+            userDto.setName("Root");
+            userDto.setSurname("Root");
+            userDto.setPatronymic("Root");
+            userDto.setUsername("Root");
+            userDto.setRoles(Set.of(RoleDtoMapper.mapToDto(AppDefaults.getDefaultUserRole())));
+            userDto.setPassword("Rooot");
+            userService.save(userDto);
+        } catch (ConstraintViolationException ex){
+            log.warn(ex.getMessage());
+        }
     }
 
 

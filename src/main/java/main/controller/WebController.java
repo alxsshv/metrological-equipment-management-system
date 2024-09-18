@@ -13,6 +13,22 @@ public class WebController {
         return "index";
     }
 
+    //Шаблоны для пользователей
+    @GetMapping("/user")
+    public String getUsersListView(){
+        return "users/list";
+    }
+    @GetMapping("/user/{id}")
+    public String getUserView(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "users/card";
+    }
+
+    @GetMapping("/user/form")
+    public String getUserForm(){
+        return "users/form";
+    }
+
     // Вывод шаблонов для поверителей
     @GetMapping("/employee/form")
     public String getEmployeeForm(){
@@ -162,8 +178,13 @@ public class WebController {
         return "report/record/reportByEmployee";
     }
 
-    //Вывод шаблонов для настроек юр.лица
-    @GetMapping("settings/entity/form")
+
+    //Вывод шаблонов для настроек
+    @GetMapping("/settings")
+    public String getSystemAdminView(){
+        return "settings/system_admin";
+    }
+    @GetMapping("/settings/entity/form")
     public String getSettingsForm(){
         return "settings/entity/form";
     }
@@ -172,5 +193,20 @@ public class WebController {
     @GetMapping("meas-categories/form")
     public String getMeasCategoryForm(){
         return "measCategory/form";
+    }
+
+    //Регистрация
+    @GetMapping("/registration")
+    public String registration() {
+        return "security/registration";
+    }
+    @GetMapping("/login")
+    public String login() {
+        return "security/login";
+    }
+
+    @GetMapping("/access_denied")
+    public String accessDenied() {
+        return "security/accessDenied";
     }
 }
