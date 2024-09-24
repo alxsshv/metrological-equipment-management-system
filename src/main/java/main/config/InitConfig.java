@@ -156,7 +156,7 @@ public class InitConfig {
         roleConfigurator.createDefaultRole(SystemSecurityRoles.SYSTEM_ADMIN);
         roleConfigurator.create(SystemSecurityRoles.USER);
         roleConfigurator.create(SystemSecurityRoles.VERIFICATION_EMPLOYEE);
-        roleConfigurator.create(SystemSecurityRoles.VERIFICATION_ADMIN);
+        roleConfigurator.create(SystemSecurityRoles.VERIFICATION_MANAGER);
     }
 
     private void generateDefaultUser(){

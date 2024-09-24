@@ -11,25 +11,27 @@
 <body data-bs-theme="light" ng-app="MAIN" ng-controller="MAIN_CTRL">
   <div class="container text-center">
     <div class="row">
-      <nav class="navbar bg-body-tertiary">
-        <div class="container-fluid">
-          <div class="nav-item">
-            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+      <div class="col-md-7">
+      <nav class="navbar navbar-expand  rounded">
+        <div class="container-fluid justify-content-start">
+          <div class="nav">
+            <a class="btn btn-sm btn-outline-primary" role="button" href="/">Главная</a>
+        </div>       
           </div>
-          <div class="col-md-8"></div>
-          <div class="col-md-2">
-            <label class="nav-link" ng-model="currentUser">{{currentUser.surname}} {{currentUser.name}}</label>
-          </div>
-          <div class="col-md-1">
-            <a role="button" class="btn btn-light" type="button" href="/logout">Выход</a>
-          </div>
-        </div>
       </nav>
-      <div class="col-md-1">
-
       </div>
-      </nav>
+  
+      <div class="col-md-3">
+      <nav class="navbar bg-body-tertiary">
+        <form class="container-fluid justify-content-end">
+         <label class="d-flex p-2"  ng-model="currentUser">{{currentUser.surname}} {{currentUser.name}}</label>
+         <a class="btn btn-sm btn-outline-secondary" href="/logout" role="button">Выйти</a>
+       </form>
+     </nav>
     </div>
+  </div>
+
+  
     <div class="row text-primary-emphasis">
       <div class="text-primary-emphasis">
         <h4>Администрирование системы</h4>

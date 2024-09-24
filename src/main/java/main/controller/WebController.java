@@ -164,7 +164,6 @@ public class WebController {
     }
 
 
-
     //Вывод шаблонов записей о поверке
     @GetMapping("/report/verification/record/form/{id}")
     public String getRecordEditForm(@RequestParam("id") String id, Model model){
@@ -179,7 +178,7 @@ public class WebController {
     }
 
 
-    //Вывод шаблонов для настроек
+    //Вывод шаблонов для администрирования
     @GetMapping("/settings")
     public String getSystemAdminView(){
         return "settings/system_admin";
@@ -187,6 +186,12 @@ public class WebController {
     @GetMapping("/settings/entity/form")
     public String getSettingsForm(){
         return "settings/entity/form";
+    }
+
+    //Вывод шаблонов для выполнения операций поверки
+    @GetMapping("/verification")
+    public String getVerifcationView(){
+        return "verification/verification";
     }
 
     //Вывод шаблонов для добавления и удаления видов измерений

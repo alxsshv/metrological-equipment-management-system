@@ -7,7 +7,7 @@ public enum SystemSecurityRoles {
     USER ("USER", "Пользователь"),
     SYSTEM_ADMIN ("SYSTEM_ADMIN", "Администратор"),
     VERIFICATION_EMPLOYEE (" VERIFICATION_EMPLOYEE", "Поверитель"),
-    VERIFICATION_ADMIN ("VERIFICATION_ADMIN","Контроль выполнения поверки");
+    VERIFICATION_MANAGER("VERIFICATION_MANAGER","Контроль выполнения поверки");
 
 
     SystemSecurityRoles(String name, String pseudonym){

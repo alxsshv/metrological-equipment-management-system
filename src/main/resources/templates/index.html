@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ru">
+<html  xmlns:th="http://www.thymeleaf.org" lang="ru">
 
 <head>
   <meta charset="utf-8">
@@ -11,66 +11,30 @@
 <body data-bs-theme="light" ng-app="MAIN" ng-controller="MAIN_CTRL">
   <div class="container text-center">
     <div class="row">
-      <div class="col-md-5"></div>
-      <div class="col-md-7">
-
-        <nav class="navbar navbar-expand-lg bg-body-tertiary">
-          <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
-              aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Переключатель навигации">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-              <ul class="navbar-nav">
-                <li class="nav-item">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Управление отчетностью
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item " href="/report/verification/ready/arshin">Выгрузка сведений о поверке в
-                        Аршин</a></li>
-                    <li><a class="dropdown-item" href="#" ng-click="updateReportsFromArshin()">Обновить отчеты данными
-                        из ФГИС "Аршин"</a></li>
-                    <li><a class="dropdown-item " href="/report/verification/ready/fsa">Выгрузка сведений о поверке в
-                        ФСА</a></li>
-                    <li><hr class="dropdown-divider"></li>
-                    <li><a class="dropdown-item" href="/report/file/arshin">Файлы отчетов для ФГИС "Аршин"</a></li>
-                    <li><a class="dropdown-item " href="/report/file/fsa">Файлы отчетов для ФСА</a></li>
-                  </ul>
-                </li>
-
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                    aria-expanded="false">
-                    Управление поверкой
-                  </a>
-                  <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="/employee?page=0">Список поверителей</a></li>
-                    <li><a class="dropdown-item" href="/organization?page=0">Перечень организаций</a></li>
-                    <li><a class="dropdown-item" href="/standard?page=0">Перечень эталонов</a></li>
-                    <li><a class="dropdown-item" href="/meas-categories/form">Перечень видов измерений</a></li>
-                  </ul>
-                </li>
-
-                <li class="nav-item">
-                  <a class="nav-link" href="/settings" role="button" aria-expanded="false">
-                    Администрирование
-                  </a>
-                </li>
-                <div class="col-md-2">
-                  <label class="nav-link" ng-model="currentUser">{{currentUser.surname}} {{currentUser.name}}</label>
-                </div>
-                <div class="col-md-1">
-                  <a role="button" class="btn btn-light" type="button" href="/logout">Выход</a>
-                </div>  
-              </ul>
-            </div>
+    <div class="col-md-7">
+    <nav class="navbar navbar-expand  rounded">
+      <div class="container-fluid justify-content-start">
+          <div class="nav">
+              <a class="btn btn-sm btn-outline-primary" sec:authorize="hasRole('VERIFICATION_MANAGER')" role="button" href="/verification">Поверка</a>
+                <a class="btn btn-sm btn-outline-primary" sec:authorize="hasRole('SYSTEM_ADMIN')" role="button" href="/settings">Администрирование</a>
           </div>
-        </nav>
-      </div>
+        </div>
+    </nav>
+    </div>
+
+    <div class="col-md-3">
+    <nav class="navbar bg-body-tertiary">
+      <form class="container-fluid justify-content-end">
+       <label class="d-flex p-2"  ng-model="currentUser">{{currentUser.surname}} {{currentUser.name}}</label>
+       <a class="btn btn-sm btn-outline-secondary" href="/logout" role="button">Выйти</a>
+     </form>
+   </nav>
+  </div>
+</div>
+   
       <div class="row text-primary-emphasis">
         <div class="text-primary-emphasis">
+          <p></p>
           <h4>Система метрологического обеспечения</h4>
         </div>
       </div>
@@ -80,21 +44,6 @@
           <div class="btn-group-vertical" role="group" aria-label="vertical_menu">
             <a class="btn btn-primary btn-lg" href="/mit" role="button">Типы средств измерений</a>
             <a class="btn btn-primary btn-lg" href="/mi" role="button">Средства измерений</a>
-            <div class="btn-group dropend">
-              <button type="button" class="btn btn-primary btn-lg dropdown-toggle" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Отчеты
-              </button>
-              <ul class="dropdown-menu">
-                <li><a class="dropdown-item " href="/report/verification">Отчеты о поверке</a></li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item "
-                    href="/report/verification/record/counter/date/employee?employeeId=1">Количество выполненных поверок
-                    по поверителям</a></li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>

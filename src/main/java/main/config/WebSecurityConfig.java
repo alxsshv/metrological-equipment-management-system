@@ -42,7 +42,7 @@ public class WebSecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("/","js/**","css/**","/login", "/registration", "users/registration").permitAll()
+                                .requestMatchers("js/**","css/**","/login", "/registration", "users/registration").permitAll()
                                 .requestMatchers("employee/**","organization/**").hasAnyRole(SystemSecurityRoles.USER.getName())
                                 .requestMatchers("settings/**").hasAnyRole(SystemSecurityRoles.SYSTEM_ADMIN.getName())
                                 .anyRequest().authenticated())
@@ -51,6 +51,8 @@ public class WebSecurityConfig{
                 .build();
 
     }
+
+
 
 
 }
