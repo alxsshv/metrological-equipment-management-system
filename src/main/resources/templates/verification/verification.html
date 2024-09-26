@@ -1,0 +1,149 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Система метрологического обеспечения</title>
+  <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body data-bs-theme="light" ng-app="MAIN" ng-controller="MAIN_CTRL">
+  <div class="container text-center">
+    <div class="row">
+      <div class="col-md-7">
+        <nav class="navbar navbar-expand  rounded">
+          <div class="container-fluid justify-content-start">
+            <div class="nav">
+              <a class="btn btn-sm btn-outline-primary" role="button" href="/">Главная</a>
+            </div>
+            <div class="nav" sec:authorize="hasRole('VERIFICATION_MANAGER')">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Управление отчетностью
+                </a>
+                <ul class="dropdown-menu">
+                  <li><a class="dropdown-item " href="/report/verification/ready/arshin">Выгрузка сведений о поверке в
+                      Аршин</a></li>
+                  <li><a class="dropdown-item" href="#" ng-click="updateReportsFromArshin()">Обновить отчеты данными
+                      из ФГИС "Аршин"</a></li>
+                  <li><a class="dropdown-item " href="/report/verification/ready/fsa">Выгрузка сведений о поверке в
+                      ФСА</a></li>
+                  <li>
+                    <hr class="dropdown-divider">
+                  </li>
+                  <li><a class="dropdown-item" href="/report/file/arshin">Файлы отчетов для ФГИС "Аршин"</a></li>
+                  <li><a class="dropdown-item " href="/report/file/fsa">Файлы отчетов для ФСА</a></li>
+                </ul>
+              </li>
+            </div>
+
+            <div class="nav">
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                  aria-expanded="false">
+                  Управление поверкой
+                </a>
+                <ul class="dropdown-menu">
+                  <li sec:authorize="hasRole('VERIFICATION_MANAGER')"><a class="dropdown-item"  href="/employee?page=0">Список поверителей</a></li>
+                  <li><a class="dropdown-item" href="/organization?page=0">Перечень организаций</a></li>
+                  <li><a class="dropdown-item" href="/meas-categories/form">Перечень видов измерений</a></li>
+                </ul>
+              </li>
+            </div>
+          </div>
+        </nav>
+      </div>
+
+      <div class="col-md-3">
+        <nav class="navbar bg-body-tertiary">
+          <form class="container-fluid justify-content-end">
+            <label class="d-flex p-2" ng-model="currentUser">{{currentUser.surname}} {{currentUser.name}}</label>
+            <a class="btn btn-sm btn-outline-secondary" href="/logout" role="button">Выйти</a>
+          </form>
+        </nav>
+      </div>
+    </div>
+
+
+    <div class="row">
+      <div class="col-md-5"></div>
+
+      <div class="row text-primary-emphasis">
+        <div class="text-primary-emphasis">
+          <h4>Поверка средств измерений</h4>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3 text-start">
+          <div class="btn-group-vertical" role="group" aria-label="vertical_menu">
+            <a class="btn btn-primary btn-lg" href="/standard?page=0" role="button">Эталоны</a>
+            <a class="btn btn-primary btn-lg" href="/mi" role="button">Средства измерений</a>
+            <a class="btn btn-primary btn-lg" href="/report/verification">Отчеты о поверке</a>
+            <a class="btn btn-primary btn-lg"
+              href="/report/verification/record/counter/date/employee?employeeId=1">Количество выполненных поверок
+              по поверителям</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="pleaseWaitMessage" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+          <div class="toast-header">
+            <strong class="me-auto text-primary">Поиск информации в ФГИС "Аршин"</strong>
+          </div>
+          <div class="toast-body">
+            Пожалуйста ожидайте
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="/js/angular.min.js"></script>
+    <script src="/js/bootstrap.bundle.min.js"></script>
+    <script type="text/javascript">
+      var app = angular.module("MAIN", []);
+      app.controller("MAIN_CTRL", function ($scope, $http) {
+
+        $scope.updateReportsFromArshin = function () {
+          showMessage("pleaseWaitMessage");
+          $http({
+            url: "/reports/verifications/update/all",
+            method: "GET"
+          }).then(function (response) {
+            alert(response.data.message);
+            hideMessage("pleaseWaitMessage");
+          });
+
+        }
+
+
+        function showMessage(id) {
+          const message = document.getElementById(id);
+          const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
+          messageBootstrap.show();
+        }
+
+        function hideMessage(id) {
+          const message = document.getElementById(id);
+          const messageBootstrap = bootstrap.Toast.getOrCreateInstance(message);
+          messageBootstrap.hide();
+        }
+
+
+        function getCurrentUser() {
+          $http({
+            url: "/users/username",
+            method: "GET"
+          }).then(function (response) {
+            $scope.currentUser = response.data;
+          });
+        }
+        getCurrentUser();
+
+      });
+    </script>
+</body>
+
+</html>

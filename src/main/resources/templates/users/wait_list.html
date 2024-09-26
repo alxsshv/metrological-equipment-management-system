@@ -20,9 +20,6 @@
                         <div class="nav">
                             <a class="nav-link" href="/settings">Администрирование</a>
                         </div>
-                        <div class="nav">
-                            <a class="nav-link text-info" href='/user/form'>Добавить пользователя</a>
-                        </div>
                     </div>
                 </nav>
             </div>
@@ -48,8 +45,8 @@
                         Сортировать
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}&search={{searchString}}">А-Я</a></li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}&search={{searchString}}">Я-А</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}">А-Я</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}">Я-А</a></li>
                     </ul>
                 </div>
             </div>
@@ -59,19 +56,13 @@
                         Выводить по
                     </a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10&search={{searchString}}">10</a></li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=20&search={{searchString}}">20</a></li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50&search={{searchString}}">50</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10">10</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=20">20</a></li>
+                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50">50</a></li>
                     </ul>
                 </div>
             </div>
                 
-                <form class="d-flex" role="search">
-                    <input ng-model="searchString" style="display: inline-block; max-width: 300px;"
-                        class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
-                    <button class="btn btn-outline-info" ng-click="getSearchContentlist(contentUrl)"
-                        type="submit">Поиск</button>
-                </form>
 
             </div>
         </nav>
@@ -85,18 +76,15 @@
                     <th>Номер телефона</th>
                     <th>Уч. запись активна</th>
                     <th>Уч. запись проверена</th>
-                    <th></th>
                 </tr>
                 <tr ng-repeat="user in contentlist">
-                    <td><a href="{{viewReference}}/{{user.id}}?id={{user.id}}">{{user.username}}</a></td>
+                    <td><a href="/user/form/{{user.id}}?id={{user.id}}">{{user.username}}</a></td>
                     <td>{{user.surname}}</td>
                     <td>{{user.name}}</td>
                     <td>{{user.patronymic}}</td>
                     <td>{{user.phoneNumber}}</td>
                     <td><input type="checkbox"  ng-model="user.enabled"></td>
                     <td><input type="checkbox" ng-model="user.checked"></td>
-                    <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
-                            ng-click="getDeleteableId(user.id)" type="button">Удалить</button></td>
                 </tr>
             </table>
         </div>
@@ -115,36 +103,19 @@
             </nav>
         </div>
     </div>
-    <!-- Модальное окно -->
-    <div class="modal fade" id="modal" tabindex="-1" aria-labelledby="Подтверждение удаления" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Вы уверены, что хотите удалить запись о пользователе?
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Закрыть</button>
-                    <button type="button" class="btn btn-primary"
-                        ng-click="deleteEmployee(deleteableId)">Удалить</button>
-                </div>
-            </div>
-        </div>
-    </div>
     <script src="/js/angular.min.js"></script>
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script type="text/javascript">
         var app = angular.module("USERS_LIST", []);
         app.controller("USERS_LIST_CTRL", function ($scope, $http) {
             $scope.contentUrl = "/users";
-            $scope.viewReference = "/user"
+            $scope.viewReference = "/user/wait"
 
             $scope.getPagesContentlist = function (contentUrl) {
                 $scope.getPageAttributes();
                 $http({
-                    url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection + "&size=" + $scope.pageSize + "&search=" + $scope.searchString,
+                    url: contentUrl + "/pages/wait?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection + "&size=" + $scope.pageSize,
                     method: "GET"
                 }).then(function (response) {
                     $scope.contentlist = response.data.content;
@@ -167,7 +138,7 @@
                 $scope.pageNum = documentUrl.searchParams.get("page");
                 $scope.sortDirection = documentUrl.searchParams.get("dir");
                 $scope.pageSize = documentUrl.searchParams.get("size");
-                $scope.searchString = documentUrl.searchParams.get("search");
+                
 
                 if ($scope.pageSize == null || $scope.pageSize == undefined) {
                     $scope.pageSize = "10";
@@ -177,9 +148,6 @@
                 }
                 if ($scope.pageNum == null || $scope.pageNum == undefined) {
                     $scope.pageNum = "0";
-                }
-                if ($scope.searchString == null || $scope.searchString == undefined) {
-                    $scope.searchString = "";
                 }
             }
 
@@ -200,16 +168,6 @@
                 }
             }
 
-
-            $scope.getSearchContentlist = function (contentUrl) {
-                $http({
-                    url: contentUrl + "/pages?page=" + $scope.pageNum + "&dir=" + $scope.sortDirection + "&size=" + $scope.pageSize + "&search=" + $scope.searchString,
-                    method: "GET"
-                }).then(function (response) {
-                    $scope.contentlist = response.data.content;
-                    $scope.createPaginationParams(response.data.totalPages);
-                });
-            }
 
 
             $scope.getDeleteableId = function (id) {

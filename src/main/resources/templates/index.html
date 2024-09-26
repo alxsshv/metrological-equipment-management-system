@@ -11,12 +11,13 @@
 <body data-bs-theme="light" ng-app="MAIN" ng-controller="MAIN_CTRL">
   <div class="container text-center">
     <div class="row">
-    <div class="col-md-7">
+    <div class="col-md-9">
     <nav class="navbar navbar-expand  rounded">
       <div class="container-fluid justify-content-start">
-          <div class="nav">
-              <a class="btn btn-sm btn-outline-primary" sec:authorize="hasRole('VERIFICATION_MANAGER')" role="button" href="/verification">Поверка</a>
-                <a class="btn btn-sm btn-outline-primary" sec:authorize="hasRole('SYSTEM_ADMIN')" role="button" href="/settings">Администрирование</a>
+          <div class="nav" >
+              <a class="nav-link" sec:authorize="hasRole('VERIFICATION_EMPLOYEE')" href="/verification">Поверка</a>
+          <div class="vr"  sec:authorize="hasRole('VERIFICATION_EMPLOYEE')"></div>
+            <a class="nav-link" sec:authorize="hasRole('SYSTEM_ADMIN')" href="/settings">Администрирование</a>
           </div>
         </div>
     </nav>
@@ -57,6 +58,19 @@
             Пожалуйста ожидайте
           </div>
         </div>
+
+        <div class="toast-container position-fixed bottom-0 end-0 p-3" sec:authorize="hasRole('SYSTEM_ADMIN')">
+          <div id="findWaitCheckUsersMessage" class="toast text-bg-primary" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+              <strong class="me-auto text-primary">Пользователи ожидают регистрации</strong>
+              <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Закрыть"></button>
+            </div>
+            <div class="toast-body" ng-model="waitCount">
+              {{waitCount}} пользователей ожидают проверки аккаунтов
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
     <script src="/js/angular.min.js"></script>
@@ -76,6 +90,19 @@
           });
 
         }
+
+        function getWaitCheckUsersCount() {
+        $http({
+          url: "/users/wait/count",
+          method: "GET"
+        }).then(function (response) {
+          $scope.waitCount = response.data;
+          if ($scope.waitCount > 0){
+            showMessage("findWaitCheckUsersMessage");
+          }
+        });
+      }
+      getWaitCheckUsersCount();
 
 
         function showMessage(id) {

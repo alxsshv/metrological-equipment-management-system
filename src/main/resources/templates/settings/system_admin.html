@@ -41,6 +41,7 @@
     <div class="row">
       <div class="col-md-3 text-start">
         <div class="btn-group-vertical" role="group" aria-label="vertical_menu">
+          <a class="btn btn-primary btn-lg" href="/user/wait" role="button">Проверка регистрации<span class="badge text-bg-secondary" ng-model="waitCount">{{waitCount}}</span></a>
           <a class="btn btn-primary btn-lg" href="/user" role="button">Список пользователей</a>
           <a class="btn btn-primary btn-lg" href="/settings/entity/form" role="button">Настройки юр. лица</a>
         </div>
@@ -76,6 +77,15 @@
 
       }
 
+      
+      function getWaitCheckUsersCount() {
+        $http({
+          url: "/users/wait/count",
+          method: "GET"
+        }).then(function (response) {
+          $scope.waitCount = response.data;
+        });
+      }
 
       function showMessage(id) {
         const message = document.getElementById(id);
@@ -98,6 +108,7 @@
         });
       }
       getCurrentUser();
+      getWaitCheckUsersCount();
 
     });
   </script>

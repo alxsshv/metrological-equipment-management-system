@@ -28,6 +28,7 @@ public class UserDto {
     @NotEmpty(message = "Пожалуйста укажите отчетство пользователя")
     private String patronymic;
     private String phoneNumber;
+    private boolean checked;
     private boolean enabled;
     private Set<RoleDto> roles;
 }

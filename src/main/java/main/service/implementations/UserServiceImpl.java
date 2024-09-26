@@ -85,9 +85,21 @@ public class UserServiceImpl implements UserService, UserDetailsService{
     }
 
     @Override
+    public Page<UserDto> findAllWaitingCheck(Pageable pageable) {
+        return userRepository.findByChecked(false, pageable).map(UserDtoMapper::mapToDto);
+    }
+
+    @Override
+    public long findWaitingCheckUsersCount(){
+        return userRepository.countByChecked(false);
+    }
+
+    @Override
     public List<UserDto> findAll() {
         return userRepository.findAll().stream().map(UserDtoMapper::mapToDto).toList();
     }
+
+
 
     @Override
     public void update(@Valid UserDto userDto) {

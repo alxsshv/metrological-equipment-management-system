@@ -14,12 +14,15 @@ public class UserDtoMapper {
         User user = new User();
         user.setId(userDto.getId());
         user.setUsername(userDto.getUsername());
-        user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        if (userDto.getPassword() != null) {
+            user.setPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
+        }
         user.setName(userDto.getName());
         user.setSurname(userDto.getSurname());
         user.setPatronymic(userDto.getPatronymic());
         user.setPhoneNumber(userDto.getPhoneNumber());
         user.setEnabled(userDto.isEnabled());
+        user.setChecked(userDto.isChecked());
         user.setRoles(userDto.getRoles().stream().map(RoleDtoMapper::mapToEntity).collect(Collectors.toSet()));
         return user;
     }
@@ -32,6 +35,7 @@ public class UserDtoMapper {
         userDto.setSurname(user.getSurname());
         userDto.setPatronymic(user.getPatronymic());
         userDto.setPhoneNumber(user.getPhoneNumber());
+        userDto.setChecked(user.isChecked());
         userDto.setEnabled(user.isEnabled());
         userDto.setRoles(user.getRoles().stream().map(RoleDtoMapper::mapToDto).collect(Collectors.toSet()));
         return userDto;

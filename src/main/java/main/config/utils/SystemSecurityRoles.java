@@ -6,7 +6,7 @@ import lombok.Getter;
 public enum SystemSecurityRoles {
     USER ("USER", "Пользователь"),
     SYSTEM_ADMIN ("SYSTEM_ADMIN", "Администратор"),
-    VERIFICATION_EMPLOYEE (" VERIFICATION_EMPLOYEE", "Поверитель"),
+    VERIFICATION_EMPLOYEE ("VERIFICATION_EMPLOYEE", "Поверитель"),
     VERIFICATION_MANAGER("VERIFICATION_MANAGER","Контроль выполнения поверки");
 
 

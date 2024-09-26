@@ -23,10 +23,19 @@ public class WebController {
         model.addAttribute("id",id);
         return "users/card";
     }
-
     @GetMapping("/user/form")
     public String getUserForm(){
         return "users/form";
+    }
+    @GetMapping("/user/form/{id}")
+    public String getEditUserView(@RequestParam("id") String id, Model model){
+        model.addAttribute("id",id);
+        return "users/edit";
+    }
+
+    @GetMapping("/user/wait")
+    public String getWaitingCheckUsersList(){
+        return "users/wait_list";
     }
 
     // Вывод шаблонов для поверителей

@@ -50,10 +50,25 @@ public class UsersController {
         return userService.findBySearchString(searchString,pageable);
     }
 
+    @GetMapping("pages/wait")
+    public Page<UserDto>findWaitingCheckUsers(@RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER, required = false) int pageNum,
+                                              @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE, required = false) int pageSize,
+                                              @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR, required = false) String pageDir){
+        Pageable pageable = PageRequest.of(pageNum,pageSize,Sort.by(Sort.Direction.valueOf(pageDir.toUpperCase()),"surname"));
+        return userService.findAllWaitingCheck(pageable);
+    }
+
     @GetMapping("/search")
     public List<UserDto>  searchUser(
             @RequestParam(value = "search") String searchString){
         return userService.findBySearchString(searchString);
+    }
+
+
+
+    @GetMapping("/wait/count")
+    public long findWaitingCheckUsersCount(){
+        return userService.findWaitingCheckUsersCount();
     }
 
     @GetMapping
@@ -70,6 +85,8 @@ public class UsersController {
     @PostMapping("/registration")
     public ResponseEntity<?> registerUser(@RequestBody UserDto userDto) {
         userDto.setRoles(Set.of(RoleDtoMapper.mapToDto(AppDefaults.getDefaultUserRole())));
+        userDto.setChecked(false);
+        userDto.setEnabled(false);
         userService.save(userDto);
         String okMessage = "Пользователь  " + userDto.getName() + " " + userDto.getSurname() + " успешно добавлен. " +
                 "Вход в аккаунт будет доступен после проверки администратором. Повторите попытку входа через некоторое время";
@@ -86,7 +103,7 @@ public class UsersController {
         return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public ResponseEntity<?> editUser(@RequestBody UserDto userDto){
         userService.update(userDto);
         String okMessage = "Сведения о пользователе " + userDto.getName() + " "

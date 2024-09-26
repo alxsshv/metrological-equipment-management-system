@@ -92,7 +92,7 @@
             $scope.roles = "";
             function buildRoleString(){
                 $scope.roles = $scope.user.roles.reduce((roles, currentUser) => roles + currentUser.pseudonym + ', ',
-                 "").trim();
+                 "").trim().slice(0,-1);
             }
 
 

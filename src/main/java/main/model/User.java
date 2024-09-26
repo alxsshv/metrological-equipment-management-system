@@ -27,6 +27,7 @@ public class User implements UserDetails {
     private String name;
     private String patronymic;
     private String phoneNumber;
+    private Boolean checked;
     private Boolean enabled;
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
@@ -53,15 +54,24 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
+    }
+
+
+    public boolean isChecked() {
+        return checked;
     }
 
     public void updateFrom(User user){
-        this.password = user.getPassword();
+        if (user.getPassword() != null) {
+            this.password = user.getPassword();
+        }
         this.roles = user.getRoles();
         this.name = user.getName();
         this.surname = user.getSurname();
         this.patronymic = user.getPatronymic();
         this.phoneNumber = user.getPhoneNumber();
+        this.enabled = user.getEnabled();
+        this.checked = user.getChecked();
     }
 }

@@ -168,6 +168,8 @@ public class InitConfig {
             userDto.setUsername("Root");
             userDto.setRoles(Set.of(RoleDtoMapper.mapToDto(AppDefaults.getDefaultUserRole())));
             userDto.setPassword("Rooot");
+            userDto.setChecked(true);
+            userDto.setEnabled(true);
             userService.save(userDto);
         } catch (ConstraintViolationException ex){
             log.warn(ex.getMessage());

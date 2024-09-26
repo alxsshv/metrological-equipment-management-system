@@ -66,8 +66,8 @@
                         method: "POST",
                         data: $scope.userDto
                     }).then(function successCallback(response) {
-                        console.log($scope.userDto);
                         alert(response.data.message);
+                        window.location.href = "/login";
                     }, function errorCallback(response) {
                         alert(response.data.message)
                     });

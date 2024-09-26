@@ -21,6 +21,8 @@ public interface UserService extends UserDetailsService {
     List<UserDto> findBySearchString(@NotBlank(message = "Поле для поиска не может быть пустым") String searchString);
     Page<UserDto> findAll(Pageable pageable);
     List<UserDto> findAll();
+    Page<UserDto> findAllWaitingCheck(Pageable pageable);
+    long findWaitingCheckUsersCount();
     void update(@Valid UserDto userDto);
     void delete(long id);
 
