@@ -39,33 +39,44 @@
         </div>
 
 
-
-             <nav class="navbar bg-body-tertiary">
+        <nav class="navbar bg-body-tertiary">
             <div class="container-fluid justify-content-start">
                 <div class="nav">
-                   <div class="btn-group">
-                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Сортировать
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}&search={{searchString}}">А-Я</a></li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}&search={{searchString}}">Я-А</a></li>
-                    </ul>
+                    <div class="btn-group">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Сортировать
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item"
+                                    href="{{viewReference}}?page=0&dir=ASC&size={{pageSize}}&search={{searchString}}">А-Я</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    href="{{viewReference}}?page=0&dir=DESC&size={{pageSize}}&search={{searchString}}">Я-А</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-            <div class="nav">
-                <div class="btn-group">
-                    <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Выводить по
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10&search={{searchString}}">10</a></li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=20&search={{searchString}}">20</a></li>
-                        <li><a class="dropdown-item" href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50&search={{searchString}}">50</a></li>
-                    </ul>
+                <div class="nav">
+                    <div class="btn-group">
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            Выводить по
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item"
+                                    href="{{viewReference}}?page=0&dir={{sortDirection}}&size=10&search={{searchString}}">10</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    href="{{viewReference}}?page=0&dir={{sortDirection}}&size=20&search={{searchString}}">20</a>
+                            </li>
+                            <li><a class="dropdown-item"
+                                    href="{{viewReference}}?page=0&dir={{sortDirection}}&size=50&search={{searchString}}">50</a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
-            </div>
-                
+
                 <form class="d-flex" role="search">
                     <input ng-model="searchString" style="display: inline-block; max-width: 300px;"
                         class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
@@ -93,7 +104,7 @@
                     <td>{{user.name}}</td>
                     <td>{{user.patronymic}}</td>
                     <td>{{user.phoneNumber}}</td>
-                    <td><input type="checkbox"  ng-model="user.enabled"></td>
+                    <td><input type="checkbox" ng-model="user.enabled"></td>
                     <td><input type="checkbox" ng-model="user.checked"></td>
                     <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
                             ng-click="getDeleteableId(user.id)" type="button">Удалить</button></td>
@@ -107,7 +118,8 @@
                             href="{{viewReference}}?page={{previousPage}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">Предыдущая</a>
                     </li>
                     <li ng-repeat="item in pageArray track by $index" class="page-item"><a class="page-link"
-                            href="{{viewReference}}?page={{item}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">{{item+1}}</a></li>
+                            href="{{viewReference}}?page={{item}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">{{item+1}}</a>
+                    </li>
                     <li class="page-item"><a class="page-link"
                             href="{{viewReference}}?page={{nextPage}}&dir={{sortDirection}}&size={{pageSize}}&search={{searchString}}">Следующая</a>
                     </li>
@@ -152,7 +164,7 @@
                 });
             }
 
-                $scope.getCurrentUser = function () {
+            $scope.getCurrentUser = function () {
                 $http({
                     url: "/users/username",
                     method: "GET"
@@ -221,7 +233,7 @@
                 var modal = bootstrap.Modal.getInstance(myModalEl);
                 modal.hide();
                 $http({
-                    url: $scope.contentUrl +"/" + delId,
+                    url: $scope.contentUrl + "/" + delId,
                     method: "DELETE"
                 }).then(function (response) {
                     alert(response.data.message);

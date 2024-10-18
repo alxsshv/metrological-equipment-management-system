@@ -11,5 +11,7 @@ public class AppUploadPaths {
     private String imagesPath;
     private String documentsPath;
     private String reportsPath;
+    private String originVerificationProtocolsPath;
+    private String signedVerificationProtocolsPath;
     private String tempPath;
 }
