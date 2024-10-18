@@ -223,4 +223,32 @@ public class WebController {
     public String accessDenied() {
         return "security/accessDenied";
     }
+
+    //Журналы поверки
+    @GetMapping("/journal/verification")
+    public String getJournalsListView(){
+        return "journal/verification/list";
+  }
+
+    @GetMapping("/journal/verification/form")
+    public String getJournalForm(){
+        return "journal/verification/form";
+    }
+
+    @GetMapping("/journal/verification/{id}")
+    public String getJournalCard() {
+        return "journal/verification/card";
+    }
+
+    @GetMapping("/journal/verification/add/{id}")
+    public String getProtocolAddingForm(@RequestParam("id") long id, Model model){
+        model.addAttribute("id",id);
+        return "journal/verification/protocol/form";
+    }
+
+    @GetMapping("/file_not_found")
+    public String getFileNotFoundView(){
+        return "fileNotFound";
+    }
+
 }
