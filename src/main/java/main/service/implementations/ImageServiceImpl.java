@@ -11,6 +11,7 @@ import main.service.Category;
 import main.service.ServiceMessage;
 import main.service.interfaces.ImageService;
 import main.service.utils.FileContentTypeBuilder;
+import main.service.utils.PathResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,8 @@ public class ImageServiceImpl implements ImageService {
     private final ImageRepository imageRepository;
     @Autowired
     private AppUploadPaths appUploadPaths;
+    @Autowired
+    private PathResolver pathResolver;
 
     @Override
     public void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
@@ -45,12 +48,6 @@ public class ImageServiceImpl implements ImageService {
         }
     }
 
-    private void createFolderIfNotExist(){
-        File uploadFolder = new File(appUploadPaths.getImagesPath());
-        if (!uploadFolder.exists()){
-            uploadFolder.mkdir();
-        }
-    }
 
     @Override
     public void delete(long id) throws IOException {
@@ -109,7 +106,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public void addImage(MultipartFile file, String description, Category category, Long CategoryId) throws IOException {
         if (file != null){
-                createFolderIfNotExist();
+                pathResolver.createFilePathIfNotExist(appUploadPaths.getImagesPath());
                 String filename = file.getOriginalFilename();
                 String extension =  filename.substring(filename.lastIndexOf(".")+1);
                 String storageFileName = UUID.randomUUID() + "." + filename;

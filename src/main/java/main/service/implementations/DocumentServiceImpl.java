@@ -1,6 +1,7 @@
 package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import main.config.AppUploadPaths;
@@ -12,6 +13,7 @@ import main.service.Category;
 import main.service.ServiceMessage;
 import main.service.interfaces.DocumentService;
 import main.service.utils.FileContentTypeBuilder;
+import main.service.utils.PathResolver;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +35,15 @@ import java.util.UUID;
 @Getter
 @Setter
 @Service
+@AllArgsConstructor
 public class DocumentServiceImpl implements DocumentService {
     private final static Logger log = LoggerFactory.getLogger(DocumentServiceImpl.class);
     @Autowired
     private AppUploadPaths appUploadPaths;
     @Autowired
     private final DocumentRepository documentRepository;
-    public DocumentServiceImpl(DocumentRepository documentRepository) {
-        this.documentRepository = documentRepository;
-    }
-
+    @Autowired
+    private final PathResolver pathResolver;
 
     @Override
     public void uploadAll(MultipartFile[] files, String[] descriptions, Category category, Long categoryId) throws IOException {
@@ -51,17 +52,10 @@ public class DocumentServiceImpl implements DocumentService {
         }
     }
 
-    private void createFolderIfNotExist(){
-        File uploadFolder = new File(appUploadPaths.getDocumentsPath());
-        if (!uploadFolder.exists()){
-            uploadFolder.mkdir();
-        }
-    }
-
     @Override
     public void addDocument(MultipartFile file, String description, Category category, Long CategoryId) throws IOException {
         if (file != null){
-                createFolderIfNotExist();
+                pathResolver.createFilePathIfNotExist(appUploadPaths.getDocumentsPath());
                 String filename = file.getOriginalFilename();
                 String extension =  filename.substring(filename.lastIndexOf(".")+1);
                 String storageFileName = UUID.randomUUID() + "." + filename;
