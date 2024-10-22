@@ -15,6 +15,7 @@ import main.model.VerificationProtocol;
 import main.repository.VerificationProtocolRepository;
 import main.service.interfaces.VerificationProtocolService;
 import main.service.utils.FileContentTypeBuilder;
+import main.service.utils.PathResolver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.data.domain.Page;
@@ -46,13 +47,15 @@ public class VerificationProtocolServiceImpl implements VerificationProtocolServ
     private AppUploadPaths appUploadPaths;
     @Autowired
     private VerificationProtocolRepository protocolRepository;
+    @Autowired
+    private PathResolver pathResolver;
 
     @Override
     public void upload(MultipartFile file, VerificationProtocolDto protocolDto, VerificationJournal journal) throws IOException {
         String filename = file.getOriginalFilename();
         String extension = filename.substring(filename.lastIndexOf(".")+1);
         String storageFilename = UUID.randomUUID()+ "." + filename;
-        createUploadFolderIfNotExist();
+        pathResolver.createFilePathIfNotExist(appUploadPaths.getOriginVerificationProtocolsPath());
         VerificationProtocol protocol = VerificationProtocolDtoMapper.map(protocolDto);
         protocol.setJournal(journal);
         protocol.setOriginalFilename(filename);
@@ -63,17 +66,6 @@ public class VerificationProtocolServiceImpl implements VerificationProtocolServ
         file.transferTo(new File(appUploadPaths.getOriginVerificationProtocolsPath()+ "/" + storageFilename));
         protocolRepository.save(protocol);
         log.info("Протокол поверки \"{}\" успешно загружен на сервер", filename);
-    }
-
-    private void createUploadFolderIfNotExist() throws IOException {
-        File uploadFolder = new File(appUploadPaths.getOriginVerificationProtocolsPath());
-        if (!uploadFolder.exists()){
-            boolean isCreated = uploadFolder.mkdir();
-             if (!isCreated){
-                 throw new IOException("Ошибка создания директории " + appUploadPaths.getOriginVerificationProtocolsPath());
-             }
-            log.info("Создана папка для хранения протоколов поверки");
-        }
     }
 
 
