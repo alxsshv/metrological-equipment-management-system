@@ -6,7 +6,11 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.extern.slf4j.Slf4j;
 import main.config.AppConstants;
 import main.dto.rest.VerificationProtocolDto;
+import main.model.User;
+import main.model.VerificationProtocol;
 import main.service.ServiceMessage;
+import main.service.interfaces.DigitalSignatureService;
+import main.service.interfaces.UserService;
 import main.service.interfaces.VerificationProtocolServiceFacade;
 import main.service.utils.fileInfos.ProtocolFileInfo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +22,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
+import java.security.Principal;
 
 
 @RestController
@@ -27,6 +33,10 @@ import java.io.IOException;
 public class VerificationProtocolController {
     @Autowired
     private VerificationProtocolServiceFacade protocolServiceFacade;
+    @Autowired
+    private DigitalSignatureService digitalSignatureService;
+    @Autowired
+    private UserService userService;
 
     @PostMapping("/form")
     public ResponseEntity<?> addProtocol(
@@ -34,7 +44,6 @@ public class VerificationProtocolController {
             @RequestParam(value = "protocolInfo") String fileInfo) throws IOException {
         ObjectMapper mapper = JsonMapper.builder().addModule(new JavaTimeModule()).build();
         ProtocolFileInfo protocolFileInfo = mapper.readValue(fileInfo, ProtocolFileInfo.class);
-        System.out.println("Содержание протокол инфо: " + protocolFileInfo);
         protocolServiceFacade.upload(file,protocolFileInfo);
         String successMessage = "Протокол поверки " + protocolFileInfo.getDescription() + " добавлен";
         log.info(successMessage);
@@ -52,12 +61,23 @@ public class VerificationProtocolController {
         if (searchString.isEmpty() || searchString.equals("undefined")){
             return protocolServiceFacade.findProtocolsByJournal(journalId,pageable);
         }
-        return protocolServiceFacade.searchJournalProtocols(journalId,searchString,pageable);
+        return protocolServiceFacade.findJournalProtocolsBySearchString(journalId,searchString,pageable);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getProtocolFile(@PathVariable("id") long id){
         return protocolServiceFacade.getProtocolFile(id);
+    }
+
+    @GetMapping("/signing/{id}")
+    public ResponseEntity<?> signingProtocolFile(@PathVariable("id") long id, Principal principal) throws OperationNotSupportedException, IOException {
+        VerificationProtocol protocol = protocolServiceFacade.getProtocolById(id);
+        User currentUser = (User) userService.loadUserByUsername(principal.getName());
+        digitalSignatureService.setUserStamp(protocol, currentUser);
+        String okMessage = "Протокол № " + protocol.getNumber() + " подписан пользователем "
+                + currentUser.getSurname() + " " + currentUser.getName();
+        log.info(okMessage);
+        return ResponseEntity.ok(new ServiceMessage(okMessage));
     }
 
 }

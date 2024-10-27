@@ -42,11 +42,11 @@ public class WebSecurityConfig{
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                                .requestMatchers("settings/**","/users").hasAnyRole(SystemSecurityRoles.SYSTEM_ADMIN.getName())
-                                .requestMatchers("verification/**", "employee/**", "employees/**").hasAnyRole(SystemSecurityRoles.VERIFICATION_MANAGER.getName())
-                                .requestMatchers("verification/**").hasAnyRole(SystemSecurityRoles.VERIFICATION_EMPLOYEE.getName())
+                               .requestMatchers("js/**","css/**","/login", "/registration", "users/registration").permitAll()
                                 .requestMatchers("organization/**").hasAnyRole(SystemSecurityRoles.USER.getName())
-                                .requestMatchers("js/**","css/**","/login", "/registration", "users/registration").permitAll()
+                                .requestMatchers("verification/**").hasAnyRole(SystemSecurityRoles.VERIFICATION_EMPLOYEE.getName())
+                                .requestMatchers("verification/**", "employee/**", "employees/**").hasAnyRole(SystemSecurityRoles.VERIFICATION_MANAGER.getName())
+                                .requestMatchers("settings/**","/users").hasAnyRole(SystemSecurityRoles.SYSTEM_ADMIN.getName())
                                 .anyRequest().authenticated())
                 .formLogin(form->form.loginPage("/login").permitAll())
                 .exceptionHandling(form -> form.accessDeniedPage("/access_denied"))

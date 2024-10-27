@@ -11,6 +11,7 @@ public class ProtocolFileInfo extends FileInfo {
     private String number;
     private String verificationDate;
     private long journalId;
+    private long verificationEmployeeId;
 
     public ProtocolFileInfo() {
     }
@@ -20,11 +21,17 @@ public class ProtocolFileInfo extends FileInfo {
     }
 
 
-    public ProtocolFileInfo(String description, Category category, long categoryId, String number, String verificationDate, long journalId) {
+    public ProtocolFileInfo(String description,
+                            Category category,
+                            long categoryId,
+                            String number,
+                            String verificationDate,
+                            long journalId, long verificationEmployeeId) {
         super(description, category, categoryId);
         this.number = number;
         this.verificationDate = verificationDate;
         this.journalId = journalId;
+        this.verificationEmployeeId = verificationEmployeeId;
     }
 
     @Override
@@ -33,6 +40,7 @@ public class ProtocolFileInfo extends FileInfo {
                 "number='" + number + '\'' +
                 ", verificationDate='" + verificationDate + '\'' +
                 ", journalId=" + journalId +
+                ", verificationEmployeeId=" + verificationEmployeeId +
                 '}';
     }
 }

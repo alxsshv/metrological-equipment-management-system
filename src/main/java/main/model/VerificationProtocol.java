@@ -38,6 +38,8 @@ public class VerificationProtocol{
     private LocalDate verificationDate;
     @ManyToOne(fetch = FetchType.LAZY)
     private VerificationJournal journal;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private User verificationEmployee;
     @ManyToOne(fetch = FetchType.EAGER)
     private MeasurementInstrument instrument;
     @Column(name = "awaitingSigning")
@@ -50,4 +52,13 @@ public class VerificationProtocol{
     @UpdateTimestamp
     @Column(name = "update_date")
     private LocalDateTime updatingDate;
+
+    public void updateFrom(VerificationProtocol updateData){
+        this.setNumber(updateData.getNumber());
+        this.setDescription(updateData.getDescription());
+        this.setSignedFileName(updateData.getSignedFileName());
+        this.setAwaitingSigning(updateData.isAwaitingSigning());
+        this.setVerificationDate(updateData.getVerificationDate());
+        this.setSigned(updateData.isSigned());
+    }
 }

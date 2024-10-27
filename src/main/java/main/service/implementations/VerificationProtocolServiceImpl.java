@@ -113,6 +113,13 @@ public class VerificationProtocolServiceImpl implements VerificationProtocolServ
         }
     }
 
+    @Override
+    public void update(VerificationProtocol updateData) {
+        VerificationProtocol protocol = getProtocolById(updateData.getId());
+        protocol.updateFrom(updateData);
+        protocolRepository.save(protocol);
+    }
+
     private ResponseEntity<?> buildResponseEntity(VerificationProtocol protocol) throws IOException {
         ContentDisposition contentDisposition = ContentDisposition.builder("attachment")
                 .filename(protocol.getOriginalFilename(), StandardCharsets.UTF_8).build();

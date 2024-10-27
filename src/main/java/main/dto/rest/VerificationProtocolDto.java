@@ -29,4 +29,5 @@ public class VerificationProtocolDto extends DocumentDto{
     private String verificationDate;
     private String uploadingDate;
     private String updatingDate;
+    private UserDto verificationEmployee;
 }

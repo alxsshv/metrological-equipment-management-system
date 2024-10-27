@@ -21,6 +21,7 @@ public interface VerificationProtocolService {
     Page<VerificationProtocolDto> findProtocolByInstrument(MeasurementInstrument instrument, Pageable pageable);
     VerificationProtocol getProtocolById(long id);
     ResponseEntity<?> getProtocolFile(long id);
+    void update(VerificationProtocol updateData);
     void delete(long id) throws IOException;
     void deleteAll(VerificationJournal journal) throws IOException;
 }

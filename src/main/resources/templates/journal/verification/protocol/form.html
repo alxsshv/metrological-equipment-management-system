@@ -76,6 +76,19 @@
                         id="inputDate" value="" required>
                 </div>
             </div>
+            <p></p>
+            <div class="row g-2">
+                <div class="col-md-12">
+                    <label for="inputText2" class="form-label">Поверитель</label>
+                    <input type="text" ng-change="searchEmployee()" ng-model="employeeSearchString" data-bs-toggle="dropdown"
+                        class="form-control dropdown-toggle border-primary" id="inputText3" value="">
+
+                    <ul class="dropdown-menu" ng-model="employee">
+                        <li ng-repeat="item in employees" value="{{item}}"> <a class="dropdown-item" ng-click="selectEmployee(item)"
+                                href="#">{{item.surname}} {{item.name}} {{item.patronymic}}</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <p></p>
@@ -128,6 +141,25 @@
                 $scope.selectMi = function (item) {
                     $scope.searchString = item.title = " " + item.modification + " зав. №" + item.serialNum;
                     $scope.protocolInfo.categoryId = item.id;
+                }
+
+
+                $scope.employees = [];
+                $scope.searchEmployee = function () {
+                    if ($scope.employeeSearchString.length > 2) {
+                        $http({
+                            url: "/users/search?search=" + $scope.employeeSearchString,
+                            method: "GET"
+                        }).then(function (response) {
+                            $scope.employees = response.data;
+                            console.log($scope.employees);
+                        });
+                    }
+                }
+
+                $scope.selectEmployee = function (item) {
+                    $scope.employeeSearchString = item.surname = " " + item.name + " " + item.patronymic;
+                    $scope.protocolInfo.verificationEmployeeId = item.id;
                 }
 
 

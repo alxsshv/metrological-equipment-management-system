@@ -1,13 +1,12 @@
 package main.service.implementations;
 
 import main.dto.rest.MiFullDto;
+import main.dto.rest.UserDto;
 import main.dto.rest.VerificationProtocolDto;
 import main.model.MeasurementInstrument;
 import main.model.VerificationJournal;
-import main.service.interfaces.MeasurementInstrumentService;
-import main.service.interfaces.VerificationJournalService;
-import main.service.interfaces.VerificationProtocolService;
-import main.service.interfaces.VerificationProtocolServiceFacade;
+import main.model.VerificationProtocol;
+import main.service.interfaces.*;
 import main.service.utils.fileInfos.ProtocolFileInfo;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,19 +22,22 @@ public class VerificationProtocolServiceFacadeImpl implements VerificationProtoc
     private final VerificationProtocolService protocolService;
     private final VerificationJournalService journalService;
     private final MeasurementInstrumentService measurementInstrumentService;
+    private final UserService userService;
 
-
-    public VerificationProtocolServiceFacadeImpl(VerificationProtocolService protocolService, VerificationJournalService journalService, MeasurementInstrumentService measurementInstrumentService) {
+    public VerificationProtocolServiceFacadeImpl(VerificationProtocolService protocolService, VerificationJournalService journalService, MeasurementInstrumentService measurementInstrumentService, UserService userService) {
         this.protocolService = protocolService;
         this.journalService = journalService;
         this.measurementInstrumentService = measurementInstrumentService;
+        this.userService = userService;
     }
 
     @Override
     public void upload(MultipartFile file, ProtocolFileInfo protocolFileInfo) throws IOException {
         VerificationJournal journal = journalService.getById(protocolFileInfo.getJournalId());
         MiFullDto instrumentDto = measurementInstrumentService.findById(protocolFileInfo.getCategoryId());
+        UserDto userDto = userService.findById(protocolFileInfo.getVerificationEmployeeId());
         VerificationProtocolDto protocolDto = new VerificationProtocolDto();
+        protocolDto.setVerificationEmployee(userDto);
         protocolDto.setNumber(protocolFileInfo.getNumber());
         protocolDto.setDescription(protocolFileInfo.getDescription());
         protocolDto.setInstrumentDto(instrumentDto);
@@ -51,7 +53,7 @@ public class VerificationProtocolServiceFacadeImpl implements VerificationProtoc
     }
 
     @Override
-    public Page<VerificationProtocolDto> searchJournalProtocols(long journalId, String searchString, Pageable pageable) {
+    public Page<VerificationProtocolDto> findJournalProtocolsBySearchString(long journalId, String searchString, Pageable pageable) {
         VerificationJournal journal = journalService.getById(journalId);
         return protocolService.findProtocolsByJournalAndSearchString(journal,searchString, pageable);
     }
@@ -65,6 +67,11 @@ public class VerificationProtocolServiceFacadeImpl implements VerificationProtoc
     public Page<VerificationProtocolDto> findProtocolByMiId(long miId, Pageable pageable) {
         MeasurementInstrument instrument = measurementInstrumentService.getMiById(miId);
         return protocolService.findProtocolByInstrument(instrument,pageable);
+    }
+
+    @Override
+    public VerificationProtocol getProtocolById(long id) {
+        return protocolService.getProtocolById(id);
     }
 
     @Override
@@ -82,4 +89,5 @@ public class VerificationProtocolServiceFacadeImpl implements VerificationProtoc
         VerificationJournal journal = journalService.getById(journal_id);
         protocolService.deleteAll(journal);
     }
+
 }
