@@ -116,6 +116,7 @@
                     <th>Формат файла</th>
                     <th>Файл подписан</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 <tr ng-repeat="item in contentlist">
                     <td><a href="{{contentUrl}}/{{item.id}}">{{item.number}}</a></td>
@@ -125,7 +126,8 @@
                     <td>{{item.description}}</td>
                     <td>{{item.extension}}</td>
                     <td><input type="checkbox" ng-model="item.signed" disabled></td>
-                    <td><button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modal"
+                    <td><button class="btn btn-primary" ng-disabled="item.signed || currentUser.surname != item.verificationEmployee.surname" ng-click="setDigitalSignature(item.id)" type="button">Подписать</button></td>
+                    <td><button class="btn btn-primary" sec:authorize="hasRole('VERIFICATION_MANAGER')" data-bs-toggle="modal" data-bs-target="#modal"
                             ng-click="getDeleteableId(user.id)" type="button">Удалить</button></td>
                 </tr>
             </table>
@@ -163,7 +165,6 @@
                     method: "GET"
                 }).then(function (response) {
                     $scope.journal = response.data;
-                    console.log($scope.journal);
                     getPagesContentlist();
                 });
 
@@ -178,7 +179,6 @@
                     method: "GET"
                 }).then(function (response) {
                     $scope.contentlist = response.data.content;
-                    console.log( $scope.contentlist);
                     $scope.createPaginationParams(response.data.totalPages);
                 });
             }
@@ -232,7 +232,17 @@
                 }
             }
 
-
+        $scope.setDigitalSignature = function(id){
+            $http({
+                    url: "/journals/verifications/protocols/signing/"+id,
+                    method: "GET"
+                }).then(function successCallback(response) {
+                        alert(response.data.message);
+                        window.location.reload();
+                    }, function errorCallback(response) {
+                        alert(response.data.message);
+                    });
+        }        
 
             function getCurrentUser() {
                 $http({

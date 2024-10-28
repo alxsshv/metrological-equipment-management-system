@@ -227,6 +227,16 @@
 
             $scope.getPagesContentlist($scope.contentUrl);
 
+            function getCurrentUser() {
+                $http({
+                    url: "/users/username",
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.currentUser = response.data;
+                });
+            }
+            getCurrentUser();
+
         });
     </script>
 </body>

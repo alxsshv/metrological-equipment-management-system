@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.naming.OperationNotSupportedException;
 import java.io.IOException;
 
 
@@ -55,6 +56,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> catchIOException(IOException ex){
         log.error(ex.getMessage());
         return ResponseEntity.status(500).body(new ServiceMessage(ex.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<?> catchOperationNotSupportedException(OperationNotSupportedException ex){
+        log.error(ex.getMessage());
+        return ResponseEntity.status(400).body(new ServiceMessage(ex.getMessage()));
     }
 
 

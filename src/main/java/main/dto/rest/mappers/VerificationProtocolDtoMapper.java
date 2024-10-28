@@ -18,6 +18,7 @@ public class VerificationProtocolDtoMapper {
         protocol.setAwaitingSigning(dto.isAwaitingSigning());
         protocol.setSigned(dto.isSigned());
         protocol.setVerificationDate(DateStringConverter.parseLocalDateOrGetNull(dto.getVerificationDate()));
+        protocol.setVerificationEmployee(UserDtoMapper.mapToEntity(dto.getVerificationEmployee()));
         return protocol;
     }
 
@@ -34,6 +35,7 @@ public class VerificationProtocolDtoMapper {
         dto.setUploadingDate(DateStringConverter.getISOStringOrNull(protocol.getUploadingDate()));
         dto.setUpdatingDate(DateStringConverter.getISOStringOrNull(protocol.getUpdatingDate()));
         dto.setVerificationDate(DateStringConverter.getStringOrNull(protocol.getVerificationDate()));
+        dto.setVerificationEmployee(UserDtoMapper.mapToDto(protocol.getVerificationEmployee()));
         return dto;
     }
 }
