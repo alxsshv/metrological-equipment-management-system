@@ -97,6 +97,11 @@ public class WebController {
         model.addAttribute("id",id);
         return "measurementInstrument/edit";
     }
+    @GetMapping("/mi/protocol/{id}")
+    public String getMeasurementInstrumentProtocolsList(@RequestParam("id") String id, Model model){
+        model.addAttribute("id", id);
+        return "measurementInstrument/protocols";
+    }
 
     //Вывод шиблонов для СИ, применяемых в качестве эталонов
     @GetMapping("/standard/form")

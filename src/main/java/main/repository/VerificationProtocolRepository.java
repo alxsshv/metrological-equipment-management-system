@@ -14,7 +14,7 @@ public interface VerificationProtocolRepository extends JpaRepository<Verificati
     List<VerificationProtocol> findByJournal(VerificationJournal journal);
     Page<VerificationProtocol> findByInstrument(MeasurementInstrument instrument, Pageable pageable);
     Page<VerificationProtocol> findByJournalAndNumberIgnoreCaseContainingOrDescriptionIgnoreCaseContaining(VerificationJournal journal,
-                                                                                                                       String number,
-                                                                                                                       String description,
-                                                                                                                       Pageable pageable);
+                            String number, String description, Pageable pageable);
+    Page<VerificationProtocol> findByInstrumentAndNumberIgnoreCaseContainingOrDescriptionIgnoreCaseContaining(MeasurementInstrument instrument,
+                                                                                                              String number, String description, Pageable pageable);
 }

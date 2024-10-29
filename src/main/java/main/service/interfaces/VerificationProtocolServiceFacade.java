@@ -17,6 +17,7 @@ public interface VerificationProtocolServiceFacade {
     Page<VerificationProtocolDto> findJournalProtocolsBySearchString(long journalId, String searchString, Pageable pageable);
     List<VerificationProtocolDto> findProtocols();
     Page<VerificationProtocolDto> findProtocolByMiId(long miId, Pageable pageable);
+    Page<VerificationProtocolDto> findProtocolByMiIdAndSearchString(long miId, String searchString, Pageable pageable);
     VerificationProtocol getProtocolById(long id);
     ResponseEntity<?> getProtocolFile(long id);
     void delete(long id) throws IOException;

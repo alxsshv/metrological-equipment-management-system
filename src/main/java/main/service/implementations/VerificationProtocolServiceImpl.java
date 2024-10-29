@@ -90,6 +90,12 @@ public class VerificationProtocolServiceImpl implements VerificationProtocolServ
         return protocolRepository.findByInstrument(instrument, pageable).map(VerificationProtocolDtoMapper::map);
     }
 
+    @Override
+    public Page<VerificationProtocolDto> findProtocolByInstrumentAndSearchString(MeasurementInstrument instrument, String searchString, Pageable pageable) {
+        return protocolRepository.findByInstrumentAndNumberIgnoreCaseContainingOrDescriptionIgnoreCaseContaining(instrument,searchString,searchString,pageable)
+                .map(VerificationProtocolDtoMapper::map);
+    }
+
 
     @Override
     public VerificationProtocol getProtocolById(long id) {

@@ -70,6 +70,12 @@ public class VerificationProtocolServiceFacadeImpl implements VerificationProtoc
     }
 
     @Override
+    public Page<VerificationProtocolDto> findProtocolByMiIdAndSearchString(long miId, String searchString, Pageable pageable) {
+        MeasurementInstrument instrument = measurementInstrumentService.getMiById(miId);
+        return protocolService.findProtocolByInstrumentAndSearchString(instrument,searchString,pageable);
+    }
+
+    @Override
     public VerificationProtocol getProtocolById(long id) {
         return protocolService.getProtocolById(id);
     }
