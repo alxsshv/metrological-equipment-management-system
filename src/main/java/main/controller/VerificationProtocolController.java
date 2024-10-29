@@ -64,6 +64,20 @@ public class VerificationProtocolController {
         return protocolServiceFacade.findJournalProtocolsBySearchString(journalId,searchString,pageable);
     }
 
+    @GetMapping("/mi/pages")
+    public Page<VerificationProtocolDto> getAllProtocolsForMi(
+            @RequestParam(value = "page", defaultValue = AppConstants.DEFAULT_PAGE_NUMBER) int pageNum,
+            @RequestParam(value = "size", defaultValue = AppConstants.DEFAULT_PAGE_SIZE) int pageSize,
+            @RequestParam(value = "dir", defaultValue = AppConstants.DEFAULT_PAGE_SORT_DIR) String pageDir,
+            @RequestParam(value = "search") String searchString,
+            @RequestParam(value = "instrument") long miId) {
+                Pageable pageable = PageRequest.of(pageNum,pageSize, Sort.Direction.valueOf(pageDir.toUpperCase()),"number");
+                if (searchString.isEmpty() || searchString.equals("undefined")){
+                    return protocolServiceFacade.findProtocolByMiId(miId,pageable);
+                }
+                return protocolServiceFacade.findProtocolByMiIdAndSearchString(miId,searchString,pageable);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getProtocolFile(@PathVariable("id") long id){
         return protocolServiceFacade.getProtocolFile(id);

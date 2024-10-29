@@ -19,6 +19,7 @@ public interface VerificationProtocolService {
     Page<VerificationProtocolDto> findProtocolsByJournal(VerificationJournal journal, Pageable pageable);
     Page<VerificationProtocolDto> findProtocolsByJournalAndSearchString(VerificationJournal journal,String searchString, Pageable pageable);
     Page<VerificationProtocolDto> findProtocolByInstrument(MeasurementInstrument instrument, Pageable pageable);
+    Page<VerificationProtocolDto> findProtocolByInstrumentAndSearchString(MeasurementInstrument instrument, String searchString, Pageable pageable);
     VerificationProtocol getProtocolById(long id);
     ResponseEntity<?> getProtocolFile(long id);
     void update(VerificationProtocol updateData);
