@@ -73,9 +73,9 @@ public class ResultFactory {
     }
 
     private String buildMetrologist(VerificationRecord record){
-        return record.getEmployee().getSurname() + " "
-                + record.getEmployee().getName() + " "
-                + record.getEmployee().getPatronymic();
+        return record.getEmployee().getUser().getSurname() + " "
+                + record.getEmployee().getUser().getName() + " "
+                + record.getEmployee().getUser().getPatronymic();
     }
 
 

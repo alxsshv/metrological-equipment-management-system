@@ -33,8 +33,6 @@ public class InitConfig {
     @Autowired
     private MiTypeService miTypeService;
     @Autowired
-    private EmployeeService employeeService;
-    @Autowired
     private OrganizationService organizationService;
     @Autowired
     private MiDetailsService miService;

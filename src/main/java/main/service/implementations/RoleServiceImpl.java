@@ -44,6 +44,15 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
+    public Role getRoleByName(String name) {
+        Role role = roleRepository.findByName("ROLE_" + name);
+        if (role == null){
+            throw new EntityNotFoundException("Роль не найдена");
+        }
+        return role;
+    }
+
+    @Override
     public RoleDto findById(long id) {
         return RoleDtoMapper.mapToDto(getRoleById(id));
     }

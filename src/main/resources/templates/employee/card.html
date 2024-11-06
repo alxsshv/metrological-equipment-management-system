@@ -9,26 +9,49 @@
 
 <body ng-app="EMPLOYEE_CARD" ng-controller="EMPLOYEE_CARD_CTRL">
 <div class="container text-center">
-    <nav class="navbar bg-body-tertiary">
-        <form class="container-fluid justify-content-start">
-            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-            <button class="btn btn-outline-success me-2" onclick="location.href='/employee'" type="button">К списку поверителей</button>
-            <a href="{{reference}}" class="btn btn-outline-info " tabindex="-1" role="button">Редактирование</a>
-        </form>
-    </nav>
+    <div class="row">
+        <div class="col-md-7">
+            <nav class="navbar navbar-expand  rounded">
+                <div class="container-fluid justify-content-start">
+                    <div class="nav">
+                        <a class="btn btn-sm btn-outline-primary" role="button" href="/">Главная</a>
+                    </div>
+                    <div class="nav">
+                        <a class="nav-link" href="/verification">Поверка</a>
+                    </div>
+                    <div class="nav">
+                        <a class="nav-link" href="/employee">Список поверителей</a>
+                    </div>
+                    <div class="nav">
+                        <a class="nav-link text-info" href="{{reference}}">Редактирование</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+
+        <div class="col-md-3">
+            <nav class="navbar bg-body-tertiary">
+                <form class="container-fluid justify-content-end">
+                    <label class="d-flex p-2" ng-model="currentUser">{{currentUser.surname}}
+                        {{currentUser.name}}</label>
+                    <a class="btn btn-sm btn-outline-secondary" href="/logout" role="button">Выйти</a>
+                </form>
+            </nav>
+        </div>
+    </div>
 
     <div class="row">
         <div class="col-sm-9">
             <dl class="row text-start" >
 
                 <dt class="col-sm-6">Фамилия</dt>
-                <dd ng-model="type" class="col-sm-6">{{employee.surname}}</dd>
+                <dd ng-model="type" class="col-sm-6">{{employee.userDto.surname}}</dd>
 
                 <dt class="col-sm-6">Имя</dt>
-                <dd ng-model="type" class="col-sm-6">{{employee.name}}</dd>
+                <dd ng-model="type" class="col-sm-6">{{employee.userDto.name}}</dd>
 
                 <dt class="col-sm-6 text-truncate">Отчество</dt>
-                <dd ng-model="type" class="col-sm-6">{{employee.patronymic}}</dd>
+                <dd ng-model="type" class="col-sm-6">{{employee.userDto.patronymic}}</dd>
 
                 <dt class="col-sm-6">СНИЛС</dt>
                 <dd ng-model="type" class="col-sm-6">{{employee.snils}}</dd>
@@ -54,6 +77,17 @@
             }
 
             $scope.getEmployee();
+
+
+            function getCurrentUser() {
+                $http({
+                    url: "/users/username",
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.currentUser = response.data;
+                });
+            }
+            getCurrentUser();
 
         });
 

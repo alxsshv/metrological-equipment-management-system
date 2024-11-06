@@ -158,7 +158,7 @@
                 }
 
                 $scope.selectEmployee = function (item) {
-                    $scope.employeeSearchString = item.surname = " " + item.name + " " + item.patronymic;
+                    $scope.employeeSearchString = item.surname + " " + item.name + " " + item.patronymic;
                     $scope.protocolInfo.verificationEmployeeId = item.id;
                 }
 

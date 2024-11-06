@@ -7,8 +7,8 @@ import main.model.Employee;
 public class ApprovedEmployeeFactory {
     public static ApprovedEmployee createApprovedEmployee(Employee employee){
         EmployeeName employeeName = new EmployeeName();
-        employeeName.setName(employee.getName());
-        employeeName.setSurname(employee.getSurname());
+        employeeName.setName(employee.getUser().getName());
+        employeeName.setSurname(employee.getUser().getSurname());
 
         ApprovedEmployee approvedEmployee = new ApprovedEmployee();
         approvedEmployee.setSnils(employee.getSnils());
