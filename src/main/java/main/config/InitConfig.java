@@ -151,8 +151,8 @@ public class InitConfig {
     }
 
     private void generateRoles(){
-        roleConfigurator.createDefaultRole(SystemSecurityRoles.SYSTEM_ADMIN);
-        roleConfigurator.create(SystemSecurityRoles.USER);
+        roleConfigurator.createRootRole(SystemSecurityRoles.SYSTEM_ADMIN);
+        roleConfigurator.createDefaultRole(SystemSecurityRoles.USER);
         roleConfigurator.create(SystemSecurityRoles.VERIFICATION_EMPLOYEE);
         roleConfigurator.create(SystemSecurityRoles.VERIFICATION_MANAGER);
     }
@@ -164,7 +164,7 @@ public class InitConfig {
             userDto.setSurname("Root");
             userDto.setPatronymic("Root");
             userDto.setUsername("Root");
-            userDto.setRoles(Set.of(RoleDtoMapper.mapToDto(AppDefaults.getDefaultUserRole())));
+            userDto.setRoles(Set.of(RoleDtoMapper.mapToDto(AppDefaults.getRootUserRole())));
             userDto.setPassword("Rooot");
             userDto.setChecked(true);
             userDto.setEnabled(true);

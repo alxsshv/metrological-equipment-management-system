@@ -15,6 +15,8 @@ public class AppDefaults {
     @Getter
     private static Role defaultUserRole;
     @Getter
+    private static Role rootUserRole;
+    @Getter
     private static MiStatus miStatusWorkingTool;
     @Getter
     private static MiStatus miStatusStandard;
@@ -52,5 +54,9 @@ public class AppDefaults {
 
     public static void setIndicatorMiStatus(MiStatus miStatus) {
         AppDefaults.miStatusIndicator = miStatus;
+    }
+
+    public static void setRootUserRole(Role rootUserRole) {
+        AppDefaults.rootUserRole = rootUserRole;
     }
 }

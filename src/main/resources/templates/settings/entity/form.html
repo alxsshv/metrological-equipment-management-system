@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Настройки</title>
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body ng-app="SETTINGS_ENTITY_FORM" ng-controller="SETTINGS_ENTITY_FORM_CTRL">
+<div class="container text-center">
+    <nav class="navbar bg-body-tertiary">
+        <form class="container-fluid justify-content-start">
+            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
+        </form>
+
+    </nav>
+    <div class="col-md-5">
+        <span class="input-group-text">Краткое наименование организации</span>
+        <input type="text" ng-model="settings.organizationNotation" class="form-control" value="" required>
+        <span class="input-group-text">Полное наименование организации</span>
+        <textarea type="text" ng-model="settings.organizationTitle" class="form-control" value="" required></textarea>
+        <span class="input-group-text">Условный шифр знака поверки</span>
+        <input type="text" ng-model="settings.signCipher" class="form-control" value="" required>
+
+        <div class="col-12">
+            <button class="btn btn-primary" ng-click="saveSettings()" type="button">Сохранить настройки</button>
+        </div>
+    </div>
+</div>
+<script src="/js/angular.min.js"></script>
+<script src="/js/jquery-3.7.1.min.js"></script>
+<script src="/js/bootstrap.bundle.min.js"></script>
+<script type="text/javascript">
+    var app = angular.module("SETTINGS_ENTITY_FORM", []);
+    app.controller("SETTINGS_ENTITY_FORM_CTRL", function($scope, $http){
+
+        function getSettings(){
+              $http({
+                url: "/entity-settings",
+                method: "GET"
+            }).then(function successCallback(response){
+                $scope.settings = response.data;
+                console.log($scope.settings);
+                })
+            }
+
+        getSettings();
+            // сохранение в БД;
+            $scope.saveSettings = function(){
+             if ($scope.settings.organizationNotation != null && $scope.settings.organizationNotation != null){
+                $http({
+                url: "/entity-settings",
+                method: "PUT",
+                data: $scope.settings
+            }).then(function successCallback(response){
+                console.log($scope.settings);
+                alert(response.data.message);
+                window.location.href = "/";
+                }, function errorCallback(response){
+                   alert(response.data.message)
+                });
+            } else {
+                alert('Наименование организации не может быть пустым');
+            }
+            }
+        });
+</script>
+</body>
+</html>
