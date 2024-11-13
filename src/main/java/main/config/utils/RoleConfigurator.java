@@ -48,4 +48,18 @@ public class RoleConfigurator {
         AppDefaults.setDefaultUserRole(RoleDtoMapper.mapToEntity(roleDto));
         log.info("Создана роль, устанавливаемая по умолчанию для новых пользователей");
     }
+
+    public void createRootRole(SystemSecurityRoles securityRole){
+        Role rootRole = new Role();
+        try{
+            rootRole.setName("ROLE_"+securityRole.getName());
+            rootRole.setPseudonym(securityRole.getPseudonym());
+            roleService.save(rootRole);
+        } catch (ConstraintViolationException ex){
+            log.warn(ex.getMessage());
+        }
+        RoleDto roleDto = roleService.findByName("ROLE_"+securityRole.getName());
+        AppDefaults.setRootUserRole(RoleDtoMapper.mapToEntity(roleDto));
+        log.info("Создана роль администратора");
+    }
 }

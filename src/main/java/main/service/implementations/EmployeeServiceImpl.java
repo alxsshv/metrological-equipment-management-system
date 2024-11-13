@@ -9,7 +9,6 @@ import main.dto.rest.mappers.EmployeeDtoMapper;
 import main.model.Employee;
 import main.repository.EmployeeRepository;
 import main.service.interfaces.EmployeeService;
-import main.service.validators.EmployeeAlreadyExist;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,6 +19,7 @@ import org.springframework.validation.annotation.Validated;
 import java.util.List;
 import java.util.Optional;
 
+
 @Service
 @RequiredArgsConstructor
 @Validated
@@ -28,8 +28,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private final EmployeeRepository employeeRepository;
 
     @Override
-    public void save(@EmployeeAlreadyExist @Valid EmployeeDto employeeDto) {
-            employeeRepository.save(EmployeeDtoMapper.mapToEntity(employeeDto));
+    public void save(Employee employee) {
+        employeeRepository.save(employee);
     }
 
 
@@ -50,24 +50,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Page<EmployeeDto> findBySurname(@NotBlank(message = "Поле для поиска не может быть пустым") String surname, Pageable pageable) {
-            return employeeRepository.findBySurnameIgnoreCaseContaining(surname.trim(), pageable)
-                    .map(EmployeeDtoMapper::mapToDto);
+            return employeeRepository.findBySurname(surname, pageable)
+                    .map(e -> {e.setSnils("Указан");return e;}).map(EmployeeDtoMapper::mapToDto);
     }
     @Override
     public List<EmployeeDto>  findBySurname(@NotBlank(message = "Поле для поиска не может быть пустым") String surname) {
-            return employeeRepository.findBySurnameIgnoreCaseContaining(surname.trim()).stream()
+            return employeeRepository.findBySurname(surname).stream().peek(e -> e.setSnils("Указан"))
                     .map(EmployeeDtoMapper::mapToDto).toList();
     }
 
 
     @Override
     public Page<EmployeeDto> findAll(Pageable pageable) {
-        return employeeRepository.findAll(pageable).map(EmployeeDtoMapper ::mapToDto);
+        return employeeRepository.findAll(pageable).map(e->{e.setSnils("Указан"); return e;}).map(EmployeeDtoMapper::mapToDto);
     }
 
     @Override
     public List<EmployeeDto> findAll() {
-        return employeeRepository.findAll().stream().map(EmployeeDtoMapper ::mapToDto).toList();
+        return employeeRepository.findAll().stream().peek(e -> e.setSnils("Указан")).map(EmployeeDtoMapper ::mapToDto).toList();
     }
 
     @Override

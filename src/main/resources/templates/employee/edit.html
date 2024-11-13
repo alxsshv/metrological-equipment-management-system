@@ -9,29 +9,55 @@
 
 <body ng-app="EDIT_EMPLOYEE" ng-controller="EDIT_EMPLOYEE_CTRL">
 <div class="container text-center">
-    <nav class="navbar bg-body-tertiary">
-        <form class="container-fluid justify-content-start">
-            <button class="btn btn-outline-success me-2" type="button" onclick="location.href='/'">Домой</button>
-            <button class="btn btn-outline-success me-2" onclick="location.href='/employee'" type="button">К списку пользователей</button>
-        </form>
-    </nav>
+    <div class="row">
+        <div class="col-md-9">
+            <nav class="navbar navbar-expand  rounded">
+                <div class="container-fluid justify-content-start">
+                    <div class="nav">
+                        <a class="btn btn-sm btn-outline-primary" role="button" href="/">Главная</a>
+                    </div>
+                    <div class="nav">
+                        <a class="nav-link" href="/verification">Поверка</a>
+                    </div>
+                    <div class="nav">
+                        <a class="nav-link" href="/employee">Список поверителей</a>
+                    </div>
+                    <div class="nav">
+                        <a class="nav-link" href="{{goBack}}">К карточке поверителя</a>
+                    </div>
+                </div>
+            </nav>
+        </div>
 
-    <form>
+        <div class="col-md-3">
+            <nav class="navbar bg-body-tertiary">
+                <form class="container-fluid justify-content-end">
+                    <label class="d-flex p-2" ng-model="currentUser">{{currentUser.surname}}
+                        {{currentUser.name}}</label>
+                    <a class="btn btn-sm btn-outline-secondary" href="/logout" role="button">Выйти</a>
+                </form>
+            </nav>
+        </div>
+    </div>
+
+    <form class="container-fluid justify-content-center">
+        <div class="row">
             <input ng-model="employee.id" type="text" value="$employee.id" name="id" hidden>
 
-            <span class="input-group-text" id="surname">Фамилия</span>
-            <input ng-model="employee.surname" type="text" class="form-control" name="surname" value="${{employee.employeeName.surname}}">
+            <dt class="label" id="surname">Фамилия</dt>
+            <input ng-model="employee.userDto.surname" type="text" class="form-control" name="surname" value="${{employee.employeeName.surname}}" disabled>
 
-            <span class="input-group-text" id="name">Имя</span>
-            <input ng-model="employee.name" type="text" class="form-control" name="name" value="${employee.employeeName.name}">
+            <dt class="label" id="name">Имя</dt>
+            <input ng-model="employee.userDto.name" type="text" class="form-control"  name="name" value="${employee.employeeName.name}" disabled>
 
-            <span class="input-group-text" id="patronymic">отчество</span>
-            <input ng-model="employee.patronymic" type="text" class="form-control" name="patronymic" value="${employee.employeeName.patronymic}">
+            <dt class="label" id="patronymic">Отчество</dt>
+            <input ng-model="employee.userDto.patronymic" type="text" class="form-control " name="patronymic" value="${employee.employeeName.patronymic}" disabled>
 
-            <span class="input-group-text" id="department">СНИЛС (число 11 знаков)</span>
+            <dt class="label" id="department">СНИЛС (число 11 знаков)</dt>
             <input ng-model="employee.snils" type="text" class="form-control" name="snils" value="${employee.snils}">
-
+        </div>
     <div class="row">
+        <p></p>
         <button class="btn btn-primary" ng-click="saveEmployee()" type="button">Сохранить</button>
 	</div>
 </form>
@@ -42,6 +68,7 @@
     var app = angular.module("EDIT_EMPLOYEE", []);
     var idAttr = new URL (document.URL).searchParams.get("id");
         app.controller("EDIT_EMPLOYEE_CTRL", function($scope, $http){
+            $scope.goBack = "/employee/" + idAttr + "?id=" + idAttr
 
 
             $scope.getEmployee = function(){
@@ -61,17 +88,28 @@
                 method: "PUT",
                 data: {
                     id:idAttr,
-                    snils:$scope.employee.snils,
-                    name:$scope.employee.name,
-                    surname:$scope.employee.surname,
-                    patronymic:$scope.employee.patronymic}
+                    userDto: $scope.employee.userDto,
+                    snils: $scope.employee.snils
+                  }
             }).then(function successCallback(response){
                 console.log($scope.employee);
                 alert(response.data.message);
+                window.location.href = $scope.goBack;
                 }, function errorCallback(response){
                    alert(response.data.message)
                 });
             }
+
+
+            function getCurrentUser() {
+                $http({
+                    url: "/users/username",
+                    method: "GET"
+                }).then(function (response) {
+                    $scope.currentUser = response.data;
+                });
+            }
+            getCurrentUser();
 
         });
 </script>

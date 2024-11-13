@@ -74,4 +74,5 @@ public class User implements UserDetails {
         this.enabled = user.getEnabled();
         this.checked = user.getChecked();
     }
+
 }
