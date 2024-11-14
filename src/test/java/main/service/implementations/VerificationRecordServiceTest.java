@@ -53,7 +53,7 @@ public class VerificationRecordServiceTest {
     public void testGetRecordByIdIfEntityNotFound(){
         long recordId = 3L;
         when(verificationRecordRepository.findById(recordId)).thenReturn(Optional.empty());
-        Exception exception = assertThrows(EntityNotFoundException.class,()-> verificationRecordService.getRecordById(recordId));
+        assertThrows(EntityNotFoundException.class,()-> verificationRecordService.getRecordById(recordId));
     }
 
     @Test
