@@ -2,16 +2,17 @@ package main.service.interfaces;
 
 import main.dto.rest.VerificationRecordDto;
 import main.model.VerificationRecord;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
 
 
 public interface VerificationRecordService {
-    ResponseEntity<?> findById(long id);
+    VerificationRecordDto findById(long id);
     VerificationRecord getRecordById(long id);
-    ResponseEntity<?> update(VerificationRecordDto recordDto);
+    void update(VerificationRecordDto recordDto);
     void updateArshinVerificationNumber(long recordId, String arshinVerificationNumber);
-    ResponseEntity<?> delete(long id);
-    ResponseEntity<?> findVerificationAmountForEveryDateByEmployeeId(long employeeId, Pageable pageable);
+    void delete(long id);
+    Page<Map<String, Integer>> findVerificationAmountForEveryDateByEmployeeId(long employeeId, Pageable pageable);
 }
