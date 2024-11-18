@@ -1,9 +1,13 @@
 package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.*;
 import main.dto.rest.EmployeeDto;
-import main.dto.rest.mappers.EmployeeDtoMapper;
+import main.dto.rest.RoleDto;
+import main.dto.rest.UserDto;
 import main.model.Employee;
+import main.model.Role;
+import main.model.User;
 import main.repository.EmployeeRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,168 +16,25 @@ import org.springframework.data.domain.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static testutils.TestEntityGenerator.*;
+
 
 public class EmployeeServiceTest {
-    private final EmployeeRepository employeeRepository =
-            Mockito.mock(EmployeeRepository.class);
-    private final EmployeeServiceImpl employeeService =
-            new EmployeeServiceImpl(employeeRepository);
+    private final EmployeeRepository employeeRepository = Mockito.mock(EmployeeRepository.class);
+    private final EmployeeServiceImpl employeeService = new EmployeeServiceImpl(employeeRepository);
     private final Pageable pageable = PageRequest.of(1,10, Sort.by(Sort.Direction.ASC, "surname"));
+    private final ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory();
+    private final Validator validator = validatorFactory.getValidator();
+
 
     @Test
-    @DisplayName("Test save if employee already exists")
-    public void testSaveIfEmployeeAlreadyExists(){
-        EmployeeDto employeeDto = generateEmployeeDto(5L);
-        Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
-        when(employeeRepository.findBySnils(employeeDto.getSnils())).thenReturn(employee);
-        employeeService.save(employeeDto);
-        verify(employeeRepository,times(1)).findBySnils(employeeDto.getSnils());
-    }
-
-    @Test
-    @DisplayName("Test save if employee surname is null")
+    @DisplayName("Test save")
     public void testSaveIfEmployeeSurnameIsNull(){
-        EmployeeDto employeeDto = generateEmployeeDto(5L);
-        employeeDto.setSurname(null);
-        employeeService.save(employeeDto);
-        verify(employeeRepository,never()).findBySnils(employeeDto.getSnils());
-        verify(employeeRepository,never()).save(any(Employee.class));
-    }
-
-    @Test
-    @DisplayName("Test save if employee name is null")
-    public void testSaveIfEmployeeNameIsNull(){
-        EmployeeDto employeeDto = generateEmployeeDto(5L);
-        employeeDto.setName(null);
-        employeeService.save(employeeDto);
-        verify(employeeRepository,never()).findBySnils(employeeDto.getSnils());
-        verify(employeeRepository,never()).save(any(Employee.class));
-    }
-
-    @Test
-    @DisplayName("Test save if employee patronymic is null")
-    public void testSaveIfEmployeePatronymicIsNull(){
-        EmployeeDto employeeDto = generateEmployeeDto(5L);
-        employeeDto.setPatronymic(null);
-        employeeService.save(employeeDto);
-        verify(employeeRepository,never()).findBySnils(employeeDto.getSnils());
-        verify(employeeRepository,never()).save(any(Employee.class));
-    }
-
-    @Test
-    @DisplayName("Test save if employee snils is not corrected")
-    public void testSaveIfEmployeeSnilsIsNotCorrected(){
-        EmployeeDto employeeDto = generateEmployeeDto(5L);
-        employeeDto.setSnils("1234567-89");
-        employeeService.save(employeeDto);
-        verify(employeeRepository,never()).findBySnils(employeeDto.getSnils());
-        verify(employeeRepository,never()).save(any(Employee.class));
-    }
-
-    @Test
-    @DisplayName("Test save if created new employee")
-    public void testSaveIfCreatedNewEmployee(){
-        EmployeeDto employeeDto = generateEmployeeDto(5L);
-        when(employeeRepository.findBySnils(employeeDto.getSnils())).thenReturn(null);
-        employeeService.save(employeeDto);
-        verify(employeeRepository, times(1)).save(any(Employee.class));
-    }
-
-    @Test
-    @DisplayName("Test update If employee found")
-    public void testUpdateIfEmployeeFound(){
-        EmployeeDto employeeDto = generateEmployeeDto(5L);
-        Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
-        when(employeeRepository.findById(employeeDto.getId())).thenReturn(Optional.of(employee));
-        employeeService.update(employeeDto);
-        verify(employeeRepository, times(1)).save(employee);
-    }
-
-    @Test
-    @DisplayName("Test update if employee surname is null")
-    public void testUpdateIfEmployeeSurnameIsNull(){
-        long employeeId = 3L;
-        EmployeeDto employeeDto = generateEmployeeDto(employeeId);
-        employeeDto.setSurname(null);
-        Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        employeeService.update(employeeDto);
-        verify(employeeRepository,never()).findById(employeeId);
-        verify(employeeRepository,never()).save(any(Employee.class));
-    }
-
-    @Test
-    @DisplayName("Test update if employee name is null")
-    public void testUpdateIfEmployeeNameIsNull(){
-        long employeeId = 3L;
-        EmployeeDto employeeDto = generateEmployeeDto(employeeId);
-        employeeDto.setName(null);
-        Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        employeeService.update(employeeDto);
-        verify(employeeRepository,never()).findById(employeeId);
-        verify(employeeRepository,never()).save(any(Employee.class));
-    }
-
-    @Test
-    @DisplayName("Test update if employee patronymic is null")
-    public void testUpdateIfEmployeePatronymicIsNull(){
-        long employeeId = 3L;
-        EmployeeDto employeeDto = generateEmployeeDto(employeeId);
-        employeeDto.setPatronymic(null);
-        Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        employeeService.update(employeeDto);
-        verify(employeeRepository,never()).findById(employeeId);
-        verify(employeeRepository,never()).save(any(Employee.class));
-    }
-
-    @Test
-    @DisplayName("Test update if employee snils is not corrected")
-    public void testUpdateIfEmployeeSnilsIsNotCorrected(){
-        long employeeId = 3L;
-        EmployeeDto employeeDto = generateEmployeeDto(employeeId);
-        employeeDto.setSnils("1234567-89");
-        Employee employee = EmployeeDtoMapper.mapToEntity(employeeDto);
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        employeeService.update(employeeDto);
-        verify(employeeRepository,never()).findById(employeeId);
-        verify(employeeRepository,never()).save(any(Employee.class));
-    }
-
-    @Test
-    @DisplayName("Test update If employee not found")
-    public void testUpdateIfEmployeeNotFound(){
-        long employeeId = 3L;
-        EmployeeDto employeeDto = generateEmployeeDto(employeeId);
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
-        employeeService.update(employeeDto);
-    }
-
-    @Test
-    @DisplayName("Test delete")
-    public void testDelete(){
-        long employeeId = 2L;
-        Employee employee = generateEmployee(employeeId);
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        employeeService.delete(employeeId);
-        verify(employeeRepository, times(1)).deleteById(2L);
-    }
-
-
-    @Test
-    @DisplayName("Test findById if employee found")
-    public void testFindByIdIfEmployeeFound(){
-        long employeeId = 2L;
-        Employee employee = generateEmployee(employeeId);
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        employeeService.findById(employeeId);
-        verify(employeeRepository,times(1)).findById(employeeId);
+        employeeService.save(new Employee());
+        verify(employeeRepository,times(1)).save(any(Employee.class));
     }
 
     @Test
@@ -181,66 +42,192 @@ public class EmployeeServiceTest {
     public void testFindByIdIfEmployeeNotFound(){
         long employeeId = 3L;
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
-        employeeService.findById(employeeId);
-        verify(employeeRepository,times(1)).findById(employeeId);
-    }
+        assertThrows(EntityNotFoundException.class,()-> employeeService.findById(employeeId));
+        }
 
     @Test
-    @DisplayName("test getEmployeeById if entity not found")
-    public void testGetEmployeeByIdIfEntityNotFound() throws EntityNotFoundException {
-        long employeeId = 1L;
-        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
-        Exception exception = assertThrows(EntityNotFoundException.class,()->
-                employeeService.getEmployeeById(employeeId)) ;
-        assertEquals("Поверитель № 1 не найден",exception.getMessage());
-        verify(employeeRepository,times(1)).findById(employeeId);
-    }
-
-    @Test
-    @DisplayName("test getEmployeeById if entity found")
-    public void testGetEmployeeByIdIfEntityFound() throws EntityNotFoundException {
-        long employeeId = 1L;
-        Employee employee = generateEmployee(employeeId);
+    @DisplayName("Test findById if employee found")
+    public void testFindByIdIfEmployeeFound(){
+        long employeeId = 5L;
+        Employee employee = new Employee();
+        User user = new User();
+        user.setChecked(true);
+        user.setEnabled(true);
+        user.setId(employeeId);
+        user.setRoles(Set.of(new Role()));
+        employee.setUser(user);
+        employee.setId(employeeId);
         when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
-        Employee employeeFromDb = employeeService.getEmployeeById(employeeId);
-        assertEquals(employee, employeeFromDb);
-        verify(employeeRepository,times(1)).findById(employeeId);
+        EmployeeDto employeeDto = employeeService.findById(employeeId);
+        assertEquals(employeeId, employeeDto.getId());
     }
 
     @Test
-    @DisplayName("Test find by surname when Entity is found")
+    @DisplayName("Test getEmployeeById if employee found")
+    public void testSaveIfEmployeeSnilsIsNotCorrected(){
+        long employeeId = 5L;
+        Employee employee = new Employee();
+        User user = new User();
+        user.setChecked(true);
+        user.setEnabled(true);
+        user.setId(employeeId);
+        user.setRoles(Set.of(new Role()));
+        employee.setUser(user);
+        employee.setId(employeeId);
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(employee));
+        Employee actualEmployee = employeeService.getEmployeeById(employeeId);
+        assertEquals(employee.getId(), actualEmployee.getId());
+    }
+
+    @Test
+    @DisplayName("Test getEmployeeById if employee not found")
+    public void testSaveIfCreatedNewEmployee(){
+        long employeeId = 5L;
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class,()->employeeService.getEmployeeById(employeeId));
+    }
+
+    @Test
+    @DisplayName("Test findBySurname pageable")
+    public void testFindBySurnamePageable(){
+        String searchString = "surname";
+        User user = new User();
+        user.setSurname(searchString);
+        user.setId(3L);
+        user.setChecked(true);
+        user.setEnabled(true);
+        user.setRoles(Set.of(new Role()));
+        Employee employee = new Employee();
+        employee.setUser(user);
+        employee.setId(3L);
+        Page<Employee> page = new PageImpl<>(List.of(employee),
+                pageable,1L);
+        when(employeeRepository.findBySurname(searchString, pageable)).thenReturn(page);
+        Page<EmployeeDto> actualPage = employeeService.findBySurname(searchString, pageable);
+        assertEquals(page.getContent().get(0).getId(),actualPage.getContent().get(0).getId());
+        verify(employeeRepository, times(1)).findBySurname(searchString, pageable);
+    }
+
+    @Test
+    @DisplayName("Test findBySurname")
     public void testFindBySurname(){
-        Employee employee = generateEmployee(2L);
-        List<Employee> employees = List.of(employee);
-        long totalEmployees = 10L;
-        Page<Employee> page = new PageImpl<>(employees,pageable,totalEmployees);
-        when(employeeRepository.findBySurnameIgnoreCaseContaining(employee.getSurname(), pageable)).thenReturn(page);
-        employeeService.findBySurname(employee.getSurname(), pageable);
-        verify(employeeRepository,times(1)).findBySurnameIgnoreCaseContaining(employee.getSurname(), pageable);
+        String searchString = "surname";
+        User user = new User();
+        user.setSurname(searchString);
+        user.setId(3L);
+        user.setChecked(true);
+        user.setEnabled(true);
+        user.setRoles(Set.of(new Role()));
+        Employee employee = new Employee();
+        employee.setUser(user);
+        employee.setId(user.getId());
+        when(employeeRepository.findBySurname(searchString)).thenReturn(List.of(employee));
+        List<EmployeeDto> actualList = employeeService.findBySurname(searchString);
+        assertEquals(employee.getId(), actualList.get(0).getId());
     }
 
     @Test
-    @DisplayName("Test find All without pageable")
-    public void testWithoutPageableFindAll(){
-        Employee employee = generateEmployee(2L);
-        List<Employee> employees = List.of(employee);
-        when(employeeRepository.findAll()).thenReturn(employees);
-        List<EmployeeDto> employeeDtos = employeeService.findAll();
-        assertEquals(employees.size(),employeeDtos.size());
-        verify(employeeRepository,times(1)).findAll();
-    }
-
-    @Test
-    @DisplayName("Test find All with pageable")
-    public void testPageableFindAll(){
-        Employee employee = generateEmployee(2L);
-        List<Employee> employees = List.of(employee);
-        long totalPages = 1L;
-        Page<Employee> page = new PageImpl<>(employees,pageable,totalPages);
+    @DisplayName("Test findAll pageable")
+    public void testUpdateIfEmployeeSurnameIsNull(){
+        User user = new User();
+        user.setId(5L);
+        user.setEnabled(true);
+        user.setChecked(true);
+        user.setRoles(Set.of(new Role()));
+        Employee employee = new Employee();
+        employee.setId(user.getId());
+        employee.setUser(user);
+        Page<Employee> page = new PageImpl<>(List.of(employee));
         when(employeeRepository.findAll(pageable)).thenReturn(page);
-        Page<EmployeeDto> employeeDtos = employeeService.findAll(pageable);
-        assertEquals(employees.size(),employeeDtos.getContent().size());
-        verify(employeeRepository,times(1)).findAll(pageable);
+        Page<EmployeeDto> actualPage = employeeService.findAll(pageable);
+        assertEquals(user.getId(), actualPage.getContent().get(0).getId());
     }
+
+    @Test
+    @DisplayName("Test findAll")
+    public void testFindAll(){
+        User user = new User();
+        user.setRoles(Set.of(new Role()));
+        user.setId(5L);
+        user.setEnabled(true);
+        user.setChecked(true);
+        Employee employee = new Employee();
+        employee.setId(user.getId());
+        employee.setUser(user);
+        when(employeeRepository.findAll()).thenReturn(List.of(employee));
+        List<EmployeeDto> actualList = employeeService.findAll();
+        assertEquals(user.getId(), actualList.get(0).getId());
+    }
+
+
+    @Test
+    @DisplayName("Test update if employeeDto user is null")
+    public void testUpdateIfEmployeeDtoUserIsNull(){
+        long employeeId = 5L;
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setId(5L);
+        UserDto userDto = new UserDto();
+        userDto.setId(employeeId);
+        employeeDto.setUserDto(null);
+        employeeDto.setSnils("11111111111");
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
+        Set<ConstraintViolation<EmployeeDto>> violation = validator.validate(employeeDto);
+        assertFalse(violation.isEmpty());
+        }
+
+    @Test
+    @DisplayName("Test update if employeeDto snils is not correct")
+    public void testUpdateIfEntityNotFound(){
+        long employeeId = 5L;
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setId(5L);
+        UserDto userDto = new UserDto();
+        userDto.setId(employeeId);
+        employeeDto.setUserDto(userDto);
+        employeeDto.setSnils("1111111111");
+        Set<ConstraintViolation<EmployeeDto>> violation = validator.validate(employeeDto);
+        assertFalse(violation.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Test update if employee not found")
+    public void testUpdateIfEmployeeNotFound(){
+        long employeeId = 5L;
+        UserDto userDto = new UserDto();
+        userDto.setId(employeeId);
+        EmployeeDto employeeDto = new EmployeeDto();
+        employeeDto.setId(5L);
+        employeeDto.setUserDto(userDto);
+        employeeDto.setSnils("22222222222");
+        Set<ConstraintViolation<EmployeeDto>> violations = validator.validate(employeeDto);
+        assertTrue(violations.isEmpty());
+        when(employeeRepository.findById(employeeId)).thenReturn(Optional.empty());
+        assertThrows(EntityNotFoundException.class, ()->employeeService.update(employeeDto));
+        verify(employeeRepository, never()).save(any(Employee.class));
+    }
+
+    @Test
+    @DisplayName("Test update if employee found")
+    public void testUpdateIfEmployeeFound(){
+       long employeeId = 5L;
+       UserDto userDto = new UserDto();
+       userDto.setId(employeeId);
+       userDto.setRoles(Set.of(new RoleDto()));
+       EmployeeDto employeeDto = new EmployeeDto();
+       employeeDto.setId(employeeId);
+       employeeDto.setUserDto(userDto);
+       when(employeeRepository.findById(employeeId)).thenReturn(Optional.of(new Employee()));
+       employeeService.update(employeeDto);
+       verify(employeeRepository,times(1)).save(any(Employee.class));
+    }
+
+    @Test
+    @DisplayName("Test delete")
+    public void testDelete(){
+        long employeeId = 7L;
+        employeeService.delete(employeeId);
+        verify(employeeRepository, times(1)).deleteById(employeeId);
+    }
+
 
 }
