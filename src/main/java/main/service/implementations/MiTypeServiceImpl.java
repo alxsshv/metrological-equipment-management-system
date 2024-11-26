@@ -4,10 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.constraints.NotBlank;
 import main.dto.rest.MiTypeDto;
 import main.dto.rest.mappers.MiTypeDtoMapper;
-import main.exception.EntityAlreadyExistException;
 import main.model.MiType;
-import main.repository.MiTypeDetailsRepository;
-import main.repository.MiTypeModificationRepository;
 import main.repository.MiTypeRepository;
 import main.service.Category;
 import main.service.interfaces.MiTypeService;
@@ -17,7 +14,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,27 +27,10 @@ public class MiTypeServiceImpl implements MiTypeService {
     private final FileServiceImpl fileService;
 
     public MiTypeServiceImpl(MiTypeRepository miTypeRepository,
-                             MiTypeDetailsRepository miTypeInstructionRepository,
-                             MiTypeModificationRepository miTypeModificationRepository,
                              FileServiceImpl fileService) {
         this.miTypeRepository = miTypeRepository;
         this.fileService = fileService;
     }
-
-
-    private void validateIfEntityAlreadyExist(String miTypeNumber) throws EntityAlreadyExistException {
-        MiType miTypeFromDb = miTypeRepository.findByNumber(miTypeNumber);
-        if (miTypeFromDb != null){
-            throw new EntityAlreadyExistException("Запись о типе СИ № " + miTypeNumber + " уже существует");
-        }
-    }
-
-    private void uploadFilesIfFilesExist(MultipartFile[] files, String[] descriptions, Long categoryId) throws IOException {
-        if (files.length > 0) {
-            fileService.uploadAllFiles(files, descriptions, Category.MI_TYPE, categoryId);
-        }
-    }
-
 
     @Override
     public MiTypeDto findByNumber(@NotBlank(message = "Номер в ФИФ ОЕИ не может быть пустым") String number) {
