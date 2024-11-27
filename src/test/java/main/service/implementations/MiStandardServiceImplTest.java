@@ -4,9 +4,7 @@ package main.service.implementations;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintValidatorContext;
-import main.config.AppDefaults;
 import main.dto.rest.*;
-import main.dto.rest.mappers.MiDetailsDtoMapper;
 import main.model.*;
 import main.repository.MiStandardRepository;
 import main.service.interfaces.MiDetailsService;
@@ -14,11 +12,7 @@ import main.service.validators.MiStandardAlreadyExistValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.*;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,15 +24,13 @@ public class MiStandardServiceImplTest {
     private final MiDetailsService miDetailsService = Mockito.mock(MiDetailsService.class);
     private final FileServiceImpl fileService = Mockito.mock(FileServiceImpl.class);
     private final MiStandardServiceImpl miStandardService = new MiStandardServiceImpl(miStandardRepository,miDetailsService,fileService);
-    private final Pageable pageable = PageRequest.of(1,10, Sort.by(Sort.Direction.ASC, "arshinNumber"));
     private final MultipartFile[] files = {};
     private final String[] descriptions = {};
-    private final AppDefaults appDefaults = Mockito.mock(AppDefaults.class);
     private ConstraintValidatorContext constraintValidatorContext;
 
     @Test
     @DisplayName("Test save if parent measurement instrument is null")
-    public void testSaveIfParentMeasurementInstrumentIsNull() throws IOException {
+    public void testSaveIfParentMeasurementInstrumentIsNull(){
         long miId = 3L;
         MiDetailsDto miDetailsDto = new MiDetailsDto();
         miDetailsDto.setId(miId);
@@ -49,7 +41,6 @@ public class MiStandardServiceImplTest {
         when(miDetailsService.getById(miId)).thenThrow(EntityNotFoundException.class);
         assertThrows(EntityNotFoundException.class,()-> miStandardService.save(miStandardDto, files, descriptions));
     }
-
 
 
     @Test
