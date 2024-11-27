@@ -51,10 +51,6 @@ public class MiStandardServiceImpl implements MiStandardService {
             uploadFilesIfFilesExist(files, descriptions, savedMiStandard.getId());
     }
 
-
-
-
-
     private MiDetails getParentMi(long parentMiId){
         try {
             return miDetailsService.getById(parentMiId);
